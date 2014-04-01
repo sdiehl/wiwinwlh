@@ -30,23 +30,3 @@ tree = Node 1 [Node 1 [], Node 2 [] ,Node 3 []]
 example1 = mapM_ print tree
 example2 = foldr (+) 0 tree
 example3 = traverse (\x -> if x > 2 then Just x else Nothing) tree
-
-{-
-
-deriving instance Functor Tree
-deriving instance Traversable Tree
-deriving instance Foldable Tree
-
--}
-
-{-
-foldl :: (a -> b -> a) -> a -> [b] -> a
-foldl f a [b1, b2, b3, b4]
-=> f (f (f (f a b1) b2) b3) b4
--}
-
-{-
-foldr :: (a -> b -> b) -> b -> [a] -> b
-foldr f a [b1, b2, b3, b4]
-=> f b1 (f b2 (f b3 (f b4 a)))
--}

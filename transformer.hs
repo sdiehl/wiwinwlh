@@ -7,8 +7,9 @@ data Expr
   deriving (Show)
 
 type Env = [(String, Int)]
+type Eval a = ReaderT Env Maybe a
 
-eval :: Expr -> ReaderT Env Maybe Int
+eval :: Expr -> Eval Int
 eval (Val n) = return n
 eval (Add x y) = liftM2 (+) (eval x) (eval y)
 eval (Var x) = do
@@ -16,10 +17,13 @@ eval (Var x) = do
   val <- lift (lookup x env)
   return val
 
-ex ::  ReaderT Env Maybe Int
+
+ex :: Eval Int
 ex = eval (Add (Val 2) (Add (Val 1) (Var "x")))
 
-main ::  IO ()
-main = do
-    print $ runReaderT ex [("x", 2)]
-    print $ runReaderT ex []
+env :: Env
+env = [("x", 2), ("y", 5)]
+
+example1, example2 :: Maybe Int
+example1 = runReaderT ex env
+example2 = runReaderT ex []

@@ -1,11 +1,6 @@
 import Control.Monad.IO.Class
 import System.Console.Haskeline
 
-{-
-runInputT :: Settings IO -> InputT IO a -> IO a
-getInputLine :: String -> InputT IO (Maybe String)
--}
-
 process :: String -> IO ()
 process = putStrLn
 

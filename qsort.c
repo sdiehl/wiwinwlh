@@ -1,7 +1,5 @@
 /* $(CC) -c qsort.c -o qsort.o */
 
-#include <stdio.h>
-
 void swap(int *a, int *b)
 {
     int t = *a;
