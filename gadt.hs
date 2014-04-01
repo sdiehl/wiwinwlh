@@ -7,10 +7,10 @@ data Term a where
   If     :: Term Bool -> Term a -> Term a -> Term a
 
 eval :: Term a -> a
-eval (Lit i)      = i                                   -- Here ( a ~ Int )
+eval (Lit i)      = i
 eval (Succ t)     = 1 + eval t                          -- Here ( a ~ Term Int)
 eval (IsZero i)   = eval i == 0                         -- Here ( a ~ Term Int)
-eval (If b e1 e2) = if eval b then eval e1 else eval e2 -- Here ( a ~ Term a)
+eval (If b e1 e2) = if eval b then eval e1 else eval e2
 
 main :: IO ()
 main = do

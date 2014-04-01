@@ -5,8 +5,8 @@ data MyState = MyState
   , bar :: Int
   } deriving (Show)
 
-example :: Reader MyState (Maybe String)
-example = do
+computation :: Reader MyState (Maybe String)
+computation = do
   n <- asks bar
   x <- asks foo
   if n > 0 then
@@ -14,7 +14,5 @@ example = do
   else
     return Nothing
 
-main :: IO ()
-main = do
-  print $ runReader example $ MyState "hello!" 1
-  print $ runReader example $ MyState "example!" 0
+example1 = runReader computation $ MyState "hello!" 1
+example2 = runReader computation $ MyState "example!" 0

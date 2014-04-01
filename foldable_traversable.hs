@@ -1,5 +1,3 @@
--- how to implement foldable and traversable
-
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE DeriveTraversable #-}
 {-# LANGUAGE DeriveFoldable #-}
