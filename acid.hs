@@ -1,4 +1,5 @@
-{-# LANGUAGE OverloadedStrings, DeriveDataTypeable, TemplateHaskell #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE TemplateHaskell #-}
 
 import Data.Acid
 import Data.Typeable

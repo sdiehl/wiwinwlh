@@ -16,3 +16,5 @@ computation = do
 
 example1 = runReader computation $ MyState "hello!" 1
 example2 = runReader computation $ MyState "example!" 0
+
+main = return ()

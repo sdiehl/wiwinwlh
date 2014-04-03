@@ -1,8 +1,3 @@
-{-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE DeriveTraversable #-}
-{-# LANGUAGE DeriveFoldable #-}
-{-# LANGUAGE StandaloneDeriving #-}
-
 import Data.Monoid
 import Data.Foldable
 import Data.Traversable
@@ -23,8 +18,14 @@ instance Traversable Tree where
 instance Foldable Tree where
   foldMap f (Node x ts) = f x `mappend` foldMap (foldMap f) ts
 
+tree :: Tree Integer
 tree = Node 1 [Node 1 [], Node 2 [] ,Node 3 []]
 
+example1 :: IO ()
 example1 = mapM_ print tree
+
+example2 :: Integer
 example2 = foldr (+) 0 tree
+
+example3 :: Maybe (Tree Integer)
 example3 = traverse (\x -> if x > 2 then Just x else Nothing) tree
