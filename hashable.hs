@@ -9,6 +9,8 @@ instance Hashable Color where
 
 example1 :: Int
 example1 = hash Red
+-- 839657738087498284
 
 example2 :: Int
 example2 = hashWithSalt 0xDEADBEEF Red
+-- 62679985974121021
