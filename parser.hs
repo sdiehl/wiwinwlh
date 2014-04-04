@@ -19,9 +19,6 @@ data Expr
 
 data Binop = Add | Sub | Mul deriving Show
 
-
---
--- Lexer
 --
 
 lexer :: Tok.TokenParser ()
@@ -45,8 +42,6 @@ contents p = do
   eof
   return r
 
---
--- Parser
 --
 
 natural :: Parser Integer
