@@ -20,7 +20,9 @@ instance ToNamedRecord Plant
 type ErrorMsg = String
 type CsvData = (Header, V.Vector Plant)
 
-example :: FilePath -> IO (Either ErrorMsg CsvData)
-example fname = do
+parseCSV :: FilePath -> IO (Either ErrorMsg CsvData)
+parseCSV fname = do
   contents <- BL.readFile fname
   return $ decodeByName contents
+
+main = parseCSV "iris.csv" >>= print

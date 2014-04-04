@@ -33,14 +33,14 @@ records = [
       _a = 3,
       _b = Just $ Record2 {
         _c = "Riker",
-        _d = [1,2,3]
+        _d = [4,5,6]
       }
     },
     Record1 {
       _a = 4,
       _b = Just $ Record2 {
         _c = "Data",
-        _d = [1,2,3]
+        _d = [7,8,9]
       }
     }
   ]
@@ -49,6 +49,7 @@ records = [
 ids   = traverse.a
 names = traverse.b._Just.c
 nums  = traverse.b._Just.d
+list2 = traverse.b._Just.d.ix 2
 
 -- Modify/read/extract in terms of generic traversals.
 
@@ -57,9 +58,15 @@ ex1 = set ids 0 records
 
 -- Return a view of the concatenated d fields for all nested records.
 ex2 = view nums records
+-- [1,2,3,4,5,6,7,8,9]
 
 -- Increment all ids by 1
 ex3 = over ids (+1) records
 
 -- Return a list of all c fields.
 ex4 = toListOf names records
+-- ["Picard","Riker","Data"]
+
+-- Return the the second element of all d fields.
+ex5 = toListOf list2 records
+-- [3,6,9]
