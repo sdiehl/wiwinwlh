@@ -10,6 +10,5 @@ prop_maximum ::  [Int] -> Property
 prop_maximum xs = not (null xs) ==>
                   last (qsort xs) == maximum xs
 
-main ::  IO ()
-main =
-  quickCheck prop_maximum
+main :: IO ()
+main = quickCheck prop_maximum

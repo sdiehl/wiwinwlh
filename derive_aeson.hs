@@ -3,7 +3,6 @@
 
 import Data.Aeson
 import GHC.Generics
-import qualified Data.ByteString.Lazy.Char8 as BL
 
 data Point = Point { _x :: Double, _y :: Double }
    deriving (Show, Generic)
@@ -14,5 +13,4 @@ instance ToJSON Point
 example1 :: Maybe Point
 example1 = decode "{\"x\":3.0,\"y\":-1.0}"
 
-example2 :: BL.ByteString
 example2 = encode $ Point 123.4 20

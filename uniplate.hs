@@ -27,11 +27,11 @@ reduce :: Show a => Expr a -> Expr a
 reduce = rewrite cnf
   where
     -- double negation
-    cnf (Not (Not p))        = Just $ p
+    cnf (Not (Not p)) = Just $ p
 
     -- de Morgan
-    cnf (Not (p `Or` q))     = Just $ (Not p) `And` (Not q)
-    cnf (Not (p `And` q))    = Just $ (Not p) `Or` (Not q)
+    cnf (Not (p `Or` q))  = Just $ (Not p) `And` (Not q)
+    cnf (Not (p `And` q)) = Just $ (Not p) `Or` (Not q)
 
     -- distribute conjunctions
     cnf (p `Or` (q `And` r)) = Just $ (p `Or` q) `And` (p `Or` r)
