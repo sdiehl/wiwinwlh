@@ -1,5 +1,7 @@
 import Data.Csv
 
+import Text.Show.Pretty
+
 import qualified Data.Vector as V
 import qualified Data.ByteString.Lazy as BL
 
