@@ -16,10 +16,4 @@ instance Monoid w => Monad (Writer w) where
 tell :: w -> Writer w ()
 tell w = Writer ((), w)
 
-listen :: Writer w t -> Writer w (t, w)
-listen m = Writer $ let (a, w) = runWriter m in ((a, w), w)
-
-pass :: Writer t (a, t -> w) -> Writer w a
-pass m = Writer $ let ((a, f), w) = runWriter m in (a, f w)
-
 main = return ()

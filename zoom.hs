@@ -23,8 +23,7 @@ $(makeLenses ''Particle)
 $(makeLenses ''Vector)
 
 step :: StateT Box IO ()
-step = do
-  zoom (particles.traverse) $ do
+step = zoom (particles.traverse) $ do
     dx <- use (vel.x)
     dy <- use (vel.y)
     pos.x += dx
