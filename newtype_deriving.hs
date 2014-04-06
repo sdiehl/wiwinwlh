@@ -17,23 +17,14 @@ data Instr = Push Int | Pop | Puts
 
 evalInstr :: Instr -> VM ()
 evalInstr instr = case instr of
-  Pop    -> pop
-  Puts   -> puts
-  Push n -> push n
+  Pop    -> modify tail
+  Push n -> modify (n:)
+  Puts   -> do
+    val <- tos
+    tell [val]
 
 tos :: VM Int
 tos = gets head
-
-pop :: VM ()
-pop = modify tail
-
-puts :: VM ()
-puts = do
-  val <- tos
-  tell [val]
-
-push :: Int -> VM ()
-push n = modify (n:)
 
 eval :: VM ()
 eval = do

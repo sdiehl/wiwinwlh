@@ -6,12 +6,12 @@ import Data.Vector
 import qualified Data.HashMap.Strict as M
 import qualified Data.ByteString.Lazy as BL
 
--- Pull a key out of an object.
+-- Pull a key out of an JSON object.
 (^?) :: Value -> Text -> Maybe Value
 (^?) (Object obj) k = M.lookup k obj
 (^?) _ _ = Nothing
 
--- Pull the ith value out of a list.
+-- Pull the ith value out of a JSON list.
 ix :: Value -> Int -> Maybe Value
 ix (Array arr) i = arr !? i
 ix _ _ = Nothing

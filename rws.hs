@@ -4,9 +4,7 @@ type R = Int
 type W = [Int]
 type S = Int
 
-type Contrived a = RWS R W S a
-
-computation :: Contrived ()
+computation :: RWS R W S ()
 computation = do
   e <- ask
   a <- get
