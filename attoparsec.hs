@@ -26,7 +26,7 @@ data Message = Message
 
 pprotocol :: Parser Message
 pprotocol = do
-  act <- paction
+  act  <- paction
   send <- A.takeTill (== '.')
   body <- A.takeTill (A.isSpace)
   endOfLine

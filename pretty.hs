@@ -33,15 +33,15 @@ instance Pretty Expr where
   ppr _ (Lit (LInt a))  = text (show a)
   ppr _ (Lit (LBool b)) = text (show b)
 
-  ppr p e@(App _ _) = parensIf (p>0) $ ppr p f <+> args
-    where
-      args = sep $ map (ppr (p+1)) xs
-      (f, xs) = viewApp e
+  ppr p e@(App _ _) =
+    let (f, xs) = viewApp e in
+    let args = sep $ map (ppr (p+1)) xs in
+    parensIf (p>0) $ ppr p f <+> args
 
-  ppr p e@(Lam _ _)     = parensIf (p>0) $ char '\\' <> hsep vars <+> text "." <+> body
-    where
-      vars = map (ppr 0) (viewVars e)
-      body = ppr (p+1) (viewBody e)
+  ppr p e@(Lam _ _) =
+    let body = ppr (p+1) (viewBody e) in
+    let vars = map (ppr 0) (viewVars e) in
+    parensIf (p>0) $ char '\\' <> hsep vars <+> text "." <+> body
 
 viewVars :: Expr -> [Name]
 viewVars (Lam n a) = n : viewVars a
@@ -59,6 +59,7 @@ viewApp (App e1 e2) = go e1 [e2]
 
 ppexpr :: Expr -> String
 ppexpr = render . ppr 0
+
 
 s, k, example :: Expr
 s = Lam "f" (Lam "g" (Lam "x" (App (Var "f") (App (Var "g") (Var "x")))))

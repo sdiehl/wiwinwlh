@@ -5,4 +5,4 @@ example1 :: M.HashMap Int Char
 example1 = M.fromList $ zip [1..10] ['a'..]
 
 example2 :: S.HashSet Int
-example2 = S.fromList $ [1..10]
+example2 = S.fromList [1..10]

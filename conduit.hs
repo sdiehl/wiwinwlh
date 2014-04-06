@@ -10,6 +10,4 @@ conduit = CL.map show
 sink :: Sink String IO ()
 sink = CL.mapM_ putStrLn
 
-main :: IO ()
-main = do
-    source $$ conduit =$ sink
+main = source $$ conduit =$ sink

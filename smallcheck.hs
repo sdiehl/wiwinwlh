@@ -1,7 +1,7 @@
 import Test.SmallCheck
 
-assoc :: Int -> Int -> Int -> Bool
-assoc a b c = a * (b + c) == a * b + a *c
+distrib :: Int -> Int -> Int -> Bool
+distrib a b c = a * (b + c) == a * b + a *c
 
 cauchy :: [Double] -> [Double] -> Bool
 cauchy xs ys = (abs (dot xs ys))^2 <= (dot xs xs) * (dot ys ys)
@@ -14,8 +14,8 @@ dot xs ys = sum (zipWith (*) xs ys)
 
 main :: IO ()
 main = do
-  putStrLn "Testing associativity..."
-  smallCheck 25 assoc
+  putStrLn "Testing distributivity..."
+  smallCheck 25 distrib
 
   putStrLn "Testing Cauchy-Swartz..."
   smallCheck 4 cauchy
