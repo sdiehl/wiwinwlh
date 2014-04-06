@@ -1,13 +1,13 @@
 import GHC.Prim
 import Control.Monad
 import Data.Vector.Unboxed (freeze)
-import qualified Data.Vector.Unboxed.Mutable as M
+import Data.Vector.Unboxed.Mutable
 
-example :: IO (M.MVector RealWorld Int)
+example :: IO (MVector RealWorld Int)
 example = do
-  v <- M.new 10
-  forM_ [0..9] $ \i ->
-     M.write v i i
+  v <- new 10
+  forM [0..9] $ \i ->
+     write v i i
   return v
 
 main :: IO ()

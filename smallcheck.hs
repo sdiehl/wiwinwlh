@@ -7,7 +7,7 @@ cauchy :: [Double] -> [Double] -> Bool
 cauchy xs ys = (abs (dot xs ys))^2 <= (dot xs xs) * (dot ys ys)
 
 failure :: [Double] -> [Double] -> Bool
-failure xs ys = (abs (dot xs ys)) <= (dot xs xs) * (dot ys ys)
+failure xs ys = abs (dot xs ys) <= (dot xs xs) * (dot ys ys)
 
 dot :: Num a => [a] -> [a] -> a
 dot xs ys = sum (zipWith (*) xs ys)
