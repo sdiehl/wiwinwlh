@@ -53,20 +53,20 @@ list2 = traverse.b._Just.d.ix 2
 
 -- Modify/read/extract in terms of generic traversals.
 
--- Modify to set all ids to 0
+-- Modify to set all 'id' fields to 0
 ex1 = set ids 0 records
 
--- Return a view of the concatenated d fields for all nested records.
+-- Return a view of the concatenated 'd' fields for all nested records.
 ex2 = view nums records
 -- [1,2,3,4,5,6,7,8,9]
 
--- Increment all ids by 1
+-- Increment all 'id' fields by 1
 ex3 = over ids (+1) records
 
--- Return a list of all c fields.
+-- Return a list of all 'c' fields.
 ex4 = toListOf names records
 -- ["Picard","Riker","Data"]
 
--- Return the the second element of all d fields.
+-- Return the the second element of all 'd' fields.
 ex5 = toListOf list2 records
 -- [3,6,9]
