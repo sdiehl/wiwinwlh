@@ -1,36 +1,59 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 import Control.Monad.Reader
+import Control.Monad.Writer
 import Control.Monad.State
 
-type Output = [Int]
-type Input = Int
+type Stack   = [Int]
+type Output  = [Int]
+type Program = [Instr]
 
-newtype Comp a = Comp { unComp :: ReaderT Input (State Output) a }
-  deriving (Monad, MonadReader Input, MonadState Output)
+type VM a = ReaderT Program (WriterT Output (State Stack)) a
 
-execComp :: Comp a -> Input -> Output
-execComp m input = execState (runReaderT (unComp m) input) []
+newtype Comp a = Comp { unComp :: ReaderT Program (WriterT Output (State Stack)) a }
+  deriving (Monad, MonadReader Program, MonadWriter Output, MonadState Stack)
 
-add :: Comp ()
-add = modify $ \s -> [sum s]
+data Instr = Push Int | Pop | Puts
 
-scale :: Int -> Comp ()
-scale k = modify $ map (*k)
+evalInstr :: Instr -> VM ()
+evalInstr instr = case instr of
+  Pop    -> pop
+  Puts   -> puts
+  Push n -> push n
 
-append :: Int -> Comp ()
-append x = modify $ \s -> (x : s)
+tos :: VM Int
+tos = gets head
 
-computation :: Comp Int
-computation = do
-  n <- ask
-  append 1
-  append 2
-  add
-  scale 4
-  append n
-  add
-  return 1
+pop :: VM ()
+pop = modify tail
 
-example1 :: Output
-example1 = execComp computation 0
+puts :: VM ()
+puts = do
+  val <- tos
+  tell [val]
+
+push :: Int -> VM ()
+push n = modify (n:)
+
+eval :: VM ()
+eval = do
+  instr <- ask
+  case instr of
+    []     -> return ()
+    (i:is) -> evalInstr i >> local (const is) eval
+
+execVM :: Program -> Output
+execVM = flip evalState [] . execWriterT . runReaderT eval
+
+program :: Program
+program = [
+     Push 42,
+     Push 27,
+     Puts,
+     Pop,
+     Puts,
+     Pop
+  ]
+
+main :: IO ()
+main = mapM_ print $ execVM program

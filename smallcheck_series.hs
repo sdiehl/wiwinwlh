@@ -3,6 +3,7 @@
 
 import Test.SmallCheck
 import Test.SmallCheck.Series
+import Control.Applicative
 
 import qualified Data.Vector as V
 
@@ -13,9 +14,7 @@ cauchy :: V.Vector Double -> V.Vector Double -> Bool
 cauchy xs ys = (abs (dot xs ys))^2 <= (dot xs xs) * (dot ys ys)
 
 instance (Serial m a, Monad m) => Serial m (V.Vector a) where
-  series = do
-    elts <- series
-    return $ V.fromList elts
+  series = V.fromList <$> series
 
 main :: IO ()
 main = do
