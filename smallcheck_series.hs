@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 
 import Test.SmallCheck
 import Test.SmallCheck.Series
@@ -17,5 +18,4 @@ instance (Serial m a, Monad m) => Serial m (V.Vector a) where
   series = V.fromList <$> series
 
 main :: IO ()
-main = do
-  smallCheck 4 cauchy
+main = smallCheck 4 cauchy
