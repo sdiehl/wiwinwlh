@@ -36,13 +36,13 @@ paction :: Parser Action
 paction = do
   c <- anyWord8
   case c of
-      1  -> return Success
-      2  -> return KeepAlive
-      3  -> return NoResource
-      4  -> return Hangup
-      5  -> return NewLeader
-      6  -> return Election
-      _  -> mzero
+    1  -> return Success
+    2  -> return KeepAlive
+    3  -> return NoResource
+    4  -> return Hangup
+    5  -> return NewLeader
+    6  -> return Election
+    _  -> mzero
 
 main :: IO ()
 main = do

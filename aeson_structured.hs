@@ -28,6 +28,6 @@ instance ToJSON Refs
 main :: IO ()
 main = do
   contents <- BL.readFile "example.json"
-  let dat = decode contents
-  print $ name <$> dat
-  print $ a <$> refs <$> dat
+  let Just dat = decode contents
+  print $ name dat
+  print $ a (refs dat)
