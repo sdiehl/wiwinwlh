@@ -5,9 +5,7 @@ import Data.Traversable
 import Control.Applicative
 import Prelude hiding (mapM_, foldr)
 
-data Tree a
-  = Node a [Tree a]
-  deriving (Show)
+data Tree a = Node a [Tree a] deriving (Show)
 
 instance Functor Tree where
   fmap f (Node x ts) = Node (f x) (fmap (fmap f) ts)
