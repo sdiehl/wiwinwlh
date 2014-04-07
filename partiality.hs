@@ -11,7 +11,6 @@ fromMaybe :: Maybe a -> Partiality a
 fromMaybe (Just x) = Pure x
 fromMaybe Nothing = Free Nothing
 
--- Peels off at most n "later" constructors from x.
 runPartiality :: Int -> Partiality a -> Maybe a
 runPartiality 0 _ = Nothing
 runPartiality _ (Pure a) = Just a
@@ -25,5 +24,7 @@ ack m n = Free $ Just $ ack m (n-1) >>= ack (m-1)
 
 main :: IO ()
 main = do
+  let diverge = never :: Partiality ()
+  print $ runPartiality 1000 diverge
   print $ runPartiality 1000 (ack 3 4)
   print $ runPartiality 5500 (ack 3 4)

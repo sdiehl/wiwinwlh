@@ -27,7 +27,7 @@ reduce :: Show a => Expr a -> Expr a
 reduce = rewrite cnf
   where
     -- double negation
-    cnf (Not (Not p)) = Just $ p
+    cnf (Not (Not p)) = Just p
 
     -- de Morgan
     cnf (Not (p `Or` q))  = Just $ (Not p) `And` (Not q)

@@ -12,9 +12,8 @@ b =  forever $ do
 
 c = forever $ do
   x <- await
-  if (x `mod` 2) == 0 then
-    yield x
-  else
-    return ()
+  if (x `mod` 2) == 0
+    then yield x
+    else return ()
 
 contrived = toList $ a >-> b >-> c
