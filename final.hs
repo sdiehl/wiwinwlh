@@ -14,9 +14,9 @@ tr = lam (\x -> lam (\y -> x))
 fl ::  Expr rep => rep (a -> b -> b)
 fl = lam (\x -> lam (\y -> x))
 
-newtype Interpret a = R { interpret :: a }
+newtype Interpret a = R { reify :: a }
 
 instance Expr Interpret where
-  lam f   = R $ interpret . f . R
-  app f a = R $ interpret f $ interpret a
+  lam f   = R $ reify . f . R
+  app f a = R $ reify f $ reify a
   lit     = R

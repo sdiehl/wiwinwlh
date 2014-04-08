@@ -1,8 +1,6 @@
 import Control.Monad.Error
 import Control.Monad.Identity
 
-type FailMonad a = ErrorT Exception Identity a
-
 data Exception
   = Failure String
   | GenericFailure
@@ -10,6 +8,8 @@ data Exception
 
 instance Error Exception where
   noMsg = GenericFailure
+
+type FailMonad a = ErrorT Exception Identity a
 
 example :: Int -> Int -> FailMonad Int
 example x y = do
@@ -20,5 +20,5 @@ example x y = do
 runFail :: FailMonad a -> Either Exception a
 runFail = runIdentity . runErrorT
 
-example1 = runFail (example 2 3)
-example2 =  runFail (example 2 0)
+example1 = runFail $ example 2 3
+example2 = runFail $ example 2 0
