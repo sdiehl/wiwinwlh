@@ -12,5 +12,3 @@ asks f = Reader f
 
 local :: (r -> b) -> Reader b a -> Reader r a
 local f m = Reader $ runReader m . f
-
-main = return ()

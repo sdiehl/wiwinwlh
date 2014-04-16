@@ -16,4 +16,4 @@ c = forever $ do
     then yield x
     else return ()
 
-contrived = toList $ a >-> b >-> c
+result = toList $ a >-> b >-> c

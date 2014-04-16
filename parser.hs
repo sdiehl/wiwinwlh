@@ -14,7 +14,7 @@ data Expr
   | App Expr Expr
   | Var Id
   | Num Int
-  | Op Binop Expr Expr
+  | Op  Binop Expr Expr
   deriving (Show)
 
 data Binop = Add | Sub | Mul deriving Show

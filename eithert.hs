@@ -9,8 +9,8 @@ data Failure
 main :: IO ()
 main = do
   e <- runEitherT $ do
-      lift $ putStrLn "Enter a positive number."
-      s <- lift getLine
+      liftIO $ putStrLn "Enter a positive number."
+      s <- liftIO getLine
       n <- tryRead (ReadError s) s
       if n > 0
         then return $ n + 1

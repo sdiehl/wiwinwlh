@@ -6,7 +6,7 @@ data Expr a
   | Var a
   | Not (Expr a)
   | And (Expr a) (Expr a)
-  | Or (Expr a) (Expr a)
+  | Or  (Expr a) (Expr a)
   deriving (Show, Eq)
 
 instance Uniplate (Expr a) where

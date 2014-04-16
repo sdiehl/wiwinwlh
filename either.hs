@@ -1,6 +1,6 @@
 sdiv :: Double -> Double -> Either String Double
 sdiv _ 0 = throwError "divide by zero"
-sdiv i j = Right $ i / j
+sdiv i j = return $ i / j
 
 example :: Double -> Double -> Either String Double
 example n m = do

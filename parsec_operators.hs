@@ -233,4 +233,3 @@ main = do
   case res of
     Left err -> print err
     Right ast -> mapM_ print ast
-  return ()

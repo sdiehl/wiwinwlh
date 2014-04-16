@@ -6,8 +6,8 @@ import Data.Vector.Unboxed.Mutable
 example :: IO (MVector RealWorld Int)
 example = do
   v <- new 10
-  forM [0..9] $ \i ->
-     write v i i
+  forM_ [0..9] $ \i ->
+     write v i (2*i)
   return v
 
 main :: IO ()

@@ -9,16 +9,19 @@ data Exception
 instance Error Exception where
   noMsg = GenericFailure
 
-type FailMonad a = ErrorT Exception Identity a
+type ErrMonad a = ErrorT Exception Identity a
 
-example :: Int -> Int -> FailMonad Int
+example :: Int -> Int -> ErrMonad Int
 example x y = do
   case y of
-    0 -> throwError $ Failure "it didn't work!"
+    0 -> throwError $ Failure "division by zero"
     x -> return $ x `div` y
 
-runFail :: FailMonad a -> Either Exception a
+runFail :: ErrMonad a -> Either Exception a
 runFail = runIdentity . runErrorT
 
+example1 :: Either Exception Int
 example1 = runFail $ example 2 3
+
+example2 :: Either Exception Int
 example2 = runFail $ example 2 0

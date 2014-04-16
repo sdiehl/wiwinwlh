@@ -6,6 +6,7 @@ import Data.Aeson.Lens
 import Data.Aeson (decode, Value)
 import Data.ByteString.Lazy as BL
 
+main :: IO ()
 main = do
   contents <- BL.readFile "kiva.json"
   let Just json = decode contents :: Maybe Value

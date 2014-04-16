@@ -33,4 +33,4 @@ example3 = over [Val 1, Val 2, Val 3]
 
 example4 :: (Val, Val, Val)
 example4 = over (Val 1, Val 2, Val 3)
--- [Val 100,Val 200,Val 300]
+-- (Val 100,Val 200,Val 300)

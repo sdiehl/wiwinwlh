@@ -1,5 +1,4 @@
 -- ghc simple.o simple_ffi.hs -o simple_ffi
-
 {-# LANGUAGE ForeignFunctionInterface #-}
 
 import Foreign.C.Types
