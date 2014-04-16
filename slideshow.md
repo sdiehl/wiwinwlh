@@ -3358,58 +3358,6 @@ fmap id = id
 fmap (a . b) = (fmap a) . (fmap b)
 ```
 
-Yoneda Lemma
-------------
-
-The Yoneda lemma is an elementary, but deep result in Category theory. The Yoneda lemma states that for any
-functor ``F``, the types ``F a`` and ``∀ b. (a -> b) -> F b`` are isomorphic.
-
-```haskell
-{-# LANGUAGE RankNTypes #-}
-
-embed :: Functor f => f a -> (forall b . (a -> b) -> f b)
-embed x f = fmap f x
-
-unembed :: Functor f => (forall b . (a -> b) -> f b) -> f a
-unembed f = f id
-```
-
-So that we have:
-
-```haskell
-embed . unembed ≡ id
-unembed . embed ≡ id
-```
-
-The most broad statement of the theorem is that an object in a category can be represented by the set of
-morphisms into it, and that the information about these morphisms alone sufficiently determines all properties
-of the object itself.
-
-In terms of Haskell this means that given a fixed type ``a`` and a functor ``f``, if we have some a higher
-order function ``g`` that when given a function of type ``a -> b`` yields ``f b`` then the behavior ``g`` is
-entirely determined by ``f b``.
-
-An object is it's collection of morphisms.
-
-The only behavior the g can perform is the fmap the function over the elements of ``f a``.
-
-If you write a function that is polymorphic it's impossible to use specific knowledge about the type, you have
-to write your function generically to work with all possible types.
-
-Fix a type A and a functor F. If you have a machine that can give you back an object of type FB every time you
-give it a function of type A->B, can you reverse engineer fully what the machine is doing?
-
-http://mathoverflow.net/questions/11832/simple-show-cases-for-the-yoneda-lemma
-http://www.haskellforall.com/2012/06/gadts.html
-http://bartoszmilewski.com/2013/05/15/understanding-yoneda/
-http://www.lepp.cornell.edu/spr/1999-09/msg0017972.html
-http://blog.sigfpe.com/2006/11/yoneda-lemma.html
-https://www.cs.tcd.ie/~devriese/talks/cattheory.pdf
-
-See:
-
-* [Reverse Engineering Machines with the Yoneda Lemma](http://blog.sigfpe.com/2006/11/yoneda-lemma.html)
-
 Natural Transformations
 -----------------------
 
@@ -3458,6 +3406,41 @@ headMay (fmap f (x:xs))
 = headMay [f x]
 = Just (f x)
 ```
+
+Yoneda Lemma
+------------
+
+The Yoneda lemma is an elementary, but deep result in Category theory. The Yoneda lemma states that for any
+functor ``F``, the types ``F a`` and ``∀ b. (a -> b) -> F b`` are isomorphic.
+
+```haskell
+{-# LANGUAGE RankNTypes #-}
+
+embed :: Functor f => f a -> (forall b . (a -> b) -> f b)
+embed x f = fmap f x
+
+unembed :: Functor f => (forall b . (a -> b) -> f b) -> f a
+unembed f = f id
+```
+
+So that we have:
+
+```haskell
+embed . unembed ≡ id
+unembed . embed ≡ id
+```
+
+The most broad hand-wavy statement of the theorem is that an object in a category can be represented by the
+set of morphisms into it, and that the information about these morphisms alone sufficiently determines all
+properties of the object itself.
+
+In terms of Haskell types, given a fixed type ``a`` and a functor ``f``, if we have some a higher order
+polymorphic function ``g`` that when given a function of type ``a -> b`` yields ``f b`` then the behavior
+``g`` is entirely determined by ``a -> b`` and the behavior of ``g`` can written purely in terms of ``f a``.
+
+See:
+
+* [Reverse Engineering Machines with the Yoneda Lemma](http://blog.sigfpe.com/2006/11/yoneda-lemma.html)
 
 Kleisli Category
 ----------------
@@ -3527,4 +3510,3 @@ Resources
 * [Category Theory, Awodey](http://www.amazon.com/Category-Theory-Oxford-Logic-Guides/dp/0199237182)
 * [Category Theory Foundations](https://www.youtube.com/watch?v=ZKmodCApZwk)
 * [The Catsters](http://www.youtube.com/user/TheCatsters)
-
