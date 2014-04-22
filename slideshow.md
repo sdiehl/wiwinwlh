@@ -2056,6 +2056,18 @@ typeOf :: Typeable a => a -> TypeRep
 ~~~~ {.haskell include="typeable.hs"}
 ~~~~
 
+Using the Typeable instance allows us to write down a type safe cast function which can safely use
+``unsafeCast`` and provide evidence that the resulting type matches the input.
+
+```haskell
+cast :: (Typeable a, Typeable b) => a -> Maybe b
+cast x
+    | typeOf x == typeOf ret = Just ret
+    | otherwise = Nothing
+    where
+    ret = unsafeCast x
+```
+
 Of historical note is that writing our own Typeable classes is currently possible of GHC 7.6 but allows us to
 introduce dangerous behavior that can cause crashes, and shouldn't be done except by GHC itself.
 
@@ -2832,7 +2844,8 @@ Structured
 
 This isn't ideal since we've just smeared all the validation logic across our traversal logic instead of
 separating concerns and handling validation in separate logic. We'd like to describe the structure before-hand
-and the invalid case separately.
+and the invalid case separately. Using Generic also allows Haskell to automatically write the serializer and
+deserializer between our datatype and the JSON string based on the names of record field names.
 
 ~~~~ {.haskell include="aeson_structured.hs"}
 ~~~~
@@ -2898,6 +2911,9 @@ We see we get the nested set of stringy vectors:
 
 Structured
 ----------
+
+Just like with Aeson we can use Generic to automatically write the deserializer between our CSV data and our
+custom datatype.
 
 ~~~~ {.haskell include="cassava_structured.hs"}
 ~~~~
@@ -3460,7 +3476,7 @@ instance (Monad m) => Category (K m) where
   (K g) . (K f) = K (f >=> g)
 ```
 
-The monad laws state in terms of the Kleisli category of a monad ``m`` are:
+The monad laws stated in terms of the Kleisli category of a monad ``m`` are:
 
 ```haskell
 (f >=> g) >=> h ≡ f >=> (g >=> h)
