@@ -981,7 +981,7 @@ instance MonadIO IO where
 
 It's useful to remember that transformers compose outside-in but are unrolled inside out.
 
-![](transformer_roll2.png)
+![](transformer_unroll.png)
 
 See: [Monad Transformers: Step-By-Step](http://www.cs.virginia.edu/~wh5a/personal/Transformers.pdf)
 
@@ -3094,7 +3094,11 @@ The usual integer type in Haskell can be considered to be a regular algebraic da
 constructor.
 
 ```haskell
-data Int = I# Int#
+λ: :set -XMagicHash
+λ: :m +GHC.Types
+λ: :m +GHC.Prim
+λ: :i Int
+data Int = I# Int#      -- Defined in GHC.Types
 ```
 
 The function for integer arithmetic used in the ``Num`` typeclass for ``Int`` is just pattern matching on this
