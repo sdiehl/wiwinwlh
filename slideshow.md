@@ -161,7 +161,7 @@ cabal install hlint
 
 We can use it by adding a command to our ``~/.ghc/ghci.conf``.
 
-~~~~ {.haskell include="ghci.conf"}
+~~~~ {.haskell include="src/ghci.conf"}
 ~~~~
 
 For editor integration with vim and emacs:
@@ -248,7 +248,7 @@ What's not immediately apparent is that they are used extensively throughout the
 reasons others for historical reasons. The canonical example is the ``head`` function which as written ``[a]
 -> a`` could not be well-typed without the bottom.
 
-~~~~ {.haskell include="bottoms.hs"}
+~~~~ {.haskell include="src/bottoms.hs"}
 ~~~~
 
 It's rare to see these partial functions thrown around carelessly in production code and the preferred method
@@ -437,7 +437,7 @@ return 4 :: Maybe Int
 -- Just 4
 ```
 
-~~~~ {.haskell include="maybe.hs"}
+~~~~ {.haskell include="src/maybe.hs"}
 ~~~~
 
 List
@@ -474,7 +474,7 @@ The list comprehension syntax in Haskell can be implemented in terms of the list
 [(x,y) | x <- xs, y <- ys]
 ```
 
-~~~~ {.haskell include="list.hs"}
+~~~~ {.haskell include="src/list.hs"}
 ~~~~
 
 IO
@@ -602,12 +602,12 @@ local :: (r -> b) -> Reader b a -> Reader r a
 runReader :: Reader r a -> r -> a
 ```
 
-~~~~ {.haskell include="reader.hs"}
+~~~~ {.haskell include="src/reader.hs"}
 ~~~~
 
 A simple implementation of the Reader monad:
 
-~~~~ {.haskell include="reader_impl.hs"}
+~~~~ {.haskell include="src/reader_impl.hs"}
 ~~~~
 
 Writer Monad
@@ -619,12 +619,12 @@ execWriter :: Writer w a -> w
 runWriter  :: Writer w a -> (a, w)
 ```
 
-~~~~ {.haskell include="writer.hs"}
+~~~~ {.haskell include="src/writer.hs"}
 ~~~~
 
 An simple implementation of the Writer monad:
 
-~~~~ {.haskell include="writer_impl.hs"}
+~~~~ {.haskell include="src/writer_impl.hs"}
 ~~~~
 
 This implementation is lazy so some care must be taken that one actually wants only generate a stream of
@@ -644,14 +644,14 @@ evalState :: State s a -> s -> a
 execState :: State s a -> s -> s
 ```
 
-~~~~ {.haskell include="state.hs"}
+~~~~ {.haskell include="src/state.hs"}
 ~~~~
 
 The state monad is often mistakingly as being impure, but it is in fact entirely pure and the same effect
 could be achieved by explicitly passing state. An simple implementation of the State monad is only a few
 lines:
 
-~~~~ {.haskell include="state_impl.hs"}
+~~~~ {.haskell include="src/state_impl.hs"}
 ~~~~
 
 Syntax Extensions 
@@ -829,7 +829,7 @@ pack :: String -> Text
 unpack :: Text -> String
 ```
 
-~~~~ {.haskell include="text.hs"}
+~~~~ {.haskell include="src/text.hs"}
 ~~~~
 
 See: [Text](http://hackage.haskell.org/package/text-1.1.0.1/docs/Data-Text.html)
@@ -845,7 +845,7 @@ pack :: String -> ByteString
 unpack :: ByteString -> String
 ```
 
-~~~~ {.haskell include="bytestring.hs"}
+~~~~ {.haskell include="src/bytestring.hs"}
 ~~~~
 
 See: [ByteString](http://hackage.haskell.org/package/bytestring-0.10.4.0/docs/Data-ByteString.html)
@@ -884,7 +884,7 @@ u <*> (v <*> w) = pure (.) <*> u <*> v <*> w
 As a rule of thumb, whenever we would use ``m >>= return . f`` what we probably want is an applicative
 functor, and not a monad.
 
-~~~~ {.haskell include="applicative.hs"}
+~~~~ {.haskell include="src/applicative.hs"}
 ~~~~
 
 The pattern ``f <$> a <*> b ...`` shows us so frequently that there are a family of functions to lift
@@ -952,7 +952,7 @@ execRWS :: RWS r w s a -> r -> s -> (s, w)
 evalRWS :: RWS r w s a -> r -> s -> (a, w)
 ```
 
-~~~~ {.haskell include="rws.hs"}
+~~~~ {.haskell include="src/rws.hs"}
 ~~~~
 
 The usual caveat about Writer also applies to RWS.
@@ -991,7 +991,7 @@ Basics
 The most basic use requires us to use the T-variants of the each of the monad transformers for the outer
 layers and to explicit ``lift`` and ``return`` values between each the layers.
 
-~~~~ {.haskell include="transformer.hs"}
+~~~~ {.haskell include="src/transformer.hs"}
 ~~~~
 
 The fundamental limitation of this approach is that ourselves ``lift.lift.lift``ing and
@@ -1005,7 +1005,7 @@ Newtype wrappers around strings and numeric types can often reduce accidental er
 ``-XGeneralizedNewtypeDeriving`` we can recover the functionality of instances of the underlying type.
 
 
-~~~~ {.haskell include="newtype.hs"}
+~~~~ {.haskell include="src/newtype.hs"}
 ~~~~
 
 ```haskell
@@ -1019,7 +1019,7 @@ In the expression: v + x
 Using newtype deriving with typeclasses we can produce flattened transformer types that don't require explicit
 lifting the transform stack. For example a little stack machine the Reader Writer and State monads.
 
-~~~~ {.haskell include="newtype_deriving.hs"}
+~~~~ {.haskell include="src/newtype_deriving.hs"}
 ~~~~
 
 Error Handling
@@ -1040,7 +1040,7 @@ try :: Exception e => IO a -> IO (Either e a)
 evaluate :: a -> IO a
 ```
 
-~~~~ {.haskell include="ioexception.hs"}
+~~~~ {.haskell include="src/ioexception.hs"}
 ~~~~
 
 Exceptions
@@ -1050,7 +1050,7 @@ The problem with the previous approach is having to rely on GHC's asynchronous e
 to handle basic operations. The ``exceptions`` provides the same API as ``Control.Exception`` but loosens the
 dependency on IO.
 
-~~~~ {.haskell include="exceptions.hs"}
+~~~~ {.haskell include="src/exceptions.hs"}
 ~~~~
 
 See: [exceptions](http://hackage.haskell.org/package/exceptions)
@@ -1060,13 +1060,13 @@ Either
 
 The instance of the Either monad is simple, note the bias toward Left when binding.
 
-~~~~ {.haskell include="either_impl.hs"}
+~~~~ {.haskell include="src/either_impl.hs"}
 ~~~~
 
 The silly example one always sees is writing safe division function that fails out with a Left value when a
 division by zero happens and holds the resulting value in Right otherwise.
 
-~~~~ {.haskell include="either.hs"}
+~~~~ {.haskell include="src/either.hs"}
 ~~~~
 
 This is admittedly pretty stupid but captures the essence of why Either/EitherT is an suitable monad for
@@ -1079,7 +1079,7 @@ Another slightly clumsy method is to use the ``ErrorT`` transformer composed wit
 into an ``Either Exception a``. This method is simple but doesn't compose well depending on the situation and
 interaction with IO.
 
-~~~~ {.haskell include="errors.hs"}
+~~~~ {.haskell include="src/errors.hs"}
 ~~~~
 
 EitherT and errors
@@ -1133,7 +1133,7 @@ tryAt :: Monad m => e -> [a] -> Int -> EitherT e m a
 
 Putting this all together we have pretty close to the ideal monad for error handling.
 
-~~~~ {.haskell include="eithert.hs"}
+~~~~ {.haskell include="src/eithert.hs"}
 ~~~~
 
 See:
@@ -1155,7 +1155,7 @@ readSTRef :: STRef s a -> ST s a
 writeSTRef :: STRef s a -> a -> ST s ()
 ```
 
-~~~~ {.haskell include="st.hs"}
+~~~~ {.haskell include="src/st.hs"}
 ~~~~
 
 Using the ST monad we can create a new class of efficient purely functional data structures that use mutable
@@ -1191,7 +1191,7 @@ The names exported by foldable quite often conflict with ones defined in the Pre
 qualified or just disable the Prelude. The operations in the Foldable all specialize to the same behave the
 same as the ones Prelude for List types.
 
-~~~~ {.haskell include="foldable_traversable.hs"}
+~~~~ {.haskell include="src/foldable_traversable.hs"}
 ~~~~
 
 The instances we defined above can also be automatically derived by GHC using several language extensions, the
@@ -1254,21 +1254,21 @@ unbounded recursion, but for example we can create a free monad from the ``Maybe
 used to fix the call-depth of, for example, the [Ackermann
 functions](https://en.wikipedia.org/wiki/Ackermann_function.)
 
-~~~~ {.haskell include="partiality.hs"}
+~~~~ {.haskell include="src/partiality.hs"}
 ~~~~
 
 The other common use for free monads to build embedded domain languages to describe computations. We can model
 a subset of the IO monad by building up a pure description of the computation inside of the IOFree monad
 and then using the free monad to encode the translation to an effectful IO computation.
 
-~~~~ {.haskell include="free_dsl.hs"}
+~~~~ {.haskell include="src/free_dsl.hs"}
 ~~~~
 
 
 An implementation such as the one found in [free](http://hackage.haskell.org/package/free) might look like the
 following:
 
-~~~~ {.haskell include="free_impl.hs"}
+~~~~ {.haskell include="src/free_impl.hs"}
 ~~~~
 
 See: 
@@ -1306,7 +1306,7 @@ Using a GADT we can express the type invariants for our language (i.e. only type
 representable). Pattern matching on this GADTs then carries type equality constraints without the need for
 explicit tags.
 
-~~~~ {.haskell include="gadt.hs"}
+~~~~ {.haskell include="src/gadt.hs"}
 ~~~~
 
 This time around:
@@ -1344,7 +1344,7 @@ On top of default GADT declaration we can also constrain the parameters of the G
 basic usage Haskell's kind inference can deduce this reasonably well, but combined with some other type system
 extensions this becomes essential.
 
-~~~~ {.haskell include="kindsignatures.hs"}
+~~~~ {.haskell include="src/kindsignatures.hs"}
 ~~~~
 
 Equality
@@ -1353,7 +1353,7 @@ Equality
 With a richer language for datatypes we can express terms that witness the relationship between terms in the
 constructors, for example equality:
 
-~~~~ {.haskell include="equal.hs"}
+~~~~ {.haskell include="src/equal.hs"}
 ~~~~
 
 HOAS
@@ -1363,7 +1363,7 @@ Higher Order Abstract Syntax (*HOAS*) is a technique for encoding the lambda cal
 function type of the host language ( i.e. Haskell ) to give us capture-avoiding substitution in our custom
 language by exploiting Haskell's implementation.
 
-~~~~ {.haskell include="hoas.hs"}
+~~~~ {.haskell include="src/hoas.hs"}
 ~~~~
 
 There is no however no safeguard preventing us from lifting Haskell functions which do not encode meaningful
@@ -1387,7 +1387,7 @@ For example we can write a small language that includes basic arithmetic, and th
 expression language with a multiplication operator without changing the base. At the same time our logic for
 our evaluator and pretty-printing interpreters remain invariant under the addition of new elements.
 
-~~~~ {.haskell include="fext.hs"}
+~~~~ {.haskell include="src/fext.hs"}
 ~~~~
 
 Typed Tagless Final Interpreters
@@ -1396,7 +1396,7 @@ Typed Tagless Final Interpreters
 Writing an evaluator for the lambda calculus can likewise also be modeled with a final interpeter and a
 Identity functor.
 
-~~~~ {.haskell include="final.hs"}
+~~~~ {.haskell include="src/final.hs"}
 ~~~~
 
 The [esqueleto](http://hackage.haskell.org/package/esqueleto) library uses this approach internally to build a
@@ -1491,12 +1491,12 @@ transformation logic!
 
 For example a construction of the natural numbers in this form:
 
-~~~~ {.haskell include="initial.hs"}
+~~~~ {.haskell include="src/initial.hs"}
 ~~~~
 
 Or for example an interpreter for a small expression language that depends on a scoping dictionary.
 
-~~~~ {.haskell include="initial_interpreter.hs"}
+~~~~ {.haskell include="src/initial_interpreter.hs"}
 ~~~~
 
 What's especially nice about this approach is how naturally catamorphisms compose into efficient
@@ -1525,7 +1525,7 @@ forAll :: (Show a, Testable prop) => Gen a -> (a -> prop) -> Property
 choose :: Random a => (a, a) -> Gen a
 ```
 
-~~~~ {.haskell include="qcheck.hs"}
+~~~~ {.haskell include="src/qcheck.hs"}
 ~~~~
 
 ```bash
@@ -1541,7 +1541,7 @@ $ runhaskell qcheck.hs
 The test data generator can be extended with custom types and refined with predicates that restrict the domain
 of cases to test.
 
-~~~~ {.haskell include="arbitrary.hs"}
+~~~~ {.haskell include="src/arbitrary.hs"}
 ~~~~
 
 See:
@@ -1573,7 +1573,7 @@ sample' :: Gen a -> IO [a]
 
 It is useful for *all* possible inputs of a program up to some depth.
 
-~~~~ {.haskell include="smallcheck.hs"}
+~~~~ {.haskell include="src/smallcheck.hs"}
 ~~~~
 
 ```haskell
@@ -1596,13 +1596,13 @@ Series
 Just like for QuickCheck we can implement series instances for our custom datatypes. For example there is no
 default instance for Vector, so let's implement one:
 
-~~~~ {.haskell include="smallcheck_series.hs"}
+~~~~ {.haskell include="src/smallcheck_series.hs"}
 ~~~~
 
 SmallCheck can also use Generics to derive Serial instances, for example to enumerate all trees of a certain
 depth we might use:
 
-~~~~ {.haskell include="smallcheck_tree.hs"}
+~~~~ {.haskell include="src/smallcheck_tree.hs"}
 ~~~~
 
 Printer Combinators
@@ -1617,7 +1617,7 @@ Pretty printer combinators compose logic to print strings.
 ``char``      Renders a character as a ``Doc``
 ``text``      Renders a string as a ``Doc``
 
-~~~~ {.haskell include="pretty.hs"}
+~~~~ {.haskell include="src/pretty.hs"}
 ~~~~
 
 The pretty printed form of the ``k`` combinator:
@@ -1665,7 +1665,7 @@ zipWith :: (a -> b -> c) -> Vector a -> Vector b -> Vector c
 iterateN :: Int -> (a -> a) -> a -> Vector a
 ```
 
-~~~~ {.haskell include="vector.hs"}
+~~~~ {.haskell include="src/vector.hs"}
 ~~~~
 
 See:
@@ -1685,7 +1685,7 @@ and writes. When needed a static Vector can be created to/from the ``MVector`` u
 functions.
 
 
-~~~~ {.haskell include="vector_mutable.hs"}
+~~~~ {.haskell include="src/vector_mutable.hs"}
 ~~~~
 
 Type Families
@@ -1707,7 +1707,7 @@ If a single parameter typeclass expresses a property of a type ( i.e. it's in a 
 multiparamater typeclass expresses relationships between types. For example whether if we wanted to express
 the relation a type can be converted to another type we might use a class like:
 
-~~~~ {.haskell include="mparam.hs"}
+~~~~ {.haskell include="src/mparam.hs"}
 ~~~~
 
 Of course now our instances for ``Convertible Int`` are not unique anymore, so there no longer exists a nice
@@ -1715,7 +1715,7 @@ procedure for determining the inferred type of ``b`` from just ``a``. To remedy 
 dependency ``a -> b``, which says tells GHC that an instance ``a`` uniquely determines the instance that b can
 be.  So we'll see that our two instances relating ``Int`` to both ``Integer`` and ``Char`` conflict.
 
-~~~~ {.haskell include="mparam_fun.hs"}
+~~~~ {.haskell include="src/mparam_fun.hs"}
 ~~~~
 
 ```haskell
@@ -1739,7 +1739,7 @@ reduction can only allow constraints of the class to become structural smaller t
 implicit computation can now occur *within in the type class instance search*. Combined with a type-level
 representation of Peano numbers we find that we can encode basic arithmetic at the type-level.
 
-~~~~ {.haskell include="fundeps.hs"}
+~~~~ {.haskell include="src/fundeps.hs"}
 ~~~~
 
 If the typeclass contexts look similar to Prolog you're not wrong, if you read the contexts qualifier
@@ -1830,7 +1830,7 @@ if we wanted to create more complicated vector structures ( bitmasked vectors, v
 exposed a uniform API but internally handled the differences in their data layout we can use data families to
 accomplish this:
 
-~~~~ {.haskell include="datafamily.hs"}
+~~~~ {.haskell include="src/datafamily.hs"}
 ~~~~
 
 Proofs
@@ -1844,7 +1844,7 @@ don't have the strength that dependent types provide but can still prove ( for a
 of the word "prove" ) trivial results. For example, now we can model a type level function for addition and
 provide a small proof that zero is an additive identity.
 
-~~~~ {.haskell include="family_nat.hs"}
+~~~~ {.haskell include="src/family_nat.hs"}
 ~~~~
 
 Using the the ``TypeOperators`` extension we can also write use infix notation at the type-level.
@@ -1870,7 +1870,7 @@ HLists
 
 A heterogeneous list is a cons list whose type statically encodes the ordered types of of it's values.
 
-~~~~ {.haskell include="hlist.hs"}
+~~~~ {.haskell include="src/hlist.hs"}
 ~~~~
 
 Constraint Kinds
@@ -1883,13 +1883,13 @@ values which can naturally be indexed with the type family.
 For a contrived example if we wanted to create a generic ``Sized`` class that carried with it constraints on
 the elements of the container in question we could achieve this quite simply using type families.
 
-~~~~ {.haskell include="constraintkinds.hs"}
+~~~~ {.haskell include="src/constraintkinds.hs"}
 ~~~~
 
 One use-case of this is to capture the typeclass dictionary constrained by a function and reify that as a
 value.
 
-~~~~ {.haskell include="dict.hs"}
+~~~~ {.haskell include="src/dict.hs"}
 ~~~~
 
 The empty constraint set is denoted  ``() :: Constraint``.
@@ -1935,7 +1935,7 @@ data Proxy a = Proxy
 Using PolyKinds with the ``Proxy`` type allows us to write down type class functions which over constructors
 of arbitrary kind arity.
 
-~~~~ {.haskell include="kindpoly.hs"}
+~~~~ {.haskell include="src/kindpoly.hs"}
 ~~~~
 
 Data Kinds
@@ -1990,7 +1990,7 @@ Using this new structure we can create a ``Vec`` type which is parameterized by 
 element type now that we have a kind language rich enough to encode the successor type in the kind signature
 of the generalized algebraic datatype. 
 
-~~~~ {.haskell include="datakinds.hs"}
+~~~~ {.haskell include="src/datakinds.hs"}
 ~~~~
 
 So now if we try to zip two ``Vec`` types with the wrong shape then we get a error at compile-time about the
@@ -2007,7 +2007,7 @@ The same technique we can use to create a container which is statically indexed 
 such that if we try to take the head of a empty list we'll get a compile-time error, or stated equivalently we
 have an obligation to prove to the compiler that the argument we hand to the head function is non-empty.
 
-~~~~ {.haskell include="nonempty.hs"}
+~~~~ {.haskell include="src/nonempty.hs"}
 ~~~~
 
 ```haskell
@@ -2019,7 +2019,7 @@ Expected type: List Many Int
 GHC's type literals can also be used in place of explicit Peano arithmetic, although GHC is very conservative
 about performing reduction.
 
-~~~~ {.haskell include="typenat.hs"}
+~~~~ {.haskell include="src/typenat.hs"}
 ~~~~
 
 So we've just expressed the relationship between the type of a data structure based on it's values and
@@ -2053,7 +2053,7 @@ The ``Typeable`` class be used to create runtime type information for arbitrary 
 typeOf :: Typeable a => a -> TypeRep
 ```
 
-~~~~ {.haskell include="typeable.hs"}
+~~~~ {.haskell include="src/typeable.hs"}
 ~~~~
 
 Using the Typeable instance allows us to write down a type safe cast function which can safely use
@@ -2085,7 +2085,7 @@ fromDynamic :: Typeable a => Dynamic -> Maybe a
 cast :: (Typeable a, Typeable b) => a -> Maybe b
 ```
 
-~~~~ {.haskell include="dynamic.hs"}
+~~~~ {.haskell include="src/dynamic.hs"}
 ~~~~
 
 Data
@@ -2201,7 +2201,7 @@ allow us to traverse an arbitrary instance Data and twiddle values based on patt
 types. So let's write down a function ``over`` which increments a ``Value`` type for both for n-tuples and
 lists.
 
-~~~~ {.haskell include="data.hs"}
+~~~~ {.haskell include="src/data.hs"}
 ~~~~
 
 We can also write generic operations to for instance count the number of parameters in a data type.
@@ -2278,7 +2278,7 @@ type C1 = M1 C
 Using the deriving mechanics GHC can generate this Generic instance for us mechanically, if we were to write
 it by hand for a simple type it might look like this:
 
-~~~~ {.haskell include="generics.hs"}
+~~~~ {.haskell include="src/generics.hs"}
 ~~~~
 
 Use ``kind!`` in GHCi we can look at the type family ``Rep`` associated with a Generic instance. 
@@ -2362,25 +2362,25 @@ GHC.Generics, we can use GHC to do lots of non-trivial code generation which wor
 
 The [hashable](http://hackage.haskell.org/package/hashable) library allows us to derive hashing functions.
 
-~~~~ {.haskell include="hashable.hs"}
+~~~~ {.haskell include="src/hashable.hs"}
 ~~~~
 
 The [cereal](http://hackage.haskell.org/package/cereal-0.4.0.1) library allows us to automatically derive a binary
 representation.
 
-~~~~ {.haskell include="cereal.hs"}
+~~~~ {.haskell include="src/cereal.hs"}
 ~~~~
 
 The [aeson](http://hackage.haskell.org/package/aeson) library allows us to derive JSON representations for
 JSON instances.
 
-~~~~ {.haskell include="derive_aeson.hs"}
+~~~~ {.haskell include="src/derive_aeson.hs"}
 ~~~~
 
 The [derive](http://hackage.haskell.org/package/derive) library allows us to derive a variety of instances,
 include Arbitrary for QuickCheck.
 
-~~~~ {.haskell include="derive.hs"}
+~~~~ {.haskell include="src/derive.hs"}
 ~~~~
 
 See:
@@ -2393,7 +2393,7 @@ Sequence
 The sequence data structure behaves structurally similar to list but is optimized for append/prepend
 operations.
 
-~~~~ {.haskell include="sequence.hs"}
+~~~~ {.haskell include="src/sequence.hs"}
 ~~~~
 
 Unordered-Containers
@@ -2409,7 +2409,7 @@ Both the ``HashMap`` and ``HashSet`` are purely functional data structures that 
 the ``containers`` equivalents but with more efficient space and time performance. Additionally all stored
 elements must have a ``Hashable`` instance.
 
-~~~~ {.haskell include="unordered.hs"}
+~~~~ {.haskell include="src/unordered.hs"}
 ~~~~
 
 See: 
@@ -2421,7 +2421,7 @@ Hashtables
 
 Hashtables provides hashtables with efficient lookup within the ST or IO monad.
 
-~~~~ {.haskell include="hashtables.hs"}
+~~~~ {.haskell include="src/hashtables.hs"}
 ~~~~
 
 ```haskell
@@ -2438,10 +2438,10 @@ Pure Functions
 
 Wrapping pure C functions with primitive types is trivial.
 
-~~~~ {.cpp include="simple.c"}
+~~~~ {.cpp include="src/simple.c"}
 ~~~~
 
-~~~~ {.haskell include="simple_ffi.hs"}
+~~~~ {.haskell include="src/simple_ffi.hs"}
 ~~~~
 
 Storable Arrays
@@ -2463,10 +2463,10 @@ To pass arrays from Haskell to C we can again use Storable Vector and several un
 foreign pointer to the underlying data that can be handed off to C. Once we're in C land, nothing will protect
 us from doing evil things to memory!
 
-~~~~ {.cpp include="qsort.c"}
+~~~~ {.cpp include="src/qsort.c"}
 ~~~~
 
-~~~~ {.haskell include="ffi.hs"}
+~~~~ {.haskell include="src/ffi.hs"}
 ~~~~
 
 The names of foreign functions from a C specific header file can qualified.
@@ -2492,7 +2492,7 @@ split
 The [split](http://hackage.haskell.org/package/split-0.1.1/docs/Data-List-Split.html) package provides a
 variety of missing functions for splitting list and string types.
 
-~~~~ {.haskell include="split.hs"}
+~~~~ {.haskell include="src/split.hs"}
 ~~~~
 
 monad-loops
@@ -2514,7 +2514,7 @@ Diagrams
 
 A parser combinator library for generating vector images to SVG and a variety of other formats.
 
-~~~~ {.haskell include="diagrams.hs"}
+~~~~ {.haskell include="src/diagrams.hs"}
 ~~~~
 
 ```bash
@@ -2557,7 +2557,7 @@ parseA = Add <$> identifier <* char '+' <*> identifier
 
 For a full example, consider the lambda calculus: 
 
-~~~~ {.haskell include="parser.hs"}
+~~~~ {.haskell include="src/parser.hs"}
 ~~~~
 
 Trying it out:
@@ -2580,7 +2580,7 @@ Custom Operators
 It's easy to hack together parsers that are internally stateful, for example adding operators that can defined
 at parse-time and dynamically added to the ``expressionParser`` table.
 
-~~~~ {.haskell include="parsec_operators.hs"}
+~~~~ {.haskell include="src/parsec_operators.hs"}
 ~~~~
 
 For example input try:
@@ -2605,7 +2605,7 @@ Attoparsec is a parser combinator like Parsec but more suited for bulk parsing o
 instead of parsing language syntax to ASTs. When written properly Attoparsec parsers can be extremely
 efficient.
 
-~~~~ {.haskell include="attoparsec.hs"}
+~~~~ {.haskell include="src/attoparsec.hs"}
 ~~~~
 
 Uniplate
@@ -2632,7 +2632,7 @@ The ``transform`` function will perform a single pass bottom-up transformation o
 The ``rewrite`` function will perform a exhaustive transformation of all terms in the expression to fixed
 point, using Maybe to signify termination.
 
-~~~~ {.haskell include="uniplate.hs"}
+~~~~ {.haskell include="src/uniplate.hs"}
 ~~~~
 
 Alternatively Uniplate instances can be derived automatically from instances of Data without the need to
@@ -2664,7 +2664,7 @@ nf :: NFData b => (a -> b) -> a -> Pure
 bench :: Benchmarkable b => String -> b -> Benchmark
 ```
 
-~~~~ {.haskell include="criterion.hs"}
+~~~~ {.haskell include="src/criterion.hs"}
 ~~~~
 
 ```haskell
@@ -2712,7 +2712,7 @@ Optparse-Applicative
 Optparse applicative is a library for parsing command line options with a inferface similar to parsec that
 makes also makes heavy use of monoids to combine operations.
 
-~~~~ {.haskell include="optparse_applicative.hs"}
+~~~~ {.haskell include="src/optparse_applicative.hs"}
 ~~~~
 
 See:
@@ -2729,7 +2729,7 @@ runInputT :: Settings IO -> InputT IO a -> IO a
 getInputLine :: String -> InputT IO (Maybe String)
 ```
 
-~~~~ {.haskell include="haskelline.hs"}
+~~~~ {.haskell include="src/haskelline.hs"}
 ~~~~
 
 Conduits / Pipes
@@ -2755,13 +2755,13 @@ simplest usage is to connect "pipe" functions with a ``(>->)`` composition opera
 ``await`` and ``yield`` to push and pull values along the stream. Most notably pipes can be used to manage the
 life cycle of lazy IO resources and can safely handle failures and resource termination gracefully.
 
-~~~~ {.haskell include="pipes.hs"}
+~~~~ {.haskell include="src/pipes.hs"}
 ~~~~
 
 For example we could construct a "FizzBuzz" pipe.
 
 
-~~~~ {.haskell include="pipes_io.hs"}
+~~~~ {.haskell include="src/pipes_io.hs"}
 ~~~~
 
 See: 
@@ -2785,7 +2785,7 @@ The first initial differnce is that await function now returns a ``Maybe`` which
 termination. The composition operators are also split into a connecting operator (``$$``) and a fusing
 operator (``=$``) for combining Sources and Sink and a Conduit and a Sink respectively.
 
-~~~~ {.haskell include="conduit.hs"}
+~~~~ {.haskell include="src/conduit.hs"}
 ~~~~
 
 See:
@@ -2808,7 +2808,7 @@ toJSON :: ToJSON a => a -> Value
 
 We'll work with this contrived example:
 
-~~~~ {.json include="example.json"}
+~~~~ {.json include="src/example.json"}
 ~~~~
 
 Aeson uses several high performance data structures (Vector, Text, HashMap) by default instead of the naive
@@ -2836,7 +2836,7 @@ In dynamic scripting languages it's common to parse amorphous blobs of JSON with
 then handle validation problems by throwing exceptions while traversing it. We can do the same using Aeson and
 the Maybe monad.
 
-~~~~ {.haskell include="aeson_unstructured.hs"}
+~~~~ {.haskell include="src/aeson_unstructured.hs"}
 ~~~~
 
 Structured
@@ -2847,7 +2847,7 @@ separating concerns and handling validation in separate logic. We'd like to desc
 and the invalid case separately. Using Generic also allows Haskell to automatically write the serializer and
 deserializer between our datatype and the JSON string based on the names of record field names.
 
-~~~~ {.haskell include="aeson_structured.hs"}
+~~~~ {.haskell include="src/aeson_structured.hs"}
 ~~~~
 
 Now we get our validated JSON wrapped up into a nicely typed Haskell ADT.
@@ -2882,7 +2882,7 @@ Cassava
 
 Cassava is an efficient CSV parser library. We'll work with this tiny snippet from the iris dataset:
 
-~~~~ {.perl include="iris.csv"}
+~~~~ {.perl include="src/iris.csv"}
 ~~~~
 
 Unstructured
@@ -2890,7 +2890,7 @@ Unstructured
 
 Just like with Aeson if we really want to work with unstructured data the library accommodates this.
 
-~~~~ {.haskell include="cassava_unstructured.hs"}
+~~~~ {.haskell include="src/cassava_unstructured.hs"}
 ~~~~
 
 We see we get the nested set of stringy vectors:
@@ -2915,7 +2915,7 @@ Structured
 Just like with Aeson we can use Generic to automatically write the deserializer between our CSV data and our
 custom datatype.
 
-~~~~ {.haskell include="cassava_structured.hs"}
+~~~~ {.haskell include="src/cassava_structured.hs"}
 ~~~~
 
 And again we get a nice typed ADT as a result.
@@ -2950,7 +2950,7 @@ Warp
 
 Warp is a web server, it writes data to sockets quickly.
 
-~~~~ {.haskell include="warp.hs"}
+~~~~ {.haskell include="src/warp.hs"}
 ~~~~
 
 See: 
@@ -2963,7 +2963,7 @@ Scotty
 Continuing with our trek through web libraries, Scotty is a web microframework similar in principle to Flask
 in Python or Sinatra in Ruby.
 
-~~~~ {.haskell include="scotty.hs"}
+~~~~ {.haskell include="src/scotty.hs"}
 ~~~~
 
 Of importance to note is the Blaze library used here overloads do-notation is not itself a monad.
@@ -2978,7 +2978,7 @@ Acid State
 Acid-state allows us to build a "database on demand" for arbitrary Haskell datatypes that guarantees atomic
 transactions. For example, we can build a simple key-value store wrapped around the Map type.
 
-~~~~ {.haskell include="acid.hs"}
+~~~~ {.haskell include="src/acid.hs"}
 ~~~~
 
 Safe Haskell
@@ -2993,7 +2993,7 @@ The Safe Haskell language extensions allow us to restrict the use of unsafe lang
 {-# LANGUAGE Trustworthy #-}
 ```
 
-~~~~ {.haskell include="safe.hs"}
+~~~~ {.haskell include="src/safe.hs"}
 ~~~~
 
 ```haskell
@@ -3204,13 +3204,13 @@ more details.
 
 The simplest usage of lens is simply as a more compositional way of dealing with record access and updates. 
 
-~~~~ {.haskell include="simplelens.hs"}
+~~~~ {.haskell include="src/simplelens.hs"}
 ~~~~
 
 Of course this is just the surface, the real strength comes when dealing with complex and deeply nested
 structures:
 
-~~~~ {.haskell include="lens.hs"}
+~~~~ {.haskell include="src/lens.hs"}
 ~~~~
 
 Lens also provides us with an optional dense slurry of operators that expand into combinations of the core
@@ -3219,7 +3219,7 @@ scheme](https://www.fpcomplete.com/school/to-infinity-and-beyond/pick-of-the-wee
 
 Of course lenses generalize to arbitrary data structures and computations, not just nested records:
 
-~~~~ {.haskell include="complexlens.hs"}
+~~~~ {.haskell include="src/complexlens.hs"}
 ~~~~
 
 See: 
@@ -3241,7 +3241,7 @@ Within the context of the state monad there are a particularly useful set of len
 So for example if we wanted to write a little physics simulation of the random motion of particles in a box.
 We can use the ``zoom`` function to modify the state of our particles in each step of the simulation.
 
-~~~~ {.haskell include="zoom.hs"}
+~~~~ {.haskell include="src/zoom.hs"}
 ~~~~
 
 This results in a final state like the following.
@@ -3288,12 +3288,12 @@ Lens + Aeson
 One of the best showcases for lens is writing transformations over arbitrary JSON structures. For example
 consider some sample data related to Kiva loans.
 
-~~~~ {.json include="kiva.json"}
+~~~~ {.json include="src/kiva.json"}
 ~~~~
 
 Then using ``Data.Aeson.Lens`` we can traverse the structure using our lens combinators.
 
-~~~~ {.haskell include="lens_aeson.hs"}
+~~~~ {.haskell include="src/lens_aeson.hs"}
 ~~~~
 
 ```haskell
@@ -3305,7 +3305,7 @@ lens-family
 
 The interface for ``lens-family`` is very similar to ``lens`` but with a smaller API and core.
 
-~~~~ {.haskell include="lens_family.hs"}
+~~~~ {.haskell include="src/lens_family.hs"}
 ~~~~
 
 Categories
