@@ -2744,10 +2744,6 @@ yield :: Monad m => a -> Proxy x' x () a m ()
 
 runEffect :: Monad m => Effect m r -> m 
 toListM :: Monad m => Producer a m () -> m [a]
-
-type Sink i = ConduitM i Void
-type Source m o = ConduitM () o m ()
-type Conduit i m o = ConduitM i o m ()
 ```
 
 Pipes is a stream processing library with a strong emphasis on the static semantics of composition. The
@@ -2776,6 +2772,10 @@ await :: Monad m => ConduitM i o m (Maybe i)
 yield :: Monad m => o -> ConduitM i o m ()
 ($$) :: Monad m => Source m a -> Sink a m b -> m b
 (=$) :: Monad m => Conduit a m b -> Sink b m c -> Sink a m c
+
+type Sink i = ConduitM i Void
+type Source m o = ConduitM () o m ()
+type Conduit i m o = ConduitM i o m ()
 ```
 
 Conduits are conceptually similar though philosophically different approach to the same problem of constant
