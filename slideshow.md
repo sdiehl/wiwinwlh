@@ -981,7 +981,7 @@ instance MonadIO IO where
 
 It's useful to remember that transformers compose outside-in but are unrolled inside out.
 
-![](transformer_unroll.png)
+![](img/transformer_unroll.png)
 
 See: [Monad Transformers: Step-By-Step](http://www.cs.virginia.edu/~wh5a/personal/Transformers.pdf)
 
@@ -2521,7 +2521,7 @@ A parser combinator library for generating vector images to SVG and a variety of
 $ runhaskell diagram1.hs -w 256 -h 256 -o diagram1.svg
 ```
 
-![](diagram1.svg)
+![](img/diagram1.svg)
 
 Parsec
 ======

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   width="677.38281"
+   height="176.66583"
+   sodipodi:docname="transformer_roll2.svg">
+  <metadata
+     id="metadata66">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs64">
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend"
+       style="overflow:visible">
+      <path
+         id="path3820"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lend-4"
+       style="overflow:visible">
+      <path
+         inkscape:connector-curvature="0"
+         id="path3820-8"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1347"
+     inkscape:window-height="820"
+     id="namedview62"
+     showgrid="false"
+     fit-margin-top="20"
+     fit-margin-left="20"
+     fit-margin-right="20"
+     fit-margin-bottom="20"
+     inkscape:zoom="0.89702957"
+     inkscape:cx="271.35654"
+     inkscape:cy="-51.945091"
+     inkscape:window-x="1617"
+     inkscape:window-y="139"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g4" />
+  <g
+     font-size="14px"
+     id="g4"
+     style="font-size:14px;font-family:monospace"
+     transform="translate(18.824219,-5.359848)">
+    <rect
+       style="color:#000000;fill:#828282;fill-opacity:1;stroke:none;stroke-width:1.852;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect4364-0"
+       width="390.69397"
+       height="37.398693"
+       x="235.79825"
+       y="47.073296" />
+    <rect
+       style="color:#000000;fill:#d5d5d5;fill-opacity:1;stroke:none;stroke-width:1.852;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect4364"
+       width="317.67517"
+       height="49.661381"
+       x="134.0069"
+       y="94.606979" />
+    <rect
+       style="color:#000000;fill:#b6b6b6;fill-opacity:1;stroke:none;stroke-width:1.852;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect4364-1"
+       width="236.29549"
+       height="31.824745"
+       x="213.50243"
+       y="104.48501" />
+    <text
+       x="0"
+       y="52"
+       xml:space="preserve"
+       id="text18" />
+    <rect
+       style="color:#000000;fill:#b6b6b6;fill-opacity:1;stroke:none;stroke-width:1.852;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect4364-1-7"
+       width="278.10013"
+       height="29.595171"
+       x="332.55545"
+       y="50.975048" />
+    <rect
+       style="color:#000000;fill:#d5d5d5;fill-opacity:1;stroke:none;stroke-width:1.852;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect4364-1-2-6"
+       width="142.65308"
+       height="21.23424"
+       x="456.24805"
+       y="55.712921" />
+    <text
+       x="0"
+       y="71"
+       xml:space="preserve"
+       id="text20"><tspan
+   font-weight="bold"
+   id="tspan22"
+   style="font-weight:bold;fill:#008000">newtype</tspan> <tspan
+   id="tspan24"
+   style="fill:#b00040">Parser</tspan> a <tspan
+   font-weight="bold"
+   id="tspan26"
+   style="font-weight:bold;fill:#aa22ff">=</tspan> <tspan
+   id="tspan28"
+   style="fill:#b00040">Parser</tspan> { unParser <tspan
+   font-weight="bold"
+   id="tspan30"
+   style="font-weight:bold;fill:#aa22ff">::</tspan> <tspan
+   id="tspan32"
+   style="fill:#b00040">WriterT</tspan> [<tspan
+   id="tspan34"
+   style="fill:#b00040">Int</tspan>] (<tspan
+   id="tspan36"
+   style="fill:#b00040">StateT</tspan> <tspan
+   id="tspan38"
+   style="fill:#b00040">String</tspan> <tspan
+   id="tspan40"
+   style="fill:#b00040">[]</tspan>) a }</text>
+    <text
+       x="0"
+       y="90"
+       xml:space="preserve"
+       id="text42" />
+    <rect
+       style="color:#000000;fill:#828282;fill-opacity:1;stroke:none;stroke-width:1.852;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect4364-1-2"
+       width="109.76678"
+       height="22.349031"
+       x="319.9649"
+       y="109.50156" />
+    <text
+       x="0"
+       y="125"
+       xml:space="preserve"
+       id="text44"><tspan
+   id="tspan46"
+   style="fill:#0000ff">runParser</tspan> p s <tspan
+   font-weight="bold"
+   id="tspan48"
+   style="font-weight:bold;fill:#aa22ff">=</tspan> runStateT (runWriterT (unParser p)) s</text>
+    <text
+       x="0"
+       y="128"
+       xml:space="preserve"
+       id="text50" />
+    <text
+       x="0"
+       y="166"
+       xml:space="preserve"
+       id="text60" />
+    <text
+       xml:space="preserve"
+       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
+       x="286.21939"
+       y="35.080551"
+       id="text4270"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4272"
+         x="286.21939"
+         y="35.080551"
+         style="font-size:14px">Compose transformers outside-in.</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Times New Roman;-inkscape-font-specification:Times New Roman"
+       x="188.8842"
+       y="161.80693"
+       id="text4270-0"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4272-4"
+         x="188.8842"
+         y="161.80693"
+         style="font-size:14px">Unroll transformers inside-out.</tspan></text>
+  </g>
+</svg>
