@@ -2387,8 +2387,21 @@ See:
 
 * [A Generic Deriving Mechanism for Haskell](http://dreixel.net/research/pdf/gdmh.pdf)
 
+Data Structures
+===============
+
+DList
+-----
+
+A dlist is a list-like structure that is optimized for O(1) append operations. It is specifically suited for
+operations which are append-only and need only access it when manifesting it as a list, which can be done in
+linear time. It is particularly well-suited for use in the Writer monad.
+
+~~~~ {.haskell include="src/dlist.hs"}
+~~~~
+
 Sequence
-========
+--------
 
 The sequence data structure behaves structurally similar to list but is optimized for append/prepend
 operations.
