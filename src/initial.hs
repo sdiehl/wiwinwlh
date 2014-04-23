@@ -72,7 +72,7 @@ str = cata phi where
 
 str' :: String -> Str
 str' = ana (psi Nil Cons) where
-  psi f _ [] = f
+  psi f _ []     = f
   psi _ f (a:as) = f a as
 
 map' :: (Char -> Char) -> Str -> Str

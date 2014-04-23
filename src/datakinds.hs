@@ -17,12 +17,6 @@ data Vec :: Nat -> * -> * where
   Nil :: Vec Z a
   Cons :: a -> Vec n a -> Vec (S n) a
 
-{-instance Show (Vec Z a) where-}
-  {-show Nil = "'[]"-}
-
-{-instance (Show a, Show (Vec n a)) => Show (Vec (S n) a) where-}
-  {-show (Cons x xs) = show x ++ "'::" ++ show xs-}
-
 instance Show a => Show (Vec n a) where
   show Nil         = "Nil"
   show (Cons x xs) = "Cons " ++ show x ++ " (" ++ show xs ++ ")"
@@ -59,4 +53,4 @@ example1 = lengthVec vec4
 
 example2 :: Vec Four (Int, Int)
 example2 = zipVec vec4 vec4
--- (0,0)':(1,1)':(2,2)':(3,3)':'[]
+-- Cons (0,0) (Cons (1,1) (Cons (2,2) (Cons (3,3) (Nil))))

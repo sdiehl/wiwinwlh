@@ -3,7 +3,6 @@
 
 import Control.Monad
 import Control.Category
-import Data.Type.Equality
 import Prelude hiding ((.))
 
 -- Kleisli category

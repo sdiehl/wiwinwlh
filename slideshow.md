@@ -1390,8 +1390,8 @@ our evaluator and pretty-printing interpreters remain invariant under the additi
 ~~~~ {.haskell include="src/fext.hs"}
 ~~~~
 
-Typed Tagless Final Interpreters
---------------------------------
+Finally Tagless
+---------------
 
 Writing an evaluator for the lambda calculus can likewise also be modeled with a final interpeter and a
 Identity functor.
@@ -1428,13 +1428,16 @@ type (->) a b = a -> b          b ^ a
 ```
 
 ```haskell
--- 1 + X
+-- 1 + A
 data Maybe a = Nothing | Just a
 ```
 
 Recursive types are modeled as the infinite series of these terms.
 
 ```haskell
+-- μX. 1 + X
+data Nat a = Z | S Nat
+
 -- μX. 1 + A * X
 data List a = Nil | Cons a (List a)
 List a = μ a. 1 + a * (List a) 
@@ -3360,6 +3363,14 @@ f . f' = id
 f'. f  = id
 ```
 
+```haskell
+data Iso a b = Iso { to :: a -> b, from :: b -> a }
+
+instance Category Iso where
+  id = Iso id id
+  (Iso f f') . (Iso g g') = Iso (f . g) (g' . f')
+```
+
 Duality
 -------
 
@@ -3380,31 +3391,28 @@ Functors
 Functors are mappings between the objects and morphisms of categories that preserve identities and
 composition.
 
-```haskell
-newtype FComp f g a = C { unC :: f (g a) }
-
-instance (Functor f, Functor g) => Functor (FComp f g) where
-  fmap f (C x) = C (fmap (fmap f) x)
-```
+~~~~ {.haskell include="src/functors.hs"}
+~~~~
 
 ```haskell
-fmap id = id
-fmap (a . b) = (fmap a) . (fmap b)
+fmap id ≡ id
+fmap (a . b) ≡ (fmap a) . (fmap b)
 ```
 
 Natural Transformations
 -----------------------
 
-Natural transformations are mappings between functors that preserves morphism composition.
+Natural transformations are mappings between functors that are invariant under interchange of morphism
+composition order.
 
 ```haskell
 type Nat f g = forall a. f a -> g a
 ```
 
-Such that for a natural transformation ``h``.
+Such that for a natural transformation ``h`` we have:
 
 ```haskell
-fmap f . h ≡ f h . fmap f 
+fmap f . h ≡ h . fmap f 
 ```
 
 The simplest example is between (f = List) and (g = Maybe) types.
