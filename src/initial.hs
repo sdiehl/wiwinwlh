@@ -75,6 +75,26 @@ str' = ana (psi Nil Cons) where
   psi f _ [] = f
   psi _ f (a:as) = f a as
 
+map' :: (Char -> Char) -> Str -> Str
+map' f = hylo g unFix
+  where
+    g Nil        = Fix Nil
+    g (Cons a x) = Fix $ Cons (f a) x
+
+
+type Tree a = Fix (TreeF a)
+data TreeF a f = Leaf a | Tree a f f deriving (Show)
+
+instance Functor (TreeF a) where
+  fmap f (Leaf a) = Leaf a
+  fmap f (Tree a b c) = Tree a (f b) (f c)
+
+depth :: Tree a -> Int
+depth = cata phi where
+  phi (Leaf _)     = 0
+  phi (Tree _ l r) = 1 + max l r
+
+
 example1 :: Int
 example1 = int (plus (nat 125) (nat 25))
 -- 150

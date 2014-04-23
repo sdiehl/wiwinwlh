@@ -17,11 +17,15 @@ data Vec :: Nat -> * -> * where
   Nil :: Vec Z a
   Cons :: a -> Vec n a -> Vec (S n) a
 
-instance Show (Vec Z a) where
-  show Nil = "'[]"
+{-instance Show (Vec Z a) where-}
+  {-show Nil = "'[]"-}
 
-instance (Show a, Show (Vec n a)) => Show (Vec (S n) a) where
-  show (Cons x xs) = show x ++ "'::" ++ show xs
+{-instance (Show a, Show (Vec n a)) => Show (Vec (S n) a) where-}
+  {-show (Cons x xs) = show x ++ "'::" ++ show xs-}
+
+instance Show a => Show (Vec n a) where
+  show Nil         = "Nil"
+  show (Cons x xs) = "Cons " ++ show x ++ " (" ++ show xs ++ ")"
 
 class FromList n where
   fromList :: [a] -> Vec n a

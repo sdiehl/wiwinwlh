@@ -1428,16 +1428,22 @@ type (->) a b = a -> b          b ^ a
 ```
 
 ```haskell
+-- 1 + X
 data Maybe a = Nothing | Just a
-Maybe = 1 + x
 ```
 
 Recursive types are modeled as the infinite series of these terms.
 
 ```haskell
+-- μX. 1 + A * X
 data List a = Nil | Cons a (List a)
 List a = μ a. 1 + a * (List a) 
        = 1 + a + a^2 + a^3 + a^4 ...
+```
+
+```haskell
+-- μX. A + A*X*X
+data Tree a f = Leaf a | Tree a f f
 ```
 
 See:
@@ -3331,11 +3337,11 @@ The most basic structure is a category which is an algebraic structure of object
 (``Hom``) with the structure that morphisms compose associatively and the existence of a identity morphism for
 each object.
 
-```haskell
-class Category c where
-  id  :: c x x
-  (.) :: c y z -> c x y -> c x z
-```
+With kind polymorphism enabled we can write down the general category parameterized bya type variable "c" for
+category, and the instance ``Hask`` the category of Haskell types with functions between types as morphisms.
+
+~~~~ {.haskell include="src/categories.hs"}
+~~~~
 
 Isomorphisms
 ------------
@@ -3361,13 +3367,8 @@ One of the central ideas is the notion of duality, that reversing some internal 
 structure with a "mirror" set of theorems. The dual of a category reverse the direction of the morphisms
 forming the category C<sup>Op</sup>.
 
-```haskell
-newtype Op a b = Op { unOp :: b -> a}
-
-instance Category Op where
-  id = Op Prelude.id
-  Op f . Op g = Op (g Prelude.. f)
-```
+~~~~ {.haskell include="src/dual.hs"}
+~~~~
 
 See:
 
@@ -3485,15 +3486,8 @@ Kleisli composition (i.e. Kleisli Fish) is defined to be:
 f >=> g ≡ \x -> f x >>= g 
 ```
 
-```haskell
-newtype K m a b = K { unKleisli :: a -> m b }
- 
-instance (Monad m) => Category (K m) where
-  id = K return 
-  (K g) . (K f) = K (f >=> g)
-```
-
-The monad laws stated in terms of the Kleisli category of a monad ``m`` are:
+The monad laws stated in terms of the Kleisli category of a monad ``m`` are stated much more symmetrically as
+one associativiy law and two identity laws.
 
 ```haskell
 (f >=> g) >=> h ≡ f >=> (g >=> h)
@@ -3503,11 +3497,14 @@ f >=> return ≡  f
 
 Stated simply that the monad laws above are just the category laws in the Kleisli category.
 
+~~~~ {.haskell include="src/kleisli.hs"}
+~~~~
+
 For example, ``Just`` is just an identity morphism in the Kleisli category of the ``Maybe`` monad.
 
 ```haskell
-Just >=> a ≡ a
-a >=> Just ≡ a
+Just >=> f ≡ f
+f >=> Just ≡ f
 ```
 
 Mathematics
