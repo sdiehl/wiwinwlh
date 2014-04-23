@@ -6,6 +6,8 @@ Haskell topics that don't necessarily have great coverage or that tend be somewh
 going, and then aggregate a bunch of the best external resources for diving into those subjects with more
 depth. Hopefully it still captures the "no bullshit brain dump" style that seemed to be liked.
 
+This is the first draft of this, there are likely to be many typos.
+
 The source for all snippets is [available here](https://github.com/sdiehl/wiwinwlh). If there are any errors
 or you think of a more illustrative example feel free to submit a pull request.
 
@@ -3199,10 +3201,12 @@ There are two implementations of note that are mostly compatible but differ in s
 lens
 ----
 
-At it's core a lens is a type of the form:
+At it's core a lens is a type of the form and a function:
 
 ```haskell
 type Lens a b = forall f. Functor f => (b -> f b) -> (a -> f a)
+
+lens :: Functor f => (s -> a) -> (s -> b -> t) -> (a -> f b) -> s -> f t
 ```
 
 Using this type and some related machinery we get a framework for building a very general set of combinators
@@ -3219,17 +3223,43 @@ Combinator      Description
 ``ix``          Target the given index of a generic indexable structure.
 ``toListOf``    Return a list of the targets.
 
-Constructing the lens field types from an arbitrary datatype involves a bit of boilerplate code generation,
-but template Haskell can take care of this construction for us at compile time. See derivation in links for
-more details. 
+Constructing the lens field types from an arbitrary datatype involves a bit of boilerplate code generation.
+But compiles into simple calls which translate the fields of a record into functions involving the ``lens``
+function and logic for the getter and the setter.
+
+```haskell
+{-# LANGUAGE NoMonomorphismRestriction #-}
+
+import Control.Lens
+
+data Foo = Foo { _field :: Int } deriving Show
+
+field :: Functor f => (Int -> f Int) -> Foo -> f Foo
+field = lens _field (\f new -> f { _field = new })
+```
+
+Template Haskell can be used to do automatically generate these functions for using ``makeLenses`` at compile
+time by introspecting the AST.
+
+```haskell
+{-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE TemplateHaskell #-}
+
+import Control.Lens
+
+data Foo = Foo { _field :: Int } deriving Show
+makeLenses ''Foo
+
+-- field :: Functor f => (Int -> f Int) -> Foo -> f Foo
+```
 
 The simplest usage of lens is simply as a more compositional way of dealing with record access and updates. 
 
 ~~~~ {.haskell include="src/simplelens.hs"}
 ~~~~
 
-Of course this is just the surface, the real strength comes when dealing with complex and deeply nested
-structures:
+Of course this just scratches the surface of lens, the real strength comes when dealing with complex and
+deeply nested structures:
 
 ~~~~ {.haskell include="src/lens.hs"}
 ~~~~
@@ -3238,7 +3268,9 @@ Lens also provides us with an optional dense slurry of operators that expand int
 combinators. Many of the operators do have a [consistent naming
 scheme](https://www.fpcomplete.com/school/to-infinity-and-beyond/pick-of-the-week/a-little-lens-starter-tutorial#actually-there-are-a-whole-lot-of-operators-in-lens---over-100).
 
-Of course lenses generalize to arbitrary data structures and computations, not just nested records:
+Surprisingly lenses can be used as a very general foundation to write logic over a wide variety of data
+structures and computations and subsume many of the existing patterns found in the Prelude under a new common
+framework.
 
 ~~~~ {.haskell include="src/complexlens.hs"}
 ~~~~
