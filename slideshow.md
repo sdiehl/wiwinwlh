@@ -1251,8 +1251,7 @@ wrap :: MonadFree f m => f (m a) -> m a
 
 One of the best examples is the Partiality monad which models computations which can diverge. Haskell allows
 unbounded recursion, but for example we can create a free monad from the ``Maybe`` functor which when can be
-used to fix the call-depth of, for example, the [Ackermann
-functions](https://en.wikipedia.org/wiki/Ackermann_function.)
+used to fix the call-depth of, for example the [Ackermann function](https://en.wikipedia.org/wiki/Ackermann_function.).
 
 ~~~~ {.haskell include="src/partiality.hs"}
 ~~~~
@@ -2403,8 +2402,8 @@ DList
 -----
 
 A dlist is a list-like structure that is optimized for O(1) append operations. It is specifically suited for
-operations which are append-only and need only access it when manifesting it as a list, which can be done in
-linear time. It is particularly well-suited for use in the Writer monad.
+operations which are append-only and need only access it when manifesting the entire structure. It is
+particularly well-suited for use in the Writer monad.
 
 ~~~~ {.haskell include="src/dlist.hs"}
 ~~~~
@@ -2413,7 +2412,7 @@ Sequence
 --------
 
 The sequence data structure behaves structurally similar to list but is optimized for append/prepend
-operations.
+operations and traversal.
 
 ~~~~ {.haskell include="src/sequence.hs"}
 ~~~~
