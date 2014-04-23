@@ -1774,9 +1774,9 @@ implies.
 Type Families
 -------------
 
-Type famiiles allows us to write families functions in the type domain which take types as arguments which can
-yield either types or values indexed on their type arguments. Type families come in two varieties: **data
-families** and **type synonym families**.
+Type families allows us to write functions in the type domain which take types as arguments which can yield
+either types or values indexed on their arguments which are evaluated at compile-time in during typechecking.
+Type families come in two varieties: **data families** and **type synonym families**.
 
 * "type family" are named function on types
 * "data family" are type-indexed data types
@@ -2003,7 +2003,7 @@ of the generalized algebraic datatype.
 ~~~~
 
 So now if we try to zip two ``Vec`` types with the wrong shape then we get a error at compile-time about the
-off-by-one error. We've just made a entire class of invalid unrepresentable.
+off-by-one error.
 
 ```haskell
 example2 = zipVec vec4 vec5
@@ -2066,7 +2066,7 @@ typeOf :: Typeable a => a -> TypeRep
 ~~~~
 
 Using the Typeable instance allows us to write down a type safe cast function which can safely use
-``unsafeCast`` and provide evidence that the resulting type matches the input.
+``unsafeCast`` and provide a proof that the resulting type matches the input.
 
 ```haskell
 cast :: (Typeable a, Typeable b) => a -> Maybe b
