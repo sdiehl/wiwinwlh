@@ -7,9 +7,9 @@ recompile the resulting document.
 If for some reason you want to compile the HTML page yourself, then you'll need to compile the preprocesor
 against Pandoc and then run make to build the page.
 
-```haskell
-ghc --make includes.hs
-make
+```bash
+$ ghc --make includes.hs
+$ make
 ```
 
 License
