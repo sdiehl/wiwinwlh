@@ -23,7 +23,7 @@ $ cabal configure
 
 A ``.cabal`` file will be created.
 
-Sandboxes ( in cabal > 1.8 ) are self contained environments of Haskell packages.
+Sandboxes ( in cabal > 1.18 ) are self contained environments of Haskell packages.
 
 ```bash
 $ cabal sandbox init
@@ -1013,7 +1013,7 @@ Newtype wrappers around strings and numeric types can often reduce accidental er
 ```haskell
 Couldn't match type `Double' with `Velocity'
 Expected type: Velocity
-  Actual type: Position
+  Actual type: Double
 In the second argument of `(+)', namely `x'
 In the expression: v + x
 ```
