@@ -996,7 +996,7 @@ layers and to explicit ``lift`` and ``return`` values between each the layers.
 ~~~~ {.haskell include="src/transformer.hs"}
 ~~~~
 
-The fundamental limitation of this approach is that ourselves ``lift.lift.lift``ing and
+The fundamental limitation of this approach is that we find ourselves ``lift.lift.lift``ing and
 ``return.return.return``ing a lot.
 
 Newtype Deriving
