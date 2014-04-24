@@ -520,11 +520,11 @@ monadic values (``p``,``q``) using bind.
 sequence :: Monad m => [m a] -> m [a] 
 sequence = foldr mcons (return [])
 
-mcons :: Monad m => m t -> m t -> m [t]
+mcons :: Monad m => m t -> m [t] -> m [t]
 mcons p q = do
   x <- p
   y <- q
-  return [x,y]
+  return (x:y)
 ```
 
 What does this function mean in terms of each of the monads discussed above?
