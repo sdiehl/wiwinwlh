@@ -4,7 +4,7 @@ FLAGS = --standalone --toc --toc-depth=1 --highlight-style pygments
 TEMPLATE = page.tmpl
 STYLE = css/style.css
 
-HTML = slideshow.html
+HTML = tutorial.html
 
 all: $(HTML)
 
