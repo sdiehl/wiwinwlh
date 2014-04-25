@@ -200,7 +200,7 @@ error :: String -> a
 undefined :: a
 ```
 
-The bottom is a singular value that inhabits every type. When evaluated the semantics of Haskell longer
+The bottom is a singular value that inhabits every type. When evaluated the semantics of Haskell no longer
 yield a meaningful value. It's usually written as the symbol ⊥ (i.e. the compiler flipping you off ).
 
 An example of a infinite looping term:
