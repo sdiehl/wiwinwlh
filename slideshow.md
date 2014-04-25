@@ -124,7 +124,7 @@ Command    Shortcut   Action
 `:reload`  `:r`       Code reload 
 `:type`    `:t`       Type inspection
 `:kind`    `:k`       Kind inspection
-`:info`    `:i`       Instance inspection
+`:info`    `:i`       Information
 `:print`   `:p`       Print the expression
 `:edit`    `:e`       Load file in system editor.
 
@@ -147,7 +147,13 @@ class Functor f where
   ...
 ```
 
-The current state of the environment can also be queried.
+```haskell
+λ: :i (:)
+data [] a = ... | a : [a] 	-- Defined in `GHC.Types'
+infixr 5 :
+```
+
+The current state of the global environment can also be queried.
 
 ```haskell
 λ: :browse
@@ -214,8 +220,6 @@ f = undefined -- write tomorrow, typecheck today!
 ```
 
 Partial functions from non-exhaustive pattern matching is probably the most common introduction of bottoms.
-GHC can be made more vocal about this using the ``-fwarn-incomplete-patterns`` and
-``-fwarn-incomplete-uni-patterns`` flags.
 
 ```haskell
 data F = A | B
@@ -223,7 +227,9 @@ case x of
   A -> ()
 ```
 
-Is translated into the following GHC Core with the exception inserted for the non-exhaustive patterns.
+The above is translated into the following GHC Core with the exception inserted for the non-exhaustive
+patterns. GHC can be made more vocal about incomplete patterns using the ``-fwarn-incomplete-patterns`` and
+``-fwarn-incomplete-uni-patterns`` flags.
 
 ```haskell
 case x of _ {
@@ -233,7 +239,7 @@ case x of _ {
 ```
 
 The same holds with record construction with missing fields, although there's almost never a good reason to
-construct a record with missing fields and GHC will warn us.
+construct a record with missing fields and GHC will warn us by default.
 
 ```haskell
 data Foo = Foo { example1 :: Int }
@@ -714,9 +720,9 @@ Laziness
 Again, a subject on which *much* ink has been spilled. There is an ongoing discussion in the land of Haskell
 about the compromises between lazy and strict evaluation, and there are nuanced arguments for having either
 paradigm be the default. Haskell takes a hybrid approach and allows strict evaluation when needed and uses
-laziness by default. We can always find examples where lazy evaluation exhibits worse behavior than strict
-evaluation and vice versa. They both have flaws, and as of yet there isn't a  method that combines only the
-best of both worlds.
+laziness by default. Needless to say, we can always find examples where lazy evaluation exhibits worse
+behavior than strict evaluation and vice versa. They both have flaws, and as of yet there isn't a  method that
+combines only the best of both worlds.
 
 See: 
 
@@ -800,8 +806,9 @@ deepseq :: NFData a => a -> b -> a
 Text / ByteString
 =================
 
-The default Haskell string type is the rather naive list of characters that while perfectly fine for small
-identifiers is not well-suited for bulk processing.
+The default Haskell string type is the rather naive linked list of characters, that while perfectly fine for
+small identifiers is not well-suited for bulk processing. To overcome this there are two libraries for
+processing textual data: ``text`` and ``bytestring``.
 
 ```haskell
 type String = [Char]
@@ -847,7 +854,7 @@ See: [Text](http://hackage.haskell.org/package/text-1.1.0.1/docs/Data-Text.html)
 ByteString
 ----------
 
-ByteStrings are arrays of unboxed chars with either strict or lazy evaluation.
+ByteStrings are arrays of unboxed characters with either strict or lazy evaluation.
 
 ```haskell
 pack :: String -> ByteString
@@ -912,9 +919,7 @@ liftA3 f a b c = f <$> a <*> b <*> c
 ...
 ```
 
-See: 
-
-* [Applicative Programming with Effects](http://www.soi.city.ac.uk/~ross/papers/Applicative.pdf)
+See: [Applicative Programming with Effects](http://www.soi.city.ac.uk/~ross/papers/Applicative.pdf)
 
 Monad + Functor Hierarchy
 -------------------------
@@ -964,7 +969,7 @@ evalRWS :: RWS r w s a -> r -> s -> (a, w)
 ~~~~ {.haskell include="src/rws.hs"}
 ~~~~
 
-The usual caveat about Writer also applies to RWS.
+The usual caveat about Writer laziness also applies to RWS.
 
 Monad Transformers
 ==================
@@ -1009,9 +1014,10 @@ The fundamental limitation of this approach is that we find ourselves ``lift.lif
 Newtype Deriving
 ----------------
 
-Newtypes let us reference existing types as a new distinct type, with no runtime overhead from boxing.
-Newtype wrappers around strings and numeric types can often reduce accidental errors.  Using
-``-XGeneralizedNewtypeDeriving`` we can recover the functionality of instances of the underlying type.
+Newtypes let us reference a date type with a single constructor as a new distinct type, with no runtime
+overhead from boxing, unlike a algebraic datatype with single constructor.  Newtype wrappers around strings
+and numeric types can often drastically reduce accidental errors.  Using ``-XGeneralizedNewtypeDeriving`` we
+can recover the functionality of instances of the underlying type.
 
 
 ~~~~ {.haskell include="src/newtype.hs"}
@@ -1025,8 +1031,9 @@ In the second argument of `(+)', namely `x'
 In the expression: v + x
 ```
 
-Using newtype deriving with typeclasses we can produce flattened transformer types that don't require explicit
-lifting the transform stack. For example a little stack machine the Reader Writer and State monads.
+Using newtype deriving with the mtl library typeclasses we can produce flattened transformer types that don't
+require explicit lifting in the transform stack. For example a little stack machine the Reader Writer and
+State monads.
 
 ~~~~ {.haskell include="src/newtype_deriving.hs"}
 ~~~~
@@ -1038,7 +1045,7 @@ Control.Exception
 -----------------
 
 The low-level (and most dangerous) way to handle errors is to use the ``throw`` and ``catch`` functions which
-allow you to throw extensible extensions in pure code but catch the resulting exception within IO.  Of
+allow us to throw extensible extensions in pure code but catch the resulting exception within IO.  Of
 specific note is that return value of the ``throw`` inhabits all types. There's no reason to use this for
 custom code that doesn't use low-level system operations.
 
@@ -1203,8 +1210,8 @@ same as the ones Prelude for List types.
 ~~~~ {.haskell include="src/foldable_traversable.hs"}
 ~~~~
 
-The instances we defined above can also be automatically derived by GHC using several language extensions, the
-results are identical to the hand-written versions above.
+The instances we defined above can also be automatically derived by GHC using several language extensions. The
+automatic instances are identical to the hand-written versions above.
 
 ```haskell
 {-# LANGUAGE DeriveFunctor #-}
@@ -1218,7 +1225,7 @@ data Tree a = Node a [Tree a]
 Prelude Legacy
 --------------
 
-The instances of Foldable for the list type often conflict with the monomorphic versiosn in the Prelude which
+The instances of Foldable for the list type often conflict with the monomorphic versions in the Prelude which
 are left in for historical reasons. So often times it is desirable to explicitly mask these functions from
 implicit import and force the use of Foldable and Traversable instead:
 
@@ -1279,9 +1286,7 @@ following:
 ~~~~ {.haskell include="src/free_impl.hs"}
 ~~~~
 
-See: 
-
-* [I/O is not a Monad](http://r6.ca/blog/20110520T220201Z.html)
+See: [I/O is not a Monad](http://r6.ca/blog/20110520T220201Z.html)
 
 GADTs
 =====
@@ -1289,9 +1294,9 @@ GADTs
 GADTs are an extension to algebraic datatypes that allow us to qualify the constructors to datatypes with type
 equality constraints, allowing a class of types that are not expressible using vanilla ADTs.
 
-For consider the data type, we have a term in which we ``Succ`` which takes a ``Term`` parameterized by ``a``
-which span all types. Problems arise between the clash whether (``a ~ Bool``) or (``a ~ Int``) when trying to
-write the evaluator.
+For example consider the data type ``Term``, we have a term in which we ``Succ`` which takes a ``Term``
+parameterized by ``a`` which span all types. Problems arise between the clash whether (``a ~ Bool``) or (``a ~
+Int``) when trying to write the evaluator.
 
 ```haskell
 data Term a
@@ -1299,17 +1304,19 @@ data Term a
   | Succ (Term a)
   | IsZero (Term a)
 
+-- can't be well-typed :(
 eval (Lit i)      = i
 eval (Succ t)     = 1 + eval t
 eval (IsZero i)   = eval i == 0
 ```
 
-And we have:
+And we admit the construction of meaningless terms which forces more error handling cases.
 
 ```haskell
 -- This is a valid type.
 failure = Succ ( Lit True )
 ```
+
 Using a GADT we can express the type invariants for our language (i.e. only type-safe expressions are
 representable). Pattern matching on this GADTs then carries type equality constraints without the need for
 explicit tags.
@@ -1324,7 +1331,7 @@ This time around:
 failure = Succ ( Lit True )
 ```
 
-Explicit equality constraints can be added to a function's context with ``-XGADTs`` enabled.
+Explicit equality constraints can be added to a function's context with the extension ``-XGADTs`` enabled.
 
 ```haskell
 f :: (a ~ b) => a -> b -> (a,b)
@@ -1374,8 +1381,8 @@ language by exploiting Haskell's implementation.
 ~~~~ {.haskell include="src/hoas.hs"}
 ~~~~
 
-There is no however no safeguard preventing us from lifting Haskell functions which do not encode meaningful
-lambda calculus expression. For example:
+There is no however no safeguard preventing us from generating Haskell functions which do not encode
+meaningful lambda calculus expression. For example:
 
 ```haskell
 Lam (\x -> let x = x in x )
@@ -1410,9 +1417,7 @@ Identity functor.
 The [esqueleto](http://hackage.haskell.org/package/esqueleto) library uses this approach internally to build a
 embedded domain language for describing SQL queries.
 
-See: 
-
-* [Typed Tagless Interpretations and Typed Compilation](http://okmij.org/ftp/tagless-final/)
+See: [Typed Tagless Interpretations and Typed Compilation](http://okmij.org/ftp/tagless-final/)
 
 Initial Algebras
 ================
@@ -1443,23 +1448,25 @@ data Maybe a = Nothing | Just a
 Recursive types are modeled as the infinite series of these terms.
 
 ```haskell
+-- pseudocode
+
 -- μX. 1 + X
 data Nat a = Z | S Nat
+Nat a = μ a. 1 + a
+      = 1 + (1 + (1 + ...))
 
 -- μX. 1 + A * X
 data List a = Nil | Cons a (List a)
 List a = μ a. 1 + a * (List a) 
        = 1 + a + a^2 + a^3 + a^4 ...
-```
 
-```haskell
 -- μX. A + A*X*X
 data Tree a f = Leaf a | Tree a f f
+Tree a = μ a. 1 + a * (List a) 
+       = 1 + a^2 + a^4 + a^6 + a^8 ...
 ```
 
-See:
-
-* [Species and Functors and Types, Oh My!](http://www.cis.upenn.edu/~byorgey/papers/species-pearl.pdf)
+See: [Species and Functors and Types, Oh My!](http://www.cis.upenn.edu/~byorgey/papers/species-pearl.pdf)
 
 F-Algebras
 -----------
@@ -1561,9 +1568,7 @@ of cases to test.
 ~~~~ {.haskell include="src/arbitrary.hs"}
 ~~~~
 
-See:
-
-* [QuickCheck: An Automatic Testing Tool for Haskell](http://www.cse.chalmers.se/~rjmh/QuickCheck/manual.html)
+See: [QuickCheck: An Automatic Testing Tool for Haskell](http://www.cse.chalmers.se/~rjmh/QuickCheck/manual.html)
 
 SmallCheck
 ==========
@@ -1588,7 +1593,7 @@ sample' :: Gen a -> IO [a]
 [(0,""),(1,""),(0,"a"),(-1,""),(0,"b"),(1,"a"),(2,""),(1,"b"),(-1,"a"),(-2,""),(-1,"b"),(2,"a"),(-2,"a"),(2,"b"),(-2,"b")]
 ```
 
-It is useful for *all* possible inputs of a program up to some depth.
+It is useful to generate test cases over *all* possible inputs of a program up to some depth.
 
 ~~~~ {.haskell include="src/smallcheck.hs"}
 ~~~~
@@ -1654,9 +1659,14 @@ App
   (Lam "x" (Lam "y" (Var "x")))
 ```
 
-See:
+Adding the following to your ~.ghc/ghci.conf can be useful for working with deeply nested structures.
 
-* [The Design of a Pretty-printing Library](http://belle.sourceforge.net/doc/hughes95design.pdf)
+```haskell
+import Text.Show.Pretty (ppShow)
+let pprint x = putStrLn $ ppShow x
+```
+
+See: [The Design of a Pretty-printing Library](http://belle.sourceforge.net/doc/hughes95design.pdf)
 
 Vector
 ======
@@ -1685,9 +1695,7 @@ iterateN :: Int -> (a -> a) -> a -> Vector a
 ~~~~ {.haskell include="src/vector.hs"}
 ~~~~
 
-See:
-
-* [Numerical Haskell: A Vector Tutorial](http://www.haskell.org/haskellwiki/Numeric_Haskell:_A_Vector_Tutorial)
+See: [Numerical Haskell: A Vector Tutorial](http://www.haskell.org/haskellwiki/Numeric_Haskell:_A_Vector_Tutorial)
 
 Mutable
 -------
@@ -1759,7 +1767,7 @@ representation of Peano numbers we find that we can encode basic arithmetic at t
 ~~~~ {.haskell include="src/fundeps.hs"}
 ~~~~
 
-If the typeclass contexts look similar to Prolog you're not wrong, if you read the contexts qualifier
+If the typeclass contexts look similar to Prolog you're not wrong, if one reads the contexts qualifier
 ``(=>)`` backwards as backwards turnstiles ``:-`` then it's precisely the same equations.
 
 ```prolog
@@ -2087,6 +2095,8 @@ cast x
 
 Of historical note is that writing our own Typeable classes is currently possible of GHC 7.6 but allows us to
 introduce dangerous behavior that can cause crashes, and shouldn't be done except by GHC itself.
+
+See: [Typeable and Data in Haskell](http://chrisdone.com/posts/data-typeable)
 
 Dynamic
 -------
@@ -2442,9 +2452,7 @@ elements must have a ``Hashable`` instance.
 ~~~~ {.haskell include="src/unordered.hs"}
 ~~~~
 
-See: 
-
-* [Johan Tibell: Announcing Unordered Containers](http://blog.johantibell.com/2012/03/announcing-unordered-containers-02.html)
+See: [Johan Tibell: Announcing Unordered Containers](http://blog.johantibell.com/2012/03/announcing-unordered-containers-02.html)
 
 Hashtables
 ==========
@@ -2638,9 +2646,7 @@ efficient.
 ~~~~ {.haskell include="src/attoparsec.hs"}
 ~~~~
 
-See: 
-
-* [Text Parsing Tutorial](https://www.fpcomplete.com/school/starting-with-haskell/libraries-and-frameworks/text-manipulation/attoparsec)
+See: [Text Parsing Tutorial](https://www.fpcomplete.com/school/starting-with-haskell/libraries-and-frameworks/text-manipulation/attoparsec)
 
 Uniplate
 ========
@@ -2749,9 +2755,7 @@ makes also makes heavy use of monoids to combine operations.
 ~~~~ {.haskell include="src/optparse_applicative.hs"}
 ~~~~
 
-See:
-
-* [optparse-applicative](https://github.com/pcapriotti/optparse-applicative)
+See: [optparse-applicative](https://github.com/pcapriotti/optparse-applicative)
 
 Haskeline
 =========
@@ -2794,9 +2798,7 @@ For example we could construct a "FizzBuzz" pipe.
 ~~~~ {.haskell include="src/pipes_io.hs"}
 ~~~~
 
-See: 
-
-* [Pipes Tutorial](http://hackage.haskell.org/package/pipes-4.1.0/docs/Pipes-Tutorial.html)
+See: [Pipes Tutorial](http://hackage.haskell.org/package/pipes-4.1.0/docs/Pipes-Tutorial.html)
 
 Conduits
 --------
@@ -2822,9 +2824,7 @@ operator (``=$``) for combining Sources and Sink and a Conduit and a Sink respec
 ~~~~ {.haskell include="src/conduit.hs"}
 ~~~~
 
-See:
-
-* [Conduit Overview](https://www.fpcomplete.com/user/snoyberg/library-documentation/conduit-overview)
+See: [Conduit Overview](https://www.fpcomplete.com/user/snoyberg/library-documentation/conduit-overview)
 
 Aeson
 =====
@@ -2862,6 +2862,8 @@ data Value = Object !Object
            | Bool !Bool
            | Null
 ```
+
+See: [Aeson](http://hackage.haskell.org/package/aeson)
 
 Unstructured
 ------------
@@ -2987,9 +2989,7 @@ Warp is a web server, it writes data to sockets quickly.
 ~~~~ {.haskell include="src/warp.hs"}
 ~~~~
 
-See: 
-
-* [Warp](http://aosabook.org/en/posa/warp.html)
+See: [Warp](http://aosabook.org/en/posa/warp.html)
 
 Scotty
 ======
@@ -3002,9 +3002,7 @@ in Python or Sinatra in Ruby.
 
 Of importance to note is the Blaze library used here overloads do-notation is not itself a monad.
 
-See:
-
-* [Making a Website with Haskell](http://adit.io/posts/2013-04-15-making-a-website-with-haskell.html)
+See: [Making a Website with Haskell](http://adit.io/posts/2013-04-15-making-a-website-with-haskell.html)
 
 Acid State
 ==========
@@ -3120,6 +3118,8 @@ case x of _ {
   __DEFAULT -> y 
 }
 ```
+
+See: [Core By Example](http://alpmestan.com/2013/06/27/ghc-core-by-example-episode-1/)
 
 Unboxed Values
 --------------

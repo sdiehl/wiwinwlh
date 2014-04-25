@@ -10,12 +10,12 @@ type Program = [Instr]
 
 type VM a = ReaderT Program (WriterT Output (State Stack)) a
 
-newtype Comp a = Comp (VM a)
+newtype Comp a = Comp { unComp :: VM a }
   deriving (Monad, MonadReader Program, MonadWriter Output, MonadState Stack)
 
 data Instr = Push Int | Pop | Puts
 
-evalInstr :: Instr -> VM ()
+evalInstr :: Instr -> Comp ()
 evalInstr instr = case instr of
   Pop    -> modify tail
   Push n -> modify (n:)
@@ -23,7 +23,7 @@ evalInstr instr = case instr of
     tos <- gets head
     tell [tos]
 
-eval :: VM ()
+eval :: Comp ()
 eval = do
   instr <- ask
   case instr of
@@ -31,7 +31,7 @@ eval = do
     (i:is) -> evalInstr i >> local (const is) eval
 
 execVM :: Program -> Output
-execVM = flip evalState [] . execWriterT . runReaderT eval
+execVM = flip evalState [] . execWriterT . runReaderT (unComp eval)
 
 program :: Program
 program = [
