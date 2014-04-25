@@ -3104,8 +3104,8 @@ map :: forall a b. (a -> b) -> [a] -> [b]
 map =
   \ (@ a) (@ b) (f :: a -> b) (xs :: [a]) ->
     case xs of _ {
-      []     -> GHC.Types.[] @ b;
-      : y ys -> GHC.Types.: @ b (f y) (map @ a @ b f ys)
+      []     -> [] @ b;
+      : y ys -> : @ b (f y) (map @ a @ b f ys)
     }
 ```
 
