@@ -275,6 +275,8 @@ the function uesd to provide assertions ``assert`` can be short circuited to gen
 ~~~~ {.haskell include="src/fail.hs"}
 ~~~~
 
+See: [Avoiding Partial Functions](http://www.haskell.org/haskellwiki/Avoiding_partial_functions)
+
 Monads
 ======
 
@@ -3032,6 +3034,8 @@ The Safe Haskell language extensions allow us to restrict the use of unsafe lang
 Unsafe.Coerce: Can't be safely imported!
 The module itself isn't safe.
 ```
+
+See: [Safe Haskell](http://www.haskell.org/ghc/docs/7.4.1/html/users_guide/safe-haskell.html)
 
 GHC Core
 ========
