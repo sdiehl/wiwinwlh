@@ -7,11 +7,11 @@ import Data.Complex.Lens
 import Data.Complex
 import qualified Data.Map as Map
 
-l :: Num t => t
+l :: Num a => a
 l = view _1 (100, 200)
 -- 100
 
-m :: (Num t) => (t, t, t)
+m :: Num a => (a, a, a)
 m = (100,200,200) & _3 %~ (+100)
 -- (100,200,300)
 
