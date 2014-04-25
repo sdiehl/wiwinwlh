@@ -8,7 +8,10 @@ HTML = slideshow.html
 
 all: $(HTML)
 
-%.html: %.md
+includes: includes.hs
+	ghc --make $<
+
+%.html: %.md includes
 	# $(PANDOC) -c $(STYLE) --template $(TEMPLATE) -s -f $(IFORMAT) -t html $(FLAGS) -o $@ $<
 	./includes < $< | $(PANDOC) -c $(STYLE) --template $(TEMPLATE) -s -f $(IFORMAT) -t html $(FLAGS) -o $@
 

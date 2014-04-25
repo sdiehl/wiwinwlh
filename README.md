@@ -8,7 +8,6 @@ If for some reason you want to compile the HTML page yourself, then you'll need 
 against Pandoc and then run make to build the page.
 
 ```bash
-$ ghc --make includes.hs
 $ make
 ```
 

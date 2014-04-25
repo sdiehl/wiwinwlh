@@ -6,4 +6,5 @@ cabal.sandbox.config
 dist/
 *.hi
 *.o
-
+includes
+slideshow.html
