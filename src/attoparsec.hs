@@ -24,8 +24,8 @@ data Message = Message
   , payload :: Payload
   } deriving Show
 
-pprotocol :: Parser Message
-pprotocol = do
+proto :: Parser Message
+proto = do
   act  <- paction
   send <- A.takeTill (== '.')
   body <- A.takeTill (A.isSpace)
@@ -47,5 +47,5 @@ paction = do
 main :: IO ()
 main = do
   let msgtext = "\x01\x6c\x61\x70\x74\x6f\x70\x2e\x33\x2e\x31\x34\x31\x35\x39\x32\x36\x35\x33\x35\x0A"
-  let msg = parseOnly pprotocol msgtext
+  let msg = parseOnly proto msgtext
   print msg

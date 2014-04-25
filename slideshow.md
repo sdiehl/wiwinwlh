@@ -263,6 +263,12 @@ listToMaybe []     =  Nothing
 listToMaybe (a:_)  =  Just a
 ```
 
+When a bottom define in terms of error is invoked it typically will not generate any position information, but
+the function uesd to provide assertions ``assert`` can be short circuited to generate position information in the place of either ``undefined`` or ``error`` call.
+
+~~~~ {.haskell include="src/fail.hs"}
+~~~~
+
 Monads
 ======
 
@@ -353,8 +359,9 @@ Monads syntax in Haskell is written in sugared form that is entirely equivalent 
 monad operations. The desugaring is defined recursively by the rules: 
 
 ```haskell
-do { a <- f ; m }  ≡  f >>= \a -> m
-do { f ; m }       ≡  f >> m
+do { a <- f ; m } ≡ f >>= \a -> do { m }
+do { f ; m } ≡ f >> do { m }
+do { m } ≡ m
 ```
 
 So for example:
@@ -2630,6 +2637,10 @@ efficient.
 
 ~~~~ {.haskell include="src/attoparsec.hs"}
 ~~~~
+
+See: 
+
+* [Text Parsing Tutorial](https://www.fpcomplete.com/school/starting-with-haskell/libraries-and-frameworks/text-manipulation/attoparsec)
 
 Uniplate
 ========

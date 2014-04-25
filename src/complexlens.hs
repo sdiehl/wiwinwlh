@@ -9,11 +9,11 @@ import qualified Data.Map as Map
 
 l :: Num t => t
 l = view _1 (100, 200)
--- [100,200,300]
+-- 100
 
 m :: (Num t) => (t, t, t)
 m = (100,200,200) & _3 %~ (+100)
--- [100,200,300]
+-- (100,200,300)
 
 n :: Num a => [a]
 n = [100,200,300] & traverse %~ (+1)
@@ -31,19 +31,23 @@ q :: Num a => [a]
 q = [1,2,3,4,5] ^. _tail
 -- [2,3,4,5]
 
-r :: Maybe String
-r = Map.fromList [("foo", "bar")] ^.at "foo"
+r :: Num a => [Maybe a]
+r = [Just 1, Just 2, Just 3] & traverse._Just +~ 1
+-- [Just 2, Just 3, Just 4]
+
+s :: Maybe String
+s = Map.fromList [("foo", "bar")] ^.at "foo"
 -- "bar"
 
-s :: Integral a => Maybe a
-s = "1010110" ^? binary
+t :: Integral a => Maybe a
+t = "1010110" ^? binary
 -- Just 86
 
-t :: RealFloat a => Complex a
-t = (mkPolar 1 pi/2) & _phase +~ pi
+u :: RealFloat a => Complex a
+u = (mkPolar 1 pi/2) & _phase +~ pi
 
-u :: IO [String]
-u = ["first","second","third"] ^!! folded.act ((>> getLine) . putStrLn)
+v :: IO [String]
+v = ["first","second","third"] ^!! folded.act ((>> getLine) . putStrLn)
 -- first
 -- a
 -- second
