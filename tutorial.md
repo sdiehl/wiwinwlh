@@ -270,7 +270,7 @@ listToMaybe (a:_)  =  Just a
 ```
 
 When a bottom define in terms of error is invoked it typically will not generate any position information, but
-the function uesd to provide assertions ``assert`` can be short circuited to generate position information in the place of either ``undefined`` or ``error`` call.
+the function used to provide assertions ``assert`` can be short circuited to generate position information in the place of either ``undefined`` or ``error`` call.
 
 ~~~~ {.haskell include="src/fail.hs"}
 ~~~~
