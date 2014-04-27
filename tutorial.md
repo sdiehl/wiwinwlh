@@ -270,7 +270,8 @@ listToMaybe (a:_)  =  Just a
 ```
 
 When a bottom define in terms of error is invoked it typically will not generate any position information, but
-the function uesd to provide assertions ``assert`` can be short circuited to generate position information in the place of either ``undefined`` or ``error`` call.
+the function used to provide assertions ``assert`` can be short circuited to generate position information in
+the place of either ``undefined`` or ``error`` call.
 
 ~~~~ {.haskell include="src/fail.hs"}
 ~~~~
@@ -1903,7 +1904,7 @@ A heterogeneous list is a cons list whose type statically encodes the ordered ty
 Constraint Kinds
 ----------------
 
-The kind of a type family permits arbitrary kinds, but of particular interst in the Constraint kind which is
+The kind of a type family permits arbitrary kinds, but of particular interest in the Constraint kind which is
 enabled with the ``-XConstraintKinds`` extension. Using this we can use typeclass constraints as first class
 values which can naturally be indexed with the type family.
 
@@ -2361,9 +2362,9 @@ instance (GEq' a, GEq' b) => GEq' (a :*: b) where
   geq' (a1 :*: b1) (a2 :*: b2) = geq' a1 a2 && geq' b1 b2
 ```
 
-Now to to accommodate the two methods of writing classes (generic-deriving or custom implementions) we can use
-``DefaultSignatures`` extension to allow the user to leave typeclass functions blank and defer to the Generic
-or to define their own.
+Now to to accommodate the two methods of writing classes (generic-deriving or custom implementations) we can
+use ``DefaultSignatures`` extension to allow the user to leave typeclass functions blank and defer to the
+Generic or to define their own.
 
 ```haskell
 {-# LANGUAGE DefaultSignatures #-}
@@ -2751,7 +2752,7 @@ variance is severely inflated by outliers
 Optparse-Applicative
 ====================
 
-Optparse applicative is a library for parsing command line options with a inferface similar to parsec that
+Optparse applicative is a library for parsing command line options with a interface similar to parsec that
 makes also makes heavy use of monoids to combine operations.
 
 ~~~~ {.haskell include="src/optparse_applicative.hs"}
@@ -3225,7 +3226,7 @@ lens :: Functor f => (s -> a) -> (s -> b -> t) -> (a -> f b) -> s -> f t
 ```
 
 Using this type and some related machinery we get a framework for building a very general set of combinators
-for working with datatypes of arbitrary structure and targets within their substucture. Some of the
+for working with datatypes of arbitrary structure and targets within their substructure. Some of the
 combinators are:
 
 Combinator      Description
@@ -3386,7 +3387,7 @@ The most basic structure is a category which is an algebraic structure of object
 (``Hom``) with the structure that morphisms compose associatively and the existence of a identity morphism for
 each object.
 
-With kind polymorphism enabled we can write down the general category parameterized bya type variable "c" for
+With kind polymorphism enabled we can write down the general category parameterized by a type variable "c" for
 category, and the instance ``Hask`` the category of Haskell types with functions between types as morphisms.
 
 ~~~~ {.haskell include="src/categories.hs"}
@@ -3541,7 +3542,7 @@ f >=> g ≡ \x -> f x >>= g
 ```
 
 The monad laws stated in terms of the Kleisli category of a monad ``m`` are stated much more symmetrically as
-one associativiy law and two identity laws.
+one associativity law and two identity laws.
 
 ```haskell
 (f >=> g) >=> h ≡ f >=> (g >=> h)
