@@ -1,6 +1,8 @@
 What I Wish I Knew When Learning Haskell
 ----------------------------------------
 
+[Read Here](http://dev.stephendiehl.com/hask/)
+
 If you want to submit a fix for a typo or fix for code then just submit a pull request, and I'm happy to
 recompile the resulting document.
 
