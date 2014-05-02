@@ -3217,12 +3217,49 @@ There are two implementations of note that are mostly compatible but differ in s
 lens
 ----
 
-At it's core a lens is a type of the form and a function:
+At it's core a lens is a form of coupled getter and setter functions under a functor. There are two
+derivations of the van Laarhoven lens, one that allows polymorphic update and one that is strictly
+monomorphic. Let's just consider the monomorphic variation:
 
 ```haskell
-type Lens a b = forall f. Functor f => (b -> f b) -> (a -> f a)
+type Lens' a b = forall f. Functor f => (b -> f b) -> (a -> f a)
 
-lens :: Functor f => (s -> a) -> (s -> b -> t) -> (a -> f b) -> s -> f t
+-- lens :: getter -> setter -> Lens' a b
+lens :: (s -> a) -> (s -> a -> s) -> Lens' s a
+
+set :: Lens' a b -> b -> a -> a
+set l b = runIdentity . l (const $ Identity b)
+
+get :: Lens' a b -> a -> b
+get l = runIdentity . l Const ```
+```
+
+```haskell
+(^.) :: Lens' a b -> a -> b
+(^.) = get
+
+(.~) :: Lens' a b -> b -> a -> a
+(.~) = set
+
+(&) :: a -> (a -> b) -> b
+(&) = flip ($)
+
+s ^. lens getter setter       -- getter s
+s  & lens getter setter .~ b  -- setter s b
+```
+
+While this may look like a somewhat convoluated way of reinventing record update, consider the types of these
+functions align very nicely such Lens themselves compose, although in the reverse direction of function
+composition.
+
+```haskell
+f     :: a -> b
+g     :: b -> c
+g . f :: a -> c
+
+f     :: Lens a b  ~  (b -> f b) -> (a -> f a)
+g     :: Lens b c  ~  (c -> f c) -> (b -> f b)
+f . g :: Lens a c  ~  (c -> f c) -> (a -> f a)
 ```
 
 Using this type and some related machinery we get a framework for building a very general set of combinators
@@ -3231,9 +3268,9 @@ combinators are:
 
 Combinator      Description
 -------------   -----------------------------
+``view``        View a single target or fold the targets of a monoidal quantity.
 ``set``         Replace target with a value and return updated structure.
 ``over``        Update targets with a function and return updated structure.
-``view``        View a single target or fold the targets of a monoidal quantity.
 ``to``          Construct a retrieval function from an arbitrary Haskell function.
 ``traverse``    Map each element of a structure to an action and collect results.
 ``ix``          Target the given index of a generic indexable structure.
@@ -3244,21 +3281,25 @@ But compiles into simple calls which translate the fields of a record into funct
 function and logic for the getter and the setter.
 
 ```haskell
-{-# LANGUAGE NoMonomorphismRestriction #-}
-
 import Control.Lens
 
-data Foo = Foo { _field :: Int } deriving Show
+data Foo = Foo { _field :: Int }
 
-field :: Functor f => (Int -> f Int) -> Foo -> f Foo
-field = lens _field (\f new -> f { _field = new })
+field :: Lens' Foo Int
+field = lens getter setter
+  where
+    getter :: Foo -> Int
+    getter = _field
+
+    setter :: Foo -> Int -> Foo
+    setter = (\f new -> f { _field = new })
+
 ```
 
 Template Haskell can be used to do automatically generate these functions for using ``makeLenses`` at compile
 time by introspecting the AST.
 
 ```haskell
-{-# LANGUAGE NoMonomorphismRestriction #-}
 {-# LANGUAGE TemplateHaskell #-}
 
 import Control.Lens
