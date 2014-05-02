@@ -1,6 +1,6 @@
 PANDOC = pandoc
 IFORMAT = markdown
-FLAGS = --standalone --toc --toc-depth=1 --highlight-style pygments
+FLAGS = --standalone --toc --toc-depth=2 --highlight-style pygments
 TEMPLATE = page.tmpl
 STYLE = css/style.css
 
