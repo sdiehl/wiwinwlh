@@ -1,5 +1,3 @@
-{-# LANGUAGE BangPatterns #-}
-
 import Data.STRef
 import Control.Monad
 import Control.Monad.ST
