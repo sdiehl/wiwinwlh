@@ -1,4 +1,4 @@
-Stephen Diehl (<a class="author" href="https://twitter.com/smdiehl">@smdiehl</a> )
+Stephen Diehl (<a class="author" href="https://twitter.com/smdiehl">@smdiehl</a>)
 
 Since I wrote these slides for a little user group talk I gave two years ago they have become a surprisingly
 popular reference. I decided to actually turn them into a proper skimmable reference for intermediate level
@@ -23,7 +23,7 @@ $ cabal configure
 
 A ``.cabal`` file will be created.
 
-Sandboxes ( in cabal > 1.18 ) are self contained environments of Haskell packages.
+Sandboxes (in cabal > 1.18) are self contained environments of Haskell packages.
 
 ```bash
 $ cabal sandbox init
@@ -201,7 +201,7 @@ undefined :: a
 ```
 
 The bottom is a singular value that inhabits every type. When evaluated the semantics of Haskell no longer
-yield a meaningful value. It's usually written as the symbol ⊥ (i.e. the compiler flipping you off ).
+yield a meaningful value. It's usually written as the symbol ⊥ (i.e. the compiler flipping you off).
 
 An example of a infinite looping term:
 
@@ -738,7 +738,7 @@ Seq and WHNF
 
 In Haskell evaluation only occurs at outer constructor of case-statements in Core. If we pattern match on a
 list we don't implicitly force all values in the list. A element in the list is only evaluated when we
-scrutinize it's cons cell.
+scrutinize its cons cell.
 
 A term is said to be in *weak head normal-form* if the outermost constructor or lambda cannot be reduced
 further.
@@ -872,7 +872,7 @@ See: [ByteString](http://hackage.haskell.org/package/bytestring-0.10.4.0/docs/Da
 Applicatives
 ============
 
-Like monads Applicatives are an abstract structure for a wide class of computations.
+Like monads, Applicatives are an abstract structure for a wide class of computations.
 
 ```haskell
 pure :: Applicative f => a -> f a
@@ -1268,9 +1268,9 @@ join :: Monad m => m (m a) -> m a
 wrap :: MonadFree f m => f (m a) -> m a
 ```
 
-One of the best examples is the Partiality monad which models computations which can diverge. Haskell allows
+One of the best examples is the Partiality monad which models computations that may diverge. Haskell allows
 unbounded recursion, but for example we can create a free monad from the ``Maybe`` functor which when can be
-used to fix the call-depth of, for example the [Ackermann function](https://en.wikipedia.org/wiki/Ackermann_function.).
+used to fix the call-depth of, for example the [Ackermann function](https://en.wikipedia.org/wiki/Ackermann_function).
 
 ~~~~ {.haskell include="src/partiality.hs"}
 ~~~~
@@ -1378,7 +1378,7 @@ HOAS
 ====
 
 Higher Order Abstract Syntax (*HOAS*) is a technique for encoding the lambda calculus that exploits the
-function type of the host language ( i.e. Haskell ) to give us capture-avoiding substitution in our custom
+function type of the host language (i.e. Haskell) to give us capture-avoiding substitution in our custom
 language by exploiting Haskell's implementation.
 
 ~~~~ {.haskell include="src/hoas.hs"}
@@ -1411,8 +1411,8 @@ our evaluator and pretty-printing interpreters remain invariant under the additi
 Finally Tagless
 ---------------
 
-Writing an evaluator for the lambda calculus can likewise also be modeled with a final interpeter and a
-Identity functor.
+Writing an evaluator for the lambda calculus can likewise be modeled with a final interpeter and an
+identity functor.
 
 ~~~~ {.haskell include="src/final.hs"}
 ~~~~
@@ -1432,7 +1432,7 @@ matching.
 Algebra of Datatypes
 --------------------
 
-The usual hand-wavy of describing algebraic datatypes is to indicate the how natural correspondence between
+The usual hand-wavy of describing algebraic datatypes is to indicate how the natural correspondence between
 sum types, product types, and polynomial expressions arises.
 
 ```haskell
@@ -1485,7 +1485,7 @@ hylo :: Functor f => Algebra f b -> Coalgebra f a -> a -> b
 ```
 
 In Haskell an F-algebra in a functor ``f a`` together with function ``f a -> a``. A colagebra reverses the
-function. For a functor ``f`` we can form it's recursive unrolling using the ``Fix`` newtype wrapper.
+function. For a functor ``f`` we can form its recursive unrolling using the ``Fix`` newtype wrapper.
 
 ```haskell
 Fix f = f (f (f (f (f (f ( ... ))))))
@@ -1509,8 +1509,8 @@ ana :: Functor f => Coalgebra f a -> a -> Fix f
 ana coalg = Fix . fmap (ana coalg) . coalg
 ```
 
-We call these functions *catamorphisms* and *anamorphisms*. Notice especially that the types of thees two
-functions simply reverse the direction of arrows. Interpreted in another way they transform an
+We call these functions *catamorphisms* and *anamorphisms*. Notice especially that the types of these two
+functions simply reverse the direction of arrows. Interpreted in another, way they transform an
 algebra/colaglebra which defines a flat structure-preserving mapping between ``Fix f`` ``f`` into a function
 which either rolls or unrolls the fixpoint. What is particularly nice about this approach is that the
 recursion is abstracted away inside the functor definition and we are free to just implement the flat
@@ -1731,7 +1731,7 @@ example:
 ==> Ord a => [a]
 ```
 
-If a single parameter typeclass expresses a property of a type ( i.e. it's in a class or not in class ) then a
+If a single parameter typeclass expresses a property of a type (i.e., it's in a class or not in class) then a
 multiparamater typeclass expresses relationships between types. For example whether if we wanted to express
 the relation a type can be converted to another type we might use a class like:
 
@@ -1763,7 +1763,7 @@ usable and inferable again.
 ```
 
 Now let's make things not so simple. Turning on ``UndecidableInstances`` loosens the constraint on context
-reduction can only allow constraints of the class to become structural smaller than it's head. As a result
+reduction can only allow constraints of the class to become structural smaller than its head. As a result
 implicit computation can now occur *within in the type class instance search*. Combined with a type-level
 representation of Peano numbers we find that we can encode basic arithmetic at the type-level.
 
@@ -1854,7 +1854,7 @@ Rep Char :: *
 *Data families* on the other hand allow us to create new type parameterized data constructors. Normally we can
 only define typeclases functions whose behavior results in a unform result which is purely a result of the
 typeclasses arguments. With data families we can allow specialized behavior indexed on the type. For example
-if we wanted to create more complicated vector structures ( bitmasked vectors, vectors of tuples, ... ) that
+if we wanted to create more complicated vector structures (bitmasked vectors, vectors of tuples, ...) that
 exposed a uniform API but internally handled the differences in their data layout we can use data families to
 accomplish this:
 
@@ -1867,9 +1867,9 @@ Proofs
 One of most deep results in computer science, the [Curry–Howard
 correspondence](https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence), is the relation that
 logical propositions can be modeled by types and instantiating those types constitutes proofs of these
-propositions. In dependently typed languages we can exploit this result to it's full extent, in Haskell we
-don't have the strength that dependent types provide but can still prove ( for a suffficently lax definition
-of the word "prove" ) trivial results. For example, now we can model a type level function for addition and
+propositions. In dependently typed languages we can exploit this result to its full extent, in Haskell we
+don't have the strength that dependent types provide but can still prove (for a suffficently lax definition
+of the word "prove") trivial results. For example, now we can model a type level function for addition and
 provide a small proof that zero is an additive identity.
 
 ~~~~ {.haskell include="src/family_nat.hs"}
@@ -1896,7 +1896,7 @@ assoc (Succ m) n = cong (assoc m n)
 HLists
 ------
 
-A heterogeneous list is a cons list whose type statically encodes the ordered types of of it's values.
+A heterogeneous list is a cons list whose type statically encodes the ordered types of its values.
 
 ~~~~ {.haskell include="src/hlist.hs"}
 ~~~~
@@ -2014,7 +2014,7 @@ Of interest is that we have access to GHC's type level natural literals:
 (3 <= 4) :: Constraint
 ```
 
-Using this new structure we can create a ``Vec`` type which is parameterized by it's length as well as it's
+Using this new structure we can create a ``Vec`` type which is parameterized by its length as well as its
 element type now that we have a kind language rich enough to encode the successor type in the kind signature
 of the generalized algebraic datatype. 
 
@@ -2050,7 +2050,7 @@ about performing reduction.
 ~~~~ {.haskell include="src/typenat.hs"}
 ~~~~
 
-So we've just expressed the relationship between the type of a data structure based on it's values and
+So we've just expressed the relationship between the type of a data structure based on its values and
 function which can be constrained at compile-time based on these properties. Let that sink in for a moment, go
 take some mind-altering substances, and then go check out
 [Agda](http://wiki.portal.chalmers.se/agda/pmwiki.php).
@@ -2141,7 +2141,7 @@ class Typeable a => Data a where
   gmapQl :: (r -> r' -> r) -> r -> (forall d. Data d => d -> r') -> a -> r
 ```
 
-The types for ``gfoldl`` and ``gunfold`` are a little intimidating ( and depend on ``Rank2Types`` ), the best
+The types for ``gfoldl`` and ``gunfold`` are a little intimidating (and depend on ``Rank2Types``), the best
 way to understand is to look at some examples. First the most trivial case a simple sum type ``Animal`` would
 produce the follow the following code:
 
@@ -2258,7 +2258,7 @@ Generic
 
 The most modern method of doing generic programming uses type families to achieve a better of deriving the
 structural properties of arbitrary type classes.  Generic implements a typeclass with an associated type
-``Rep`` ( Representation ) together with a pair of functions that form a 2-sided inverse ( isomorphism ) for
+``Rep`` (Representation) together with a pair of functions that form a 2-sided inverse (isomorphism) for
 converting to and from the associated type and the derived type in question.
 
 ```haskell
@@ -2575,7 +2575,7 @@ us write code to generate parsers which themselves looks very similar to the par
 ``<|>``       The choice operator tries to parse the first argument before proceeding to the second. Can be chained sequentially to a generate a sequence of options.
 ``many``      Consumes an arbitrary number of patterns matching the given pattern and returns them as a list.
 ``many1``     Like many but requires at least one match. 
-``optional``  Optionally parses a given pattern returning it's value as a Maybe.
+``optional``  Optionally parses a given pattern returning its value as a Maybe.
 ``try``       Backtracking operator will let us parse ambiguous matching expressions and restart with a different pattern.
 
 There are two styles of writing Parsec, one can choose to write with monads or with applicatives.
@@ -3217,7 +3217,7 @@ There are two implementations of note that are mostly compatible but differ in s
 lens
 ----
 
-At it's core a lens is a form of coupled getter and setter functions under a functor. There are two
+At its core, a lens is a form of coupled getter and setter functions under a functor. There are two
 derivations of the van Laarhoven lens, one that allows polymorphic update and one that is strictly
 monomorphic. Let's just consider the monomorphic variation:
 
@@ -3575,7 +3575,7 @@ See:
 Kleisli Category
 ----------------
 
-Kleisli composition (i.e. Kleisli Fish) is defined to be:
+Kleisli composition, or Kleisli Fish, is defined to be:
 
 ```haskell
 (>=>) :: Monad m => (a -> m b) -> (b -> m c) -> a -> m c
