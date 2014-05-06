@@ -672,10 +672,17 @@ lines:
 ~~~~ {.haskell include="src/state_impl.hs"}
 ~~~~
 
-Syntax Extensions 
+Syntax Extensions
 =================
+See: [Syntactic extensions](https://www.haskell.org/ghc/docs/latest/html/users_guide/syntax-extns.html)
 
 **Pattern Guards**
+
+Pattern guards allow matching complex expressions to given patterns. This capability, among others, greatly
+simplifies definitions of function dealing with data types that might fail during processing. An instance of
+this may be hashtable lookups.
+
+The following requires that both lookups succeed and then adds the returned values:
 
 ```haskell
 {-# LANGUAGE PatternGuards #-}
@@ -687,6 +694,8 @@ combine env x y
 
    | otherwise = Nothing
 ```
+
+See: [Pattern guard](https://www.haskell.org/haskellwiki/Pattern_guard) on HaskellWiki
 
 **Multi-way if-expressions**
 
