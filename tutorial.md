@@ -2844,7 +2844,7 @@ Church Encoding
 ---------------
 
 In Church's original formulation of the lambda calculus there were no ground types ( integer, booleans, lists
-) are remarkably we can actually build all of these constructions using nothing more than lambdas.
+), and remarkably we can actually build all of these constructions using nothing more than lambdas.
 
 Data types like the natural numbers above can also be encoded as lambda expressions with constructors for the
 datatype modeled as indexed parameters to the lambda expressions.  Using this method we can encode recursive
