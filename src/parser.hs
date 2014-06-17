@@ -19,8 +19,6 @@ data Expr
 
 data Binop = Add | Sub | Mul deriving Show
 
---
-
 lexer :: Tok.TokenParser ()
 lexer = Tok.makeTokenParser style
   where ops = ["->","\\","+","*","-","="]
@@ -41,8 +39,6 @@ contents p = do
   r <- p
   eof
   return r
-
---
 
 natural :: Parser Integer
 natural = Tok.natural lexer

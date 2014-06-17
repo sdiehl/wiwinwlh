@@ -6,9 +6,9 @@ import Lens.Family.TH
 import Lens.Family.Stock
 import Data.Traversable
 
-data Record1 a = Record1
+data Record1 = Record1
   { _a :: Int
-  , _b :: Maybe a
+  , _b :: Maybe Record2
   } deriving Show
 
 data Record2 = Record2
@@ -16,9 +16,10 @@ data Record2 = Record2
   , _d :: [Int]
   } deriving Show
 
-$(mkLenses ''Record1)
-$(mkLenses ''Record2)
+mkLenses ''Record1
+mkLenses ''Record2
 
+records :: [Record1]
 records = [
     Record1 {
       _a = 1,

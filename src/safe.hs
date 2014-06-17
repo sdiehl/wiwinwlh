@@ -3,8 +3,8 @@
 import Unsafe.Coerce
 import System.IO.Unsafe
 
-sin :: String
-sin = unsafePerformIO $ getLine
+bad1 :: String
+bad1 = unsafePerformIO getLine
 
-mortalsin :: a
-mortalsin = unsafeCoerce 3.14 ()
+bad2 :: a
+bad2 = unsafeCoerce 3.14 ()

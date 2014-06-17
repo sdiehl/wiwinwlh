@@ -9,12 +9,15 @@ type Coalgebra f a = a -> f a
 
 newtype Fix f = Fix { unFix :: f (Fix f) }
 
+-- catamorphism
 cata :: Functor f => Algebra f a -> Fix f -> a
 cata alg = alg . fmap (cata alg) . unFix
 
+-- anamorphism
 ana :: Functor f => Coalgebra f a -> a -> Fix f
 ana coalg = Fix . fmap (ana coalg) . coalg
 
+-- hylomorphism
 hylo :: Functor f => Algebra f b -> Coalgebra f a -> a -> b
 hylo f g = cata f . ana g
 

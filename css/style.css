@@ -20,7 +20,7 @@ h1, h2, h3, h4, h5 {
 }
 
 pre code {
-  font: 15px/19px Inconsolata,Monaco,"Lucida Console",Terminal,"Courier New",Courier;
+  font: 15px/19px Inconsolata, Monaco,"Lucida Console",Terminal,"Courier New",Courier;
 }
 
 img {
@@ -76,6 +76,64 @@ li code, p code, table code {
   -moz-border-radius: 8px;
   border-radius: 8px;
 }
+
+/* Language Extensions Table */
+
+.table-striped .verical {
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+
+.table-striped .striped-header td {
+  /*border-bottom: 1px solid black;*/
+}
+
+.table-striped .striped-header td {
+  padding-left: 10px; 
+  padding-right: 10px; 
+  font-weight: bold;
+  font-size: 8pt;
+}
+
+.table-striped {
+  text-align: center;
+  border-spacing: 0px;
+  padding: 0px;
+}
+
+.table-striped td:first-child {
+  text-align: left;
+}
+
+.table-striped td:nth-child(5) {
+  text-align: left;
+  padding-right: 10px;
+}
+
+.table-striped td:nth-child(6) {
+  text-align: left;
+  padding-right: 10px;
+}
+
+
+.table-striped a {
+  text-decoration: underline;
+}
+
+.table-striped
+
+.table-striped tr:nth-child(even) {
+  background-color: white;
+}
+
+.table-striped tr:nth-child(odd) {
+  background-color: #eeeeee;
+}
+
+/*  */
 
 .center {
     text-align: center;
@@ -181,11 +239,13 @@ ul.sections > li > div {
 @media only screen and (min-width: 481px) {
 }
 
+/*
 @media only screen and (max-width: 1025px) {
   .toc {
     display: none;
   }
 }
+*/
 
 @media only screen and (min-width: 1025px) {
   body {
@@ -196,6 +256,19 @@ ul.sections > li > div {
       position: fixed;
       width: 270px !important;
       margin-left: 0px;
+      z-index: 1000;
+  }
+
+  .side ul ul {
+    display: none;
+  }
+
+  .side ul ul.active {
+    display: block;
+  }
+
+  .side .active {
+      font-weight: bold;
   }
 
   .body {

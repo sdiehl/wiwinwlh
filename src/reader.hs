@@ -1,11 +1,11 @@
 import Control.Monad.Reader
 
-data MyState = MyState
+data MyContext = MyContext
   { foo :: String
   , bar :: Int
   } deriving (Show)
 
-computation :: Reader MyState (Maybe String)
+computation :: Reader MyContext (Maybe String)
 computation = do
   n <- asks bar
   x <- asks foo
@@ -13,8 +13,8 @@ computation = do
     then return (Just x)
     else return Nothing
 
-example1 :: Maybe String
-example1 = runReader computation $ MyState "hello!" 1
+ex1 :: Maybe String
+ex1 = runReader computation $ MyContext "hello" 1
 
-example2 :: Maybe String
-example2 = runReader computation $ MyState "example!" 0
+ex2 :: Maybe String
+ex2 = runReader computation $ MyContext "haskell" 0

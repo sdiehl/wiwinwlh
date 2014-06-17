@@ -6,10 +6,10 @@ import Data.Serialize
 
 import GHC.Generics
 
-data Foo = A [Foo] | B [(Foo, Foo)] | C
+data Val = A [Val] | B [(Val, Val)] | C
   deriving (Generic, Show)
 
-instance Serialize Foo where
+instance Serialize Val where
 
 encoded :: ByteString
 encoded = encode (A [B [(C, C)]])
@@ -19,5 +19,5 @@ bytes :: [Word8]
 bytes = unpack encoded
 -- [0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,1,2,2]
 
-decoded :: Either String Foo
+decoded :: Either String Val
 decoded = decode encoded

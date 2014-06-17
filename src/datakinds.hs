@@ -39,7 +39,6 @@ zipVec :: Vec n a -> Vec n b -> Vec n (a,b)
 zipVec Nil Nil = Nil
 zipVec (Cons x xs) (Cons y ys) = Cons (x,y) (zipVec xs ys)
 
-
 vec4 :: Vec Four Int
 vec4 = fromList [0, 1, 2, 3]
 
