@@ -5864,8 +5864,10 @@ Languages
 Unbound
 -------
 
-For example we can implement the Hindley-Milner algorithm for a simple typed lambda calculus without having to
-write the name capture and substitution mechanics ourselves.
+Several libraries exist to mechanize the process of writing name capture and substitution, since it is largely
+mechnanical logic. Probably the most robust is the ``unbound`` library.  For example we can implement the
+infer function for a small Hindley-Milner system over a simple typed lambda calculus without having to write
+the name capture and substitution mechanics ourselves.
 
 ~~~~ {.haskell include="src/unbound.hs"}
 ~~~~
