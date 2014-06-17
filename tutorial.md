@@ -712,7 +712,7 @@ Maybe
 -----
 
 The *Maybe* monad is the simplest first example of a monad instance. The Maybe monad models computations which
-fail to yield a value at any point during at point during computation.
+fail to yield a value at any point during computation.
 
 ```haskell
 data Maybe a = Just a | Nothing
@@ -1587,7 +1587,7 @@ functional programs. Yet as a result several portions of the Prelude still refle
 simply can't be removed without breaking significant parts of the ecosystem.
 
 Currently it really only exists in folklore which parts to use and which not to use, although this is a topic
-that almost all introductory books don't mention and instead make extensive use of the Prelude for simplicities
+that almost all introductory books don't mention and instead make extensive use of the Prelude for simplicity's
 sake.
 
 The short version of the advice on the Prelude is:
@@ -1624,7 +1624,7 @@ Partial Functions
 -----------------
 
 A *partial function* is a function which doesn't terminate and yield a value for all given inputs. Conversely a
-*total function* terminates and is always defined for all inputs. As mentioned previously certain historical
+*total function* terminates and is always defined for all inputs. As mentioned previously, certain historical
 parts of the Prelude are full of partial functions.
 
 The difference between partial and total functions is the compiler can't reason about the runtime safety of
@@ -3110,7 +3110,7 @@ plumbing.
 
 A prominent school of thought on Haskell library design tends to favor constructing programs built around
 strong equation laws which guarantee strong invariants about program behavior under composition. Many of the
-teesting tools adapt are built around this style of design.
+testing tools are built around this style of design.
 
 QuickCheck
 ----------
