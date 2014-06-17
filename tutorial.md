@@ -4382,7 +4382,7 @@ spine. For example look at the instance for a 2-tuple as well:
 
 ```haskell
 instance (Data a, Data b) => Data (a,b) where
-  gfoldl k z (a,b) = k (,) `f` a `f` b
+  gfoldl k z (a,b) = z (,) `k` a `k` b
 
   toConstr (_,_) = tuple2Constr
 
