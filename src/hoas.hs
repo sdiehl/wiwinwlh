@@ -21,7 +21,7 @@ eval (App e1 e2) = (eval e1) (eval e2)
 
 
 skk :: Expr (a -> a)
-skk = (App (App s k) k)
+skk = App (App s k) k
 
 example :: Integer
 example = eval skk 1

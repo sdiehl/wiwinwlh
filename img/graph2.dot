@@ -1,0 +1,11 @@
+ digraph ex2 {
+    a -> b;
+    b -> c;
+    c -> a;
+
+    d -> e;
+    e -> f;
+    e -> e;
+    f -> d;
+    f -> e;
+ }

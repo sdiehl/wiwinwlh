@@ -1,5 +1,3 @@
-{-# LANGUAGE NoMonomorphismRestriction #-}
-
 import Prelude hiding (id)
 
 class Expr rep where
@@ -16,7 +14,6 @@ instance Expr Interpret where
 
 eval :: Interpret a -> a
 eval e = reify e
-
 
 e1 :: Expr rep => rep Int
 e1 = app (lam (\x -> x)) (lit 3)

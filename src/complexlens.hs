@@ -16,7 +16,7 @@ m = (100,200,200) & _3 %~ (+100)
 -- (100,200,300)
 
 n :: Num a => [a]
-n = [100,200,300] & traverse %~ (+1)
+n = [100,200,300] & traverse +~ 1
 -- [101,201,301]
 
 o :: Char
@@ -36,22 +36,25 @@ r = [Just 1, Just 2, Just 3] & traverse._Just +~ 1
 -- [Just 2, Just 3, Just 4]
 
 s :: Maybe String
-s = Map.fromList [("foo", "bar")] ^.at "foo"
+s = Map.fromList [("foo", "bar")] ^. at "foo"
 -- "bar"
 
 t :: Integral a => Maybe a
 t = "1010110" ^? binary
 -- Just 86
 
-u :: RealFloat a => Complex a
+u :: Complex Float
 u = (mkPolar 1 pi/2) & _phase +~ pi
+-- 0.5 :+ 8.742278e-8
 
-v :: IO [String]
-v = ["first","second","third"] ^!! folded.act ((>> getLine) . putStrLn)
--- first
--- a
--- second
--- b
--- third
--- c
--- ["a","b","c"]
+v :: [Integer]
+v = [1..10] ^.. folded.filtered even
+-- [2,4,6,8,10]
+
+w :: [Integer]
+w = [1, 2, 3, 4] & each . filtered even *~ 10
+-- [1, 20, 3, 40]
+
+x :: Num a => Maybe a
+x = Left 3 ^? _Left
+-- Just 3

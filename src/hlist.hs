@@ -19,8 +19,8 @@ hlength Nil = 0
 hlength (_ ::: b) = 1 + (hlength b)
 
 
-example1 :: (Bool, (String, (Double, ())))
-example1 = (True, ("foo", (3.14, ())))
+tuple :: (Bool, (String, (Double, ())))
+tuple = (True, ("foo", (3.14, ())))
 
-example2 :: HList '[Bool, String , Double , ()]
-example2 = True ::: "foo" ::: 3.14 ::: () ::: Nil
+hlist :: HList '[Bool, String , Double , ()]
+hlist = True ::: "foo" ::: 3.14 ::: () ::: Nil

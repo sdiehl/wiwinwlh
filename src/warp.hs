@@ -1,13 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+import Network.Wai
 import Network.Wai.Handler.Warp (run)
-import Network.Wai.Application.Static
+import Network.HTTP.Types
 
-server :: Int -> IO ()
-server port = do
-  let staticPath = "."
-  let app = staticApp $ defaultFileServerSettings staticPath
-  run port app
+app :: Application
+app req = return $ responseLBS status200 [] "Engage!"
 
 main :: IO ()
-main = server 8000
+main = run 8000 app

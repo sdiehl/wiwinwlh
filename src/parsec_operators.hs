@@ -37,9 +37,7 @@ data Decl
   | OpDecl OperatorDef
   deriving (Show)
 
-
 type Op x = Ex.Operator String ParseState Identity x
-
 type Parser a = Parsec String ParseState a
 data ParseState = ParseState [OperatorDef] deriving Show
 
@@ -47,9 +45,7 @@ data OperatorDef = OperatorDef {
     oassoc :: Assoc
   , oprec :: Integer
   , otok :: Name
-  }
-  deriving Show
-
+  } deriving Show
 
 lexer :: Tok.GenTokenParser String u Identity
 lexer = Tok.makeTokenParser style
@@ -61,18 +57,18 @@ lexer = Tok.makeTokenParser style
                              , Tok.commentLine = "--"
                              }
 
-reserved = Tok.reserved lexer
+reserved   = Tok.reserved lexer
 reservedOp = Tok.reservedOp lexer
 identifier = Tok.identifier lexer
-parens = Tok.parens lexer
-brackets = Tok.brackets lexer
-braces = Tok.braces lexer
-commaSep = Tok.commaSep lexer
-semi = Tok.semi lexer
-integer = Tok.integer lexer
-chr = Tok.charLiteral lexer
-str = Tok.stringLiteral lexer
-operator = Tok.operator lexer
+parens     = Tok.parens lexer
+brackets   = Tok.brackets lexer
+braces     = Tok.braces lexer
+commaSep   = Tok.commaSep lexer
+semi       = Tok.semi lexer
+integer    = Tok.integer lexer
+chr        = Tok.charLiteral lexer
+str        = Tok.stringLiteral lexer
+operator   = Tok.operator lexer
 
 contents :: Parser a -> Parser a
 contents p = do

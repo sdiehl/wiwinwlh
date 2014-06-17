@@ -18,9 +18,9 @@ data Particle = Particle
     , _vel :: Vector
     } deriving (Show)
 
-$(makeLenses ''Box)
-$(makeLenses ''Particle)
-$(makeLenses ''Vector)
+makeLenses ''Box
+makeLenses ''Particle
+makeLenses ''Vector
 
 step :: StateT Box IO ()
 step = zoom (particles.traverse) $ do
@@ -43,6 +43,4 @@ simulate = do
   execStateT simulation box
 
 main :: IO ()
-main = do
-  final_state <- simulate
-  print final_state
+main = simulate >>= print
