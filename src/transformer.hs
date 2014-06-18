@@ -30,8 +30,6 @@ env = [("x", 2), ("y", 5)]
 ex1 :: Eval Int
 ex1 = eval (Add (Val 2) (Add (Val 1) (Var "x")))
 
-main = return ()
-
 example1, example2 :: Maybe Int
 example1 = runReaderT ex1 env
 example2 = runReaderT ex1 []

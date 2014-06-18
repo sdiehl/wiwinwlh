@@ -10,5 +10,3 @@ example = \case
   Lam a b -> a
   Var a   -> a
   App a b -> example a
-
-main = return ()

@@ -61,5 +61,3 @@ ex1 = mfoldl' (+) 0 (mfromList [1..25])
 
 ex2 :: MyMonoType
 ex2 = omap (+1) (mfromList [1..25])
-
-main = return ()

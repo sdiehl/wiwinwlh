@@ -1,8 +1,5 @@
 import Control.Lens
 
-main = return ()
-
-
 data Value = I Int
            | D Double
            deriving Show

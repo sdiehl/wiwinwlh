@@ -35,5 +35,3 @@ plus_zero :: forall n. SNat n
          -> Eql (Add Z n) n
 plus_zero Zero = Refl
 plus_zero (Succ n) = cong (plus_zero n)
-
-main = return ()
