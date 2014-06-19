@@ -32,7 +32,3 @@ type (!!) m (k :: Symbol) a = (Lookup k m) ~ Just a
 
 value :: Integer
 value = natVal ( Proxy :: (M !! "a") a => Proxy a )
-
---type Get m n a = (Lookup n m ~ Just a)
---expanded :: Get M k v => Proxy k -> Proxy v
---expanded Proxy = Proxy
