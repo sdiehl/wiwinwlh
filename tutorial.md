@@ -2778,7 +2778,7 @@ calculus is three components:
 - **Lam** - A lambda abstraction
 - **App** - An application
 
-![](img/lambda.svg)
+![](img/lambda.png)
 
 There are many different ways of modeling these constructions and data structure representations, but they all
 more or less contain these three elements. For example, a lambda calculus that uses String names on lambda binders
@@ -5090,7 +5090,7 @@ Diagrams is a a parser combinator library for generating vector images to SVG an
 $ runhaskell diagram1.hs -w 256 -h 256 -o diagram1.svg
 ```
 
-![](img/diagram1.svg)
+![](img/diagram1.png)
 
 See: [Diagrams Quick Start Tutorial](http://projects.haskell.org/diagrams/doc/quickstart.html)
 
