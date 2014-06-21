@@ -2555,7 +2555,7 @@ of the type. The bad news is that the general problem of inference in this relax
 general, so we're required to explicitly annotate functions which use RankNTypes or they are otherwise
 inferred as rank 1 and may not typecheck at all.
 
-~~~~ {.haskell include="src/rankn.hs"}
+~~~~ {.haskell include="src/11-quantification/rankn.hs"}
 ~~~~
 
 ```haskell
@@ -2576,14 +2576,14 @@ type, while for existential quantification we can express functions that operate
 Using an existential we can group heterogeneous values together with a functions under the existential, that
 manipulate the data types but whose type signature hides this information.
 
-~~~~ {.haskell include="src/existential.hs"}
+~~~~ {.haskell include="src/11-quantification/existential.hs"}
 ~~~~
 
 The existential over ``SBox`` gathers a collection of values defined purely in terms of their their Show
 interface, no other information is available about the values and they can't be accessed or unpacked in any
 other way.
 
-~~~~ {.haskell include="src/existential2.hs"}
+~~~~ {.haskell include="src/11-quantification/existential2.hs"}
 ~~~~
 
 Use of existentials can be used to recreate certain concepts from the so-called "Object Oriented Paradigm", a
@@ -2607,7 +2607,7 @@ revUni (Just g) = Just (g [3], g "hello")
 revUni Nothing  = Nothing
 ```
 
-~~~~ {.haskell include="src/impredicative.hs"}
+~~~~ {.haskell include="src/11-quantification/impredicative.hs"}
 ~~~~
 
 Use of this extension is rare, although GHC is very liberal about telling us to enable it when one accidentally
@@ -2621,7 +2621,7 @@ type-signature and not the body of the function and it's rigid signatures over t
 Enabling ``-XScopedTypeVariables`` loosens this restriction allowing the type variables mentioned in the
 toplevel to be scoped within the body.
 
-~~~~ {.haskell include="src/scopedtvars.hs"}
+~~~~ {.haskell include="src/11-quantification/scopedtvars.hs"}
 ~~~~
 
 GADTs
@@ -2655,7 +2655,7 @@ Phantom types are paramaters that appear on the left hand side of a type declara
 constrained by the values of the types inhabitants. They are effectively slots for us to encode additional
 information at the type-level.
 
-~~~~ {.haskell include="src/phantom.hs"}
+~~~~ {.haskell include="src/12-gadts/phantom.hs"}
 ~~~~
 
 Notice t type variable ``tag`` does not appear in the right hand side of the declaration. Using this allows us
@@ -2710,7 +2710,7 @@ Using a GADT we can express the type invariants for our language (i.e. only type
 representable). Pattern matching on this GADTs then carries type equality constraints without the need for
 explicit tags.
 
-~~~~ {.haskell include="src/gadt.hs"}
+~~~~ {.haskell include="src/12-gadts/gadt.hs"}
 ~~~~
 
 This time around:
@@ -2750,7 +2750,7 @@ On top of default GADT declaration we can also constrain the parameters of the G
 basic usage Haskell's kind inference can deduce this reasonably well, but combined with some other type system
 extensions that extend the kind system this becomes essential.
 
-~~~~ {.haskell include="src/kindsignatures.hs"}
+~~~~ {.haskell include="src/12-gadts/kindsignatures.hs"}
 ~~~~
 
 Type Equality
@@ -2762,7 +2762,7 @@ constructors, for example we can now express a term which expresses propositiona
 The type ``Eql a b`` is a proof that types ``a`` and ``b`` are equal, by pattern matching on the single
 ``Refl`` constructor we introduce the equality constraint into the body of the pattern match. 
 
-~~~~ {.haskell include="src/equal.hs"}
+~~~~ {.haskell include="src/12-gadts/equal.hs"}
 ~~~~
 
 As of GHC 7.8 these constructors and functions are included in the Prelude in the
@@ -2848,7 +2848,7 @@ Data types like the natural numbers above can also be encoded as lambda expressi
 datatype modeled as indexed parameters to the lambda expressions.  Using this method we can encode recursive
 definition of natural numbers, lists, and even the expression type for the untyped lambda calculus.
 
-~~~~ {.haskell include="src/church_encoding.hs"}
+~~~~ {.haskell include="src/13-lambda-calculus/church_encoding.hs"}
 ~~~~
 
 Although theoretically interesting, Church numbers are not of much practical use in Haskell. Although one
@@ -2859,7 +2859,7 @@ example :: (a -> b -> b) -> b -> b
 example cons nil = cons 1 (cons 2 (cons 3 nil))
 ```
 
-~~~~ {.haskell include="src/church_list.hs"}
+~~~~ {.haskell include="src/13-lambda-calculus/church_list.hs"}
 ~~~~
 
 See: [Mogensen–Scott encoding](http://en.wikipedia.org/wiki/Mogensen-Scott_encoding)
@@ -2885,7 +2885,8 @@ equivalence.
 
 To overcome this we ensure that our substitution function checks the free variables in each subterm before
 performing substitution and introduces new names where neccessary.  Such a substitution is called a
-*capture-avoiding substitution*.
+*capture-avoiding substitution*. There are several techniques to implement capture-avoiding substitutions in
+an efficient way.
 
 de Bruijn Indices
 -----------------
@@ -2903,7 +2904,7 @@ In this system the process of substitution becomes much more mechanical and simp
 and can be made very efficient. Although in this form intution about expresses breaks down and such it is
 better to convert to this kind of form as an interemdiate step after parsing into a named form.
 
-~~~~ {.haskell include="src/debruijn.hs"}
+~~~~ {.haskell include="src/13-lambda-calculus/debruijn.hs"}
 ~~~~
 
 HOAS
@@ -2913,7 +2914,7 @@ Higher Order Abstract Syntax (*HOAS*) is a technique for encoding the lambda cal
 function type of the host language ( i.e. Haskell ) to give us capture-avoiding substitution in our custom
 language by exploiting Haskell's implementation.
 
-~~~~ {.haskell include="src/hoas.hs"}
+~~~~ {.haskell include="src/13-lambda-calculus/hoas.hs"}
 ~~~~
 
 There is no however no safeguard preventing us from generating Haskell functions which do not encode
@@ -2932,7 +2933,7 @@ PHOAS
 A slightly different form of HOAS called PHOAS uses lambda datatype parameterized over the binder type. In
 this form evaluation requires unpacking into a seperate Value type to wrap the lambda expression.
 
-~~~~ {.haskell include="src/phoas.hs"}
+~~~~ {.haskell include="src/13-lambda-calculus/phoas.hs"}
 ~~~~
 
 See: 
@@ -2942,6 +2943,9 @@ See:
 
 Interpreters
 ============
+
+Expression Problem
+------------------
 
 Final Interpreters
 ------------------
