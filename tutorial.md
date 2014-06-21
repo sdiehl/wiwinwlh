@@ -737,7 +737,7 @@ return 4 :: Maybe Int
 -- Just 4
 ```
 
-~~~~ {.haskell include="src/maybe.hs"}
+~~~~ {.haskell include="src/02-monads/maybe.hs"}
 ~~~~
 
 List
@@ -774,7 +774,7 @@ The list comprehension syntax in Haskell can be implemented in terms of the list
 [(x,y) | x <- xs, y <- ys]
 ```
 
-~~~~ {.haskell include="src/list.hs"}
+~~~~ {.haskell include="src/02-monads/list.hs"}
 ~~~~
 
 IO
@@ -893,12 +893,12 @@ local :: (r -> b) -> Reader b a -> Reader r a
 runReader :: Reader r a -> r -> a
 ```
 
-~~~~ {.haskell include="src/reader.hs"}
+~~~~ {.haskell include="src/02-monads/reader.hs"}
 ~~~~
 
 A simple implementation of the Reader monad:
 
-~~~~ {.haskell include="src/reader_impl.hs"}
+~~~~ {.haskell include="src/02-monads/reader_impl.hs"}
 ~~~~
 
 Writer Monad
@@ -912,12 +912,12 @@ execWriter :: Writer w a -> w
 runWriter :: Writer w a -> (a, w)
 ```
 
-~~~~ {.haskell include="src/writer.hs"}
+~~~~ {.haskell include="src/02-monads/writer.hs"}
 ~~~~
 
 An simple implementation of the Writer monad:
 
-~~~~ {.haskell include="src/writer_impl.hs"}
+~~~~ {.haskell include="src/02-monads/writer_impl.hs"}
 ~~~~
 
 This implementation is lazy so some care must be taken that one actually wants only generate a stream of
@@ -937,14 +937,14 @@ evalState :: State s a -> s -> a
 execState :: State s a -> s -> s
 ```
 
-~~~~ {.haskell include="src/state.hs"}
+~~~~ {.haskell include="src/02-monads/state.hs"}
 ~~~~
 
 The state monad is often mistakingly as being impure, but it is in fact entirely pure and the same effect
 could be achieved by explicitly passing state. An simple implementation of the State monad is only a few
 lines:
 
-~~~~ {.haskell include="src/state_impl.hs"}
+~~~~ {.haskell include="src/02-monads/state_impl.hs"}
 ~~~~
 
 Monad Transformers
