@@ -2245,7 +2245,7 @@ execRWS :: RWS r w s a -> r -> s -> (s, w)
 evalRWS :: RWS r w s a -> r -> s -> (a, w)
 ```
 
-~~~~ {.haskell include="src/rws.hs"}
+~~~~ {.haskell include="src/10-advanced-monads/rws.hs"}
 ~~~~
 
 The usual caveat about Writer laziness also applies to RWS.
@@ -2272,13 +2272,13 @@ add :: Int -> Int -> (Int -> r) -> r
 add x y k = k (x + y)
 ```
 
-~~~~ {.haskell include="src/cont.hs"}
+~~~~ {.haskell include="src/10-advanced-monads/cont.hs"}
 ~~~~
 
 Using continuations and especially ``callCC`` can inadvertently create very convoluted control flow so some
 care must taken.
 
-~~~~ {.haskell include="src/cont_impl.hs"}
+~~~~ {.haskell include="src/10-advanced-monads/cont_impl.hs"}
 ~~~~
 
 MonadPlus
@@ -2322,10 +2322,10 @@ msum :: MonadPlus m => [m a] -> m a
 msum =  foldr mplus mzero
 ```
 
-~~~~ {.haskell include="src/monadplus.hs"}
+~~~~ {.haskell include="src/10-advanced-monads/monadplus.hs"}
 ~~~~
 
-~~~~ {.haskell include="src/logict.hs"}
+~~~~ {.haskell include="src/10-advanced-monads/logict.hs"}
 ~~~~
 
 MonadFix
@@ -2353,7 +2353,7 @@ instance MonadFix Maybe where
 
 The regular do-notation can also be extended with ``-XRecursiveDo`` to accomodate recursive monaidc bindings.
 
-~~~~ {.haskell include="src/monadfix.hs"}
+~~~~ {.haskell include="src/10-advanced-monads/monadfix.hs"}
 ~~~~
 
 ST Monad
@@ -2370,7 +2370,7 @@ readSTRef :: STRef s a -> ST s a
 writeSTRef :: STRef s a -> a -> ST s ()
 ```
 
-~~~~ {.haskell include="src/st.hs"}
+~~~~ {.haskell include="src/10-advanced-monads/st.hs"}
 ~~~~
 
 Using the ST monad we can create a new class of efficient purely functional data structures that use mutable
@@ -2399,21 +2399,21 @@ One of the best examples is the Partiality monad which models computations which
 unbounded recursion, but for example we can create a free monad from the ``Maybe`` functor which when can be
 used to fix the call-depth of, for example the [Ackermann function](https://en.wikipedia.org/wiki/Ackermann_function).
 
-~~~~ {.haskell include="src/partiality.hs"}
+~~~~ {.haskell include="src/10-advanced-monads/partiality.hs"}
 ~~~~
 
 The other common use for free monads to build embedded domain languages to describe computations. We can model
 a subset of the IO monad by building up a pure description of the computation inside of the IOFree monad
 and then using the free monad to encode the translation to an effectful IO computation.
 
-~~~~ {.haskell include="src/free_dsl.hs"}
+~~~~ {.haskell include="src/10-advanced-monads/free_dsl.hs"}
 ~~~~
 
 
 An implementation such as the one found in [free](http://hackage.haskell.org/package/free) might look like the
 following:
 
-~~~~ {.haskell include="src/free_impl.hs"}
+~~~~ {.haskell include="src/10-advanced-monads/free_impl.hs"}
 ~~~~
 
 See: 
@@ -2444,7 +2444,7 @@ compile-time.
 To make this more usable we'll use the somewhat esoteric ``-XRebindableSyntax`` allowing us to overload the
 do-notation and if-then-else syntax by providing alternative definitions local to the module.
 
-~~~~ {.haskell include="src/indexed.hs"}
+~~~~ {.haskell include="src/10-advanced-monads/indexed.hs"}
 ~~~~
 
 See: [Fun with Indexed monads](http://www.cl.cam.ac.uk/~dao29/ixmonad/ixmonad-fita14.pdf)
