@@ -4260,7 +4260,7 @@ The ``Typeable`` class be used to create runtime type information for arbitrary 
 typeOf :: Typeable a => a -> TypeRep
 ```
 
-~~~~ {.haskell include="src/typeable.hs"}
+~~~~ {.haskell include="src/18-generics/typeable.hs"}
 ~~~~
 
 Using the Typeable instance allows us to write down a type safe cast function which can safely use
@@ -4295,7 +4295,7 @@ fromDynamic :: Typeable a => Dynamic -> Maybe a
 cast :: (Typeable a, Typeable b) => a -> Maybe b
 ```
 
-~~~~ {.haskell include="src/dynamic.hs"}
+~~~~ {.haskell include="src/18-generics/dynamic.hs"}
 ~~~~
 
 Data
@@ -4411,7 +4411,7 @@ allow us to traverse an arbitrary instance Data and twiddle values based on patt
 types. So let's write down a function ``over`` which increments a ``Value`` type for both for n-tuples and
 lists.
 
-~~~~ {.haskell include="src/data.hs"}
+~~~~ {.haskell include="src/18-generics/data.hs"}
 ~~~~
 
 We can also write generic operations to for instance count the number of parameters in a data type.
@@ -4488,7 +4488,7 @@ type C1 = M1 C
 Using the deriving mechanics GHC can generate this Generic instance for us mechanically, if we were to write
 it by hand for a simple type it might look like this:
 
-~~~~ {.haskell include="src/generics.hs"}
+~~~~ {.haskell include="src/18-generics/generics.hs"}
 ~~~~
 
 Use ``kind!`` in GHCi we can look at the type family ``Rep`` associated with a Generic instance. 
@@ -4572,19 +4572,19 @@ GHC.Generics, we can use GHC to do lots of non-trivial code generation which wor
 
 The [hashable](http://hackage.haskell.org/package/hashable) library allows us to derive hashing functions.
 
-~~~~ {.haskell include="src/hashable.hs"}
+~~~~ {.haskell include="src/18-generics/hashable.hs"}
 ~~~~
 
 The [cereal](http://hackage.haskell.org/package/cereal-0.4.0.1) library allows us to automatically derive a binary
 representation.
 
-~~~~ {.haskell include="src/cereal.hs"}
+~~~~ {.haskell include="src/18-generics/cereal.hs"}
 ~~~~
 
 The [aeson](http://hackage.haskell.org/package/aeson) library allows us to derive JSON representations for
 JSON instances.
 
-~~~~ {.haskell include="src/derive_aeson.hs"}
+~~~~ {.haskell include="src/18-generics/derive_aeson.hs"}
 ~~~~
 
 See: [A Generic Deriving Mechanism for Haskell](http://dreixel.net/research/pdf/gdmh.pdf)
@@ -4613,7 +4613,7 @@ The ``transform`` function will perform a single pass bottom-up transformation o
 The ``rewrite`` function will perform a exhaustive transformation of all terms in the expression to fixed
 point, using Maybe to signify termination.
 
-~~~~ {.haskell include="src/uniplate.hs"}
+~~~~ {.haskell include="src/18-generics/uniplate.hs"}
 ~~~~
 
 Alternatively Uniplate instances can be derived automatically from instances of Data without the need to
@@ -4644,7 +4644,7 @@ rewriteBi :: Biplate from to => (to -> Maybe to) -> from -> from
 
 Biplates generalize plates where the target type isn't necessarily the same as the source.
 
-~~~~ {.haskell include="src/biplate.hs"}
+~~~~ {.haskell include="src/18-generics/biplate.hs"}
 ~~~~
 
 Numbers
@@ -4694,13 +4694,13 @@ fromFloatDigits :: RealFloat a => a -> Scientific
 
 Scientific provides arbitrary-precision number represented using scientific notation.
 
-~~~~ {.haskell include="src/scientific.hs"}
+~~~~ {.haskell include="src/19-numbers/scientific.hs"}
 ~~~~
 
 Statistics
 ----------
 
-~~~~ {.haskell include="src/stats.hs"}
+~~~~ {.haskell include="src/19-numbers/stats.hs"}
 ~~~~
 
 Constructive Reals
@@ -4720,7 +4720,7 @@ atan(x)   = x - 1/3*x^3 + 1/5*x^5 - 1/7*x^7 + 1/9*x^9 - 1/11*x^11 ...
 pi        = 16 * atan (1/5) - 4 * atan (1/239)
 ```
 
-~~~~ {.haskell include="src/creal.hs"}
+~~~~ {.haskell include="src/19-numbers/creal.hs"}
 ~~~~
 
 Data Structures
@@ -4750,7 +4750,7 @@ zipWith :: (a -> b -> c) -> Vector a -> Vector b -> Vector c
 iterateN :: Int -> (a -> a) -> a -> Vector a
 ```
 
-~~~~ {.haskell include="src/vector.hs"}
+~~~~ {.haskell include="src/20-data-structures/vector.hs"}
 ~~~~
 
 See: [Numerical Haskell: A Vector Tutorial](http://www.haskell.org/haskellwiki/Numeric_Haskell:_A_Vector_Tutorial)
@@ -4768,25 +4768,25 @@ and writes. When needed a static Vector can be created to/from the ``MVector`` u
 functions.
 
 
-~~~~ {.haskell include="src/vector_mutable.hs"}
+~~~~ {.haskell include="src/20-data-structures/vector_mutable.hs"}
 ~~~~
 
 Map
 ---
 
-~~~~ {.haskell include="src/map.hs"}
+~~~~ {.haskell include="src/20-data-structures/map.hs"}
 ~~~~
 
 Tree
 ----
 
-~~~~ {.haskell include="src/tree.hs"}
+~~~~ {.haskell include="src/20-data-structures/tree.hs"}
 ~~~~
 
 Set
 ---
 
-~~~~ {.haskell include="src/set.hs"}
+~~~~ {.haskell include="src/20-data-structures/set.hs"}
 ~~~~
 
 Unordered-Containers
@@ -4802,7 +4802,7 @@ Both the ``HashMap`` and ``HashSet`` are purely functional data structures that 
 the ``containers`` equivalents but with more efficient space and time performance. Additionally all stored
 elements must have a ``Hashable`` instance.
 
-~~~~ {.haskell include="src/unordered.hs"}
+~~~~ {.haskell include="src/20-data-structures/unordered.hs"}
 ~~~~
 
 See: [Johan Tibell: Announcing Unordered Containers](http://blog.johantibell.com/2012/03/announcing-unordered-containers-02.html)
@@ -4812,7 +4812,7 @@ Hashtables
 
 Hashtables provides hashtables with efficient lookup within the ST or IO monad.
 
-~~~~ {.haskell include="src/hashtables.hs"}
+~~~~ {.haskell include="src/20-data-structures/hashtables.hs"}
 ~~~~
 
 ```haskell
@@ -4829,7 +4829,7 @@ little bit of data wrapping makes it a little more straightforward to use. The l
 well-suited for large graph-theoretic operations but is perfectly fine for example, to use in a typechecker
 which need to resolve strongly connected components of the module definition graph.
 
-~~~~ {.haskell include="src/graph.hs"}
+~~~~ {.haskell include="src/20-data-structures/graph.hs"}
 ~~~~
 
 So for example we can construct a simple graph:
@@ -4889,7 +4889,7 @@ A dlist is a list-like structure that is optimized for O(1) append operations, i
 encoding of the list structure. It is specifically suited for operations which are append-only and need only
 access it when manifesting the entire structure. It is particularly well-suited for use in the Writer monad.
 
-~~~~ {.haskell include="src/dlist.hs"}
+~~~~ {.haskell include="src/20-data-structures/dlist.hs"}
 ~~~~
 
 Sequence
@@ -4898,7 +4898,7 @@ Sequence
 The sequence data structure behaves structurally similar to list but is optimized for append/prepend
 operations and traversal.
 
-~~~~ {.haskell include="src/sequence.hs"}
+~~~~ {.haskell include="src/20-data-structures/sequence.hs"}
 ~~~~
 
 Matrices and HBlas
@@ -4917,7 +4917,7 @@ Which are probably best illustrated.
 
 The calculations have a particully nice implementation in Haskell in terms of scans over indicies.
 
-~~~~ {.haskell include="src/matrix_index.hs"}
+~~~~ {.haskell include="src/20-data-structures/matrix_index.hs"}
 ~~~~
 
 Unboxed matrices of this type can also be passed to C or Fortran libraries such BLAS or LAPACK linear algebra
@@ -4930,7 +4930,7 @@ routine takes two pointers to a sequence of ``double`` values of two matrices of
 n)`` and performs efficient matrix multiplication writing the resulting data through a pointer to a ``(m ×
 n)`` matrix.
 
-~~~~ {.haskell include="src/hblas.hs"}
+~~~~ {.haskell include="src/20-data-structures/hblas.hs"}
 ~~~~
 
 Hopefully hblas and [numerical-core](https://github.com/wellposed/numerical-core) libraries will serve as a
@@ -4946,10 +4946,10 @@ Pure Functions
 
 Wrapping pure C functions with primitive types is trivial.
 
-~~~~ {.cpp include="src/simple.c"}
+~~~~ {.cpp include="src/21-ffi/simple.c"}
 ~~~~
 
-~~~~ {.haskell include="src/simple_ffi.hs"}
+~~~~ {.haskell include="src/21-ffi/simple_ffi.hs"}
 ~~~~
 
 Storable Arrays
@@ -4971,10 +4971,10 @@ To pass arrays from Haskell to C we can again use Storable Vector and several un
 foreign pointer to the underlying data that can be handed off to C. Once we're in C land, nothing will protect
 us from doing evil things to memory!
 
-~~~~ {.cpp include="src/qsort.c"}
+~~~~ {.cpp include="src/21-ffi/qsort.c"}
 ~~~~
 
-~~~~ {.haskell include="src/ffi.hs"}
+~~~~ {.haskell include="src/21-ffi/ffi.hs"}
 ~~~~
 
 The names of foreign functions from a C specific header file can qualified.
