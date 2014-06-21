@@ -3725,7 +3725,7 @@ data Proxy a = Proxy
 Using the polykinded ``Proxy`` type allows us to write down type class functions which over constructors of
 arbitrary kind arity.
 
-~~~~ {.haskell include="src/kindpoly.hs"}
+~~~~ {.haskell include="src/17-promotion/kindpoly.hs"}
 ~~~~
 
 **AnyK**
@@ -3778,7 +3778,7 @@ type Baz = 'Baz
 Combining this with type families we see we can not write meaningful, meaningful type-level functions by
 lifting types to the kind level.
 
-~~~~ {.haskell include="src/typefamily.hs"}
+~~~~ {.haskell include="src/17-promotion/typefamily.hs"}
 ~~~~
 
 Vectors
@@ -3788,7 +3788,7 @@ Using this new structure we can create a ``Vec`` type which is parameterized by 
 element type now that we have a kind language rich enough to encode the successor type in the kind signature
 of the generalized algebraic datatype. 
 
-~~~~ {.haskell include="src/datakinds.hs"}
+~~~~ {.haskell include="src/17-promotion/datakinds.hs"}
 ~~~~
 
 So now if we try to zip two ``Vec`` types with the wrong shape then we get a error at compile-time about the
@@ -3805,7 +3805,7 @@ The same technique we can use to create a container which is statically indexed 
 such that if we try to take the head of a empty list we'll get a compile-time error, or stated equivalently we
 have an obligation to prove to the compiler that the argument we hand to the head function is non-empty.
 
-~~~~ {.haskell include="src/nonempty.hs"}
+~~~~ {.haskell include="src/17-promotion/nonempty.hs"}
 ~~~~
 
 ```haskell
@@ -3829,10 +3829,10 @@ GHC's type literals can also be used in place of explicit Peano arithmetic,
 GHC 7.6 is very conservative about performing reduction, GHC 7.8 is much less so and will can solve many
 typelevel constraints involving natural numbers but sometimes still needs a little coaxing.
 
-~~~~ {.haskell include="src/typenat.hs"}
+~~~~ {.haskell include="src/17-promotion/typenat.hs"}
 ~~~~
 
-~~~~ {.haskell include="src/typenat_cmp.hs"}
+~~~~ {.haskell include="src/17-promotion/typenat_cmp.hs"}
 ~~~~
 
 See: [Type-Level Literals](http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-level-literals.html)
@@ -3867,7 +3867,7 @@ gcastWith :: (a :~: b) -> (a ~ b => r) -> r
 With this we have a much stronger language for writing restrictions that can be checked at a compile-time, and
 a mechanism that will later allow us to write more advanced proofs.
 
-~~~~ {.haskell include="src/type_equality.hs"}
+~~~~ {.haskell include="src/17-promotion/type_equality.hs"}
 ~~~~
 
 Proxy
@@ -3999,7 +3999,7 @@ Singleton types are an integral part of the small cottage industry of faking dep
 constructing types with terms impredicated upon values. Singleton types are a way of "cheating" by modeling
 the map between types and values as a structural property of the type.
 
-~~~~ {.haskell include="src/singleton_class.hs"}
+~~~~ {.haskell include="src/17-promotion/singleton_class.hs"}
 ~~~~
 
 The builtin singleton types provided in GHC.TypeLits have the useful implementation that type-level values can
@@ -4013,7 +4013,7 @@ natVal :: KnownNat n => proxy n -> Integer
 symbolVal :: KnownSymbol n => proxy n -> String
 ```
 
-~~~~ {.haskell include="src/singleton.hs"}
+~~~~ {.haskell include="src/17-promotion/singleton.hs"}
 ~~~~
 
 Closed Type Families
@@ -4028,13 +4028,13 @@ functions over types.
 For example consider if we wanted to write a function which counts the arguments in the type of a function and
 reifies at the value-level.
 
-~~~~ {.haskell include="src/countargs.hs"}
+~~~~ {.haskell include="src/17-promotion/countargs.hs"}
 ~~~~
 
 The variety of functions we can now write down are rather remarkable, allowing us to write meaningful logic at
 the type level.
 
-~~~~ {.haskell include="src/closed_typefamily.hs"}
+~~~~ {.haskell include="src/17-promotion/closed_typefamily.hs"}
 ~~~~
 
 The results of type family functions need not necessarily be kinded as ``(*)`` either. For example using Nat
@@ -4084,13 +4084,13 @@ type family EqList a b where
 Promoted Symbols
 ----------------
 
-~~~~ {.haskell include="src/hasfield.hs"}
+~~~~ {.haskell include="src/17-promotion/hasfield.hs"}
 ~~~~
 
 Since record is fundamentally no different from the tuple we can also do the same kind of construction over
 record field names.
 
-~~~~ {.haskell include="src/typelevel_fields.hs"}
+~~~~ {.haskell include="src/17-promotion/typelevel_fields.hs"}
 ~~~~
 
 Notably this approach is mostly just all boilerplate class instantiation which could be abstracted away using
@@ -4101,7 +4101,7 @@ HLists
 
 A heterogeneous list is a cons list whose type statically encodes the ordered types of of it's values.
 
-~~~~ {.haskell include="src/hlist.hs"}
+~~~~ {.haskell include="src/17-promotion/hlist.hs"}
 ~~~~
 
 Of course this immediately begs the question of how to print such a list out to a string in the presence of
@@ -4109,7 +4109,7 @@ type-heterogeneity. In this case we can use type-families combined with constrai
 over the HLists parameters to generate the aggregate constraint that all types in the HList are Showable, and
 then derive the Show instance.
 
-~~~~ {.haskell include="src/constraint_list.hs"}
+~~~~ {.haskell include="src/17-promotion/constraint_list.hs"}
 ~~~~
 
 Type Map
@@ -4120,7 +4120,7 @@ to store information at compile-time. For example a tyope-level association list
 between type-level symbols and any other promotable types. Together with type-families we can write down
 type-level traveral and lookup fuctions.
 
-~~~~ {.haskell include="src/typemap.hs"}
+~~~~ {.haskell include="src/17-promotion/typemap.hs"}
 ~~~~
 
 If we ask GHC to expand out the type signature we can view the explicit implementation of the type-level map
@@ -4185,7 +4185,7 @@ the expected values to complete the program.
 Recall from our discussion of propositional equality from GADTs that we actually have such machinery to do
 this!
 
-~~~~ {.haskell include="src/reverse.hs"}
+~~~~ {.haskell include="src/17-promotion/reverse.hs"}
 ~~~~
 
 One might consider whether we could avoid using the singleton trick and just use type-level natural numbers,
@@ -4236,7 +4236,7 @@ some planned changes to solver that should be able to resolve these issues.
 As an aside this is a direct transliteration of the equivalent proof in Agda, which is accomplished via the
 same method but without the song and dance to get around the lack of dependent types.
 
-~~~~ {.haskell include="src/Vector.agda"}
+~~~~ {.haskell include="src/17-promotion/Vector.agda"}
 ~~~~
 
 Generics
