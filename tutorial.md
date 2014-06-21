@@ -1793,7 +1793,7 @@ Unfortunately for historical reasons the names exported by foldable quite often 
 the Prelude, either import them qualified or just disable the Prelude. The operations in the Foldable all
 specialize to the same behave the same as the ones Prelude for List types.
 
-~~~~ {.haskell include="src/foldable_traversable.hs"}
+~~~~ {.haskell include="src/06-prelude/foldable_traversable.hs"}
 ~~~~
 
 The instances we defined above can also be automatically derived by GHC using several language extensions. The
@@ -1816,7 +1816,7 @@ Split
 The [split](http://hackage.haskell.org/package/split-0.1.1/docs/Data-List-Split.html) package provides a
 variety of missing functions for splitting list and string types.
 
-~~~~ {.haskell include="src/split.hs"}
+~~~~ {.haskell include="src/06-prelude/split.hs"}
 ~~~~
 
 Monad-loops
@@ -1876,7 +1876,7 @@ pack :: String -> Text
 unpack :: Text -> String
 ```
 
-~~~~ {.haskell include="src/text.hs"}
+~~~~ {.haskell include="src/07-text-bytestring/text.hs"}
 ~~~~
 
 See: [Text](http://hackage.haskell.org/package/text-1.1.0.1/docs/Data-Text.html)
@@ -1892,7 +1892,7 @@ pack :: String -> ByteString
 unpack :: ByteString -> String
 ```
 
-~~~~ {.haskell include="src/bytestring.hs"}
+~~~~ {.haskell include="src/07-text-bytestring/bytestring.hs"}
 ~~~~
 
 See: 
@@ -1902,7 +1902,7 @@ See:
 Printf
 ------
 
-~~~~ {.haskell include="src/printf.hs"}
+~~~~ {.haskell include="src/07-text-bytestring/printf.hs"}
 ~~~~
 
 Overloaded Lists
@@ -1929,7 +1929,7 @@ instance IsList [a] where
 [1,2,3] :: (Num (Item l), IsList l) => l
 ```
 
-~~~~ {.haskell include="src/overloadedlist.hs"}
+~~~~ {.haskell include="src/07-text-bytestring/overloadedlist.hs"}
 ~~~~
 
 Applicatives
