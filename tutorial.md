@@ -1977,7 +1977,7 @@ instance Applicative Maybe where
 As a rule of thumb, whenever we would use ``m >>= return . f`` what we probably want is an applicative
 functor, and not a monad.
 
-~~~~ {.haskell include="src/applicative.hs"}
+~~~~ {.haskell include="src/08-applicatives/applicative.hs"}
 ~~~~
 
 The pattern ``f <$> a <*> b ...`` shows us so frequently that there are a family of functions to lift
@@ -1992,8 +1992,6 @@ liftA2 f a b = f <$> a <*> b
 
 liftA3 :: Applicative f => (a -> b -> c -> d) -> f a -> f b -> f c -> f d
 liftA3 f a b c = f <$> a <*> b <*> c
-
-...
 ```
 
 See: [Applicative Programming with Effects](http://www.soi.city.ac.uk/~ross/papers/Applicative.pdf)
@@ -2072,7 +2070,7 @@ One surprising application of typeclasses is the ability to construct functions 
 of arguments by defining instances over function types. The arguments may be of arbitrary type, but the
 resulting collected arguments must either converted into a single type or unpacked into a sum type.
 
-~~~~ {.haskell include="src/variadic.hs"}
+~~~~ {.haskell include="src/08-applicatives/variadic.hs"}
 ~~~~
 
 See: [Polyvariadic functions](http://okmij.org/ftp/Haskell/polyvariadic.html)
@@ -2096,7 +2094,7 @@ try :: Exception e => IO a -> IO (Either e a)
 evaluate :: a -> IO a
 ```
 
-~~~~ {.haskell include="src/ioexception.hs"}
+~~~~ {.haskell include="src/09-errors/ioexception.hs"}
 ~~~~
 
 Exceptions
@@ -2106,7 +2104,7 @@ The problem with the previous approach is having to rely on GHC's asynchronous e
 to handle basic operations. The ``exceptions`` provides the same API as ``Control.Exception`` but loosens the
 dependency on IO.
 
-~~~~ {.haskell include="src/exceptions.hs"}
+~~~~ {.haskell include="src/09-errors/exceptions.hs"}
 ~~~~
 
 See: [exceptions](http://hackage.haskell.org/package/exceptions)
@@ -2116,13 +2114,13 @@ Either
 
 The instance of the Either monad is simple, note the bias toward Left when binding.
 
-~~~~ {.haskell include="src/either_impl.hs"}
+~~~~ {.haskell include="src/09-errors/either_impl.hs"}
 ~~~~
 
 The silly example one always sees is writing safe division function that fails out with a Left value when a
 division by zero happens and holds the resulting value in Right otherwise.
 
-~~~~ {.haskell include="src/either.hs"}
+~~~~ {.haskell include="src/09-errors/either.hs"}
 ~~~~
 
 This is admittedly pretty stupid but captures the essence of why Either/EitherT is an suitable monad for
@@ -2135,7 +2133,7 @@ Another slightly clumsy method is to use the ``ErrorT`` transformer composed wit
 into an ``Either Exception a``. This method is simple but doesn't compose well depending on the situation and
 interaction with IO.
 
-~~~~ {.haskell include="src/errors.hs"}
+~~~~ {.haskell include="src/09-errors/errors.hs"}
 ~~~~
 
 EitherT
@@ -2178,7 +2176,7 @@ tryHead :: Monad m => e -> [a] -> EitherT e m a
 tryAt :: Monad m => e -> [a] -> Int -> EitherT e m a
 ```
 
-~~~~ {.haskell include="src/eithert.hs"}
+~~~~ {.haskell include="src/09-errors/eithert.hs"}
 ~~~~
 
 See:
@@ -2207,7 +2205,7 @@ instance Monad ((->) r) where
 
 This just uses a prefix form of the arrow type operator.
 
-~~~~ {.haskell include="src/function.hs"}
+~~~~ {.haskell include="src/10-advanced-monads/function.hs"}
 ~~~~
 
 ```haskell
