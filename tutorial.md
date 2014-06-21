@@ -1112,7 +1112,7 @@ MonadTrans (t :: (* -> *) -> * -> *)
 So for example if we wanted to form a composite computation using both the Reader and Maybe monads we can now
 could the Maybe inside of a ``ReaderT`` to form ``ReaderT t Maybe a``.
 
-~~~~ {.haskell include="src/transformer.hs"}
+~~~~ {.haskell include="src/03-monad-transformers/transformer.hs"}
 ~~~~
 
 The fundamental limitation of this approach is that we find ourselves ``lift.lift.lift``ing and
@@ -1127,7 +1127,7 @@ and numeric types can often drastically reduce accidental errors.  Using ``-XGen
 can recover the functionality of instances of the underlying type.
 
 
-~~~~ {.haskell include="src/newtype.hs"}
+~~~~ {.haskell include="src/03-monad-transformers/newtype.hs"}
 ~~~~
 
 ```haskell
@@ -1142,7 +1142,7 @@ Using newtype deriving with the mtl library typeclasses we can produce flattened
 require explicit lifting in the transform stack. For example a little stack machine the Reader Writer and
 State monads.
 
-~~~~ {.haskell include="src/newtype_deriving.hs"}
+~~~~ {.haskell include="src/03-monad-transformers/newtype_deriving.hs"}
 ~~~~
 
 Efficiency
@@ -1274,7 +1274,7 @@ When the toplevel declarations of a module are generalized the monomorphism rest
 are not generalized and instead are instantiated with a monotype tried sequentially from the list specified by
 the ``default`` which is normally `Integer` then `Double`.
 
-~~~~ {.haskell include="src/monomorphism.hs"}
+~~~~ {.haskell include="src/04-extensions/monomorphism.hs"}
 ~~~~
 
 As of GHC 7.8 the monomorphism restriction is switched off by default in GHCi.
@@ -1319,7 +1319,7 @@ these extensions is security auditing.
 {-# LANGUAGE Trustworthy #-}
 ```
 
-~~~~ {.haskell include="src/safe.hs"}
+~~~~ {.haskell include="src/04-extensions/safe.hs"}
 ~~~~
 
 ```haskell
@@ -1346,7 +1346,7 @@ combine env x y
 View Patterns
 -------------
 
-~~~~ {.haskell include="src/views.hs"}
+~~~~ {.haskell include="src/04-extensions/views.hs"}
 ~~~~
 
 Misc Syntax Extensions
@@ -1431,7 +1431,7 @@ pattern TArr t1 t2 = TApp (TApp (TCon "(->)") t1) t2
 
 So now we can write an eliminator and constructor for arrow type very naturally.
 
-~~~~ {.haskell include="src/patterns.hs"}
+~~~~ {.haskell include="src/04-extensions/patterns.hs"}
 ~~~~
 
 Laziness
