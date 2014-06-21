@@ -476,7 +476,7 @@ What's not immediately apparent is that they are used extensively throughout the
 reasons others for historical reasons. The canonical example is the ``head`` function which as written ``[a]
 -> a`` could not be well-typed without the bottom.
 
-~~~~ {.haskell include="src/bottoms.hs"}
+~~~~ {.haskell include="src/01-basics/bottoms.hs"}
 ~~~~
 
 It's rare to see these partial functions thrown around carelessly in production code and the preferred method
@@ -2459,7 +2459,7 @@ Universal quanitfication the primary mechanism of encoding polymorphism in Haske
 quantification is that we can express functions which operate the same way for a set of types and whose
 function behavior is entirely determined *only* by the behavior of all types in this span.
 
-~~~~ {.haskell include="src/universal.hs"}
+~~~~ {.haskell include="src/11-quantification/universal.hs"}
 ~~~~
 
 Normally quantifiers are omitted in type signatures since in Haskell's vanilla surface language it is
