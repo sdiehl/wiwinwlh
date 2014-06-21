@@ -2958,7 +2958,7 @@ For example we can write a small language that includes basic arithmetic, and th
 expression language with a multiplication operator without changing the base. At the same time our interpeter
 interpreter logic remains invariant under extension with new expressions.
 
-~~~~ {.haskell include="src/fext.hs"}
+~~~~ {.haskell include="src/14-interpreters/fext.hs"}
 ~~~~
 
 Finally Tagless
@@ -2967,7 +2967,7 @@ Finally Tagless
 Writing an evaluator for the lambda calculus can likewise also be modeled with a final interpreter and a
 Identity functor.
 
-~~~~ {.haskell include="src/final.hs"}
+~~~~ {.haskell include="src/14-interpreters/final.hs"}
 ~~~~
 
 See: [Typed Tagless Interpretations and Typed Compilation](http://okmij.org/ftp/tagless-final/)
@@ -3080,12 +3080,12 @@ transformation logic!
 
 For example a construction of the natural numbers in this form:
 
-~~~~ {.haskell include="src/initial.hs"}
+~~~~ {.haskell include="src/14-interpreters/initial.hs"}
 ~~~~
 
 Or for example an interpreter for a small expression language that depends on a scoping dictionary.
 
-~~~~ {.haskell include="src/initial_interpreter.hs"}
+~~~~ {.haskell include="src/14-interpreters/initial_interpreter.hs"}
 ~~~~
 
 What's especially nice about this approach is how naturally catamorphisms compose into efficient
@@ -3096,10 +3096,14 @@ compose :: Functor f => (f (Fix f) -> c) -> (a -> Fix f) -> a -> c
 compose f g = f . unFix . g
 ```
 
+* [Understanding F-Algebras](https://www.fpcomplete.com/user/bartosz/understanding-algebras)
+
+recursion-schemes
+-----------------
+
 See: 
 
 * [recursion-schemes](http://hackage.haskell.org/package/recursion-schemes)
-* [Understanding F-Algebras](https://www.fpcomplete.com/user/bartosz/understanding-algebras)
 
 Testing
 =======
@@ -3127,7 +3131,7 @@ forAll :: (Show a, Testable prop) => Gen a -> (a -> prop) -> Property
 choose :: Random a => (a, a) -> Gen a
 ```
 
-~~~~ {.haskell include="src/qcheck.hs"}
+~~~~ {.haskell include="src/15-testing/qcheck.hs"}
 ~~~~
 
 ```bash
@@ -3143,7 +3147,7 @@ $ runhaskell qcheck.hs
 The test data generator can be extended with custom types and refined with predicates that restrict the domain
 of cases to test.
 
-~~~~ {.haskell include="src/arbitrary.hs"}
+~~~~ {.haskell include="src/15-testing/arbitrary.hs"}
 ~~~~
 
 See: [QuickCheck: An Automatic Testing Tool for Haskell](http://www.cse.chalmers.se/~rjmh/QuickCheck/manual.html)
@@ -3173,7 +3177,7 @@ sample' :: Gen a -> IO [a]
 
 It is useful to generate test cases over *all* possible inputs of a program up to some depth.
 
-~~~~ {.haskell include="src/smallcheck.hs"}
+~~~~ {.haskell include="src/15-testing/smallcheck.hs"}
 ~~~~
 
 ```haskell
@@ -3193,13 +3197,13 @@ there exist [1.0] [0.5] such that
 Just like for QuickCheck we can implement series instances for our custom datatypes. For example there is no
 default instance for Vector, so let's implement one:
 
-~~~~ {.haskell include="src/smallcheck_series.hs"}
+~~~~ {.haskell include="src/15-testing/smallcheck_series.hs"}
 ~~~~
 
 SmallCheck can also use Generics to derive Serial instances, for example to enumerate all trees of a certain
 depth we might use:
 
-~~~~ {.haskell include="src/smallcheck_tree.hs"}
+~~~~ {.haskell include="src/15-testing/smallcheck_tree.hs"}
 ~~~~
 
 QuickSpec
@@ -3212,7 +3216,7 @@ Of course the fundamental limitation of this approach is that a function may not
 properties for small cases or for simple function compositions. So in general case this approach won't work,
 but practically it still quite useful.
 
-~~~~ {.haskell include="src/quickspec.hs"}
+~~~~ {.haskell include="src/15-testing/quickspec.hs"}
 ~~~~
 
 Running this we rather see it is able to deduce most of the laws for list functions.
@@ -3303,7 +3307,7 @@ nfIO :: NFData a => IO a -> IO ()
 bench :: Benchmarkable b => String -> b -> Benchmark
 ```
 
-~~~~ {.haskell include="src/criterion.hs"}
+~~~~ {.haskell include="src/15-testing/criterion.hs"}
 ~~~~
 
 ```haskell
@@ -3351,7 +3355,7 @@ Tasty
 Tasty combines all of the testing frameworks into a common API for forming runnable batches of tests and
 collecting the results.
 
-~~~~ {.haskell include="src/tasty.hs"}
+~~~~ {.haskell include="src/15-testing/tasty.hs"}
 ~~~~
 
 ```bash
@@ -3387,7 +3391,7 @@ If a single parameter typeclass expresses a property of a type ( i.e. it's in a 
 multiparamater typeclass expresses relationships between types. For example whether if we wanted to express
 the relation a type can be converted to another type we might use a class like:
 
-~~~~ {.haskell include="src/mparam.hs"}
+~~~~ {.haskell include="src/16-type-families/mparam.hs"}
 ~~~~
 
 Of course now our instances for ``Convertible Int`` are not unique anymore, so there no longer exists a nice
@@ -3395,7 +3399,7 @@ procedure for determining the inferred type of ``b`` from just ``a``. To remedy 
 dependency ``a -> b``, which says tells GHC that an instance ``a`` uniquely determines the instance that b can
 be.  So we'll see that our two instances relating ``Int`` to both ``Integer`` and ``Char`` conflict.
 
-~~~~ {.haskell include="src/mparam_fun.hs"}
+~~~~ {.haskell include="src/16-type-families/mparam_fun.hs"}
 ~~~~
 
 ```haskell
@@ -3419,7 +3423,7 @@ reduction can only allow constraints of the class to become structural smaller t
 implicit computation can now occur *within in the type class instance search*. Combined with a type-level
 representation of Peano numbers we find that we can encode basic arithmetic at the type-level.
 
-~~~~ {.haskell include="src/fundeps.hs"}
+~~~~ {.haskell include="src/16-type-families/fundeps.hs"}
 ~~~~
 
 If the typeclass contexts look similar to Prolog you're not wrong, if one reads the contexts qualifier
@@ -3511,7 +3515,7 @@ For example if we wanted to create more complicated vector structures ( bit-mask
 ... ) that exposed a uniform API but internally handled the differences in their data layout we can use data
 families to accomplish this:
 
-~~~~ {.haskell include="src/datafamily.hs"}
+~~~~ {.haskell include="src/16-type-families/datafamily.hs"}
 ~~~~
 
 Injectivity
@@ -3556,7 +3560,7 @@ ofoldr :: MonoFoldable mono
 For example the text type normally does not admit either any of these type-classes since, but now we can write
 down the instances that model the interface of Foldable and Traversable.
 
-~~~~ {.haskell include="src/mono.hs"}
+~~~~ {.haskell include="src/16-type-families/mono.hs"}
 ~~~~
 
 See: [From Semigroups to Monads](http://fundeps.com/tables/FromSemigroupToMonads.pdf)
@@ -3582,7 +3586,7 @@ head :: NonEmpty a -> a
 head ~(a :| _) = a
 ```
 
-~~~~ {.haskell include="src/noempty.hs"}
+~~~~ {.haskell include="src/16-type-families/noempty.hs"}
 ~~~~
 
 In GHC 7.8 ``-XOverloadedLists`` can be used to avoid the extraneous ``fromList`` and ``toList`` conversions.
@@ -3630,7 +3634,7 @@ Axiom 2: a + suc b = suc (a + b)
 Translated into Haskell our axioms are simply are type definitions and recursing over the inductive datatype
 constitutes the inductive step of our our proof.
 
-~~~~ {.haskell include="src/proof.hs"}
+~~~~ {.haskell include="src/16-type-families/proof.hs"}
 ~~~~
 
 Using the ``TypeOperators`` extension we can also use infix notation at the type-level.
@@ -3672,12 +3676,12 @@ The empty constraint set is indicated by  ``() :: Constraint``.
 For a contrived example if we wanted to create a generic ``Sized`` class that carried with it constraints on
 the elements of the container in question we could achieve this quite simply using type families.
 
-~~~~ {.haskell include="src/constraintkinds.hs"}
+~~~~ {.haskell include="src/16-type-families/constraintkinds.hs"}
 ~~~~
 
 One use-case of this is to capture the typeclass dictionary constrained by a function and reify it as a value.
 
-~~~~ {.haskell include="src/dict.hs"}
+~~~~ {.haskell include="src/16-type-families/dict.hs"}
 ~~~~
 
 Promotion
