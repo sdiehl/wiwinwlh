@@ -1,0 +1,37 @@
+name:               mylibrary
+version:            0.1
+cabal-version:      >= 1.10
+author:             Paul Atreides 
+license:            MIT
+license-file:       LICENSE
+synopsis:           The code must flow.
+category:           Math
+tested-with:        GHC
+build-type:         Simple
+  
+library                    
+    exposed-modules:
+      Library.ExampleModule1
+      Library.ExampleModule2
+
+    build-depends: 
+      base >= 4 && < 5
+
+    default-language: Haskell2010
+
+    ghc-options: -O2 -Wall -fwarn-tabs
+
+executable "example"
+    build-depends: 
+        base >= 4 && < 5,
+        mylibrary == 0.1
+    default-language: Haskell2010
+    main-is: Main.hs    
+
+Test-Suite test
+  type: exitcode-stdio-1.0
+  main-is: Test.hs
+  default-language: Haskell2010
+  build-depends:
+      base >= 4 && < 5,
+      mylibrary == 0.1

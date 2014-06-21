@@ -388,7 +388,7 @@ cabal install hoogle
 
 We can use it by adding a command to our ``ghci.conf``.
 
-~~~~ {.haskell include="src/ghci.conf"}
+~~~~ {.haskell include="src/01-basics/ghci.conf"}
 ~~~~
 
 ```haskell
@@ -493,7 +493,7 @@ When a bottom define in terms of error is invoked it typically will not generate
 the function used to provide assertions ``assert`` can be short circuited to generate position information in
 the place of either ``undefined`` or ``error`` call.
 
-~~~~ {.haskell include="src/fail.hs"}
+~~~~ {.haskell include="src/01-basics/fail.hs"}
 ~~~~
 
 See: [Avoiding Partial Functions](http://www.haskell.org/haskellwiki/Avoiding_partial_functions)
@@ -519,7 +519,7 @@ style of debugging is often unnecessary when we can simply open GHCi and test th
 Haskell does come with a unsafe ``trace`` function which can be used to perform arbitrary print statements
 outside of the IO monad.
 
-~~~~ {.haskell include="src/trace.hs"}
+~~~~ {.haskell include="src/01-basics/trace.hs"}
 ~~~~
 
 The function itself is impure ( it uses ``unsafePerformIO`` under the hood ) and shouldn't be used in stable
