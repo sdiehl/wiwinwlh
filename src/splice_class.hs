@@ -1,8 +1,6 @@
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-{-import Language.Haskell.TH-}
-
 import Class
 
 data PlatonicSolid

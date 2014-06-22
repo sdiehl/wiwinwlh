@@ -5034,7 +5034,7 @@ states.
 The strength of Haskell's purity guarantees that transactions within STM are pure and can always be rolled
 back if a commit fails.
 
-~~~~ {.haskell include="src/stm.hs"}
+~~~~ {.haskell include="src/22-concurrency/stm.hs"}
 ~~~~
 
 See: [Beautiful Concurrency](https://www.fpcomplete.com/school/advanced-haskell/beautiful-concurrency)
@@ -5056,7 +5056,7 @@ fork :: Par () -> Par ()
 spawn :: NFData a => Par a -> Par (IVar a)
 ```
 
-~~~~ {.haskell include="src/par.hs"}
+~~~~ {.haskell include="src/22-concurrency/par.hs"}
 ~~~~
 
 async
@@ -5072,7 +5072,7 @@ concurrently :: IO a -> IO b -> IO (a, b)
 race :: IO a -> IO b -> IO (Either a b)
 ```
 
-~~~~ {.haskell include="src/async.hs"}
+~~~~ {.haskell include="src/22-concurrency/async.hs"}
 ~~~~
 
 Graphics
@@ -5083,7 +5083,7 @@ Diagrams
 
 Diagrams is a a parser combinator library for generating vector images to SVG and a variety of other formats.
 
-~~~~ {.haskell include="src/diagrams.hs"}
+~~~~ {.haskell include="src/23-graphics/diagrams.hs"}
 ~~~~
 
 ```bash
@@ -5149,7 +5149,7 @@ parseA = Add <$> identifier <* char '+' <*> identifier
 Now for instance if we want to parse simple lambda expressions we can encode the parser logic as compositions
 of these combinators which yield the string parser when evaluated under with the ``parse``.
 
-~~~~ {.haskell include="src/simple_parser.hs"}
+~~~~ {.haskell include="src/24-parsing/simple_parser.hs"}
 ~~~~
 
 Custom Lexer
@@ -5170,7 +5170,7 @@ javaStyle    :: LanguageDef st
 
 For instance we'll build on top of the empty language grammar.
 
-~~~~ {.haskell include="src/lexer.hs"}
+~~~~ {.haskell include="src/24-parsing/lexer.hs"}
 ~~~~
 
 See: [Text.ParserCombinators.Parsec.Language](http://hackage.haskell.org/package/parsec-3.1.5/docs/Text-ParserCombinators-Parsec-Language.html)
@@ -5181,7 +5181,7 @@ Simple Parsing
 Putting our lexer and parser together we can write down a more robust parser for our little lambda calculus
 syntax.
 
-~~~~ {.haskell include="src/parser.hs"}
+~~~~ {.haskell include="src/24-parsing/parser.hs"}
 ~~~~
 
 Trying it out:
@@ -5204,7 +5204,7 @@ Stateful Parsing
 For a more complex use, consider parser that are internally stateful, for example adding operators that can
 defined at parse-time and are dynamically added to the ``expressionParser`` table upon definition.
 
-~~~~ {.haskell include="src/parsec_operators.hs"}
+~~~~ {.haskell include="src/24-parsing/parsec_operators.hs"}
 ~~~~
 
 For example input try:
@@ -5229,7 +5229,7 @@ Attoparsec is a parser combinator like Parsec but more suited for bulk parsing o
 instead of parsing language syntax to ASTs. When written properly Attoparsec parsers can be [extremely
 efficient](http://www.serpentine.com/blog/2014/05/31/attoparsec/).
 
-~~~~ {.haskell include="src/attoparsec.hs"}
+~~~~ {.haskell include="src/24-parsing/attoparsec.hs"}
 ~~~~
 
 See: [Text Parsing Tutorial](https://www.fpcomplete.com/school/starting-with-haskell/libraries-and-frameworks/text-manipulation/attoparsec)
@@ -5240,7 +5240,7 @@ Optparse-Applicative
 Optparse applicative is a library for parsing command line options with a interface similar to parsec that
 makes also makes heavy use of monoids to combine operations.
 
-~~~~ {.haskell include="src/optparse_applicative.hs"}
+~~~~ {.haskell include="src/24-parsing/optparse_applicative.hs"}
 ~~~~
 
 See: [optparse-applicative](https://github.com/pcapriotti/optparse-applicative)
@@ -6400,14 +6400,21 @@ s ^. (lens getter setter)       -- getter s
 s  & (lens getter setter) .~ b  -- setter s b
 ```
 
+**Law 1**
+
 ```haskell
--- set something you can get it out
 get l (set l b a) = b
+```
 
--- Second that getting and then setting doesn't change the answer
+**Law 2**
+
+```haskell
 set l (view l a) a = a
+```
 
--- And third, putting twice is the same as putting once, or rather, that the second put wins.
+**Law 3**
+
+```haskell
 set l b1 (set l b2 a) = set l b1 a
 ```
 
