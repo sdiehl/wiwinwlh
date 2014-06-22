@@ -6,8 +6,8 @@ advanced level Haskell topics that don't necessarily have great coverage or that
 where to get going, and then aggregate a bunch of the best external resources for diving into those subjects
 with more depth. Hopefully it still captures the "no bullshit brain dump" style that seemed to be liked.
 
-The source for all code is [available here](https://github.com/sdiehl/wiwinwlh). If there are any errors or
-you think of a more illustrative example feel free to submit a pull request.
+The source for all code is [available here](https://github.com/sdiehl/wiwinwlh/tree/master/src). If there are
+any errors or you think of a more illustrative example feel free to submit a pull request.
 
 This is the second draft of this document.
 
