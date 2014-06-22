@@ -1381,20 +1381,8 @@ operation x =
 
 **Lambda Case**
 
-```haskell
-{-# LANGUAGE LambdaCase #-}
-
-data Exp a
-  = Lam a (Exp a)
-  | Var a
-  | App (Exp a) (Exp a)
-
-example :: Exp a -> a
-example = \case
-  Lam a b -> a
-  Var a   -> a
-  App a b -> example a
-```
+~~~~ {.haskell include="src/04-extensions/lambdacase.hs"}
+~~~~
 
 **Package Imports**
 
@@ -5268,7 +5256,7 @@ large.
 Consider that normally the monad laws ( in the absence of `seq` ) guarantee that these computations should be
 identical. But using lazy IO we can construct a denigrate case.
 
-~~~~ {.haskell include="src/lazyio.hs"}
+~~~~ {.haskell include="src/25-streaming/lazyio.hs"}
 ~~~~
 
 So what we need is a system to guarantee deterministic resource handling with constant memory usage. To that
@@ -5295,19 +5283,19 @@ Pipes is a stream processing library with a strong emphasis on the static semant
 simplest usage is to connect "pipe" functions with a ``(>->)`` composition operator, where each component can
 ``await`` and ``yield`` to push and pull values along the stream.
 
-~~~~ {.haskell include="src/pipes.hs"}
+~~~~ {.haskell include="src/25-streaming/pipes.hs"}
 ~~~~
 
 For example we could construct a "FizzBuzz" pipe.
 
 
-~~~~ {.haskell include="src/pipes_io.hs"}
+~~~~ {.haskell include="src/25-streaming/pipes_io.hs"}
 ~~~~
 
 To continue with the degenerate case we constructed with Lazy IO, consider than we can now compose and sequence
 deterministic actions over files without having to worry about effect order.
 
-~~~~ {.haskell include="src/pipes_file.hs"}
+~~~~ {.haskell include="src/25-streaming/pipes_file.hs"}
 ~~~~
 
 See: [Pipes Tutorial](http://hackage.haskell.org/package/pipes-4.1.0/docs/Pipes-Tutorial.html)
@@ -5335,7 +5323,7 @@ For instance now we can bracket the ZeroMQ socket creation and finalization with
 which guarantees that after successful message delivery we execute the pipes function as expected or on
 failure we halt the execution and finalize the socket.
 
-~~~~ {.haskell include="src/pipes_safe.hs"}
+~~~~ {.haskell include="src/25-streaming/pipes_safe.hs"}
 ~~~~
 
 Conduits
@@ -5359,7 +5347,7 @@ The first initial difference is that await function now returns a ``Maybe`` whic
 termination. The composition operators are also split into a connecting operator (``$$``) and a fusing
 operator (``=$``) for combining Sources and Sink and a Conduit and a Sink respectively.
 
-~~~~ {.haskell include="src/conduit.hs"}
+~~~~ {.haskell include="src/25-streaming/conduit.hs"}
 ~~~~
 
 See: [Conduit Overview](https://www.fpcomplete.com/user/snoyberg/library-documentation/conduit-overview)
@@ -5383,7 +5371,7 @@ toJSON :: ToJSON a => a -> Value
 
 We'll work with this contrived example:
 
-~~~~ {.json include="src/example.json"}
+~~~~ {.json include="src/26-data-formats/example.json"}
 ~~~~
 
 Aeson uses several high performance data structures (Vector, Text, HashMap) by default instead of the naive
@@ -5412,7 +5400,7 @@ In dynamic scripting languages it's common to parse amorphous blobs of JSON with
 then handle validation problems by throwing exceptions while traversing it. We can do the same using Aeson and
 the Maybe monad.
 
-~~~~ {.haskell include="src/aeson_unstructured.hs"}
+~~~~ {.haskell include="src/26-data-formats/aeson_unstructured.hs"}
 ~~~~
 
 **Structured**
@@ -5422,7 +5410,7 @@ separating concerns and handling validation in separate logic. We'd like to desc
 and the invalid case separately. Using Generic also allows Haskell to automatically write the serializer and
 deserializer between our datatype and the JSON string based on the names of record field names.
 
-~~~~ {.haskell include="src/aeson_structured.hs"}
+~~~~ {.haskell include="src/26-data-formats/aeson_structured.hs"}
 ~~~~
 
 Now we get our validated JSON wrapped up into a nicely typed Haskell ADT.
@@ -5457,14 +5445,14 @@ CSV
 
 Cassava is an efficient CSV parser library. We'll work with this tiny snippet from the iris dataset:
 
-~~~~ {.perl include="src/iris.csv"}
+~~~~ {.perl include="src/26-data-formats/iris.csv"}
 ~~~~
 
 **Unstructured**
 
 Just like with Aeson if we really want to work with unstructured data the library accommodates this.
 
-~~~~ {.haskell include="src/cassava_unstructured.hs"}
+~~~~ {.haskell include="src/26-data-formats/cassava_unstructured.hs"}
 ~~~~
 
 We see we get the nested set of stringy vectors:
@@ -5488,7 +5476,7 @@ We see we get the nested set of stringy vectors:
 Just like with Aeson we can use Generic to automatically write the deserializer between our CSV data and our
 custom datatype.
 
-~~~~ {.haskell include="src/cassava_structured.hs"}
+~~~~ {.haskell include="src/26-data-formats/cassava_structured.hs"}
 ~~~~
 
 And again we get a nice typed ADT as a result.
@@ -5524,7 +5512,7 @@ Network & Web Programming
 HTTP
 ----
 
-~~~~ {.haskell include="src/http.hs"}
+~~~~ {.haskell include="src/27-web/http.hs"}
 ~~~~
 
 Warp
@@ -5532,7 +5520,7 @@ Warp
 
 Warp is a web server, it writes data to sockets quickly.
 
-~~~~ {.haskell include="src/warp.hs"}
+~~~~ {.haskell include="src/27-web/warp.hs"}
 ~~~~
 
 See: [Warp](http://aosabook.org/en/posa/warp.html)
@@ -5543,7 +5531,7 @@ Scotty
 Continuing with our trek through web libraries, Scotty is a web microframework similar in principle to Flask
 in Python or Sinatra in Ruby.
 
-~~~~ {.haskell include="src/scotty.hs"}
+~~~~ {.haskell include="src/27-web/scotty.hs"}
 ~~~~
 
 Of importance to note is the Blaze library used here overloads do-notation but is not itself a proper monad.
@@ -5559,7 +5547,7 @@ Acid State
 Acid-state allows us to build a "database on demand" for arbitrary Haskell datatypes that guarantees atomic
 transactions. For example, we can build a simple key-value store wrapped around the Map type.
 
-~~~~ {.haskell include="src/acid.hs"}
+~~~~ {.haskell include="src/28-databases/acid.hs"}
 ~~~~
 
 Persistent
@@ -5804,7 +5792,7 @@ constructor.
 data Int = I# Int#      -- Defined in GHC.Types
 ```
 
-~~~~ {.haskell include="src/prim.hs"}
+~~~~ {.haskell include="src/29-ghc/prim.hs"}
 ~~~~
 
 The function for integer arithmetic used in the ``Num`` typeclass for ``Int`` is just pattern matching on this
@@ -5875,7 +5863,7 @@ mechnanical logic. Probably the most robust is the ``unbound`` library.  For exa
 infer function for a small Hindley-Milner system over a simple typed lambda calculus without having to write
 the name capture and substitution mechanics ourselves.
 
-~~~~ {.haskell include="src/unbound.hs"}
+~~~~ {.haskell include="src/30-languages/unbound.hs"}
 ~~~~
 
 LLVM 
@@ -5900,7 +5888,7 @@ Pretty printer combinators compose logic to print strings.
 ``char``      Renders a character as a ``Doc``
 ``text``      Renders a string as a ``Doc``
 
-~~~~ {.haskell include="src/pretty.hs"}
+~~~~ {.haskell include="src/30-languages/pretty.hs"}
 ~~~~
 
 The pretty printed form of the ``k`` combinator:
@@ -5939,7 +5927,7 @@ runInputT :: Settings IO -> InputT IO a -> IO a
 getInputLine :: String -> InputT IO (Maybe String)
 ```
 
-~~~~ {.haskell include="src/haskelline.hs"}
+~~~~ {.haskell include="src/30-languages/haskelline.hs"}
 ~~~~
 
 Template Haskell
@@ -5958,12 +5946,12 @@ general languages entirely via code-generation.
 
 We've already seen how to write a Parsec parser, now let's write a quasiquoter for it.
 
-~~~~ {.haskell include="src/Quasiquote.hs"}
+~~~~ {.haskell include="src/31-template-haskell/Quasiquote.hs"}
 ~~~~
 
 Testing it out:
 
-~~~~ {.haskell include="src/quasiquote_use.hs"}
+~~~~ {.haskell include="src/31-template-haskell/quasiquote_use.hs"}
 ~~~~
 
 One extremely important feature is the ability to preserve position information so that errors in the embedded
@@ -6022,7 +6010,7 @@ expressions which implement the ``Lift`` type class.
 For example now if we wanted programmatically generate the source for a CUDA kernel to run on a GPU we can
 switch over the CUDA C dialect to emit the C code.
 
-~~~~ {.haskell include="src/cquote.hs"}
+~~~~ {.haskell include="src/31-template-haskell/cquote.hs"}
 ~~~~
 
 Running this we generate:
@@ -6159,7 +6147,7 @@ main = print (my_id "Hello Haskell!")
 As a debugging tool it is useful to be able to dump the reified information out for a given symbol
 interactively, to do so there is a simple little hack.
 
-~~~~ {.haskell include="src/template_info.hs"}
+~~~~ {.haskell include="src/31-template-haskell/template_info.hs"}
 ~~~~
 
 ```haskell
@@ -6221,10 +6209,10 @@ template_haskell_show.hs:1:1: Splicing declarations
     f (a_a5bd, b_a5be) = a_a5bd
 ```
 
-~~~~ {.haskell include="src/Splice.hs"}
+~~~~ {.haskell include="src/31-template-haskell/Splice.hs"}
 ~~~~
 
-~~~~ {.haskell include="src/Insert.hs"}
+~~~~ {.haskell include="src/31-template-haskell/Insert.hs"}
 ~~~~
 
 At the point of the splice all variables and types used must be in scope, so it must appear after their
@@ -6240,10 +6228,10 @@ Extending our quasiquotation from above now that we have TemplateHaskell machine
 class of logic that it uses to pass Haskell values in and pull Haskell values out via pattern matching on
 templated expressions.
 
-~~~~ {.haskell include="src/Antiquote.hs"}
+~~~~ {.haskell include="src/31-template-haskell/Antiquote.hs"}
 ~~~~
 
-~~~~ {.haskell include="src/use_antiquote.hs"}
+~~~~ {.haskell include="src/31-template-haskell/use_antiquote.hs"}
 ~~~~
 
 Templated Type Families
@@ -6269,10 +6257,10 @@ For example the modulus operator would be non-trivial to implement at type-level
 ``enumFamily`` function to splice in type-family which simply enumerates all possible pairs of numbers up to a
 desired depth.
 
-~~~~ {.haskell include="src/EnumFamily.hs"}
+~~~~ {.haskell include="src/31-template-haskell/EnumFamily.hs"}
 ~~~~
 
-~~~~ {.haskell include="src/enum_family_splice.hs"}
+~~~~ {.haskell include="src/31-template-haskell/enum_family_splice.hs"}
 ~~~~
 
 In practice GHC seems fine with enormous type-family declarations although compile-time may
@@ -6283,7 +6271,7 @@ declarations inside of a quasiquoter and then promoting the logic to the type-le
 to write a value-level and type-level map function for our HList this would normally involve quite a bit of
 boilerplate, now it can stated very concisely.
 
-~~~~ {.haskell include="src/singleton_promote.hs"}
+~~~~ {.haskell include="src/31-template-haskell/singleton_promote.hs"}
 ~~~~
 
 Templated Type Classes
@@ -6293,14 +6281,14 @@ Probably the most common use of Template Haskell is the automatic generation of 
 if we wanted to write a simple Pretty printing class for a flat data structure that derived the ppr method in
 terms of the names of the constructors in the AST we could write a simple instance.
 
-~~~~ {.haskell include="src/Class.hs"}
+~~~~ {.haskell include="src/31-template-haskell/Class.hs"}
 ~~~~
 
 In a separate file invoke the pretty instance at the toplevel, and with ``--ddump-splice`` if we want to view
 the spliced class instance.
 
 
-~~~~ {.haskell include="src/splice_class.hs"}
+~~~~ {.haskell include="src/31-template-haskell/splice_class.hs"}
 ~~~~
 
 Templated Singletons
@@ -6310,19 +6298,19 @@ In the previous discussion about singletons, we introduced quite a bit of boiler
 singletons. This can be partially abated by using Template Haskell to mechanically generate the instances and
 classes.
 
-~~~~ {.haskell include="src/Singleton.hs"}
+~~~~ {.haskell include="src/31-template-haskell/Singleton.hs"}
 ~~~~
 
 Trying it out by splicing code at the expression level, type level and as patterns.
 
-~~~~ {.haskell include="src/splice_singleton.hs"}
+~~~~ {.haskell include="src/31-template-haskell/splice_singleton.hs"}
 ~~~~
 
 The [singletons](https://hackage.haskell.org/package/singletons) package takes this idea to it's logical
 conclusion allow us to toplevel declarations of seemingly regular Haskell syntax with singletons spliced in,
 the end result resembles the constructions in a dependently typed language if one squints hard enough.
 
-~~~~ {.haskell include="src/singleton_lib.hs"}
+~~~~ {.haskell include="src/31-template-haskell/singleton_lib.hs"}
 ~~~~
 
 After template splicing we see that we now that several new constructs in scope:
@@ -6442,7 +6430,7 @@ g     :: Lens b c  ~  (c -> f c) -> (b -> f b)
 f . g :: Lens a c  ~  (c -> f c) -> (a -> f a)
 ```
 
-~~~~ {.haskell include="src/lens_impl.hs"}
+~~~~ {.haskell include="src/32-lenses/lens_impl.hs"}
 ~~~~
 
 It turns out that these simple ideas lead to a very rich set of composite combinators that be used to perform
@@ -6514,13 +6502,13 @@ makeLenses ''Foo
 The simplest usage of lens is simply as a more compositional way of dealing with record access and updates,
 shown below in comparison with traditional record syntax:
 
-~~~~ {.haskell include="src/simplelens.hs"}
+~~~~ {.haskell include="src/32-lenses/simplelens.hs"}
 ~~~~
 
 Of course this just scratches the surface of lens, the real strength comes when dealing with complex and
 deeply nested structures:
 
-~~~~ {.haskell include="src/lens.hs"}
+~~~~ {.haskell include="src/32-lenses/lens.hs"}
 ~~~~
 
 Lens also provides us with an optional dense slurry of operators that expand into combinations of the core
@@ -6535,7 +6523,7 @@ Surprisingly lenses can be used as a very general foundation to write logic over
 structures and computations and subsume many of the existing patterns found in the Prelude under a new common
 framework.
 
-~~~~ {.haskell include="src/complexlens.hs"}
+~~~~ {.haskell include="src/32-lenses/complexlens.hs"}
 ~~~~
 
 See: 
@@ -6550,7 +6538,7 @@ lens-family
 
 The interface for ``lens-family`` is very similar to ``lens`` but with a smaller API and core.
 
-~~~~ {.haskell include="src/lens_family.hs"}
+~~~~ {.haskell include="src/32-lenses/lens_family.hs"}
 ~~~~
 
 Polymorphic Update
@@ -6566,7 +6554,7 @@ type Lens a a' b b' = forall f. Functor f => (b -> f b') -> (a -> f a')
 --             +---- b' : Type of output target
 ```
 
-~~~~ {.haskell include="src/lenspoly_impl.hs"}
+~~~~ {.haskell include="src/32-lenses/lenspoly_impl.hs"}
 ~~~~
 
 Prisms
@@ -6585,7 +6573,7 @@ the lens library is constructed via ``prism`` for polymorphic lens ( those which
 parameter) and ``prism'`` for those which are strictly monomorphic. Just as with the Lens instance
 ``makePrisms`` can be used to abstract away this boilerplate via Template Haskell.
 
-~~~~ {.haskell include="src/prism.hs"}
+~~~~ {.haskell include="src/32-lenses/prism.hs"}
 ~~~~
 
 ```haskell
@@ -6606,7 +6594,7 @@ In keeping with the past examples, I'll try to derive Prisms from first principl
 task as they typically are built on top of machinery in other libraries. This a (very) rough approximation of
 how one might do it using ``lens-family-core`` types.
 
-~~~~ {.haskell include="src/prism_impl.hs"}
+~~~~ {.haskell include="src/32-lenses/prism_impl.hs"}
 ~~~~
 
 State and Zoom
@@ -6621,7 +6609,7 @@ Within the context of the state monad there are a particularly useful set of len
 So for example if we wanted to write a little physics simulation of the random motion of particles in a box.
 We can use the ``zoom`` function to modify the state of our particles in each step of the simulation.
 
-~~~~ {.haskell include="src/zoom.hs"}
+~~~~ {.haskell include="src/32-lenses/zoom.hs"}
 ~~~~
 
 This results in a final state like the following.
@@ -6669,12 +6657,12 @@ Lens + Aeson
 One of the best showcases for lens is writing transformations over arbitrary JSON structures. For example
 consider some sample data related to Kiva loans.
 
-~~~~ {.json include="src/kiva.json"}
+~~~~ {.json include="src/32-lenses/kiva.json"}
 ~~~~
 
 Then using ``Data.Aeson.Lens`` we can traverse the structure using our lens combinators.
 
-~~~~ {.haskell include="src/lens_aeson.hs"}
+~~~~ {.haskell include="src/32-lenses/lens_aeson.hs"}
 ~~~~
 
 ```haskell
@@ -6701,7 +6689,7 @@ each object.
 With kind polymorphism enabled we can write down the general category parameterized by a type variable "c" for
 category, and the instance ``Hask`` the category of Haskell types with functions between types as morphisms.
 
-~~~~ {.haskell include="src/categories.hs"}
+~~~~ {.haskell include="src/33-categories/categories.hs"}
 ~~~~
 
 Isomorphisms
@@ -6723,7 +6711,7 @@ f'. f  = id
 
 For example the types ``Either () a`` and ``Maybe a`` are isomorphic.
 
-~~~~ {.haskell include="src/iso.hs"}
+~~~~ {.haskell include="src/33-categories/iso.hs"}
 ~~~~
 
 ```haskell
@@ -6741,7 +6729,7 @@ One of the central ideas is the notion of duality, that reversing some internal 
 structure with a "mirror" set of theorems. The dual of a category reverse the direction of the morphisms
 forming the category C<sup>Op</sup>.
 
-~~~~ {.haskell include="src/dual.hs"}
+~~~~ {.haskell include="src/33-categories/dual.hs"}
 ~~~~
 
 See:
@@ -6754,7 +6742,7 @@ Functors
 Functors are mappings between the objects and morphisms of categories that preserve identities and
 composition.
 
-~~~~ {.haskell include="src/functors.hs"}
+~~~~ {.haskell include="src/33-categories/functors.hs"}
 ~~~~
 
 ```haskell
@@ -6901,7 +6889,7 @@ f >=> return ≡  f
 
 Stated simply that the monad laws above are just the category laws in the Kleisli category.
 
-~~~~ {.haskell include="src/kleisli.hs"}
+~~~~ {.haskell include="src/33-categories/kleisli.hs"}
 ~~~~
 
 For example, ``Just`` is just an identity morphism in the Kleisli category of the ``Maybe`` monad.
