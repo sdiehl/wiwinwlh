@@ -55,24 +55,24 @@ instance Alpha Type
 instance Alpha Expr
 
 instance NL.Subst Type Type where
-    isvar (TVar v) = Just (SubstName v)
-    isvar _ = Nothing
+  isvar (TVar v) = Just (SubstName v)
+  isvar _ = Nothing
+
 instance NL.Subst Expr Expr where
-    isvar (Var v) = Just (SubstName v)
-    isvar _ = Nothing
+  isvar (Var v) = Just (SubstName v)
+  isvar _ = Nothing
 
 instance NL.Subst Expr Type where
 
+
 data TypeError
-  = UnificationFail Type Type
-  | InfiniteType Type Type
-  | UnboundVariable (Name Expr)
-  | UnificationMismatch [Type] [Type]
+  = UnboundVariable (Name Expr)
   | GenericTypeError
   deriving (Show)
 
 instance Error TypeError where
-    noMsg = GenericTypeError
+  noMsg = GenericTypeError
+
 
 type Env = Map (Name Expr) Type
 type Constraint = (Type, Type)

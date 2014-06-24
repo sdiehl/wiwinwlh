@@ -4924,7 +4924,7 @@ n)`` matrix.
 ~~~~ {.haskell include="src/20-data-structures/hblas.hs"}
 ~~~~
 
-Hopefully hblas and [numerical-core](https://github.com/wellposed/numerical-core) libraries will serve as a
+Hopefully hblas and [numerical-core](https://github.com/wellposed/numerical) libraries will serve as a
 foundation to build out the Haskell numerical ecosystem in the coming years.
 
 See: [hblas](https://github.com/wellposed/hblas)
@@ -5307,20 +5307,20 @@ bracket :: MonadSafe m => Base m a -> (a -> Base m b) -> (a -> m c) -> m c
 ```
 
 As a motivating example, ZeroMQ is a network messaging library that abstracts over traditional Unix sockets to
-a variety of topologies.  Most notably isn't design to guarantee any sort of transactional guarantees for
-delivery or recovery in case of errors so it's necessary to design a layer on top of it to provide the desired
-behavior at the application layer.
+a variety of network topologies.  Most notably it isn't designed to guarantee any sort of transactional
+guarantees for delivery or recovery in case of errors so it's necessary to design a layer on top of it to
+provide the desired behavior at the application layer.
 
 In Haskell we'd like to guarantee that if we're polling on a socket we get messages delivered in a timely
 fashion or consider the resource in a error state and recover from it. Using ``pipes-safe`` we can manage the
-life cycle of lazy IO resources and can safely handle failures and resource termination and finalization
+life cycle of lazy IO resources and can safely handle failures, resource termination and finalization
 gracefully. In other languages this kind of logic would be smeared across several places, or put in some
 global context and prone to introduce errors and subtle race conditions. Using pipes we instead get a nice
 tight abstraction designed exactly to fit this kind of use case.
 
-For instance now we can bracket the ZeroMQ socket creation and finalization within the SafeT monad transformer
-which guarantees that after successful message delivery we execute the pipes function as expected or on
-failure we halt the execution and finalize the socket.
+For instance now we can bracket the ZeroMQ socket creation and finalization within the ``SafeT`` monad
+transformer which guarantees that after successful message delivery we execute the pipes function as expected,
+or on failure we halt the execution and finalize the socket.
 
 ~~~~ {.haskell include="src/25-streaming/pipes_safe.hs"}
 ~~~~
@@ -5936,9 +5936,9 @@ Quasiquotation
 -------------
 
 Quasiquotation allows us to express "quoted" blocks of syntax that need not necessarily be be the syntax of
-the host language, but unlike says just writing a giant string it can values from the host languages can be
-injected into the custom language via user-definable logic allowing information to flow between the two
-languages.
+the host language, but unlike just writing a giant string it is instead parsed into some AST datatype in the
+host language. Notably values from the host languages can be injected into the custom language via
+user-definable logic allowing information to flow between the two languages.
 
 In practice quasiquotation can be used to implement custom domain specific languages or integrate with other
 general languages entirely via code-generation. 
@@ -6924,7 +6924,7 @@ Category   Description                             Group
 Some deep results in algebraic topology about the homology groups of topological spaces turn out stated very
 concisely as the relationships between functors and natural isomorphisms of these four categories!
 
-Which seaways into some of the most exciting work in computer science at the moment, [Homotopy Type
+Which segways into some of the most exciting work in computer science at the moment, [Homotopy Type
 Theory](http://hottheory.files.wordpress.com/2013/03/hott-online-611-ga1a258c.pdf) which I won't try to
 describe! :)
 
