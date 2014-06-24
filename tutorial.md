@@ -1719,9 +1719,9 @@ if p x
   else don't use x
 ```
 
-To be fair though, many popular languages completely lack the notion of sum types ( the source of many
-problems in my opinion ) and only have product types, so this type of reasoning sometimes has no direct
-equivelance.
+To be fair though, many popular languages completely lack the notion of sum types ( the source of many woes in
+my opinion ) and only have product types, so this type of reasoning sometimes has no direct equivalence for
+those not familiar with ML family languages.
 
 In Haskell, the Prelude provides functions like ``isJust`` and ``fromJust`` both of which can be used to
 subvert this kind of reasoning and make it easy to introduce bugs and should often be avoided.
@@ -4104,9 +4104,9 @@ Type Map
 --------
 
 Much of this discussion of promotion begs the question whether we can create data structures at the type-level
-to store information at compile-time. For example a tyope-level association list can be used to model a map
+to store information at compile-time. For example a type-level association list can be used to model a map
 between type-level symbols and any other promotable types. Together with type-families we can write down
-type-level traveral and lookup fuctions.
+type-level traversal and lookup functions.
 
 ~~~~ {.haskell include="src/17-promotion/typemap.hs"}
 ~~~~
@@ -4893,8 +4893,8 @@ Matrices and HBlas
 ------------------
 
 Just as in C when working with n-dimensional matrices we'll typically overlay the high-level matrix structure
-onto a unboxed contigious block of memory with index functions which perform the coordinate translations to
-calculaute offsets. The two most common layouts are:
+onto a unboxed contiguous block of memory with index functions which perform the coordinate translations to
+calculate offsets. The two most common layouts are:
 
 * Row Major indexing
 * Column Major indexing
@@ -4903,7 +4903,7 @@ Which are probably best illustrated.
 
 ![](img/matrix.png)
 
-The calculations have a particully nice implementation in Haskell in terms of scans over indicies.
+The calculations have a particularly nice implementation in Haskell in terms of scans over indices.
 
 ~~~~ {.haskell include="src/20-data-structures/matrix_index.hs"}
 ~~~~
@@ -5027,9 +5027,6 @@ back if a commit fails.
 
 See: [Beautiful Concurrency](https://www.fpcomplete.com/school/advanced-haskell/beautiful-concurrency)
 
-parallel
---------
-
 par-monad
 ---------
 
@@ -5084,7 +5081,6 @@ See: [Diagrams Quick Start Tutorial](http://projects.haskell.org/diagrams/doc/qu
 
 Gloss
 -----
-
 
 Parsing
 =======
@@ -5143,7 +5139,7 @@ of these combinators which yield the string parser when evaluated under with the
 Custom Lexer
 ------------
 
-In our previous example lexing pass was not neccessary because each lexeme mapped to a sequential collection
+In our previous example lexing pass was not necessary because each lexeme mapped to a sequential collection
 of characters in the stream type. If we wanted to extend this parser with a non-trivial set of tokens, then
 Parsec provides us with a set of functions for defining lexers and integrating these with the parser
 combinators. The simplest example builds on top of the builtin Parsec language definitions which define a set
@@ -5859,9 +5855,9 @@ Unbound
 -------
 
 Several libraries exist to mechanize the process of writing name capture and substitution, since it is largely
-mechnanical logic. Probably the most robust is the ``unbound`` library.  For example we can implement the
-infer function for a small Hindley-Milner system over a simple typed lambda calculus without having to write
-the name capture and substitution mechanics ourselves.
+mechanical. Probably the most robust is the ``unbound`` library.  For example we can implement the infer
+function for a small Hindley-Milner system over a simple typed lambda calculus without having to write the
+name capture and substitution mechanics ourselves.
 
 ~~~~ {.haskell include="src/30-languages/unbound.hs"}
 ~~~~
@@ -6042,7 +6038,7 @@ Run the resulting output through ``nvcc -ptx -c`` to get the PTX associated with
 Template Haskell
 ----------------
 
-Of course the most uesful case of quasiquotation is the ability to procedurally generate Haskell code itself
+Of course the most useful case of quasiquotation is the ability to procedurally generate Haskell code itself
 from inside of Haskell. The ``template-haskell`` framework provides four entry points for the quotation to
 generate various types of Haskell declarations and expressions.
 
@@ -6063,15 +6059,15 @@ data QuasiQuoter = QuasiQuoter
 ```
 
 The logic evaluating, splicing, and introspecting compile-time values is embedded within the Q monad, which
-has a ``runQ`` which can be used to evaluate it's context. These functions are deeply embdded in the
-implementation of GHC.
+has a ``runQ`` which can be used to evaluate it's context. These functions of this monad is deeply embedded in
+the implementation of GHC.
 
 ```haskell
 runQ :: Quasi m => Q a -> m a
 runIO :: IO a -> Q a
 ```
 
-Just as before, TemplateHaskell provides the ability to lift Haskell values into the their AST quantites
+Just as before, TemplateHaskell provides the ability to lift Haskell values into the their AST quantities
 within the quoted expression using the Lift type class.
 
 ```haskell
@@ -6099,8 +6095,7 @@ instance Lift a => Lift [a] where
   lift xs = do { xs' <- mapM lift xs; return (ListE xs') }
 ```
 
-In many cases ( not all ) Template Haskell can be used interactivly to explore hte AST form of various Haskell
-syntax.
+In many cases Template Haskell can be used interactively to explore the AST form of various Haskell syntax.
 
 ```haskell
 λ: runQ [e| \x -> x |]
