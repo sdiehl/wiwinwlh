@@ -2781,7 +2781,7 @@ data Exp
   | App Exp Exp
 ```
 
-A lambda expression in which all variables that appear in the boxy of the expression are referenced in an
+A lambda expression in which all variables that appear in the body of the expression are referenced in an
 outer lambda binder is said to be *closed* while an expression with unbound free variables is *open*.
 
 SK Combinators
@@ -2889,8 +2889,8 @@ names on binders.
 **I**         ``λ x. x``               ``λ 1``
 
 In this system the process of substitution becomes much more mechanical and simply involves shifting indices
-and can be made very efficient. Although in this form intution about expresses breaks down and such it is
-better to convert to this kind of form as an interemdiate step after parsing into a named form.
+and can be made very efficient. Although in this form human intution about expressions breaks down and such it
+is better to convert to this kind of form as an interemdiate step after parsing into a named form.
 
 ~~~~ {.haskell include="src/13-lambda-calculus/debruijn.hs"}
 ~~~~
@@ -3088,6 +3088,9 @@ compose f g = f . unFix . g
 
 recursion-schemes
 -----------------
+
+~~~~ {.haskell include="src/14-interpreters/recursion_schemes.hs"}
+~~~~
 
 See: 
 
