@@ -2500,7 +2500,7 @@ with any polymorphic variables converted into unbound type variables.
 **Rank-N Types**
 
 System-F is the type system that underlies Haskell. System-F subsumes the HM type system in the sense that
-every type expressible in HM can be expressed within the System F.
+every type expressible in HM can be expressed within System-F.
 
 ```haskell
 t : t -> t     -- function types
@@ -4608,7 +4608,8 @@ point, using Maybe to signify termination.
 ~~~~
 
 Alternatively Uniplate instances can be derived automatically from instances of Data without the need to
-explicitly write a Uniplate instance.
+explicitly write a Uniplate instance. This approach carries a slight amount of overhead over an explicit
+hand-written instance.
 
 ```haskell
 import Data.Data
@@ -4627,13 +4628,13 @@ data Expr a
 
 **Biplate**
 
+Biplates generalize plates where the target type isn't necessarily the same as the source.
+
 ```haskell
 descendBi :: Biplate from to => (to -> to) -> from -> from
 transformBi :: Biplate from to => (to -> to) -> from -> from
 rewriteBi :: Biplate from to => (to -> Maybe to) -> from -> from
 ```
-
-Biplates generalize plates where the target type isn't necessarily the same as the source.
 
 ~~~~ {.haskell include="src/18-generics/biplate.hs"}
 ~~~~
@@ -4644,8 +4645,11 @@ Numbers
 Integer
 -------
 
-The ``Integer`` type in GHC is implemented by the GMP arbitrary precision arithmetic library. Unlike the
-``Int`` type the size of Integer values are bounded only by the available memory.
+The ``Integer`` type in GHC is implemented by the GMP (``libgmp``) arbitrary precision arithmetic library.
+Unlike the ``Int`` type the size of Integer values are bounded only by the available memory. Most notably
+libgmp is the on few libraries that compiled Haskell binaries are dynamically linked against. 
+
+See: [GHC, primops and exorcising GMP](http://www.well-typed.com/blog/32/)
 
 Complex
 -------
@@ -4683,7 +4687,9 @@ scientific :: Integer -> Int -> Scientific
 fromFloatDigits :: RealFloat a => a -> Scientific
 ```
 
-Scientific provides arbitrary-precision number represented using scientific notation.
+Scientific provides arbitrary-precision number represented using scientific notation. The constructor takes an
+arbitrarily sized Integer argument with for digits and a Int for the exponential. Alternatively the value can
+be parsed from a String or coerced from either Double/Float.
 
 ~~~~ {.haskell include="src/19-numbers/scientific.hs"}
 ~~~~

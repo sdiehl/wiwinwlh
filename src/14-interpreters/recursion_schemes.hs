@@ -20,8 +20,8 @@ data ExpF a
 type instance Base Exp = ExpF
 
 instance Foldable Exp where
-  project (Var a)      = VarF a
-  project (App a b)    = AppF a b
+  project (Var a)     = VarF a
+  project (App a b)   = AppF a b
   project (Lam a b)   = LamF a b
 
 instance Unfoldable Exp where
