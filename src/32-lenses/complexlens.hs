@@ -37,7 +37,7 @@ r = [Just 1, Just 2, Just 3] & traverse._Just +~ 1
 
 s :: Maybe String
 s = Map.fromList [("foo", "bar")] ^. at "foo"
--- "bar"
+-- Just "bar"
 
 t :: Integral a => Maybe a
 t = "1010110" ^? binary
