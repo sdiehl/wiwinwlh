@@ -3,7 +3,9 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 
-import Prelude hiding (not, succ, pred, fst, snd, tail, head)
+module ChurchEncoding where
+
+import Prelude hiding (not, succ, pred, fst, snd, tail, head, null, maybe, fmap)
 
 type CBool = forall a. a -> a -> a
 
@@ -50,7 +52,7 @@ geq m n = not (leq m n)
 -- Church Numbers
 type CNat = forall a. (a -> a) -> a -> a
 
-zero, one, two, three :: CNat
+-- zero, one, two, three :: CNat
 zero  f x = x
 one   f x = f x
 two   f x = f (f x)
@@ -115,11 +117,3 @@ ex2 = unbool (iszero (pred one))
 ex3 :: Integer
 ex3 = snd (pair 1 2)
 -- 2
-
-ex4 :: Integer
-ex4 = head (tail (cons 1 (cons 2 nil)))
--- 2
-
-ex5 :: Bool
-ex5 = unbool (true `xor` false)
--- True
