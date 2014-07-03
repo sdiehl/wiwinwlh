@@ -56,13 +56,29 @@ one   f x = f x
 two   f x = f (f x)
 three f x = f (f (f x))
 
--- Scott Lists (lists as nested tuples)
-nil z      = z
-cons x y   = pair false (pair x y)
-null z     = z true
-head z     = fst (snd z)
-tail z     = snd (snd z)
-index xs n = head (n tail xs)
+-- Haskel's Maybe monad
+nothing     = \n j -> n
+just x      = \n j -> j x
+
+maybe d f m = m d f
+
+fmap f      = maybe nothing (just . f)
+return      = just
+join        = maybe nothing (maybe nothing just)
+bind m f    = join $ fmap f m
+
+-- Scott Lists
+nil        = \n c -> n
+cons a b   = \n c -> c a b
+
+null xs    = xs true    (\_ _ -> false)
+head xs    = xs nothing (\a _ -> just a)
+tail xs    = xs nothing (\_ b -> just b)
+
+headm xsm  = bind xsm head
+tailm xsm  = bind xsm tail
+
+index xs n = headm (n tailm (just xs))
 
 -- data Nat = Z | S Nat
 ezero   = \s z -> z
