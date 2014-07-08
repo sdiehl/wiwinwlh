@@ -90,7 +90,7 @@ builds.
 $ cabal install -j4 --only-dependencies
 ```
 
-Let's look at an example cabal file, there are to main entry points that any package may provide a ``library``
+Let's look at an example cabal file, there are two main entry points that any package may provide: a ``library``
 and an ``executable``. Multiple executables can be defined, but only one library. In addition there is a
 special form of executable entry point ``Test-Suite`` which defines an interface for unit tests to be invoked
 from cabal.
@@ -165,7 +165,7 @@ To build the package locally into the ``./dist/build`` folder execute the ``buil
 $ cabal build 
 ```
 
-The run the tests, our package must itself be reconfigured with the ``--enable-tests`` and the
+To run the tests, our package must itself be reconfigured with the ``--enable-tests`` and the
 ``build-depends`` from the Test-Suite must be manually installed if not already.
 
 ```bash
