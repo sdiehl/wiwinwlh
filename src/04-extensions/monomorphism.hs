@@ -1,4 +1,4 @@
--- Float is inferred by type inferencer.
+-- Double is inferred by type inferencer.
 example1 :: Double
 example1 = 3.14
 

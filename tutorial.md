@@ -940,9 +940,9 @@ execState :: State s a -> s -> s
 ~~~~ {.haskell include="src/02-monads/state.hs"}
 ~~~~
 
-The state monad is often mistakingly as being impure, but it is in fact entirely pure and the same effect
-could be achieved by explicitly passing state. An simple implementation of the State monad is only a few
-lines:
+The state monad is often mistakingly described as being impure, but it is in fact entirely pure and the same
+effect could be achieved by explicitly passing state. An simple implementation of the State monad is only a
+few lines:
 
 ~~~~ {.haskell include="src/02-monads/state_impl.hs"}
 ~~~~
@@ -956,7 +956,7 @@ mtl / transformers
 So the descriptions of Monads in the previous chapter are a bit of a white lie. Modern Haskell monad libraries
 typically use a more general form of the written in terms of monad transformers which allow us to compose
 monads together to form composite monads. The monads mentioned previously are subsumed by the special case of
-the transform form composed with the Identity monad.
+the transformer form composed with the Identity monad.
 
 Monad   Transformer  Type            Transformed Type
 ------  -----------  --------------- -------------------
@@ -1436,6 +1436,7 @@ See:
 
 * [Oh My Laziness!](http://alpmestan.com/2013/10/02/oh-my-laziness/)
 * [Reasoning about Laziness](http://www.slideshare.net/tibbe/reasoning-about-laziness)
+* [Lazy Evaluation of Haskell](http://www.vex.net/~trebla/haskell/lazy.xhtml)
 * [More Points For Lazy Evaluation](http://augustss.blogspot.hu/2011/05/more-points-for-lazy-evaluation-in.html)
 
 Seq and WHNF
@@ -1458,6 +1459,29 @@ Prelude.undefined
 
 λ: fst (undefined, 1)
 Prelude.undefined
+```
+
+The command ``:sprintf`` can be usded to introspect the state of unevaluated thunks inside an expression
+without forcing evaluation. For instance:
+
+```haskell
+λ: let a = [1..]
+λ: let b = map (+ 1) a
+
+λ: :sprint a
+a = _
+λ: :sprint b
+b = _
+λ: a !! 4
+5
+λ: :sprint a
+a = 1 : 2 : 3 : 4 : 5 : _
+λ: b !! 10
+12
+λ: :sprint a
+a = 1 : 2 : 3 : 4 : 5 : 6 : 7 : 8 : 9 : 10 : 11 : _
+λ: :sprint b
+b = _ : _ : _ : _ : _ : _ : _ : _ : _ : _ : 12 : _
 ```
 
 A term is said to be in *weak head normal-form* if the outermost constructor or lambda cannot be reduced
@@ -3453,7 +3477,7 @@ toplevel. The following forms are semantically equivalent, although the unassoci
 general:
 
 ```haskell
--- (1) Associated form
+-- (1) Unassociated form
 type family Rep a
 type instance Rep Int = Char
 type instance Rep Char = Int
@@ -5259,7 +5283,7 @@ that this method ties the ordering of IO effects to evaluation order which is di
 large.
 
 Consider that normally the monad laws ( in the absence of `seq` ) guarantee that these computations should be
-identical. But using lazy IO we can construct a denigrate case.
+identical. But using lazy IO we can construct a degenerate case.
 
 ~~~~ {.haskell include="src/25-streaming/lazyio.hs"}
 ~~~~
