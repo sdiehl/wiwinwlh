@@ -631,9 +631,7 @@ m >>= return ≡ m
 (m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)
 ```
 
-There is an auxiliary function defined in terms of the bind operation that discards its argument.
-
-Also ``(>>)`` in terms of ``(>>=)``:
+There is an auxiliary function (``(>>)``) defined in terms of the bind operation that discards its argument.
 
 ```haskell
 (>>) :: Monad m => m a -> m b -> m b
