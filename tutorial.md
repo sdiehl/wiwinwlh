@@ -769,7 +769,14 @@ m >>= f
 The list comprehension syntax in Haskell can be implemented in terms of the list monad.
 
 ```haskell
-[(x,y) | x <- xs, y <- ys]
+a = [f x y | x <- xs, y <- ys, x == y ]
+
+-- Identical to `a`
+b = do
+  x <- xs
+  y <- ys
+  guard $ x == y
+  return $ f x y z
 ```
 
 ~~~~ {.haskell include="src/02-monads/list.hs"}
