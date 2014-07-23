@@ -3557,6 +3557,12 @@ type instance F Char = Bool
 -- F a ~ F b does not imply  a ~ b, in general
 ```
 
+Roles
+-----
+
+~~~~ {.haskell include="src/16-type-families/roles.hs"}
+~~~~
+
 Monotraversable
 ---------------
 
