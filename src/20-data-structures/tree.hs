@@ -22,7 +22,7 @@ preorder (Node a ts) = a : elts
   where elts = concat (map preorder ts)
 
 ex1 = drawTree tree
-ex2 = drawForest $ subForest tree
+ex2 = drawForest (subForest tree)
 ex3 = flatten tree
 ex4 = levels tree
 ex5 = preorder tree

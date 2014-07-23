@@ -776,7 +776,7 @@ b = do
   x <- xs
   y <- ys
   guard $ x == y
-  return $ f x y z
+  return $ f x y
 ```
 
 ~~~~ {.haskell include="src/02-monads/list.hs"}
