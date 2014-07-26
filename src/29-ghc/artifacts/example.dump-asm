@@ -1,0 +1,186 @@
+.data
+	.align 8
+.align 1
+.globl __stginit_main:Main
+.type __stginit_main:Main, @object
+__stginit_main:Main:
+.globl __stginit_main::Main
+.type __stginit_main::Main, @object
+__stginit_main::Main:
+.section .data
+	.align 8
+.align 1
+sat_sn2_srt:
+	.quad	GHC.Num.$fNumInt_closure
+.data
+	.align 8
+.align 1
+sat_sn2_closure:
+	.quad	sat_sn2_info
+	.quad	0
+	.quad	0
+	.quad	0
+.text
+	.align 8
+	.long	sat_sn2_srt-(sat_sn2_info)+0
+	.long	0
+	.quad	0
+	.quad	4294967318
+sat_sn2_info:
+_cnh:
+	leaq -40(%rbp),%rax
+	cmpq %r15,%rax
+	jb _cnj
+	addq $16,%r12
+	cmpq 144(%r13),%r12
+	ja _cnl
+	movq $stg_CAF_BLACKHOLE_info,-8(%r12)
+	movq 160(%r13),%rax
+	movq %rax,0(%r12)
+	movq %r13,%rdi
+	movq %rbx,%rsi
+	leaq -8(%r12),%rdx
+	subq $8,%rsp
+	movl $0,%eax
+	call newCAF
+	addq $8,%rsp
+	testq %rax,%rax
+	je _cnn
+_cno:
+	movq $stg_bh_upd_frame_info,-16(%rbp)
+	leaq -8(%r12),%rax
+	movq %rax,-8(%rbp)
+	movq $stg_INTLIKE_closure+273,-24(%rbp)
+	movq $stg_INTLIKE_closure+417,-32(%rbp)
+	movq $stg_ap_pp_info,-40(%rbp)
+	movl $GHC.Num.$fNumInt_closure,%r14d
+	addq $-40,%rbp
+	jmp GHC.Num.+_info
+_cnl:
+	movq $16,192(%r13)
+_cnj:
+	jmp *-16(%r13)
+_cnn:
+	jmp *(%rbx)
+	.size sat_sn2_info, .-sat_sn2_info
+.section .data
+	.align 8
+.align 1
+Main.main_srt:
+	.quad	System.IO.print_closure
+	.quad	GHC.Show.$fShowInt_closure
+	.quad	sat_sn2_closure
+.data
+	.align 8
+.align 1
+.globl Main.main_closure
+.type Main.main_closure, @object
+Main.main_closure:
+	.quad	Main.main_info
+	.quad	0
+	.quad	0
+	.quad	0
+.text
+	.align 8
+	.long	Main.main_srt-(Main.main_info)+0
+	.long	0
+	.quad	0
+	.quad	30064771094
+.globl Main.main_info
+.type Main.main_info, @object
+Main.main_info:
+_cnE:
+	leaq -16(%rbp),%rax
+	cmpq %r15,%rax
+	jb _cnG
+	addq $16,%r12
+	cmpq 144(%r13),%r12
+	ja _cnI
+	movq $stg_CAF_BLACKHOLE_info,-8(%r12)
+	movq 160(%r13),%rax
+	movq %rax,0(%r12)
+	movq %r13,%rdi
+	movq %rbx,%rsi
+	leaq -8(%r12),%rdx
+	subq $8,%rsp
+	movl $0,%eax
+	call newCAF
+	addq $8,%rsp
+	testq %rax,%rax
+	je _cnK
+_cnL:
+	movq $stg_bh_upd_frame_info,-16(%rbp)
+	leaq -8(%r12),%rax
+	movq %rax,-8(%rbp)
+	movl $System.IO.print_closure,%ebx
+	movl $GHC.Show.$fShowInt_closure,%r14d
+	movl $sat_sn2_closure,%esi
+	addq $-16,%rbp
+	jmp stg_ap_pp_fast
+_cnI:
+	movq $16,192(%r13)
+_cnG:
+	jmp *-16(%r13)
+_cnK:
+	jmp *(%rbx)
+	.size Main.main_info, .-Main.main_info
+.section .data
+	.align 8
+.align 1
+:Main.main_srt:
+	.quad	GHC.TopHandler.runMainIO_closure
+	.quad	Main.main_closure
+.data
+	.align 8
+.align 1
+.globl :Main.main_closure
+.type :Main.main_closure, @object
+:Main.main_closure:
+	.quad	:Main.main_info
+	.quad	0
+	.quad	0
+	.quad	0
+.text
+	.align 8
+	.long	:Main.main_srt-(:Main.main_info)+0
+	.long	0
+	.quad	0
+	.quad	12884901910
+.globl :Main.main_info
+.type :Main.main_info, @object
+:Main.main_info:
+_co1:
+	leaq -16(%rbp),%rax
+	cmpq %r15,%rax
+	jb _co3
+	addq $16,%r12
+	cmpq 144(%r13),%r12
+	ja _co5
+	movq $stg_CAF_BLACKHOLE_info,-8(%r12)
+	movq 160(%r13),%rax
+	movq %rax,0(%r12)
+	movq %r13,%rdi
+	movq %rbx,%rsi
+	leaq -8(%r12),%rdx
+	subq $8,%rsp
+	movl $0,%eax
+	call newCAF
+	addq $8,%rsp
+	testq %rax,%rax
+	je _co7
+_co8:
+	movq $stg_bh_upd_frame_info,-16(%rbp)
+	leaq -8(%r12),%rax
+	movq %rax,-8(%rbp)
+	movl $GHC.TopHandler.runMainIO_closure,%ebx
+	movl $Main.main_closure,%r14d
+	addq $-16,%rbp
+	jmp stg_ap_p_fast
+_co5:
+	movq $16,192(%r13)
+_co3:
+	jmp *-16(%r13)
+_co7:
+	jmp *(%rbx)
+	.size :Main.main_info, .-:Main.main_info
+

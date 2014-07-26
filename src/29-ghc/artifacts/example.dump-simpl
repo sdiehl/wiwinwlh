@@ -1,0 +1,19 @@
+Result size of Tidy Core = {terms: 12, types: 7, coercions: 0}
+
+Main.main :: GHC.Types.IO ()
+[GblId]
+Main.main =
+  System.IO.print
+    @ GHC.Types.Int
+    GHC.Show.$fShowInt
+    (GHC.Num.+
+       @ GHC.Types.Int
+       GHC.Num.$fNumInt
+       (GHC.Types.I# 10)
+       (GHC.Types.I# 1))
+
+:Main.main :: GHC.Types.IO ()
+[GblId]
+:Main.main = GHC.TopHandler.runMainIO @ () Main.main
+
+

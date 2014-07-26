@@ -1,0 +1,130 @@
+[section "data" { __stginit_main:Main:
+ },
+ __stginit_main::Main()
+         {
+         }
+ }]
+
+[section "relreadonly" {
+     sat_sn2_srt:
+         const GHC.Num.$fNumInt_closure;
+ },
+ section "data" {
+     sat_sn2_closure:
+         const sat_sn2_info;
+         const 0;
+         const 0;
+         const 0;
+ },
+ sat_sn2_info()
+         { label: sat_sn2_info
+           rep:HeapRep static { Thunk }
+         }
+     cnh:
+         if (Sp - 40 < SpLim) goto cnj;
+         Hp = Hp + 16;
+         if (Hp > HpLim) goto cnl;
+         I64[Hp - 8] = stg_CAF_BLACKHOLE_info;
+         I64[Hp + 0] = CurrentTSO;
+         (_cnm::I64,) = foreign "ccall"
+           newCAF((BaseReg, PtrHint), (R1, PtrHint), (Hp - 8, PtrHint));
+         if (_cnm::I64 == 0) goto cnn;
+         goto cno;
+     cnj: jump stg_gc_enter_1; // [R1]
+     cnl:
+         HpAlloc = 16;
+         goto cnj;
+     cnn: jump I64[R1]; // [R1]
+     cno:
+         I64[Sp - 16] = stg_bh_upd_frame_info;
+         I64[Sp - 8] = Hp - 8;
+         I64[Sp - 24] = stg_INTLIKE_closure+273;
+         I64[Sp - 32] = stg_INTLIKE_closure+417;
+         I64[Sp - 40] = stg_ap_pp_info;
+         R2 = GHC.Num.$fNumInt_closure;
+         Sp = Sp - 40;
+         jump GHC.Num.+_info; // [R2]
+ }]
+
+[section "relreadonly" {
+     Main.main_srt:
+         const System.IO.print_closure;
+         const GHC.Show.$fShowInt_closure;
+         const sat_sn2_closure;
+ },
+ section "data" {
+     Main.main_closure:
+         const Main.main_info;
+         const 0;
+         const 0;
+         const 0;
+ },
+ Main.main_info()
+         { label: Main.main_info
+           rep:HeapRep static { Thunk }
+         }
+     cnE:
+         if (Sp - 16 < SpLim) goto cnG;
+         Hp = Hp + 16;
+         if (Hp > HpLim) goto cnI;
+         I64[Hp - 8] = stg_CAF_BLACKHOLE_info;
+         I64[Hp + 0] = CurrentTSO;
+         (_cnJ::I64,) = foreign "ccall"
+           newCAF((BaseReg, PtrHint), (R1, PtrHint), (Hp - 8, PtrHint));
+         if (_cnJ::I64 == 0) goto cnK;
+         goto cnL;
+     cnG: jump stg_gc_enter_1; // [R1]
+     cnI:
+         HpAlloc = 16;
+         goto cnG;
+     cnK: jump I64[R1]; // [R1]
+     cnL:
+         I64[Sp - 16] = stg_bh_upd_frame_info;
+         I64[Sp - 8] = Hp - 8;
+         R1 = System.IO.print_closure;
+         R2 = GHC.Show.$fShowInt_closure;
+         R3 = sat_sn2_closure;
+         Sp = Sp - 16;
+         jump stg_ap_pp_fast; // [R1, R3, R2]
+ }]
+
+[section "relreadonly" {
+     :Main.main_srt:
+         const GHC.TopHandler.runMainIO_closure;
+         const Main.main_closure;
+ },
+ section "data" {
+     :Main.main_closure:
+         const :Main.main_info;
+         const 0;
+         const 0;
+         const 0;
+ },
+ :Main.main_info()
+         { label: :Main.main_info
+           rep:HeapRep static { Thunk }
+         }
+     co1:
+         if (Sp - 16 < SpLim) goto co3;
+         Hp = Hp + 16;
+         if (Hp > HpLim) goto co5;
+         I64[Hp - 8] = stg_CAF_BLACKHOLE_info;
+         I64[Hp + 0] = CurrentTSO;
+         (_co6::I64,) = foreign "ccall"
+           newCAF((BaseReg, PtrHint), (R1, PtrHint), (Hp - 8, PtrHint));
+         if (_co6::I64 == 0) goto co7;
+         goto co8;
+     co3: jump stg_gc_enter_1; // [R1]
+     co5:
+         HpAlloc = 16;
+         goto co3;
+     co7: jump I64[R1]; // [R1]
+     co8:
+         I64[Sp - 16] = stg_bh_upd_frame_info;
+         I64[Sp - 8] = Hp - 8;
+         R1 = GHC.TopHandler.runMainIO_closure;
+         R2 = Main.main_closure;
+         Sp = Sp - 16;
+         jump stg_ap_p_fast; // [R1, R2]
+ }]
+

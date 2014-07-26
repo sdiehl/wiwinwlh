@@ -5633,6 +5633,13 @@ artifacts.
 $ ghc-core --no-cast --no-asm
 ```
 
+Alternatively the major stages of the compiler ( parse tree, core, stg, cmm, asm ) can be manually outputted
+and inspected by passing several flags to the compiler:
+
+```bash
+$ ghc -ddump-to-file -ddump-parsed -ddump-simpl -ddump-stg -ddump-cmm -ddump-asm
+```
+
 Core from GHC is roughly human readable, but it's helpful to look at simple human written examples to get the
 hang of what's going on. Of important note is that the Λ and λ for type-level and value-level lambda
 abstraction are represented by the same symbol (``\``) in core, which is a simplifying detail of the GHC's

@@ -1,0 +1,22 @@
+sat_sn2 :: GHC.Types.Int
+[LclId] =
+    \u srt:(0,*bitmap*) []
+        let {
+          sat_smZ :: GHC.Types.Int
+          [LclId] =
+              NO_CCS GHC.Types.I#! [1]; } in
+        let {
+          sat_sn0 :: GHC.Types.Int
+          [LclId] =
+              NO_CCS GHC.Types.I#! [10];
+        } in  GHC.Num.+ GHC.Num.$fNumInt sat_sn0 sat_smZ;
+SRT(sat_sn2): [GHC.Num.$fNumInt]
+Main.main :: GHC.Types.IO ()
+[GblId] =
+    \u srt:(0,*bitmap*) [] System.IO.print GHC.Show.$fShowInt sat_sn2;
+SRT(Main.main): [System.IO.print, GHC.Show.$fShowInt, sat_sn2]
+:Main.main :: GHC.Types.IO ()
+[GblId] =
+    \u srt:(0,*bitmap*) [] GHC.TopHandler.runMainIO Main.main;
+SRT(:Main.main): [GHC.TopHandler.runMainIO, Main.main]
+
