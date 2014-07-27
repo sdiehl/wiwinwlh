@@ -1198,7 +1198,7 @@ See: [GHC Extension Reference](http://www.haskell.org/ghc/docs/7.8.2/html/users_
 The Dangerous
 -------------
 
-GHC's typechecker sometimes just casually tell us to enable language extensions when it can't solve certain
+GHC's typechecker sometimes just casually tells us to enable language extensions when it can't solve certain
 problems. These include:
 
 * ``OverlappingInstances``
