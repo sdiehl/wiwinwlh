@@ -1115,7 +1115,7 @@ MonadTrans (t :: (* -> *) -> * -> *)
 ```
 
 So for example if we wanted to form a composite computation using both the Reader and Maybe monads we can now
-could the Maybe inside of a ``ReaderT`` to form ``ReaderT t Maybe a``.
+put the Maybe inside of a ``ReaderT`` to form ``ReaderT t Maybe a``.
 
 ~~~~ {.haskell include="src/03-monad-transformers/transformer.hs"}
 ~~~~
@@ -1126,7 +1126,7 @@ The fundamental limitation of this approach is that we find ourselves ``lift.lif
 Newtype Deriving
 ----------------
 
-Newtypes let us reference a date type with a single constructor as a new distinct type, with no runtime
+Newtypes let us reference a data type with a single constructor as a new distinct type, with no runtime
 overhead from boxing, unlike a algebraic datatype with single constructor.  Newtype wrappers around strings
 and numeric types can often drastically reduce accidental errors.  Using ``-XGeneralizedNewtypeDeriving`` we
 can recover the functionality of instances of the underlying type.
