@@ -501,7 +501,7 @@ See: [Avoiding Partial Functions](http://www.haskell.org/haskellwiki/Avoiding_pa
 Debugger
 --------
 
-Although it's use is somewhat rare, GHCi has a builtin debugger.  Debugging uncaught exceptions from bottoms
+Although its use is somewhat rare, GHCi has a builtin debugger.  Debugging uncaught exceptions from bottoms
 or asynchronous exceptions is in similar style to debugging segfaults with gdb.
 
 ```haskell
@@ -514,7 +514,7 @@ or asynchronous exceptions is in similar style to debugging segfaults with gdb.
 Trace
 ------
 
-Haskell being pure has the unique property that most code is introspectable on it's own, as such the "printf"
+Haskell being pure has the unique property that most code is introspectable on its own, as such the "printf"
 style of debugging is often unnecessary when we can simply open GHCi and test the function. Nevertheless
 Haskell does come with a unsafe ``trace`` function which can be used to perform arbitrary print statements
 outside of the IO monad.
@@ -889,7 +889,7 @@ See: [Control.Monad](http://hackage.haskell.org/package/base-4.6.0.1/docs/Contro
 Reader Monad
 ------------
 
-The reader monad let's us access shared immutable state within a monadic context.
+The reader monad lets us access shared immutable state within a monadic context.
 
 ```haskell
 ask :: Reader r a -> a
@@ -909,7 +909,7 @@ A simple implementation of the Reader monad:
 Writer Monad
 ------------
 
-The reader monad let's us emit a lazy stream of values from within a monadic context.
+The reader monad lets us emit a lazy stream of values from within a monadic context.
 
 ```haskell
 tell :: w -> Writer w ()
@@ -945,7 +945,7 @@ execState :: State s a -> s -> s
 ~~~~ {.haskell include="src/02-monads/state.hs"}
 ~~~~
 
-The state monad is often mistakingly described as being impure, but it is in fact entirely pure and the same
+The state monad is often mistakenly described as being impure, but it is in fact entirely pure and the same
 effect could be achieved by explicitly passing state. An simple implementation of the State monad is only a
 few lines:
 
@@ -1401,7 +1401,7 @@ Pattern Synonyms
 ----------------
 
 Suppose we were writing a typechecker, it would very to common to include a distinct ``TArr`` term ease the
-telescoping of function signatures, this is what GHC does in it's Core language. Even though technically it
+telescoping of function signatures, this is what GHC does in its Core language. Even though technically it
 could be written in terms of more basic application of the ``(->)`` constructor. 
 
 ```haskell
@@ -1647,7 +1647,7 @@ parts of the Prelude are full of partial functions.
 The difference between partial and total functions is the compiler can't reason about the runtime safety of
 partial functions purely from the information specified in the language and as such the proof of safety is
 left to the user to to guarantee. They are safe to use in the case where the user can guarantee that invalid
-inputs cannot occur, but like any unchecked property it's safety or not-safety is going to depend on the
+inputs cannot occur, but like any unchecked property its safety or not-safety is going to depend on the
 diligence of the programmer. This very much goes against the overall philosophy of Haskell and as such they
 are discouraged when not necessary.
 
@@ -1700,15 +1700,15 @@ isJust Nothing  = False
 
 The problem with the boolean type is that there is effectively no difference between True and False at the
 type level. A proposition taking a value to a Bool takes any information given and destroys it. To reason
-about the behavior We have to trace the provenance of the proposition we're getting the boolean answer from,
+about the behavior we have to trace the provenance of the proposition we're getting the boolean answer from,
 and this introduces whole slew of possibilities for misinterpretation. In the worst case, the only way to
-reason about safe and unsafe use of a function is by trusting that that a predicates lexical name reflects
-it's provenance!
+reason about safe and unsafe use of a function is by trusting that a predicate's lexical name reflects
+its provenance!
 
 For instance testing some proposition over a value which simply returns a Bool value representing whether the
 branch performs can perform the computation safely in the presence of a null is subject to accidental
 interchange. Consider that in a language like C or Python testing whether a value is null is indistinguishable
-to the language from testing whether the language is *not null*. Which of these programs encodes safe usage
+to the language from testing whether the value is *not null*. Which of these programs encodes safe usage
 and which segfaults?
 
 ```python
@@ -1772,8 +1772,8 @@ foldr f z [a...] = f a (f b ( ... (f y z) ... ))
 foldl f z [a...] = f ... (f (f z a) b) ... y 
 ```
 
-Foldable and Traversable are the general interface for all traversable and folds of any data structures which
-is parameterized over it's element type ( List, Map, Set, Maybe, ...). These are two classes are used
+Foldable and Traversable are the general interface for all traversables and folds of any data structure which
+is parameterized over its element type ( List, Map, Set, Maybe, ...). These are two classes are used
 everywhere in modern Haskell and are extremely important.
 
 A foldable instance allows us to apply functions to data types of monoidal values that collapse the
@@ -6972,7 +6972,7 @@ Category   Description                             Group
 Some deep results in algebraic topology about the homology groups of topological spaces turn out stated very
 concisely as the relationships between functors and natural isomorphisms of these four categories!
 
-Which segways into some of the most exciting work in computer science at the moment, [Homotopy Type
+Which segues into some of the most exciting work in computer science at the moment, [Homotopy Type
 Theory](http://hottheory.files.wordpress.com/2013/03/hott-online-611-ga1a258c.pdf) which I won't try to
 describe! :)
 
