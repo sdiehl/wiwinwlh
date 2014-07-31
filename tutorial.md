@@ -2746,6 +2746,24 @@ deduce that two types are equal up to unification.
 f x y = (x,y)
 ```
 
+```haskell
+data Exp a where
+  LitInt  :: Int  -> Exp Int
+  LitBool :: Bool -> Exp Bool
+  If      :: Exp Bool -> Exp a -> Exp a -> Exp a
+
+data Exp a
+  = (a ~ Int) => LitInt Int
+  | (a ~ Bool) => LitBool Bool
+  | If (Exp Bool) (Exp Int) (Exp Int)
+
+eval :: Exp a -> a
+eval e = case e of
+  LitInt i   -> i
+  LitBool b  -> b
+  If b tr fl -> if eval b then eval tr else eval fl
+```
+
 Kind Signatures
 ---------------
 
