@@ -1725,7 +1725,7 @@ elif not p(x):
     # use x
 ```
 
-For inspection we can't tell without knowing how p is defined, the compiler doesn't can't distinguish the two
+For inspection we can't tell without knowing how p is defined, the compiler can't distinguish the two
 and thus the language won't save us if we happen to mix them up. Instead of making invalid states
 *unrepresentable* we've made the invalid state *indistinguishable* from the valid one!
 
