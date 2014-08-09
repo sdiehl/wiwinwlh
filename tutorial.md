@@ -1397,6 +1397,14 @@ import qualified "mtl" Control.Monad.State as State
 import qualified "mtl" Control.Monad.Reader as Reader
 ```
 
+**Record WildCards**
+
+~~~~ {.haskell include="src/04-extensions/wildcards.hs"}
+~~~~
+
+```haskell
+```
+
 Pattern Synonyms
 ----------------
 
@@ -1519,7 +1527,7 @@ foldl' f z (x:xs) = let z' = f z x in z' `seq` foldl' f z' xs
 ```
 
 The extension ``BangPatterns`` allows an alternative syntax to force arguments to functions to be wrapped in
-seq.
+seq. A bang operator on an arguments forces it's evauation to weak head normal form before matching it.
 
 ```haskell
 {-# LANGUAGE BangPatterns #-}
@@ -2147,11 +2155,21 @@ ErrorT
 ------
 
 Another slightly clumsy method is to use the ``ErrorT`` transformer composed with an Identity and unrolling
-into an ``Either Exception a``. This method is simple but doesn't compose well depending on the situation and
-interaction with IO.
+into an ``Either Exception a``. This method is simple but requires manual instantiation of an Exception ( or
+Typeable ) typeclass if a custom Exception type is desired.
 
 ~~~~ {.haskell include="src/09-errors/errors.hs"}
 ~~~~
+
+ExceptT
+-------
+
+As of mtl 2.2 or higher, the ``ErrorT`` class has been replaced by the ``ExceptT`` which fixes many of the
+problems with the old class.
+
+See:
+
+* [Control.Monad.Except](https://hackage.haskell.org/package/mtl-2.2.1/docs/Control-Monad-Except.html)
 
 EitherT
 -------
@@ -2201,8 +2219,9 @@ See:
 * [Error Handling Simplified](http://www.haskellforall.com/2012/07/errors-10-simplified-error-handling.html)
 * [Safe](http://hackage.haskell.org/package/safe)
 
+
 Advanced Monads
-================
+===============
 
 Function Monad
 --------------
@@ -2297,6 +2316,8 @@ care must taken.
 
 ~~~~ {.haskell include="src/10-advanced-monads/cont_impl.hs"}
 ~~~~
+
+* [Wikibooks: Continuation Passing Style](http://en.wikibooks.org/wiki/Haskell/Continuation_passing_style)
 
 MonadPlus
 ---------
@@ -3137,6 +3158,9 @@ recursion-schemes
 -----------------
 
 ~~~~ {.haskell include="src/14-interpreters/recursion_schemes.hs"}
+~~~~
+
+~~~~ {.haskell include="src/14-interpreters/catamorphism.hs"}
 ~~~~
 
 See: 
@@ -5060,6 +5084,135 @@ of a computation without concern.
 
 See: [The Scheduler](https://ghc.haskell.org/trac/ghc/wiki/Commentary/Rts/Scheduler#TheScheduler)
 
+Sparks
+------
+
+The most basic "atom" of paralleism in Haskell is a spark. It is a hint to the GHC runtime that a computation
+can be evaluated to weak head normal form in parallel.
+
+
+```haskell
+rpar :: a -> Eval a
+rseq :: a -> Eval a
+
+runEval :: Eval a -> a
+```
+
+The parallel computations themselves are encapsulated in the ``Eval`` monad, whose evaluation is a pure
+computation.
+
+```haskell
+example :: (a -> b) -> a -> a -> (b, b)
+example f x y = runEval $ do
+  a <- rpar $ f x
+  b <- rpar $ f y
+  rseq a
+  rseq b
+  return (a, b)
+```
+
+The value passed to ``rpar`` is called a spark and represent a single unit of work that is stored in a spark
+pool that the GHC runtime distributes across available processors. An argument to ``rseq`` forces the
+evaluation of a spark before evaluation continues.
+
+When a spark is evaluated is said to be *converted*. There are several other possible outcomes for a spark.
+
+Action          Description
+-------------   --------------
+``Overflowed``  Insufficient space in the spark pool when spawning.
+``Dud``         The expression has already been evaluated, the computed value is returned and the spark is not converted.
+``GC'd``        The spark is added to the spark pool but the result is not referenced, so it is garbage collected.
+``Fizzled``     The resulting value has already been evaluated by the main thread so the spark need not be converted.
+
+The runtime can be asked to dump information about the spark evaluation by passing the ``-s`` flag.
+
+```haskell
+$ ./spark +RTS -N4 -s
+
+                                    Tot time (elapsed)  Avg pause  Max pause
+  Gen  0         5 colls,     5 par    0.02s    0.01s     0.0017s    0.0048s
+  Gen  1         3 colls,     2 par    0.00s    0.00s     0.0004s    0.0007s
+
+  Parallel GC work balance: 1.83% (serial 0%, perfect 100%)
+
+  TASKS: 6 (1 bound, 5 peak workers (5 total), using -N4)
+
+  SPARKS: 20000 (20000 converted, 0 overflowed, 0 dud, 0 GC'd, 0 fizzled)
+```
+
+Strategies
+----------
+
+```haskell
+type Strategy a = a -> Eval a
+using :: a -> Strategy a -> a
+```
+
+Sparks themselves form the foundation for higher level parallelism constructs known as ``strategies`` which
+adapt spark creation to fit the computation or data structure being evaluated. For instance if we wanted to
+evaluate both elements of a tuple in parallel we can create a strategy which uses sparks to evaluate both
+sides of the tuple.
+
+~~~~ {.haskell include="src/22-concurrency/strategies.hs"}
+~~~~
+
+This pattern occurs so frequently the combinator ``using``  can be used to write it equivelantly in
+operator-like form that may be more visually appealing to some.
+
+```haskell
+using :: a -> Strategy a -> a
+x `using` s = runEval (s x)
+
+parallel ::: (Int, Int)
+parallel = (fib 30, fib 31) `using` parPair
+```
+
+For a less contrived example consider a parallel ``parmap`` which maps a pure function over a list of a values
+in parallel.
+
+~~~~ {.haskell include="src/22-concurrency/spark.hs"}
+~~~~
+
+The functions above are quite useful, but will break down if evaluation of the arguments needs to be
+parallelized beyond simply weak head normal form. For instance if the arguments to ``rpar`` is a nested
+constructor we'd like to parallelize the entire section of work in evaluated the expression to normal form
+instead of just the outer layer. As such we'd like to generalize our strategies so the the evaluation strategy
+for the arguments can be passed as an argument to the strategy.
+  
+``Control.Parallel.Strategies`` contains a generalized version of ``rpar`` which embeds additional evaluation
+logic inside the ``rpar`` computation in Eval monad.
+
+```haskell
+rparWith :: Strategy a -> Strategy a
+```
+
+Using the deepseq library we can now construct a Strategy variant of rseq that evaluates to full normal form.
+
+```haskell
+rdeepseq :: NFData a => Strategy a
+rdeepseq x = rseq (force x)
+```
+
+We now can create a "higher order" strategy that takes two strategies and itself yields a a computation which
+when evaluated uses the passed strategies in it's scheduling.
+
+~~~~ {.haskell include="src/22-concurrency/strategies_param.hs"}
+~~~~
+
+These patterns are implemented in the Strategies library along with several other general forms and
+combinators for combining strategies to fit many different parallel computations.
+
+```haskell
+parTraverse :: Traversable t => Strategy a -> Strategy (t a)
+dot :: Strategy a -> Strategy a -> Strategy a
+($||) :: (a -> b) -> Strategy a -> a -> b
+(.||) :: (b -> c) -> Strategy b -> (a -> b) -> a -> c
+```
+
+See:
+
+* [Control.Concurent.Strategies](http://hackage.haskell.org/package/parallel-3.2.0.4/docs/Control-Parallel-Strategies.html)
+
 STM
 ---
 
@@ -5121,6 +5274,22 @@ race :: IO a -> IO b -> IO (Either a b)
 
 ~~~~ {.haskell include="src/22-concurrency/async.hs"}
 ~~~~
+
+Threadscope
+-----------
+
+Passing the flag ``-l``  generates the eventlog which can be rendered with the threadscope library.
+
+```haskell
+$ ghc -O2 -threaded -rtsopts -eventlog Example.hs 
+$ ./program +RTS -N4 -l
+$ threadscope Example.eventlog
+```
+
+![](img/threadscope.png)
+
+See Simon Marlows's *Parallel and Concurrent Programming in Haskell* for a detailed guide on interpeting and
+profiling using threascope.
 
 Graphics
 ========
@@ -5843,6 +6012,24 @@ thought](http://okmij.org/ftp/).
 
 See: [Scrap Your Type Classes](http://www.haskellforall.com/2012/05/scrap-your-type-classes.html)
 
+Static Compilation
+------------------
+
+```bash
+$ ghc -O2 --make -static -optc-static -optl-static -optl-pthread Example.hs
+$ file Example                                                                                       
+Example: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), statically linked, for GNU/Linux 2.6.32, not stripped
+$ ldd Example                                                                                        
+	not a dynamic executable
+ 
+```
+
+In addition the file size of the resulting binary can be reduced by stripping unneeded symbols.
+
+```bash
+$ strip Example
+```
+
 Unboxed Types
 --------------
 
@@ -5916,6 +6103,75 @@ data A = A {-# UNPACK #-} !Int
 See: 
 
 * [Unboxed Values as First-Class Citizens](http://www.haskell.org/ghc/docs/papers/unboxed-values.ps.gz)
+
+Haddock
+-------
+
+```haskell
+-- | Documentation for f
+f :: a -> a
+f = ...
+```
+
+```haskell
+-- | Multiline documentation for the function
+-- f with multiple arguments.
+fmap :: Functor f => 
+     => (a -> b)  -- ^ function
+     -> f a       -- ^ input
+     -> f b       -- ^ output
+```
+
+```haskell
+data T a b
+  = A a -- ^ Documentation for A
+  | B b -- ^ Documentation for B
+```
+
+Elements within a module (value, types, classes) can be hyperlinked by enclosing the identifier in single
+quotes.
+
+```haskell
+data T a b
+  = A a -- ^ Documentation for 'A'
+  | B b -- ^ Documentation for 'B'
+```
+
+Modules themselves can be referenced by enclosing them in double quotes.
+
+```haskell
+-- | Here we use "Data.Text" library and import
+-- the 'Data.Text.pack' function.
+```
+
+```haskell
+-- | An example of a code block.
+-- 
+-- @
+--    f x = f (f x)
+-- @
+
+-- > f x = f (f x)
+```
+
+```haskell
+-- | Example of an interactive shell session.
+--
+-- >>> factorial 5
+-- 120
+```
+
+```haskell
+module Foo (
+  -- $section1
+  example1,
+  example2
+)
+
+-- $section1
+-- Here is the documentation section that describes the symbols
+-- 'example1' and 'example2'.
+```
 
 Languages
 =========
