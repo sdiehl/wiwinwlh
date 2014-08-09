@@ -1713,11 +1713,10 @@ and this introduces whole slew of possibilities for misinterpretation. In the wo
 reason about safe and unsafe use of a function is by trusting that a predicate's lexical name reflects
 its provenance!
 
-For instance testing some proposition over a value which simply returns a Bool value representing whether the
-branch performs can perform the computation safely in the presence of a null is subject to accidental
-interchange. Consider that in a language like C or Python testing whether a value is null is indistinguishable
-to the language from testing whether the value is *not null*. Which of these programs encodes safe usage
-and which segfaults?
+For instance, testing some proposition over a Bool value representing whether the branch can perform the
+computation safely in the presence of a null is subject to accidental interchange. Consider that in a
+language like C or Python testing whether a value is null is indistinguishable to the language from
+testing whether the value is *not null*. Which of these programs encodes safe usage and which segfaults?
 
 ```python
 # This one?
@@ -1733,7 +1732,7 @@ elif not p(x):
     # use x
 ```
 
-For inspection we can't tell without knowing how p is defined, the compiler doesn't can't distinguish the two
+For inspection we can't tell without knowing how p is defined, the compiler can't distinguish the two
 and thus the language won't save us if we happen to mix them up. Instead of making invalid states
 *unrepresentable* we've made the invalid state *indistinguishable* from the valid one!
 
