@@ -6,6 +6,7 @@
 import Data.Traversable
 import Control.Monad hiding (forM_, mapM, sequence)
 import Prelude hiding (mapM)
+import qualified Data.Map as M
 
 newtype Fix (f :: * -> *) = Fix { outF :: f (Fix f) }
 
@@ -18,11 +19,10 @@ cataM :: (Traversable f, Monad m) => (f a -> m a) -> Fix f -> m a
 cataM f = f <=< mapM (cataM f) . outF
 
 data ExprF r
-  = EVar r
+  = EVar String
   | EApp r r
   | ELam r r
-  | EConst String
-  deriving (Ord, Eq, Functor)
+  deriving (Show, Eq, Ord, Functor)
 
 type Expr = Fix ExprF
 
@@ -40,7 +40,7 @@ mkApp :: Fix ExprF -> Fix ExprF -> Fix ExprF
 mkApp x y = Fix (EApp x y)
 
 mkVar :: String -> Fix ExprF
-mkVar x = Fix (EVar (Fix (EConst x)))
+mkVar x = Fix (EVar x)
 
 mkLam :: Fix ExprF -> Fix ExprF -> Fix ExprF
 mkLam x y = Fix (ELam x y)
@@ -50,3 +50,8 @@ i = mkLam (mkVar "x") (mkVar "x")
 
 k :: Fix ExprF
 k = mkLam (mkVar "x") $ mkLam (mkVar "y") $ (mkVar "x")
+
+subst :: M.Map String (ExprF Expr) -> Expr -> Expr
+subst env = cata alg where
+  alg (EVar x) | Just e <- M.lookup x env = Fix e
+  alg e = Fix e
