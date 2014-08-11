@@ -15,7 +15,7 @@ type role App representational nominal
 data App (f :: k -> *) (a :: k) = App (f a)
 
 type role Mu nominal nominal
-data Mu f a = Roll (f (Mu f) a)
+data Mu (f :: (k -> *) -> k -> *) (a :: k) = Roll (f (Mu f) a)
 
 type role Proxy phantom
-data Proxy a = Proxy
+data Proxy (a :: k) = Proxy
