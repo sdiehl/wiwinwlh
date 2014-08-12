@@ -925,7 +925,7 @@ A simple implementation of the Writer monad:
 ~~~~ {.haskell include="src/02-monads/writer_impl.hs"}
 ~~~~
 
-This implementation is lazy so some care must be taken that one actually wants only generate a stream of
+This implementation is lazy so some care must be taken that one actually wants to only generate a stream of
 thunks.  Often this it is desirable to produce a computation which requires a stream of thunks that can pulled
 lazily out of the ``runWriter``, but often times the requirement is to produce a finite stream of values that
 are forced at the invocation of ``runWriter``. Undesired laziness from Writer is a common source of grief, but
