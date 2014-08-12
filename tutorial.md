@@ -909,7 +909,7 @@ A simple implementation of the Reader monad:
 Writer Monad
 ------------
 
-The reader monad lets us emit a lazy stream of values from within a monadic context.
+The writer monad lets us emit a lazy stream of values from within a monadic context.
 
 ```haskell
 tell :: w -> Writer w ()
