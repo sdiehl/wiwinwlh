@@ -920,7 +920,7 @@ runWriter :: Writer w a -> (a, w)
 ~~~~ {.haskell include="src/02-monads/writer.hs"}
 ~~~~
 
-An simple implementation of the Writer monad:
+A simple implementation of the Writer monad:
 
 ~~~~ {.haskell include="src/02-monads/writer_impl.hs"}
 ~~~~
