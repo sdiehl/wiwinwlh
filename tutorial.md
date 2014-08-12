@@ -946,7 +946,7 @@ execState :: State s a -> s -> s
 ~~~~
 
 The state monad is often mistakenly described as being impure, but it is in fact entirely pure and the same
-effect could be achieved by explicitly passing state. An simple implementation of the State monad is only a
+effect could be achieved by explicitly passing state. A simple implementation of the State monad is only a
 few lines:
 
 ~~~~ {.haskell include="src/02-monads/state_impl.hs"}
@@ -2147,7 +2147,7 @@ division by zero happens and holds the resulting value in Right otherwise.
 ~~~~ {.haskell include="src/09-errors/either.hs"}
 ~~~~
 
-This is admittedly pretty stupid but captures the essence of why Either/EitherT is an suitable monad for
+This is admittedly pretty stupid but captures the essence of why Either/EitherT is a suitable monad for
 exception handling.
 
 ErrorT
@@ -2187,7 +2187,7 @@ catchT  :: Monad m => EitherT a m r -> (a -> EitherT b m r) -> EitherT b m r
 handleT :: Monad m => (a -> EitherT b m r) -> EitherT a m r -> EitherT b m
 ```
 
-The ideal monad to use is simply the ``EitherT`` monad which we'd like to be able to use an with an API
+The ideal monad to use is simply the ``EitherT`` monad which we'd like to be able to use with an API
 similar to ``ErrorT``. For example suppose we wanted to use ``read`` to attempt to read a positive integer
 from stdin. There are two failure modes and two failure cases here, one for a parse error which fails with an
 error from ``Prelude.readIO``  and one for a non-positive integer which fails with a custom exception after a
@@ -5475,7 +5475,7 @@ mapM :: Monad m => (a -> m b) -> [a] -> m [b]
 sequence :: Monad m => [m a] -> m [a]
 ```
 
-Reading from the file creates an thunk for the string that forced will then read the file. The problem is then
+Reading from the file creates a thunk for the string that forced will then read the file. The problem is then
 that this method ties the ordering of IO effects to evaluation order which is difficult to reason about in the
 large.
 
