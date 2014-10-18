@@ -892,7 +892,7 @@ Reader Monad
 The reader monad lets us access shared immutable state within a monadic context.
 
 ```haskell
-ask :: Reader r a -> a
+ask :: Reader r a
 asks :: (r -> a) -> Reader r a
 local :: (r -> b) -> Reader b a -> Reader r a
 runReader :: Reader r a -> r -> a
@@ -1095,7 +1095,7 @@ instance (Monad m) => MonadReader r (ReaderT r m) where
 So hypothetically the three variants of ask would be:
 
 ```haskell
-ask :: Reader r a -> a
+ask :: Reader r a
 ask :: Monad m => ReaderT r m r
 ask :: MonadReader r m => m r
 ```
