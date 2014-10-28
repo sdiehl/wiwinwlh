@@ -3671,10 +3671,10 @@ Types       Logic
 ``A``       proposition
 ``a : A``   proof
 ``B(x)``    predicate
-``Void``    ⊥ 
+``Void``    ⊥
 ``Unit``    ⊤
-``A + B``   A ∧ B
-``A × B``   A ∨ B
+``A + B``   A ∨ B
+``A × B``   A ∧ B
 ``A -> B``  A ⇒ B
 
 In dependently typed languages we can exploit this result to it's full extent, in Haskell we don't have the
