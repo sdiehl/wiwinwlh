@@ -2263,7 +2263,7 @@ runReader' = id
 RWS Monad
 ---------
 
-The RWS monad is a combines the functionality of the three monads discussed above, the **R**eader, **W**riter,
+The RWS monad combines the functionality of the three monads discussed above, the **R**eader, **W**riter,
 and **S**tate. There is also a ``RWST`` transformer.
 
 ```haskell
@@ -2688,7 +2688,7 @@ The only inhabitant of both of these construction is a diverging bottom term lik
 Phantom Types
 -------------
 
-Phantom types are paramaters that appear on the left hand side of a type declaration but which are not
+Phantom types are parameters that appear on the left hand side of a type declaration but which are not
 constrained by the values of the types inhabitants. They are effectively slots for us to encode additional
 information at the type-level.
 
@@ -2707,8 +2707,8 @@ GADTs
 GADTs are an extension to algebraic datatypes that allow us to qualify the constructors to datatypes with type
 equality constraints, allowing a class of types that are not expressible using vanilla ADTs.
 
-``-XGADTs`` implicitly enables an alternative syntax for datatype declarations ( ``-XGADTSyntax`` )  such the
-following declaration are equivalent:
+``-XGADTs`` implicitly enables an alternative syntax for datatype declarations ( ``-XGADTSyntax`` ) such that
+the following declaration are equivalent:
 
 ```haskell
 data List a
@@ -3583,7 +3583,7 @@ Injectivity
 -----------
 
 The type level functions defined by type-families are not neccessarily *injective*, the function may map two
-disctinct input types to the same uutput type. This differs from the behavior of type constructors ( which are
+disctinct input types to the same output type. This differs from the behavior of type constructors ( which are
 also type-level functions ) which are injective.
 
 For example for the constructor ``Maybe``,  ``Maybe t1 = Maybe t2`` implies that ``t1 = t2``.
