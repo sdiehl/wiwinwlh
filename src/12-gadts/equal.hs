@@ -25,7 +25,7 @@ trans Refl Refl = Refl
 castWith :: Eql a b -> a -> b
 castWith Refl = id
 
--- Trival cases
+-- Trivial cases
 a :: forall n. Eql n n
 a = Refl
 
