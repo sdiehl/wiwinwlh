@@ -2427,9 +2427,62 @@ ExceptT
 As of mtl 2.2 or higher, the ``ErrorT`` class has been replaced by the ``ExceptT`` which fixes many of the
 problems with the old class.
 
+At transformers level.
+
+```haskell
+newtype ExceptT e m a = ExceptT (m (Either e a))
+
+runExceptT :: ExceptT e m a -> m (Either e a)
+runExceptT (ExceptT m) = m
+
+instance (Monad m) => Monad (ExceptT e m) where
+    return a = ExceptT $ return (Right a)
+    m >>= k = ExceptT $ do
+        a <- runExceptT m
+        case a of
+            Left e -> return (Left e)
+            Right x -> runExceptT (k x)
+    fail = ExceptT . fail
+
+throwE :: (Monad m) => e -> ExceptT e m a
+throwE = ExceptT . return . Left
+
+catchE :: (Monad m) =>
+    ExceptT e m a               -- ^ the inner computation
+    -> (e -> ExceptT e' m a)    -- ^ a handler for exceptions in the inner
+                                -- computation
+    -> ExceptT e' m a
+m `catchE` h = ExceptT $ do
+    a <- runExceptT m
+    case a of
+        Left  l -> runExceptT (h l)
+        Right r -> return (Right r)
+```
+
+At MTL level.
+
+```haskell
+instance MonadTrans (ExceptT e) where
+    lift = ExceptT . liftM Right
+
+class (Monad m) => MonadError e m | m -> e where
+    throwError :: e -> m a
+    catchError :: m a -> (e -> m a) -> m a
+
+instance MonadError IOException IO where
+    throwError = ioError
+    catchError = catch
+
+instance MonadError e (Either e) where
+    throwError             = Left
+    Left  l `catchError` h = h l
+    Right r `catchError` _ = Right r
+```
+
 See:
 
 * [Control.Monad.Except](https://hackage.haskell.org/package/mtl-2.2.1/docs/Control-Monad-Except.html)
+
 
 EitherT
 -------
@@ -2556,9 +2609,10 @@ callCC :: MonadCont m => ((a -> m b) -> m a) -> m a
 cont :: ((a -> r) -> r) -> Cont r a
 ```
 
-In continuation passing style, composite computations are built up from sequences of nested computations which
-are terminated by a final continuation which yields the result of the full computation by passing a function
-into the continuation chain.
+In continuation passing style, composite computations are built up from
+sequences of nested computations which are terminated by a final continuation
+which yields the result of the full computation by passing a function into the
+continuation chain.
 
 ```haskell
 add :: Int -> Int -> Int
@@ -2570,9 +2624,6 @@ add x y k = k (x + y)
 
 ~~~~ {.haskell include="src/10-advanced-monads/cont.hs"}
 ~~~~
-
-Using continuations and especially ``callCC`` can inadvertently create very convoluted control flow so some
-care must taken.
 
 ~~~~ {.haskell include="src/10-advanced-monads/cont_impl.hs"}
 ~~~~
@@ -2671,8 +2722,8 @@ writeSTRef :: STRef s a -> a -> ST s ()
 ~~~~ {.haskell include="src/10-advanced-monads/st.hs"}
 ~~~~
 
-Using the ST monad we can create a new class of efficient purely functional data structures that use mutable
-references.
+Using the ST monad we can create a class of efficient purely functional data
+structures that use mutable references in a referentially transparent way.
 
 Free Monads
 -----------
@@ -2863,8 +2914,26 @@ Polymorphic Rank 2: (forall a. a -> t) -> t
 Polymorphic Rank 3: ((forall a. a -> t) -> t) -> t
 ```
 
-For example the ST monad uses a second rank type to prevent the capture of references between ST monads with
-separate state threads.
+Of important note is that the type variables bound by an explicit quantifier in
+a higher ranked type may not escape their enclosing scope, the typechecker will
+explicitly enforce this with by enforcing that variables bound inside of rank-n
+types ( called skolem constants ) will not unify with free meta type variables
+inferred by the inference engine.
+
+~~~~ {.haskell include="src/11-quantification/skolem_capture.hs"}
+~~~~
+
+```perl
+Couldn't match expected type `a' with actual type `t'
+`a' is a rigid type variable bound by a type expected by the context: a -> a 
+`t' is a rigid type variable bound by the inferred type of g :: t -> Int
+In the expression: x In the first argument of `escape', namely `(\ a -> x)'
+In the expression: escape (\ a -> x)
+```
+
+This can be used for our advantage, for example the ST monad uses a second rank
+type to prevent the capture of references between ST monads with separate state
+threads where the ``s`` type variable is bound within a rank-2 type.
 
 Existential Quantification
 --------------------------
@@ -2894,8 +2963,9 @@ See: [Haskell Antipattern: Existential Typeclass](http://lukepalmer.wordpress.co
 Impredicative Types
 -------------------
 
-Although extremely brittle, GHC also has limited support impredicative polymorphism which loosens the
-restriction that that quantifiers must precede arrow types and now may be placed inside of type-constructors.
+Although extremely brittle, GHC also has limited support impredicative
+polymorphism which loosens the restriction that that quantifiers must precede
+arrow types and now may be placed inside of type-constructors.
 
 ```haskell
 -- Can't unify ( Int ~ Char )
@@ -2908,8 +2978,10 @@ revUni Nothing  = Nothing
 ~~~~ {.haskell include="src/11-quantification/impredicative.hs"}
 ~~~~
 
-Use of this extension is rare, although GHC is very liberal about telling us to enable it when one accidentally
-makes a typo in a type signature!
+Use of this extension is very rare, and there is some consideration that
+``-XImpredicativeTypes`` is fundamentally broken. Although GHC is very liberal
+about telling us to enable it when one accidentally makes a typo in a type
+signature!
 
 Scoped Type Variables
 ---------------------
