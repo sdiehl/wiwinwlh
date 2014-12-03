@@ -525,6 +525,22 @@ outside of the IO monad.
 The function itself is impure ( it uses ``unsafePerformIO`` under the hood ) and shouldn't be used in stable
 code.
 
+In addition to just the trace function, several common monadic patterns are quite common.
+
+```haskell
+import Text.Printf
+import Debug.Trace
+
+traceM :: (Monad m) => String -> m ()
+traceM string = trace string $ return ()
+
+traceShowM :: (Show a, Monad m) => a -> m ()
+traceShowM = traceM . show
+
+tracePrintfM :: (Monad m, PrintfArg a) => String -> a -> m ()
+tracePrintfM s = traceM . printf s
+```
+
 Type Holes
 ----------
 
@@ -655,6 +671,12 @@ do { m } ≡ m
 So for example:
 
 ```haskell
+do
+  a <- f
+  b <- g
+  c <- h
+  return (a, b, c)
+
 do {
   a <- f ;
   b <- g ;
@@ -666,6 +688,17 @@ f >>= \a ->
   g >>= \b ->
     h >>= \c ->
       return (a, b, c)
+```
+
+If one were to write the bind operator as an uncurried function ( this is
+not how Haskell uses it ) the same desugaring might look something like the
+following chain of nested binds with lambdas.
+
+```haskell
+bindMonad(f, lambda a:
+  bindMonad(g, lambda b:
+    bindMonad(h, lambda c:
+      returnMonad (a,b,c))))
 ```
 
 In the do-notation the monad laws from above are equivalently written:
@@ -1438,12 +1471,29 @@ So now we can write an eliminator and constructor for arrow type very naturally.
 Laziness
 ========
 
-Again, a subject on which *much* ink has been spilled. There is an ongoing discussion in the land of Haskell
-about the compromises between lazy and strict evaluation, and there are nuanced arguments for having either
-paradigm be the default. Haskell takes a hybrid approach and allows strict evaluation when needed and uses
-laziness by default. Needless to say, we can always find examples where lazy evaluation exhibits worse
-behavior than strict evaluation and vice versa. They both have flaws, and as of yet there isn't a  method that
-combines only the best of both worlds.
+Again, a subject on which *much* ink has been spilled. There is an ongoing
+discussion in the land of Haskell about the compromises between lazy and strict
+evaluation, and there are nuanced arguments for having either paradigm be the
+default. Haskell takes a hybrid approach and allows strict evaluation when
+needed and uses laziness by default. Needless to say, we can always find
+examples where strict evaluation exhibits worse behavior than lazy evaluation
+and vice versa.
+
+The primary advantage of lazy evaluation in the large is that algorithms that
+operate over both unbounded and bounded data structures can inhabit the same
+type signatures and be composed without additional need to restructure their
+logic or force intermediate computations. Languages that attempt to bolt
+laziness onto a strict evaluation mode with often bifurcate classes of
+algorithms into ones that are had-adjusted to consume unbounded structures and
+mixing and matching between lazy vs strict processing often necessitates
+manifesting large intermediate structures in memory when such composition would
+"just work" in a lazy language.
+
+
+By virtue of Haskell being the only language to actually explore this point in
+the design space, knowledge about lazy evaluation can often be non-intuitive to
+the novice. This does reflect on the model itself, merely on the need for more
+instruction material.
 
 See: 
 
@@ -1455,10 +1505,11 @@ See:
 Seq and WHNF
 ------------
 
-In Haskell evaluation only occurs at outer constructor of case-statements in Core. If we pattern match on a
-list we don't implicitly force all values in the list. A element in a data structure is only evaluated up to
-the most outer constructor. For example, to evaluate the length of a list we need only scrutinize the outer
-Cons constructors without regard for their inner values.
+In Haskell evaluation only occurs at outer constructor of case-statements in
+Core. If we pattern match on a list we don't implicitly force all values in the
+list. A element in a data structure is only evaluated up to the most outer
+constructor. For example, to evaluate the length of a list we need only
+scrutinize the outer Cons constructors without regard for their inner values.
 
 ```haskell
 λ: length [undefined, 1]
@@ -1474,8 +1525,32 @@ Prelude.undefined
 Prelude.undefined
 ```
 
-The command ``:sprintf`` can be usded to introspect the state of unevaluated thunks inside an expression
-without forcing evaluation. For instance:
+A term is said to be in *weak head normal-form* if the outermost constructor or
+lambda cannot be reduced further. A term is said to be in normal form if it is
+fully evaluated and all sub-expressions and thunks contained within are
+evaluated.
+
+For example in a lazy language the following program terminates even though it
+contains diverging terms. 
+
+~~~~ {.haskell include="src/05-laziness/nodiverge.hs"}
+~~~~
+
+In a strict language like OCaml ( ignoring it's suspensions for the moment ),
+the same program diverges.
+
+~~~~ {.haskell include="src/05-laziness/diverge.ml"}
+~~~~
+
+In Haskell a *thunk* is created to stand for an unevaluated computation.
+Evaluation of a thunk is called ``forcing`` the thunk. The result is an *update*
+a referentially transparent effect, which replaces the memory representation of
+the thunk with the computed value. The fundamental idea is that a thunk is only
+updated once ( although it may be forced simultaneously in a multi-threaded
+environment ) and it's resulting value is shared when referenced subsequently.
+
+The command ``:sprintf`` can be used to introspect the state of unevaluated
+thunks inside an expression without forcing evaluation. For instance:
 
 ```haskell
 λ: let a = [1..]
@@ -1497,8 +1572,11 @@ a = 1 : 2 : 3 : 4 : 5 : 6 : 7 : 8 : 9 : 10 : 11 : _
 b = _ : _ : _ : _ : _ : _ : _ : _ : _ : _ : 12 : _
 ```
 
-A term is said to be in *weak head normal-form* if the outermost constructor or lambda cannot be reduced
-further.
+While a thunk is being computed it's memory representation is replaced with a
+special form known as *blackhole* which indicates that computation is ongoing
+and allows a short circuit for when a computation might depend on it itself to
+complete. The implementation of this is some of the more subtle details of the
+GHC runtime.
 
 The ``seq`` function introduces an artificial dependence on the evaluation of order of two terms by requiring
 that the first argument be evaluated to WHNF before the evaluation of the second. The implementation of the
@@ -1526,8 +1604,18 @@ foldl' _ z [] = z
 foldl' f z (x:xs) = let z' = f z x in z' `seq` foldl' f z' xs
 ```
 
-The extension ``BangPatterns`` allows an alternative syntax to force arguments to functions to be wrapped in
-seq. A bang operator on an arguments forces it's evauation to weak head normal form before matching it.
+In practice a combination between the strictness analyzer and the inliner on
+``-O2`` will ensure that the strict variant of ``foldl`` is used whenever the
+function is inlinable at call site so manually using ``foldl'`` is most often
+not required.
+
+
+Strictness Annotations
+----------------------
+
+The extension ``BangPatterns`` allows an alternative syntax to force arguments
+to functions to be wrapped in seq. A bang operator on an arguments forces it's
+evaluation to weak head normal form before matching it.
 
 ```haskell
 {-# LANGUAGE BangPatterns #-}
@@ -1542,7 +1630,7 @@ sum = go 0
 This is desugared into code semantically equivalent to the following:
 
 ```haskell
-sum :: Num [a] => [a] -> a
+sum :: Num a => [a] -> a
 sum = go 0
   where
     go acc _ | acc `seq` False = undefined
