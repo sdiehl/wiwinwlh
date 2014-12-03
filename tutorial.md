@@ -1681,13 +1681,23 @@ instance NFData a => NFData [a] where
 -- Prelude.undefined
 ```
 
-To force a data structure itself to be fully evaluated we share the same argument in both positions of
-deepseq.
+To force a data structure itself to be fully evaluated we share the same
+argument in both positions of deepseq.
 
 ```haskell
 force :: NFData a => a
 force x = x `deepseq` x
 ```
+
+Irrefutable Patterns
+--------------------
+
+A lazy pattern doesn't require a match on the outer constructor instead it
+lazily calls the accessors of the values failing at each call-site instead at
+the outer pattern match in the presence of a bottom.
+
+~~~~ {.haskell include="src/05-laziness/lazy_patterns.hs"}
+~~~~
 
 Prelude
 =======
@@ -1850,8 +1860,6 @@ those not familiar with ML family languages.
 In Haskell, the Prelude provides functions like ``isJust`` and ``fromJust`` both of which can be used to
 subvert this kind of reasoning and make it easy to introduce bugs and should often be avoided.
 
-See: [Boolean Blindness](http://existentialtype.wordpress.com/2011/03/15/boolean-blindness/)
-
 Foldable / Traversable
 ----------------------
 
@@ -1994,6 +2002,12 @@ unpack :: Text -> String
 See: [Text](http://hackage.haskell.org/package/text-1.1.0.1/docs/Data-Text.html)
 
 
+Text.Builder
+------------
+
+TODO
+
+
 ByteString
 ----------
 
@@ -2013,6 +2027,8 @@ See:
 
 Printf
 ------
+
+Haskell also has a variadic ``printf`` function in the style of C.
 
 ~~~~ {.haskell include="src/07-text-bytestring/printf.hs"}
 ~~~~
@@ -2106,6 +2122,22 @@ liftA3 :: Applicative f => (a -> b -> c -> d) -> f a -> f b -> f c -> f d
 liftA3 f a b c = f <$> a <*> b <*> c
 ```
 
+The Applicative functions ``<$>`` and ``<*>`` are generalized by ``liftM`` and
+``ap`` for monads.
+
+```haskell
+import Control.Monad
+import Control.Applicative
+
+data C a b = C a b
+
+mnd :: Monad m => m a -> m b -> m (C a b)
+mnd a b = C `liftM` a `ap` b
+
+apl :: Applicative f => f a -> f b -> f (C a b)
+apl a b = C <$> a <*> b
+```
+
 See: [Applicative Programming with Effects](http://www.soi.city.ac.uk/~ross/papers/Applicative.pdf)
 
 Typeclass Hierarchy
@@ -2187,6 +2219,147 @@ resulting collected arguments must either converted into a single type or unpack
 
 See: [Polyvariadic functions](http://okmij.org/ftp/Haskell/polyvariadic.html)
 
+
+Category
+--------
+
+A category is an algebraic structure that includes a notion of an identity and a
+composition operation that is associative and preserves dentis.
+
+```haskell
+class Category cat where
+  id :: cat a a
+  (.) :: cat b c -> cat a b -> cat a c
+```
+
+```haskell
+instance Category (->) where
+  id = Prelude.id
+  (.) = (Prelude..)
+```
+
+```haskell
+(<<<) :: Category cat => cat b c -> cat a b -> cat a c
+(<<<) = (.)
+
+(>>>) :: Category cat => cat a b -> cat b c -> cat a c
+f >>> g = g . f
+```
+
+Arrows
+------
+
+Arrows are an extension of categories with the notion of products.
+
+```haskell
+class Category a => Arrow a where
+  arr :: (b -> c) -> a b c
+  first :: a b c -> a (b,d) (c,d)
+  second :: a b c -> a (d,b) (d,c)
+  (***) :: a b c -> a b' c' -> a (b,b') (c,c')
+  (&&&) :: a b c -> a b c' -> a b (c,c')
+```
+
+The canonical example is for functions.
+
+```haskell
+instance Arrow (->) where
+  arr f = f
+  first f = f *** id
+  second f = id *** f
+  (***) f g ~(x,y) = (f x, g y)
+```
+
+In this form functions of multiple arguments can be threaded around using the
+arrow combinators in a much more pointfree form. For instance a histogram
+function has a nice one-liner.
+
+```haskell
+histogram :: Ord a => [a] -> [(a, Int)]
+histogram = map (head &&& length) . group . sort
+```
+
+```haskell
+λ: histogram "Hello world"
+[(' ',1),('H',1),('d',1),('e',1),('l',3),('o',2),('r',1),('w',1)]
+```
+
+**Arrow notation**
+
+The following are equivalent: 
+
+```haskell
+{-# LANGUAGE Arrows #-}
+
+addA :: Arrow a => a b Int -> a b Int -> a b Int
+addA f g = proc x -> do
+                y <- f -< x
+                z <- g -< x
+                returnA -< y + z
+```
+
+```haskell
+addA f g = arr (\ x -> (x, x)) >>>
+           first f >>> arr (\ (y, x) -> (x, y)) >>>
+           first g >>> arr (\ (z, y) -> y + z)
+```
+
+```haskell
+addA f g = f &&& g >>> arr (\ (y, z) -> y + z)
+```
+
+See: [Arrow Notation](https://downloads.haskell.org/~ghc/7.8.3/docs/html/users_guide/arrow-notation.html)
+
+Contravariant Functors
+----------------------
+
+TODO
+
+In practice this notation is not used often and in the future may become deprecated.
+
+Bifunctors
+----------
+
+Bifunctors are a generalization of functors to include types parameterized by
+two parameters and includes two map functions for each parameter. 
+
+```haskell
+class Bifunctor p where
+  bimap :: (a -> b) -> (c -> d) -> p a c -> p b d
+  first :: (a -> b) -> p a c -> p b c
+  second :: (b -> c) -> p a b -> p a c
+```
+
+The bifunctor laws are a natural generalization of the usual functor. Namely
+they respect identities and composition in the usual way:
+
+```haskell
+bimap id id ≡ id
+first id ≡ id
+second id ≡ id
+```
+
+```haskell
+bimap f g ≡ first f . second g
+```
+
+The canonical example is for 2-tuples.
+
+```haskell
+λ: first (+1) (1,2)
+(2,2)
+λ: second (+1) (1,2)
+(1,3)
+λ: bimap (+1) (+1) (1,2)
+(2,3)
+
+λ: first (+1) (Left 3)
+Left 4
+λ: second (+1) (Left 3)
+Left 3
+λ: second (+1) (Right 3)
+Right 4
+```
 
 Error Handling
 ==============
