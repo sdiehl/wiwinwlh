@@ -5620,8 +5620,9 @@ XXX
 Concurrency
 ===========
 
-The definitive reference on concurrency and parallelism in Haskell is Simon Marlow's text.  This will section
-will just gloss over these topics because they are far better explained in this book.
+The definitive reference on concurrency and parallelism in Haskell is Simon
+Marlow's text.  This will section will just gloss over these topics because they
+are far better explained in this book.
 
 See: [Parallel and Concurrent Programming in Haskell](http://chimera.labs.oreilly.com/books/1230000000929)
 
@@ -5629,18 +5630,20 @@ See: [Parallel and Concurrent Programming in Haskell](http://chimera.labs.oreill
 forkIO :: IO () -> IO ThreadId
 ```
 
-Haskell threads are extremely cheap to spawn, using only 1.5KB of RAM depending on the platform and are much
-cheaper than a pthread in C. Calling forkIO 10<sup>6</sup> times completes just short of a 1s. Additionally,
-functional purity in Haskell also guarantees that a thread can almost always be terminated even in the middle
-of a computation without concern.
+Haskell threads are extremely cheap to spawn, using only 1.5KB of RAM depending
+on the platform and are much cheaper than a pthread in C. Calling forkIO
+10<sup>6</sup> times completes just short of a 1s. Additionally, functional
+purity in Haskell also guarantees that a thread can almost always be terminated
+even in the middle of a computation without concern.
 
 See: [The Scheduler](https://ghc.haskell.org/trac/ghc/wiki/Commentary/Rts/Scheduler#TheScheduler)
 
 Sparks
 ------
 
-The most basic "atom" of paralleism in Haskell is a spark. It is a hint to the GHC runtime that a computation
-can be evaluated to weak head normal form in parallel.
+The most basic "atom" of parallelism in Haskell is a spark. It is a hint to the
+GHC runtime that a computation can be evaluated to weak head normal form in
+parallel.
 
 
 ```haskell
@@ -5650,8 +5653,15 @@ rseq :: a -> Eval a
 runEval :: Eval a -> a
 ```
 
-The parallel computations themselves are encapsulated in the ``Eval`` monad, whose evaluation is a pure
-computation.
+TODO
+
+```haskell
+-- Evaluates the arguments to f in parallel before application.
+par2 f x y = x `par` y `par` f x y
+```
+
+The parallel computations themselves are encapsulated in the ``Eval`` monad,
+whose evaluation is a pure computation.
 
 ```haskell
 example :: (a -> b) -> a -> a -> (b, b)
@@ -5663,11 +5673,13 @@ example f x y = runEval $ do
   return (a, b)
 ```
 
-The value passed to ``rpar`` is called a spark and represent a single unit of work that is stored in a spark
-pool that the GHC runtime distributes across available processors. An argument to ``rseq`` forces the
-evaluation of a spark before evaluation continues.
+The value passed to ``rpar`` is called a spark and represent a single unit of
+work that is stored in a spark pool that the GHC runtime distributes across
+available processors. An argument to ``rseq`` forces the evaluation of a spark
+before evaluation continues.
 
-When a spark is evaluated is said to be *converted*. There are several other possible outcomes for a spark.
+When a spark is evaluated is said to be *converted*. There are several other
+possible outcomes for a spark.
 
 Action          Description
 -------------   --------------
@@ -5676,7 +5688,8 @@ Action          Description
 ``GC'd``        The spark is added to the spark pool but the result is not referenced, so it is garbage collected.
 ``Fizzled``     The resulting value has already been evaluated by the main thread so the spark need not be converted.
 
-The runtime can be asked to dump information about the spark evaluation by passing the ``-s`` flag.
+The runtime can be asked to dump information about the spark evaluation by
+passing the ``-s`` flag.
 
 ```haskell
 $ ./spark +RTS -N4 -s
@@ -5691,6 +5704,23 @@ $ ./spark +RTS -N4 -s
 
   SPARKS: 20000 (20000 converted, 0 overflowed, 0 dud, 0 GC'd, 0 fizzled)
 ```
+
+Threadscope
+-----------
+
+Passing the flag ``-l``  generates the eventlog which can be rendered with the
+threadscope library.
+
+```haskell
+$ ghc -O2 -threaded -rtsopts -eventlog Example.hs 
+$ ./program +RTS -N4 -l
+$ threadscope Example.eventlog
+```
+
+![](img/threadscope.png)
+
+See Simon Marlows's *Parallel and Concurrent Programming in Haskell* for a
+detailed guide on interpeting and profiling using Threascope.
 
 Strategies
 ----------
@@ -5808,13 +5838,16 @@ fork :: Par () -> Par ()
 spawn :: NFData a => Par a -> Par (IVar a)
 ```
 
+![](img/par.png)
+
 ~~~~ {.haskell include="src/22-concurrency/par.hs"}
 ~~~~
 
 async
 -----
 
-Async is a higher level set of functions that work on top of Control.Concurrent and STM.
+Async is a higher level set of functions that work on top of Control.Concurrent
+and STM.
 
 ```haskell
 async :: IO a -> IO (Async a)
@@ -5826,22 +5859,6 @@ race :: IO a -> IO b -> IO (Either a b)
 
 ~~~~ {.haskell include="src/22-concurrency/async.hs"}
 ~~~~
-
-Threadscope
------------
-
-Passing the flag ``-l``  generates the eventlog which can be rendered with the threadscope library.
-
-```haskell
-$ ghc -O2 -threaded -rtsopts -eventlog Example.hs 
-$ ./program +RTS -N4 -l
-$ threadscope Example.eventlog
-```
-
-![](img/threadscope.png)
-
-See Simon Marlows's *Parallel and Concurrent Programming in Haskell* for a detailed guide on interpeting and
-profiling using threascope.
 
 Graphics
 ========
@@ -5989,6 +6006,27 @@ let z = y in a $ a $ (-a)!;
 let z = y in a # a # a $ b; let z = y in a # a # a # b;
 ```
 
+Generic Parsing
+---------------
+
+XXX
+
+~~~~ {.haskell include="src/24-parsing/generics.hs"}
+~~~~
+
+```haskell
+λ: parseTest parseMusician "Bach"
+Bach
+
+λ: parseTest parseScientist "Feynmann"
+Feynman
+```
+
+Indentation Parsing
+------------------
+
+XXX
+
 Attoparsec
 ----------
 
@@ -5998,6 +6036,8 @@ efficient](http://www.serpentine.com/blog/2014/05/31/attoparsec/).
 
 ~~~~ {.haskell include="src/24-parsing/attoparsec.hs"}
 ~~~~
+
+XXX
 
 See: [Text Parsing Tutorial](https://www.fpcomplete.com/school/starting-with-haskell/libraries-and-frameworks/text-manipulation/attoparsec)
 
@@ -6317,6 +6357,9 @@ Of importance to note is the Blaze library used here overloads do-notation but i
 
 See: [Making a Website with Haskell](http://adit.io/posts/2013-04-15-making-a-website-with-haskell.html)
 
+Cryptography
+============
+
 Databases
 =========
 
@@ -6337,6 +6380,34 @@ Esqueleto
 
 GHC
 ===
+
+Block Diagram
+-------------
+
+![](img/ghc.png)
+
+Flag                   Action
+--------------         ------------
+``-ddump-parsed``      Frontend AST.
+``-ddump-rn``          Output of the rename pass.
+``-ddump-tc``          Output of the typechecker.
+``-ddump-splices``     Output of TemplateHaskell splices.
+``-ddump-types``       Typed AST representation.
+``-ddump-deriv``       Output of deriving instances.
+``-ddump-ds``          Output of the desugar pass.
+``-ddump-spec``        Outut of specialisation pass.
+``-ddump-rules``       Output of applying rewrite rules.
+``-ddump-vect``        Output results of vectorizer pass.
+``-ddump-simpl``       Ouptut of the SimplCore pass. 
+``-ddump-inlinings``   Output of the inliner.
+``-ddump-cse``         Output of the common subsexpression elimination pass.
+``-ddump-prep``        The CorePrep pass.
+``-ddump-stg``         The resulting STG.
+``-ddump-cmm``         The resulting C--.
+``-ddump-opt-cmm``     The resulting C-- optimization pass.
+``-ddump-asm``         The final assembly generated.
+``-ddump-llvm``        The final LLVM IR generated.
+
 
 Core
 ----
@@ -6380,9 +6451,7 @@ $ ghc -ddump-to-file -ddump-parsed -ddump-simpl -ddump-stg -ddump-cmm -ddump-asm
 ```
 
 Core from GHC is roughly human readable, but it's helpful to look at simple human written examples to get the
-hang of what's going on. Of important note is that the Λ and λ for type-level and value-level lambda
-abstraction are represented by the same symbol (``\``) in core, which is a simplifying detail of the GHC's
-implementation but a source of some confusion when starting.
+hang of what's going on.
 
 ```haskell
 id :: a -> a
@@ -6422,6 +6491,19 @@ map =
       : y ys -> : @ b (f y) (map @ a @ b f ys)
     }
 ```
+
+Of important note is that the Λ and λ for type-level and value-level lambda
+abstraction are represented by the same symbol (``\``) in core, which is a simplifying detail of the GHC's
+implementation but a source of some confusion when starting.
+
+```haskell
+-- System-F Notation
+Λ b c a. λ (f1 :: b -> c) (g :: a -> b ) (x1 :: a). f1 (g x1)
+-- Haskell Core
+\ (@ b) (@ c) (@ a) (f1 :: b -> c) (g :: a -> b) (x1 :: a) -> f1 (g x1)
+```
+
+The ``seq`` function has a intuitive implementation in the Core langauge. 
 
 ```haskell
 x `seq` y
@@ -6498,6 +6580,59 @@ See:
 * [Core Spec](https://github.com/ghc/ghc/blob/master/docs/core-spec/core-spec.pdf)
 * [Core By Example](http://alpmestan.com/2013/06/27/ghc-core-by-example-episode-1/)
 
+Inliner
+-------
+
+```haskell
+infixr 0  $
+
+($):: (a -> b) -> a -> b
+f $ x =  f x
+```
+
+Having to enter a secondary closure everytime we used ``($)`` would introduce an enormous overhead. Fortunatly
+GHC has a pass to eliminate small funtions like this by simply replacing the function call with the body of
+it's definition at appropriate call-sites. There compiler contains a variety heuristics for determening when
+this kind of substitution is appropriate and the potential costs involved.
+
+In addition to the automatic inliner, manual pragmas are provided for more granular control over inlining.
+It's important to note that naive inlining quite often results in signifigantly worse perormance and longer
+compilation times.
+
+```haskell
+{-# INLINE func #-}
+{-# INLINABLE func #-}
+{-# NOINLINE func #-}
+```
+
+Cases marked with ``NOINLINE`` generally indicate that the logic in the function is using something like
+``unsafePerformIO`` or some other unholy act. In hese cases naive inlining might duplicate effects at multiple
+call-sites throughout the program.
+
+See: 
+
+* [Secrets of the Glasgow Haskell Compiler inliner](https://research.microsoft.com/en-us/um/people/simonpj/Papers/inlining/inline.pdf)
+
+
+Specialization
+--------------
+
+XXX
+
+IO/ST
+-----
+
+Both the IO and the ST monad have special state in the GHC runtime and share a
+very similar implementation. The ``PrimMonad`` abstracts over both these monads
+and can be used to write operations that generic over both ST and IO. This is
+used extensively inside of the vector package.
+
+~~~~ {.haskell include="src/29-ghc/io_impl.hs"}
+~~~~
+
+~~~~ {.haskell include="src/29-ghc/monad_prim.hs"}
+~~~~
+
 Dictionaries
 ------------
 
@@ -6543,24 +6678,36 @@ negate = \ (@ a) (tpl :: Num a) ->
   case tpl of _ { D:Num _ _ tpl -> tpl }
 ```
 
+``Num`` and ``Ord`` have simple translation but for monads with existential type
+variables in their signatures, the only way to represent the equivalent
+dictionary is using RankNTypes. In addition a typeclass may also include
+superclasses which would be included in the typeclass dictionary and
+parameterized over the same arguments.
+
 ```haskell
-add :: forall t. NumD t -> t -> t
-add = \ (@ t) (ds :: NumD t) ->
-    case ds of _ { NumDict a m n -> n }
-
-mul :: forall t. NumD t -> t -> t -> t
-mul = \ (@ t) (ds :: NumD t) ->
-    case ds of _ { NumDict a m n -> m }
-
-neg :: forall t. NumD t -> t -> t
-neg = \ (@ t) (ds :: NumD t) ->
-    case ds of _ { NumDict a m n -> n }
+data DMonad m = DMonad
+  { bind   :: forall a b. m a -> (a -> m b) -> m b
+  , return :: forall a. a -> m a
+  }
 ```
 
-There are generally two schools of thought on the use of typeclasses in high-level library design. The first
-is to favor value-level programming as the core of an internal API and use type-classes to provide sugar on
-top of the forward-facing interface or not at all. There are of course [other schools of
-thought](http://okmij.org/ftp/).
+```haskell
+class (Functor t, Foldable t) => Traversable t where
+    traverse :: Applicative f => (a -> f b) -> t a -> f (t b)
+    traverse f = sequenceA . fmap f
+```
+
+```haskell
+data DTraversable t = DTraversable
+  { dFunctorTraversable :: DFunctor t  -- superclass dictionary
+  , dFoldableTraversable :: DFoldable t -- superclass dictionary
+  , traverse :: forall a. Applicative f => (a -> f b) -> t a -> f (t b)
+  }
+```
+
+Indeed this is not that far from how GHC actually implements typeclasses. It
+elaborates into projection functions and data constructors nearly identical to
+this, and are implicitly threaded for every overloaded identifier that occurs.
 
 See: [Scrap Your Type Classes](http://www.haskellforall.com/2012/05/scrap-your-type-classes.html)
 
@@ -6592,9 +6739,27 @@ constructor.
 λ: :set -XMagicHash
 λ: :m +GHC.Types
 λ: :m +GHC.Prim
+
 λ: :i Int
 data Int = I# Int#      -- Defined in GHC.Types
+
+λ: :k Int#
+Int# :: #
+
+λ: :type 3#
+3# :: GHC.Prim.Int#
+
+λ: :type 3.14#
+3.14# :: GHC.Prim.Float#
 ```
+
+An unboxed type with kind ``#`` and will never unify a type variable of kind ``*``. Intuitively a type with
+kind ``*`` indicates a type with a uniform runtime representation that can be used polymorphically.
+
+TODO
+
+- *Lifted* - Can contain a bottom term, represented by a pointer. ( ``Int``, ``Any``, ``(,)`` )
+- *Unlited* - Cannot contain a bottom term, represented by a value on the stack. ( ``Int#``, ``(#, #)`` )
 
 ~~~~ {.haskell include="src/29-ghc/prim.hs"}
 ~~~~
@@ -6605,7 +6770,7 @@ up into ``Int`` again.
 
 ```haskell
 plusInt :: Int -> Int -> Int
-(I# x) `plusInt`  (I# y) = I# (x +# y)
+(I# x) `plusInt` (I# y) = I# (x +# y)
 ```
 
 Where ``(+#)`` is a low level function built into GHC that maps to unboxed integer arithmetic directly.
@@ -6636,7 +6801,7 @@ struct A {
 Effectively we'd like to be able to define our constructor to be stored as:
 
 ```haskell
-data A = A #Int
+data A = A Int#
 ```
 But maintain all our logic around as if it were written against Int, performing the boxing and unboxing where
 needed.
@@ -6655,6 +6820,229 @@ data A = A {-# UNPACK #-} !Int
 See: 
 
 * [Unboxed Values as First-Class Citizens](http://www.haskell.org/ghc/docs/papers/unboxed-values.ps.gz)
+
+STG
+---
+
+After being compiled into Core, a program is translated into a very similar
+intermediate form known as STG ( Spineless Tagless G-Machine ) an abstract
+machine model that makes all laziness explicit. The spineless indicates that
+function applications in the language do not have a spine of applications of
+functions are collapsed into a sequence of arguments. Currying is still present
+in the semantics since arity information is stored and partially applied
+functions will evaluate differently than saturated functions.
+
+```haskell
+-- Spine
+f x y z = App (App (App f x) y) z
+
+-- Spineless
+f x y z = App f [x, y, z]
+```
+
+All let statements in STG bind a name to a *lambda form*. A lambda form with no
+arguments is a thunk, while a lambda-form with arguments indicates that a
+closure is to be allocated that captures the variables explicitly mentioned.
+
+Thunks themselves are either reentrant (``\r``) or updatable (``\u``) indicating
+that the thunk and either yields a value to the stack or is allocated on the
+heap and after being evaluated initially all subsequent entry's of the thunk
+will yield the already-computed value without needing to redo work.
+
+A lambda form also indicates the *static reference table* a collection of
+references to static heap allocated values referred to by the body of the
+function.
+
+For example turning on ``-ddump-stg`` we can see the expansion of the following
+compose function.
+
+```haskell
+-- Frontend
+compose f g = \x -> f (g x)
+```
+
+```haskell
+-- Core
+compose :: forall t t1 t2. (t1 -> t) -> (t2 -> t1) -> t2 -> t
+compose =
+  \ (@ t) (@ t1) (@ t2) (f :: t1 -> t) (g :: t2 -> t1) (x :: t2) ->
+    f (g x)
+```
+
+```haskell
+-- STG
+compose :: forall t t1 t2. (t1 -> t) -> (t2 -> t1) -> t2 -> t =
+    \r [f g x] let { sat :: t1 = \u [] g x; } in  f sat;
+SRT(compose): []
+```
+
+For a more sophisticated example, let's trace the compilation of the factorial
+function.
+
+```haskell
+-- Frontend
+fac :: Int -> Int -> Int
+fac a 0 = a
+fac a n = fac (n*a) (n-1)
+```
+
+```haskell
+-- Core
+Rec {
+fac :: Int -> Int -> Int
+fac =
+  \ (a :: Int) (ds :: Int) ->
+    case ds of wild { I# ds1 ->
+    case ds1 of _ {
+      __DEFAULT ->
+        fac (* @ Int $fNumInt wild a) (- @ Int $fNumInt wild (I# 1));
+      0 -> a
+    }
+    }
+end Rec }
+```
+
+```haskell
+-- STG
+fac :: Int -> Int -> Int =
+    \r srt:(0,*bitmap*) [a ds]
+        case ds of wild {
+          I# ds1 ->
+              case ds1 of _ {
+                __DEFAULT ->
+                    let {
+                      sat :: Int =
+                          \u srt:(1,*bitmap*) []
+                              let { sat :: Int = NO_CCS I#! [1]; } in  - $fNumInt wild sat; } in
+                    let { sat :: Int = \u srt:(1,*bitmap*) [] * $fNumInt wild a;
+                    } in  fac sat sat;
+                0 -> a;
+              };
+        };
+SRT(fac): [fac, $fNumInt]
+```
+
+Notice that the factorial function allocates three thunks inside of the loop
+which are updated when computed. It also includes static references to both
+itself and the dictionary for instance of ``Num`` typeclass over the type
+``Int``.
+
+Worker/Wrapper
+--------------
+
+With ``-O2`` turned on GHC will perform a special optimization known as the
+Worker-Wrapper transformation which will split the logic of the factorial
+function across two definitions, the worker will operate over stack unboxed
+allocated machine integers which compiles into a tight inner loop while the
+wrapper calls into the worker and collects the end result of the loop and
+packages it back up into a boxed heap value. This can often be an order of of
+magnitude faster than the naive implementation which needs to pack and unpack
+the boxed integers on every iteration.
+
+```haskell
+-- Worker
+$wfac :: Int# -> Int# -> Int# =
+    \r [ww ww1]
+        case ww1 of ds {
+          __DEFAULT ->
+              case -# [ds 1] of sat {
+                __DEFAULT ->
+                    case *# [ds ww] of sat { __DEFAULT -> $wfac sat sat; };
+              };
+          0 -> ww;
+        };
+SRT($wfac): []
+
+-- Wrapper
+fac :: Int -> Int -> Int =
+    \r [w w1]
+        case w of _ {
+          I# ww ->
+              case w1 of _ {
+                I# ww1 -> case $wfac ww ww1 of ww2 { __DEFAULT -> I# [ww2]; };
+              };
+        };
+SRT(fac): []
+```
+
+EKG
+---
+
+XXX
+
+Profiling
+---------
+
+The GHC runtime system can be asked to dump information about 
+
+```haskell
+$ ./program +RTS -s
+
+       1,939,784 bytes allocated in the heap
+          11,160 bytes copied during GC
+          44,416 bytes maximum residency (2 sample(s))
+          21,120 bytes maximum slop
+               1 MB total memory in use (0 MB lost due to fragmentation)
+
+                                    Tot time (elapsed)  Avg pause  Max pause
+  Gen  0         2 colls,     0 par    0.00s    0.00s     0.0000s    0.0000s
+  Gen  1         2 colls,     0 par    0.00s    0.00s     0.0002s    0.0003s
+
+  INIT    time    0.00s  (  0.00s elapsed)
+  MUT     time    0.00s  (  0.01s elapsed)
+  GC      time    0.00s  (  0.00s elapsed)
+  EXIT    time    0.00s  (  0.00s elapsed)
+  Total   time    0.01s  (  0.01s elapsed)
+
+  %GC     time       5.0%  (7.1% elapsed)
+
+  Alloc rate    398,112,898 bytes per MUT second
+
+  Productivity  91.4% of total user, 128.8% of total elapsed
+```
+
+Productivity indicates the amount of time spent during execution compared to the
+time spent garbage collecting. Well tuned CPU bound programs are often in the
+90-99% range of productivity range.
+
+In addition individual function profiling information can be generated by
+compiling the program with ``-prof`` flag. The resulting information is
+outputted to a ``.prof`` file of the same name as the module. This is useful for
+tracking down hotspots in the program.
+
+```haskell
+$ ghc -O2 program.hs -prof -auto-all
+$ ./program +RTS -p
+$ cat program.prof
+	Mon Oct 27 23:00 2014 Time and Allocation Profiling Report  (Final)
+
+	   program +RTS -p -RTS
+
+	total time  =        0.01 secs   (7 ticks @ 1000 us, 1 processor)
+	total alloc =   1,937,336 bytes  (excludes profiling overheads)
+
+COST CENTRE MODULE           %time %alloc
+
+CAF         Main             100.0   97.2
+CAF         GHC.IO.Handle.FD   0.0    1.8
+
+
+                                                      individual     inherited
+COST CENTRE MODULE                  no.     entries  %time %alloc   %time %alloc
+
+MAIN        MAIN                     42           0    0.0    0.7   100.0  100.0
+ CAF        Main                     83           0  100.0   97.2   100.0   97.2
+ CAF        GHC.IO.Encoding          78           0    0.0    0.1     0.0    0.1
+ CAF        GHC.IO.Handle.FD         77           0    0.0    1.8     0.0    1.8
+ CAF        GHC.Conc.Signal          74           0    0.0    0.0     0.0    0.0
+ CAF        GHC.IO.Encoding.Iconv    69           0    0.0    0.0     0.0    0.0
+ CAF        GHC.Show                 60           0    0.0    0.0     0.0    0.0
+```
+
+Rewrites and Fusion
+-------------------
+
+TODO
 
 Haddock
 -------
@@ -6738,6 +7126,11 @@ name capture and substitution mechanics ourselves.
 
 ~~~~ {.haskell include="src/30-languages/unbound.hs"}
 ~~~~
+
+Unbound Generics
+----------------
+
+XXX
 
 LLVM 
 ----
@@ -7770,37 +8163,6 @@ For example, ``Just`` is just an identity morphism in the Kleisli category of th
 Just >=> f ≡ f
 f >=> Just ≡ f
 ```
-
-Mathematics
------------
-
-Just as in Haskell we try to unify the common ideas from distinct structures, we can ask a simple question
-like what the fundamental notion of a group is for different mathematical categories:
-
-
-Category   Description                             Group
---------   ----------------------------------      ----------
-**Set**    The category of sets with objects as    Abelian group
-           sets and morphisms are functions 
-           between them.
-**Man**    The category of manifolds with          Lie group
-           objects as manifolds and morphisms 
-           as differentiable functions between
-           manifolds.
-**Top**    The category of topological spaces      Topological group
-           with objects as topological spaces 
-           as and continuous functions between
-           spaces.
-**Grp**    The category of Abelian groups,         Category objects
-           with groups as objects and group 
-           homomorphism between groups.
-
-Some deep results in algebraic topology about the homology groups of topological spaces turn out stated very
-concisely as the relationships between functors and natural isomorphisms of these four categories!
-
-Which segues into some of the most exciting work in computer science at the moment, [Homotopy Type
-Theory](http://hottheory.files.wordpress.com/2013/03/hott-online-611-ga1a258c.pdf) which I won't try to
-describe! :)
 
 Resources
 ---------

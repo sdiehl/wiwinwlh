@@ -61,12 +61,3 @@ scientist = gparse
 
 musician :: Parser Musician
 musician = gparse
-
-main = return ()
-
-
--- λ: parseTest parseMusician "Bach"
--- Bach
---
--- λ: parseTest parseScientist "Feynmann"
--- Feynman
