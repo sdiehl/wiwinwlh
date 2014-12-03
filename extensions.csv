@@ -67,7 +67,6 @@ QuasiQuotes,,,,Specialized,Metaprogramming,http://www.haskell.org/ghc/docs/7.8.2
 Rank2Types,,✓,,Specialized,Historical Artificat,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#universal-quantification
 RankNTypes,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#universal-quantification
 RebindableSyntax,,,✓,Specialized,Metaprogramming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#rebindable-syntax
-RecordPuns,✓,,✓,General,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#record-puns
 RecordWildCards,✓,,✓,General,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#record-wildcards
 RecursiveDo,,,,Specialized,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#recursive-do-notation
 RelaxedPolyRec,,,,Specialized,Type Disambiguation,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#typing-binds
