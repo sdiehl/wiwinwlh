@@ -209,8 +209,7 @@ alias ghci-sandbox="ghci -no-user-package-db -package-db .cabal-sandbox/*-packag
 alias runhaskell-sandbox="runhaskell -no-user-package-db -package-db .cabal-sandbox/*-packages.conf.d"
 ```
 
-Courtesy of [Brian McKenna](https://twitter.com/puffnfresh) there is also a zsh script to show the sandbox
-status of the current working directory in our shell.
+There is also a zsh script to show the sandbox status of the current working directory in our shell.
 
 ```bash
 function cabal_sandbox_info() {
@@ -234,6 +233,13 @@ packages outside of sandboxes to prevent accidental collisions.
 ```perl
 -- Don't allow global install of packages.
 require-sandbox: True
+```
+
+A library can also be compiled with runtime profiling information enabled. More on this is discussed in the
+section on Concurrency and profiling.
+
+```perl
+library-profiling: True
 ```
 
 Another common flag to enable is the ``documentation`` which forces the local build of Haddock documentation,
@@ -498,6 +504,30 @@ the place of either ``undefined`` or ``error`` call.
 
 See: [Avoiding Partial Functions](http://www.haskell.org/haskellwiki/Avoiding_partial_functions)
 
+Exhaustiveness
+--------------
+
+XXX
+
+```haskell
+unsafe (Just x) = x + 1
+```
+
+```haskell
+$ ghc -c -Wall -Werror A.hs
+A.hs:3:1:
+    Warning: Pattern match(es) are non-exhaustive
+             In an equation for `unsafe': Patterns not matched: Nothing
+```
+
+The ``-Wall`` or incomplete pattern flag can also be added on a per-module basis
+with the ``OPTIONS_GHC`` pragma.
+
+```haskell
+{-# OPTIONS_GHC -Wall #-}
+{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+```
+
 Debugger
 --------
 
@@ -509,6 +539,14 @@ or asynchronous exceptions is in similar style to debugging segfaults with gdb.
 λ: :trace main
 λ: :hist
 λ: :back
+```
+
+With profiling enabled GHC can also print a stack trace when an livering term is
+hit:
+
+```haskell
+$ ghc -rtsopts=all -prof -auto-all --make myfile.hs
+./executable +RTS -xc
 ```
 
 Trace
