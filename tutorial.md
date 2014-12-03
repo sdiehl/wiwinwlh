@@ -2804,35 +2804,44 @@ Quantification
 Universal Quantification
 ------------------------
 
-Universal quanitfication the primary mechanism of encoding polymorphism in Haskell. The essence of universal
-quantification is that we can express functions which operate the same way for a set of types and whose
-function behavior is entirely determined *only* by the behavior of all types in this span.
+Universal quantification the primary mechanism of encoding polymorphism in
+Haskell. The essence of universal quantification is that we can express
+functions which operate the same way for a set of types and whose function
+behavior is entirely determined *only* by the behavior of all types in this
+span.
 
 ~~~~ {.haskell include="src/11-quantification/universal.hs"}
 ~~~~
 
-Normally quantifiers are omitted in type signatures since in Haskell's vanilla surface language it is
-unambiguous to assume to that free type variables are universally quantified.
+Normally quantifiers are omitted in type signatures since in Haskell's vanilla
+surface language it is unambiguous to assume to that free type variables are
+universally quantified.
 
-A universally quantified type-variable actually implies quite a few rather deep properties about the
-implementation of a function that can be deduced from it's type signature. For instance the identity function
-in Haskell is guarnateed to only have one implementation since the only information that the information that
-can present in the body 
+Free theorems
+-------------
+
+A universally quantified type-variable actually implies quite a few rather deep
+properties about the implementation of a function that can be deduced from it's
+type signature. For instance the identity function in Haskell is guaranteed to
+only have one implementation since the only information that the information
+that can present in the body 
 
 ```haskell
 id :: forall. a -> a
 id x = x
 ```
 
-The same with the function ``fmap``, the only implementation possible given a function ``(a -> b)`` and a
-functor ``f a`` is a implementation which applies ``(a -> b)`` over every ``a`` inside ``f a`` and that every
-``b`` in ``f b`` uniquely maps to some input value. It is not possible to write an implementation which did
-not have this property, and this high-level property just falls out the interplay of quantifiers in the type
-signature!
+```haskell
+fmap :: Functor f => (a -> b) -> f a -> f b
+```
+
+The free theorem of fmap:
 
 ```haskell
-fmap :: forall a b. (a -> b) -> f a -> f b
+forall f g. fmap f . fmap g = fmap (f . g)
 ```
+
+See: [Theorems for Free](http://www-ps.iai.uni-bonn.de/cgi-bin/free-theorems-webui.cgi?)
 
 Type Systems
 ------------
@@ -3040,8 +3049,8 @@ GADTs
 GADTs are an extension to algebraic datatypes that allow us to qualify the constructors to datatypes with type
 equality constraints, allowing a class of types that are not expressible using vanilla ADTs.
 
-``-XGADTs`` implicitly enables an alternative syntax for datatype declarations ( ``-XGADTSyntax`` ) such that
-the following declaration are equivalent:
+``-XGADTs`` implicitly enables an alternative syntax for datatype declarations ( ``-XGADTSyntax`` )  such the
+following declaration are equivalent:
 
 ```haskell
 data List a
@@ -3090,9 +3099,8 @@ This time around:
 failure = Succ ( Lit True )
 ```
 
-Explicit equality constraints (``a ~ b``) can be added to a function's context.
-This effectively asserts that ``a`` and ``b`` should unify across the bounds of
-the context.
+Explicit constraints (``a ~ b``) can be added to a function's context that the compiler should be able to
+deduce that two types are equal up to unification.
 
 ```haskell
 -- f :: a -> a -> (a,a)
@@ -3263,8 +3271,9 @@ See: [Mogensen–Scott encoding](http://en.wikipedia.org/wiki/Mogensen-Scott_enc
 Substitution
 ------------
 
-The downside to using alphabetical terms to bound variable in a closure is that dealing with open lambda
-expressions. For instance if we perform the naive substitution ``s = [y / x]`` over the term:
+The downside to using alphabetical terms to bound variable in a closure is that
+dealing with open lambda expressions. For instance if we perform the naive
+substitution ``s = [y / x]`` over the term:
 
 ```haskell
 λy.yx
@@ -3276,19 +3285,20 @@ We get the result:
 λx.xx
 ```
 
-Which fundamentally changes the meaning of the expression. We expect that substitution should preserve alpha
-equivalence.
+Which fundamentally changes the meaning of the expression. We expect that
+substitution should preserve alpha equivalence.
 
-To overcome this we ensure that our substitution function checks the free variables in each subterm before
-performing substitution and introduces new names where neccessary.  Such a substitution is called a
-*capture-avoiding substitution*. There are several techniques to implement capture-avoiding substitutions in
-an efficient way.
+To overcome this we ensure that our substitution function checks the free
+variables in each subterm before performing substitution and introduces new
+names where necessary.  Such a substitution is called a *capture-avoiding
+substitution*. There are several techniques to implement capture-avoiding
+substitutions in an efficient way.
 
 de Bruijn Indices
 -----------------
 
-Instead of using string names, an alternative representation of the lambda calculus uses integers to stand for
-names on binders. 
+Instead of using string names, an alternative representation of the lambda
+calculus uses integers to stand for names on binders. 
 
               Named                    de Bruijn
 ----------    -----                    --------
@@ -3296,9 +3306,11 @@ names on binders.
 **K**         ``λ x y. x``             ``λ λ 2``
 **I**         ``λ x. x``               ``λ 1``
 
-In this system the process of substitution becomes much more mechanical and simply involves shifting indices
-and can be made very efficient. Although in this form human intution about expressions breaks down and such it
-is better to convert to this kind of form as an interemdiate step after parsing into a named form.
+In this system the process of substitution becomes much more mechanical and
+simply involves shifting indices and can be made very efficient. Although in
+this form human intution about expressions breaks down and such it is better to
+convert to this kind of form as an interemdiate step after parsing into a named
+form.
 
 ~~~~ {.haskell include="src/13-lambda-calculus/debruijn.hs"}
 ~~~~
@@ -3306,22 +3318,17 @@ is better to convert to this kind of form as an interemdiate step after parsing 
 HOAS
 ----
 
-Higher Order Abstract Syntax (*HOAS*) is a technique for encoding the lambda calculus that exploits the
-function type of the host language ( i.e. Haskell ) to give us capture-avoiding substitution in our custom
-language by exploiting Haskell's implementation.
+Higher Order Abstract Syntax (*HOAS*) is a technique for implementing the lambda
+calculus in a language where the binders of the lambda expression map directly
+onto lambda binders of the host language ( i.e. Haskell ) to give us
+substitution machinery in our custom language by exploiting Haskell's
+implementation.
 
 ~~~~ {.haskell include="src/13-lambda-calculus/hoas.hs"}
 ~~~~
 
-There is no however no safeguard preventing us from generating Haskell functions which do not encode
-meaningful lambda calculus expression. For example:
-
-```haskell
-Lam (\x -> let x = x in x )
-```
-
-Pretty printing HOAS encoded terms can also be quite complicated since the body of the function is under a
-Haskell lambda binder.
+Pretty printing HOAS terms can also be quite complicated since the body of the
+function is under a Haskell lambda binder.
 
 PHOAS
 -----
@@ -3501,8 +3508,13 @@ compose f g = f . unFix . g
 recursion-schemes
 -----------------
 
+The code from the F-algebra examples above is implemented in an off-the shelf 
+library called ``recursion-schemes``.
+
 ~~~~ {.haskell include="src/14-interpreters/recursion_schemes.hs"}
 ~~~~
+
+An example of usage:
 
 ~~~~ {.haskell include="src/14-interpreters/catamorphism.hs"}
 ~~~~
@@ -6034,24 +6046,22 @@ Attoparsec is a parser combinator like Parsec but more suited for bulk parsing o
 instead of parsing language syntax to ASTs. When written properly Attoparsec parsers can be [extremely
 efficient](http://www.serpentine.com/blog/2014/05/31/attoparsec/).
 
+For a langauge:
+
+~~~~ {.haskell include="src/24-parsing/attoparsec_lang.hs"}
+~~~~
+
+For an example try the above parser on the following simple lambda expression.
+
+~~~~ {.ocaml include="src/24-parsing/simple.ml"}
+~~~~
+
+For a network protocol:
+
 ~~~~ {.haskell include="src/24-parsing/attoparsec.hs"}
 ~~~~
 
-XXX
-
 See: [Text Parsing Tutorial](https://www.fpcomplete.com/school/starting-with-haskell/libraries-and-frameworks/text-manipulation/attoparsec)
-
-Optparse-Applicative
---------------------
-
-Optparse applicative is a library for parsing command line options with a interface similar to parsec that
-makes also makes heavy use of monoids to combine operations.
-
-~~~~ {.haskell include="src/24-parsing/optparse_applicative.hs"}
-~~~~
-
-See: [optparse-applicative](https://github.com/pcapriotti/optparse-applicative)
-
 
 Streaming
 =========
