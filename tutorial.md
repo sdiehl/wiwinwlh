@@ -3090,8 +3090,9 @@ This time around:
 failure = Succ ( Lit True )
 ```
 
-Explicit constraints (``a ~ b``) can be added to a function's context that the compiler should be able to
-deduce that two types are equal up to unification.
+Explicit equality constraints (``a ~ b``) can be added to a function's context.
+This effectively asserts that ``a`` and ``b`` should unify across the bounds of
+the context.
 
 ```haskell
 -- f :: a -> a -> (a,a)
@@ -3120,8 +3121,8 @@ eval e = case e of
 Kind Signatures
 ---------------
 
-Recall that the kind in Haskell's type system the "type of the types" or *kinds* is the type system consisting
-the single kind ``*`` and an arrow kind ``->``.
+Haskell's kind system (i.e. the "type of the types") is a system consisting the
+single kind ``*`` and an arrow kind ``->``.
 
 ```haskell
 κ : *
@@ -3134,9 +3135,14 @@ Maybe :: * -> *
 Either :: * -> * -> *
 ```
 
-On top of default GADT declaration we can also constrain the parameters of the GADT to specific kinds. For
-basic usage Haskell's kind inference can deduce this reasonably well, but combined with some other type system
-extensions that extend the kind system this becomes essential.
+There are in fact some extensions to this system that will covered later ( see:
+PolyKinds and Unboxed types ) but most kinds in everyday code are simply either
+stars or arrows.
+
+On top of default GADT declaration we can also constrain the parameters of the
+GADT to specific kinds. For basic usage Haskell's kind inference can deduce this
+reasonably well, but combined with some other type system extensions that extend
+the kind system this becomes essential.
 
 ~~~~ {.haskell include="src/12-gadts/kindsignatures.hs"}
 ~~~~
@@ -3144,11 +3150,13 @@ extensions that extend the kind system this becomes essential.
 Type Equality
 -------------
 
-With a richer language for datatypes we can express terms that witness the relationship between terms in the
-constructors, for example we can now express a term which expresses propositional equality between two types.
+With a richer language for datatypes we can express terms that witness the
+relationship between terms in the constructors, for example we can now express a
+term which expresses propositional equality between two types.
  
-The type ``Eql a b`` is a proof that types ``a`` and ``b`` are equal, by pattern matching on the single
-``Refl`` constructor we introduce the equality constraint into the body of the pattern match. 
+The type ``Eql a b`` is a proof that types ``a`` and ``b`` are equal, by pattern
+matching on the single ``Refl`` constructor we introduce the equality constraint
+into the body of the pattern match. 
 
 ~~~~ {.haskell include="src/12-gadts/equal.hs"}
 ~~~~
@@ -3335,16 +3343,19 @@ Interpreters
 Expression Problem
 ------------------
 
+XXX
+
 Final Interpreters
 ------------------
 
-Using typeclasses we can implement a *final interpreter* which models a set of extensible terms using
-functions bound to typeclasses rather than data constructors. Instances of the typeclass form interpreters
-over these terms.
+Using typeclasses we can implement a *final interpreter* which models a set of
+extensible terms using functions bound to typeclasses rather than data
+constructors. Instances of the typeclass form interpreters over these terms.
 
-For example we can write a small language that includes basic arithmetic, and then retroactively extend our
-expression language with a multiplication operator without changing the base. At the same time our interpeter
-interpreter logic remains invariant under extension with new expressions.
+For example we can write a small language that includes basic arithmetic, and
+then retroactively extend our expression language with a multiplication operator
+without changing the base. At the same time our interpeter interpreter logic
+remains invariant under extension with new expressions.
 
 ~~~~ {.haskell include="src/14-interpreters/fext.hs"}
 ~~~~
@@ -3410,9 +3421,9 @@ See: [Species and Functors and Types, Oh My!](http://www.cis.upenn.edu/~byorgey/
 F-Algebras
 -----------
 
-The *initial algebra* approach differs from the final interpreter approach in that we now represent our terms
-as algebraic datatypes and the interpreter implements recursion and evaluation occurs through pattern
-matching.
+The *initial algebra* approach differs from the final interpreter approach in
+that we now represent our terms as algebraic datatypes and the interpreter
+implements recursion and evaluation occurs through pattern matching.
 
 ```haskell
 type Algebra f a = f a -> a
@@ -3424,9 +3435,9 @@ ana  :: Functor f => Coalgebra f a -> a -> Fix f
 hylo :: Functor f => Algebra f b -> Coalgebra f a -> a -> b
 ```
 
-In Haskell a F-algebra in a functor ``f a`` together with function ``f a -> a``. A colagebra reverses the
-function. For a functor ``f`` we can form it's recursive unrolling using the recursive ``Fix`` newtype
-wrapper.
+In Haskell a F-algebra in a functor ``f a`` together with function ``f a -> a``.
+A colagebra reverses the function. For a functor ``f`` we can form it's
+recursive unrolling using the recursive ``Fix`` newtype wrapper.
 
 
 ```haskell
@@ -3471,13 +3482,14 @@ For example a construction of the natural numbers in this form:
 ~~~~ {.haskell include="src/14-interpreters/initial.hs"}
 ~~~~
 
-Or for example an interpreter for a small expression language that depends on a scoping dictionary.
+Or for example an interpreter for a small expression language that depends on a
+scoping dictionary.
 
 ~~~~ {.haskell include="src/14-interpreters/initial_interpreter.hs"}
 ~~~~
 
-What's especially nice about this approach is how naturally catamorphisms compose into efficient
-composite transformations.
+What's especially nice about this approach is how naturally catamorphisms
+compose into efficient composite transformations.
 
 ```haskell
 compose :: Functor f => (f (Fix f) -> c) -> (a -> Fix f) -> a -> c
@@ -3687,7 +3699,8 @@ Depth 3: 1553 terms, 500 tests, 255056 evaluations, 1234 classes, 319 raw equati
  25: reverse xs++reverse ys == reverse (ys++xs)
 ```
 
-Not bad for mechcanical search!
+Keep in mind the rather remarkable fact that this is all deduced automatically
+from the types alone!
 
 Criterion
 ---------
@@ -3934,8 +3947,27 @@ type instance F Char = Bool
 Roles
 -----
 
-~~~~ {.haskell include="src/16-type-families/roles.hs"}
+Roles are a further level of specification for type variables parameters of
+datatypes.
+
+* ``nominal``
+* ``representational``
+* ``phantom``
+
+They were added to the language to address a rather nasty and long-standing bug
+around the correspondence between a newtype and it's runtime representation.
+
+Roles are normally automatically inferred but with the ``RoleAnnotations``
+extension they can be manually annotated. Except in rare cases this should not
+be necessary although it is helpful to know what is going on under the hood.
+
+~~~~ {.haskell include="src/16-type-families/role_infer.hs"}
 ~~~~
+
+Coercible 
+---------
+
+XXX
 
 Monotraversable
 ---------------
@@ -4073,19 +4105,62 @@ type T1 a = (Num a, Ord a)
 
 The empty constraint set is indicated by  ``() :: Constraint``.
 
-For a contrived example if we wanted to create a generic ``Sized`` class that carried with it constraints on
-the elements of the container in question we could achieve this quite simply using type families.
+For a contrived example if we wanted to create a generic ``Sized`` class that
+carried with it constraints on the elements of the container in question we
+could achieve this quite simply using type families.
 
 ~~~~ {.haskell include="src/16-type-families/constraintkinds.hs"}
 ~~~~
 
-One use-case of this is to capture the typeclass dictionary constrained by a function and reify it as a value.
+One use-case of this is to capture the typeclass dictionary constrained by a
+function and reify it as a value.
 
 ~~~~ {.haskell include="src/16-type-families/dict.hs"}
 ~~~~
 
+Reflection
+----------
+
+XXX
+
 Promotion
 =========
+
+Higher Kinds
+------------
+
+The kind system in Haskell is unique most other languages in that it allows
+datatypes to be constructed which take types and type constructor to other
+types. Such a system is said to support *higher kinded types*.
+
+All kind annotations in Haskell necessarily result in a kind ``*`` although any
+terms to the left may be higher-kinded (``* -> *``).
+
+The common example is the Monad which has kind ``* -> *``. But we have also seen
+this higher-kindedness in free monads.
+
+```haskell
+data Free f a where
+  Pure :: a -> Free f a
+  Free :: f (Free f a) -> Free f a
+
+data Cofree f a where
+  Cofree :: a -> f (Cofree f a) -> Cofree f a
+```
+
+```haskell
+Free :: (* -> *) -> * -> *
+Cofree :: (* -> *) -> * -> *
+```
+
+For instance ``Cofree Maybe a`` for some monokinded type ``a`` models a
+non-empty list with ``Maybe :: * -> *``.
+
+```haskell
+-- Cofree Maybe a is a non-empty list
+testCofree :: Cofree Maybe Int
+testCofree = (Cofree 1 (Just (Cofree 2 Nothing)))
+```
 
 Kind Polymorphism
 -----------------
@@ -4127,6 +4202,26 @@ arbitrary kind arity.
 
 ~~~~ {.haskell include="src/17-promotion/kindpoly.hs"}
 ~~~~
+
+For example we can write down the polymorphic ``S`` ``K`` combinators at the
+type level now.
+
+```haskell
+{-# LANGUAGE PolyKinds #-}
+
+newtype I (a :: *) = I a
+newtype K (a :: *) (b :: k) = K a
+newtype Flip (f :: k1 -> k2 -> *) (x :: k2) (y :: k1) = Flip (f y x)
+
+unI :: I a -> a
+unI (I x) = x
+
+unK :: K a b -> a
+unK (K x) = x
+
+unFlip :: Flip f x y -> f y x
+unFlip (Flip x) = x
+```
 
 **AnyK**
 
@@ -4210,15 +4305,14 @@ have an obligation to prove to the compiler that the argument we hand to the hea
 
 ```haskell
 Couldn't match type None with Many
-Expected type: List Many Int
-  Actual type: List None Int
+Expected type: List NonEmpty Int
+  Actual type: List Empty Int
 ```
 
 See:
 
 * [Giving Haskell a Promotion](https://research.microsoft.com/en-us/people/dimitris/fc-kind-poly.pdf)
 * [Faking It: Simulating Dependent Types in Haskell](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.22.2636&rep=rep1&type=pdf)
-
 
 
 Typelevel Numbers
@@ -4512,8 +4606,8 @@ then derive the Show instance.
 ~~~~ {.haskell include="src/17-promotion/constraint_list.hs"}
 ~~~~
 
-Type Map
---------
+Typelevel Maps
+--------------
 
 Much of this discussion of promotion begs the question whether we can create data structures at the type-level
 to store information at compile-time. For example a type-level association list can be used to model a map
@@ -4697,6 +4791,9 @@ cast :: (Typeable a, Typeable b) => a -> Maybe b
 
 ~~~~ {.haskell include="src/18-generics/dynamic.hs"}
 ~~~~
+
+In GHC 7.8 the Typeable class is poly-kinded so polymorphic functions can be
+applied over dynamic objects.
 
 Data
 ----
@@ -5037,19 +5134,77 @@ data Expr a
 
 **Biplate**
 
-Biplates generalize plates where the target type isn't necessarily the same as the source.
+Biplates generalize plates where the target type isn't necessarily the same as
+the source, it uses multiparamater typeclasses to indicate the type sub of the
+sub-target. The Uniplate functions all have an equivalent generalized biplate
+form.
 
 ```haskell
-descendBi :: Biplate from to => (to -> to) -> from -> from
+descendBi   :: Biplate from to => (to -> to) -> from -> from
 transformBi :: Biplate from to => (to -> to) -> from -> from
-rewriteBi :: Biplate from to => (to -> Maybe to) -> from -> from
+rewriteBi   :: Biplate from to => (to -> Maybe to) -> from -> from
+
+descendBiM   :: (Monad m, Biplate from to) => (to -> m to) -> from -> m from
+transformBiM :: (Monad m, Biplate from to) => (to -> m to) -> from -> m from
+rewriteBiM   :: (Monad m, Biplate from to) => (to -> m (Maybe to)) -> from -> m from
 ```
 
 ~~~~ {.haskell include="src/18-generics/biplate.hs"}
 ~~~~
 
+Sums of Products
+----------------
+
+XXX
+
 Numbers
 =======
+
+Numeric Tower
+-------------
+
+Haskell's numeric tower is usuall the source of some confusion for novices.
+Haskell is one of the few languages to incorporate statically typed overloaded
+literals without a mechanism for "coercions" often found in other languages.
+
+An integer literal in Haskell is literally desugared into a function from a
+numeric typeclass which yields a polymorphic value that can be instantiated to
+nay instance of the ``Num`` or ``Fractional`` typeclass at the call-site,
+depending on the inferred type.
+
+```haskell
+42 :: Num a => a
+fromInteger (42 :: Integer)
+
+2.71 :: Fractional a => a
+fromRational (2.71 :: Rational)
+```
+
+The numeric typeclass hierarchy is defined as such:
+
+```haskell
+class Num a
+class (Num a, Ord a) => Real
+class Num a => Fractional a
+class (Real a, Enum a) => Integral a
+class (Real a, Fractional a) => RealFrac a
+class Fractional a => Floating a
+class (RealFrac a, Floating a) => RealFloat a
+```
+
+![](img/numerics.png)
+
+Conversions between concrete numeric types (from : top row, to : left column )
+is accomplished with several generic functions.
+
+         Double       Float         Int           Word           Integer       Rational
+------   ------       -----         ---           ----           --------      --------
+Double   id           fromRational  truncate      truncate       truncate      toRational
+Float    fromRational id            truncate      truncate       truncate      toRational
+Int      fromIntegral fromIntegral  id            fromIntegral   fromIntegral  fromIntegral
+Word     fromIntegral fromIntegral  fromIntegral  id             fromIntegral  fromIntegral                           
+Integer  fromIntegral fromIntegral  fromIntegral  fromIntegral   id            fromIntegral                           
+Rational fromRatoinal fromRational  truncate      truncate       truncate      id
 
 Integer
 -------
@@ -5057,6 +5212,8 @@ Integer
 The ``Integer`` type in GHC is implemented by the GMP (``libgmp``) arbitrary precision arithmetic library.
 Unlike the ``Int`` type the size of Integer values are bounded only by the available memory. Most notably
 libgmp is the on few libraries that compiled Haskell binaries are dynamically linked against. 
+
+An alternative library ``integer-simple`` can be linked in place of libgmp.
 
 See: [GHC, primops and exorcising GMP](http://www.well-typed.com/blog/32/)
 
@@ -5112,12 +5269,14 @@ Statistics
 Constructive Reals
 ------------------
 
-Instead of modeling the real numbers of finite precision floating point numbers we alternatively work with
-``Num`` of that internally manipulate the power series expansions for the expressions when performing
-operations like arithmetic or transcendental functions without loosing precision when performing intermediate
-computations. Then when simply slice of a fixed number of terms and approximate the resulting number to a
-desired precision. This approach is not without it's limitations and caveats ( notably that it may diverge )
-but works quite well in practice.
+Instead of modeling the real numbers of finite precision floating point numbers
+we alternatively work with ``Num`` of that internally manipulate the power
+series expansions for the expressions when performing operations like arithmetic
+or transcendental functions without loosing precision when performing
+intermediate computations. Then when simply slice of a fixed number of terms and
+approximate the resulting number to a desired precision. This approach is not
+without it's limitations and caveats ( notably that it may diverge ) but works
+quite well in practice.
 
 ```haskell
 exp(x)    = 1 + x + 1/2*x^2 + 1/6*x^3 + 1/24*x^4 + 1/120*x^5 ...
@@ -5129,8 +5288,78 @@ pi        = 16 * atan (1/5) - 4 * atan (1/239)
 ~~~~ {.haskell include="src/19-numbers/creal.hs"}
 ~~~~
 
+SAT Solvers
+-----------
+
+Solutions to a statement of the form:
+
+```text
+(A v ¬B v C) ∧ (B v D v E) ∧ (D v F)
+```
+
+Can be written as zero-terminated lists of integers:
+
+```haskell
+1 -2 3  -- (A v ¬B v C)
+2 4 5   -- (B v D v E)
+4 6     -- (D v F)
+```
+
+```haskell
+import Picosat
+
+main :: IO [Int]
+main = do
+  solve [[1, -2, 3], [2,4,5], [4,6]]
+  -- Solution [1,-2,3,4,5,6]
+```
+
+The SAT solver itself can be used to solve satisfiability problems with millions
+of variables in this form and is finely tuned.
+
+See:
+
+* [picosat](http://hackage.haskell.org/package/picosat-0.1.1)
+
+SMT Solvers
+-----------
+
+A generalization of the SAT problem to include predicates other theories gives
+rise to the very sophisticated domain of "Satisfiability Modulo Theory"
+problems. The existing SMT solvers are very sophisticated projects ( usually
+bankrolled by large institutions ) and usually have to called out to via foreign
+function interface or via a common interface called SMT-lib. The two most common
+of use in Haskell are ``cvc4`` from Stanford and ``z3`` from Microsoft Research.
+
+The SBV library can abstract over different SMT solvers allow us to express the
+problem in a embedded domain language in Haskell and then offload the solving
+work to the third party library.
+
+See:
+
+* [cvc4](http://cvc4.cs.nyu.edu/web/)
+* [z3](http://z3.codeplex.com/)
+
 Data Structures
 ===============
+
+Map
+---
+
+~~~~ {.haskell include="src/20-data-structures/map.hs"}
+~~~~
+
+Tree
+----
+
+~~~~ {.haskell include="src/20-data-structures/tree.hs"}
+~~~~
+
+Set
+---
+
+~~~~ {.haskell include="src/20-data-structures/set.hs"}
+~~~~
 
 Vector
 ------
@@ -5175,24 +5404,6 @@ functions.
 
 
 ~~~~ {.haskell include="src/20-data-structures/vector_mutable.hs"}
-~~~~
-
-Map
----
-
-~~~~ {.haskell include="src/20-data-structures/map.hs"}
-~~~~
-
-Tree
-----
-
-~~~~ {.haskell include="src/20-data-structures/tree.hs"}
-~~~~
-
-Set
----
-
-~~~~ {.haskell include="src/20-data-structures/set.hs"}
 ~~~~
 
 Unordered-Containers
@@ -5291,9 +5502,11 @@ See: [GraphSCC](http://hackage.haskell.org/package/GraphSCC)
 DList
 -----
 
-A dlist is a list-like structure that is optimized for O(1) append operations, internally it uses a Church
-encoding of the list structure. It is specifically suited for operations which are append-only and need only
-access it when manifesting the entire structure. It is particularly well-suited for use in the Writer monad.
+A dlist is a list-like structure that is optimized for O(1) append operations,
+internally it uses a Church encoding of the list structure. It is specifically
+suited for operations which are append-only and need only access it when
+manifesting the entire structure. It is particularly well-suited for use in the
+Writer monad.
 
 ~~~~ {.haskell include="src/20-data-structures/dlist.hs"}
 ~~~~
@@ -5301,8 +5514,8 @@ access it when manifesting the entire structure. It is particularly well-suited 
 Sequence
 --------
 
-The sequence data structure behaves structurally similar to list but is optimized for append/prepend
-operations and traversal.
+The sequence data structure behaves structurally similar to list but is
+optimized for append/prepend operations and traversal.
 
 ~~~~ {.haskell include="src/20-data-structures/sequence.hs"}
 ~~~~
@@ -5314,10 +5527,10 @@ Just as in C when working with n-dimensional matrices we'll typically overlay th
 onto a unboxed contiguous block of memory with index functions which perform the coordinate translations to
 calculate offsets. The two most common layouts are:
 
-* Row Major indexing
-* Column Major indexing
+* Row-major order
+* Column-major order
 
-Which are probably best illustrated.
+Which are best illustrated.
 
 ![](img/matrix.png)
 
@@ -5396,6 +5609,13 @@ Prepending the function name with a ``&`` allows us to create a reference to the
 foreign import ccall unsafe "stdlib.h &malloc"
     malloc :: FunPtr a
 ```
+
+Function Pointers
+-----------------
+
+Pass a function pointer to a Haskell function into to C.
+
+XXX
 
 Concurrency
 ===========

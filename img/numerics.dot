@@ -1,0 +1,17 @@
+ digraph graphname {
+   Num -> Real
+   Ord -> Real
+
+   Num -> Fractional;
+
+   Real -> Integral;
+   Enum -> Integral;
+
+   Real -> RealFrac;
+   Fractional -> RealFrac;
+
+   Fractional -> Floating;
+
+   RealFrac -> RealFloat;
+   Floating -> RealFloat;
+ }

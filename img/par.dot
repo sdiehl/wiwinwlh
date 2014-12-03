@@ -1,0 +1,8 @@
+ digraph graphname {
+     "f x" -> "a + b";
+     "g x" -> "a + b";
+     "a + b" -> "f (a + b)";
+     "a + b" -> "g (a + b)";
+     "f (a + b)" -> "(d, e)";
+     "g (a + b)" -> "(d, e)";
+ }
