@@ -1737,6 +1737,24 @@ the outer pattern match in the presence of a bottom.
 ~~~~ {.haskell include="src/05-laziness/lazy_patterns.hs"}
 ~~~~
 
+Moral Correctness
+-----------------
+
+The caveat with lazy evaluation is that it implies inductive reasoning about
+functions must always take into account the fact that a function may contain
+bottoms. And as such claims about inductive proofs of functions have to couched
+in an implied set of qualifiers "up to the fast and loose reasoning" assuming
+the non-existence of bottoms.
+
+In the "Fast and Loose reasoning is Morally Correct" paper John Hughes et all,
+showed that if two terms have the same semantics in the total language, then
+they have related semantics in the partial language and gave a prescription by
+which we can translate our knowledge between the two domains given a specific
+set of finely stated conditions under which proofs about lazy languages are
+indeed rigorous and sound.
+
+* [Fast and Loose Reasoning is Morally Correct](http://www.cse.chalmers.se/~nad/publications/danielsson-et-al-popl2006.html)
+
 Prelude
 =======
 
