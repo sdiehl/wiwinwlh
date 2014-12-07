@@ -6839,12 +6839,13 @@ Int# :: #
 
 λ: :type 3.14#
 3.14# :: GHC.Prim.Float#
+
+λ: :type "Haskell"#
+"Haskell"# :: Addr#
 ```
 
 An unboxed type with kind ``#`` and will never unify a type variable of kind ``*``. Intuitively a type with
 kind ``*`` indicates a type with a uniform runtime representation that can be used polymorphically.
-
-TODO
 
 - *Lifted* - Can contain a bottom term, represented by a pointer. ( ``Int``, ``Any``, ``(,)`` )
 - *Unlited* - Cannot contain a bottom term, represented by a value on the stack. ( ``Int#``, ``(#, #)`` )
@@ -6874,76 +6875,164 @@ plusInt a b = case a of {
 };
 ```
 
-Runtime values in Haskell are normally represented uniformly by a boxed
-``StgClosure*`` struct which itself contains several payload values which can
-themselves be either points to other boxed values or to unboxed literal values
-that fit within the system word size and are stored directly within the closure
-in memory. The layout of the box is described by a bitmap in the header for the
-closure which describes which values in the payload are described as either
-points or non-pointers.
+Runtime values in Haskell are by-default normally represented uniformly by a
+boxed ``StgClosure*`` struct which itself contains several payload values which
+can themselves be either pointers to other boxed values or to unboxed literal
+values that fit within the system word size and are stored directly within the
+closure in memory. The layout of the box is described by a bitmap in the header
+for the closure which describes which values in the payload are either pointers
+or non-pointers.
 
-```haskell
-unsafeSizeof :: a -> Int
-unsafeSizeof a =
-  case unpackClosure# a of
-    (# x, ptrs, nptrs #) ->
-      sizeOf (undefined::Int) + -- one word for the header
-        I# (sizeofByteArray# (unsafeCoerce# ptrs)
-             +# sizeofByteArray# nptrs)
+The ``unpackClosure#`` primop can be used to extract this information at runtime
+by reading off the bitmap on the closure.
 
+~~~~ {.haskell include="src/29-ghc/closure_size.hs"}
+~~~~
 
-data A = A Int#
-data B = B Int
-
-main :: IO ()
-main = do
-  print (unsafeSizeof (A 1))
-  print (unsafeSizeof (B 2))
-```
-
-Sometimes we'd like to override Haskell's default mechanism to store parameters
-to datatypes as points to other closures and effectively we'd like to be able to
-define our constructor to be stored as:
-
-```haskell
-data A = A Int#
-```
-
-But maintain all our logic around as if it were written against Int, performing
-the boxing and unboxing where needed.
-
-```haskell
-data A = A !Int
-```
-
-To do this there is the ``UNPACK`` pragma or ``-funbox-strict-fields`` to inform GHC to perform the rewrite we
-want.
+For example the datatype with the ``UNPACK`` pragma contains 1 non-pointer and 0
+pointers.
 
 ```haskell
 data A = A {-# UNPACK #-} !Int
+Size {ptrs = 0, nptrs = 1, size = 16}
+```
+
+While the default packed datatype contains 1 point and 0 non-pointers.
+
+```haskell
+data B = B Int
+Size {ptrs = 1, nptrs = 0, size = 9}
+```
+
+The closure representation for data constructors are also "tagged" at the
+runtime with the tag of the specific constructor. This is however not a runtime
+type tag since there is no way to recover the type from the tag as all
+constructor simply use the sequence (0, 1, 2, ...). The tag is used to
+discriminate cases in pattern matching. The builtin ``dataToTag#`` can  be used
+to pluck off the tag for an arbitrary datatype.
+
+```haskell
+dataToTag# :: a -> Int#
+```
+
+For example:
+
+```haskell
+a :: (Int, Int)
+a = (I# (dataToTag# False), I# (dataToTag# True))
+-- (0, 1)
+
+b :: (Int, Int, Int)
+b = (I# (dataToTag# LT), I# (dataToTag# EQ), I# (dataToTag# GT))
+-- (0, 1, 2)
+
+c :: (Int, Int)
+c = (I# (dataToTag# (Left 0)), I# (dataToTag# (Right 1)))
+-- (0, 1, 2)
 ```
 
 String literals included in the source code are also translated into several
-primop operations. The ``Addr#`` type in Haskell stands for a static contigious
+primop operations. The ``Addr#`` type in Haskell stands for a static contagious
 buffer pre-allocated on the Haskell that can hold a ``char*`` sequence. The
 operation ``unpackCString#`` can scan this buffer and fold it up into a list of
-chars from inside Haskell.
+Chars from inside Haskell.
 
 ```haskell
 unpackCString# :: Addr# -> [Char]
 ```
 
 This is done in the early frontend desugarer phrase, where literals are
-translated into ``Addr#`` inline.
+translated into ``Addr#`` inline instead of giant chain of Cons'd characters. So
+our "Hello World" translates into the following Core:
 
 ```haskell
 -- print "Hello World"
-print (unpackCString# "Hello World")
+print (unpackCString# "Hello World"#)
 ```
 
 See: 
 
 * [Unboxed Values as First-Class Citizens](http://www.haskell.org/ghc/docs/papers/unboxed-values.ps.gz)
+
+ghc-heap-view
+-------------
+
+In similar fashion to above we can actually inspect the ``StgClosure``
+structures at runtime using various C and Cmm hacks to probe at the fields of
+the structure's representation to the runtime. The library ``ghc-heap-view`` can
+be used to introspect such things.
+
+~~~~ {.haskell include="src/29-ghc/heapview.hs"}
+~~~~
+
+```haskell
+ConsClosure {
+  info = StgInfoTable {
+    ptrs = 2,
+    nptrs = 0,
+    tipe = CONSTR_2_0,
+    srtlen = 1
+  },
+  ptrArgs = [0x000000000074aba8/1,0x00007fca10504260/2],
+  dataArgs = [],
+  pkg = "ghc-prim",
+  modl = "GHC.Types",
+  name = ":"
+}
+```
+
+We can also observe the evaluation and update of a thunk in process. The initial
+thunk is simply a thunk type with a pointer to the code to evaluate it to a
+value.
+
+```haskell
+ThunkClosure {
+  info = StgInfoTable {
+    ptrs = 0,
+    nptrs = 0,
+    tipe = THUNK,
+    srtlen = 9
+  },
+  ptrArgs = [],
+  dataArgs = []
+}
+```
+
+When forced it is then evaluated and replaced with an Indirection closure which
+points at the computed value.
+
+```haskell
+BlackholeClosure {
+  info = StgInfoTable {
+    ptrs = 1,
+    nptrs = 0,
+    tipe = BLACKHOLE,
+    srtlen = 0
+  },
+  indirectee = 0x00007fca10511e88/1
+}
+```
+
+When the copying garbage collector passes over the indirection, it then simply
+replaces the indirection with a reference to the actual computed value computed
+by ``indirectee`` so that future access does need to chase a pointer through the
+indirection pointer to get the result.
+
+```haskell
+ConsClosure {
+  info = StgInfoTable {
+    ptrs = 0,
+    nptrs = 1,
+    tipe = CONSTR_0_1,
+    srtlen = 0
+  },
+  ptrArgs = [],
+  dataArgs = [2],
+  pkg = "integer-gmp",
+  modl = "GHC.Integer.Type",
+  name = "S#"
+}
+```
 
 STG
 ---
