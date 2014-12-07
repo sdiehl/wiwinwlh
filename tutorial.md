@@ -1436,11 +1436,8 @@ Misc Syntax Extensions
 fst' :: a -> (a, Bool)
 fst' = (,True)
 
-snd' :: a -> (a, Bool)
+snd' :: a -> (Bool, a)
 snd' = (True,)
-
-example :: (Bool, Bool)
-example = fst' False
 ```
 
 **Multi-way if-expressions**
@@ -6928,12 +6925,12 @@ b = (I# (dataToTag# LT), I# (dataToTag# EQ), I# (dataToTag# GT))
 
 c :: (Int, Int)
 c = (I# (dataToTag# (Left 0)), I# (dataToTag# (Right 1)))
--- (0, 1, 2)
+-- (0, 1)
 ```
 
 String literals included in the source code are also translated into several
 primop operations. The ``Addr#`` type in Haskell stands for a static contagious
-buffer pre-allocated on the Haskell that can hold a ``char*`` sequence. The
+buffer pre-allocated on the Haskell heap that can hold a ``char*`` sequence. The
 operation ``unpackCString#`` can scan this buffer and fold it up into a list of
 Chars from inside Haskell.
 
