@@ -6108,7 +6108,7 @@ XXX
 λ: parseTest parseMusician "Bach"
 Bach
 
-λ: parseTest parseScientist "Feynmann"
+λ: parseTest parseScientist "Feynman"
 Feynman
 ```
 
@@ -6852,16 +6852,18 @@ TODO
 ~~~~ {.haskell include="src/29-ghc/prim.hs"}
 ~~~~
 
-The function for integer arithmetic used in the ``Num`` typeclass for ``Int`` is just pattern matching on this
-type to reveal the underlying unboxed value, performing the builtin arithmetic and then performing the packing
-up into ``Int`` again.
+The function for integer arithmetic used in the ``Num`` typeclass for ``Int`` is
+just pattern matching on this type to reveal the underlying unboxed value,
+performing the builtin arithmetic and then performing the packing up into
+``Int`` again.
 
 ```haskell
 plusInt :: Int -> Int -> Int
 (I# x) `plusInt` (I# y) = I# (x +# y)
 ```
 
-Where ``(+#)`` is a low level function built into GHC that maps to unboxed integer arithmetic directly.
+Where ``(+#)`` is a low level function built into GHC that maps to intrinsic
+integer addition instruction for the CPU.
 
 ```haskell
 plusInt :: Int -> Int -> Int
@@ -6872,27 +6874,43 @@ plusInt a b = case a of {
 };
 ```
 
-Since the Int type we'd write down for normal logic is itself boxed, we'd sometimes like to inform GHC that
-our value should is just a fixed unboxed value on the heap and to refer to it by value instead of by
-reference. In C the rewrite would be like the following:
+Runtime values in Haskell are normally represented uniformly by a boxed
+``StgClosure*`` struct which itself contains several payload values which can
+themselves be either points to other boxed values or to unboxed literal values
+that fit within the system word size and are stored directly within the closure
+in memory. The layout of the box is described by a bitmap in the header for the
+closure which describes which values in the payload are described as either
+points or non-pointers.
 
-```cpp
-struct A {
-  int *a;
-};
+```haskell
+unsafeSizeof :: a -> Int
+unsafeSizeof a =
+  case unpackClosure# a of
+    (# x, ptrs, nptrs #) ->
+      sizeOf (undefined::Int) + -- one word for the header
+        I# (sizeofByteArray# (unsafeCoerce# ptrs)
+             +# sizeofByteArray# nptrs)
 
-struct A {
-  int a;
-};
+
+data A = A Int#
+data B = B Int
+
+main :: IO ()
+main = do
+  print (unsafeSizeof (A 1))
+  print (unsafeSizeof (B 2))
 ```
 
-Effectively we'd like to be able to define our constructor to be stored as:
+Sometimes we'd like to override Haskell's default mechanism to store parameters
+to datatypes as points to other closures and effectively we'd like to be able to
+define our constructor to be stored as:
 
 ```haskell
 data A = A Int#
 ```
-But maintain all our logic around as if it were written against Int, performing the boxing and unboxing where
-needed.
+
+But maintain all our logic around as if it were written against Int, performing
+the boxing and unboxing where needed.
 
 ```haskell
 data A = A !Int
@@ -6903,6 +6921,24 @@ want.
 
 ```haskell
 data A = A {-# UNPACK #-} !Int
+```
+
+String literals included in the source code are also translated into several
+primop operations. The ``Addr#`` type in Haskell stands for a static contigious
+buffer pre-allocated on the Haskell that can hold a ``char*`` sequence. The
+operation ``unpackCString#`` can scan this buffer and fold it up into a list of
+chars from inside Haskell.
+
+```haskell
+unpackCString# :: Addr# -> [Char]
+```
+
+This is done in the early frontend desugarer phrase, where literals are
+translated into ``Addr#`` inline.
+
+```haskell
+-- print "Hello World"
+print (unpackCString# "Hello World")
 ```
 
 See: 
