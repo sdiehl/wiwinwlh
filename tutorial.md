@@ -1479,9 +1479,10 @@ import qualified "mtl" Control.Monad.Reader as Reader
 Pattern Synonyms
 ----------------
 
-Suppose we were writing a typechecker, it would very to common to include a distinct ``TArr`` term ease the
-telescoping of function signatures, this is what GHC does in its Core language. Even though technically it
-could be written in terms of more basic application of the ``(->)`` constructor. 
+Suppose we were writing a typechecker, it would very to common to include a
+distinct ``TArr`` term ease the telescoping of function signatures, this is what
+GHC does in its Core language. Even though technically it could be written in
+terms of more basic application of the ``(->)`` constructor. 
 
 ```haskell
 data Type
@@ -1492,8 +1493,8 @@ data Type
   deriving (Show, Eq, Ord)
 ```
 
-With pattern synonyms we can eliminate the extraneous constructor without loosing the convenience of pattern
-matching on arrow types.
+With pattern synonyms we can eliminate the extraneous constructor without
+loosing the convenience of pattern matching on arrow types.
 
 ```haskell
 {-# LANGUAGE PatternSynonyms #-}
@@ -1616,9 +1617,10 @@ and allows a short circuit for when a computation might depend on it itself to
 complete. The implementation of this is some of the more subtle details of the
 GHC runtime.
 
-The ``seq`` function introduces an artificial dependence on the evaluation of order of two terms by requiring
-that the first argument be evaluated to WHNF before the evaluation of the second. The implementation of the
-`seq` function is an implementation detail of GHC.
+The ``seq`` function introduces an artificial dependence on the evaluation of
+order of two terms by requiring that the first argument be evaluated to WHNF
+before the evaluation of the second. The implementation of the `seq` function is
+an implementation detail of GHC.
 
 ```haskell
 seq :: a -> b -> b
@@ -1627,8 +1629,9 @@ seq :: a -> b -> b
 a `seq` b = b
 ```
 
-The infamous ``foldl`` is well-known to leak space when used carelessly and without several compiler
-optimizations applied. The strict ``foldl'`` variant uses seq to overcome this.
+The infamous ``foldl`` is well-known to leak space when used carelessly and
+without several compiler optimizations applied. The strict ``foldl'`` variant
+uses seq to overcome this.
 
 ```haskell
 foldl :: (a -> b -> a) -> a -> [b] -> a
@@ -1792,12 +1795,31 @@ import Control.Monad hiding (
     forM , forM_ , mapM , mapM_ , msum , sequence , sequence_ )
 ```
 
-The nuclear option is to exclude the entire prelude except by explicit qualified use or by the
-``-XNoImplicitPrelude`` pragma.
+Of course often times one wishes only to use the Prelude explicitly and one can
+explicitly import it qualified and use the pieces as desired without the
+implicit import of the whole namespace.
 
 ```haskell
 import qualified Prelude as P
 ```
+
+This does however bring in several typeclass instances and classes regardless of
+whether it is explicitly or implicitly imported. If one really desires to use
+nothing from the Prelude then the option exists to exclude the entire prelude (
+except for the wired-in class instances ) with the ``-XNoImplicitPrelude``
+pragma.
+
+```haskell
+{-# LANGUAGE NoImplicitPrelude #-}
+```
+
+The Prelude itself is entirely replicable as well presuming that an entire
+project is compiled without the implicit Prelude. Several packages have arisen
+that supply much of the same functionality in a way that appeals to more modern
+design principles.
+
+* [base-prelude](http://hackage.haskell.org/package/base-prelude)
+* [classy-prelude](http://hackage.haskell.org/package/class-prelude)
 
 Partial Functions
 -----------------
