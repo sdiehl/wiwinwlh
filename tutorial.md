@@ -1,20 +1,17 @@
 Stephen Diehl (<a class="author" href="https://twitter.com/smdiehl">@smdiehl</a> )
 
-Since I wrote these slides for a little user group talk I gave two years ago they have become a surprisingly
-popular reference. I decided to actually turn them into a proper skimmable reference for intermediate and
-advanced level Haskell topics that don't necessarily have great coverage or that tend be somewhat opaque as to
-where to get going, and then aggregate a bunch of the best external resources for diving into those subjects
-with more depth. Hopefully it still captures the "no bullshit brain dump" style that seemed to be liked.
-
-The source for all code is [available here](https://github.com/sdiehl/wiwinwlh/tree/master/src). If there are
-any errors or you think of a more illustrative example feel free to submit a pull request.
+The source for all code is [available
+here](https://github.com/sdiehl/wiwinwlh/tree/master/src). If there are any
+errors or you think of a more illustrative example feel free to submit a pull
+request on Github.
 
 This is the third draft of this document.
 
 **License**
 
-This code and text are dedicated to the public domain. You can copy, modify, distribute and perform the work,
-even for commercial purposes, all without asking permission.
+This code and text are dedicated to the public domain. You can copy, modify,
+distribute and perform the work, even for commercial purposes, all without
+asking permission.
 
 Basics
 ======
@@ -827,7 +824,7 @@ m = [1,2,3,4]
 f = \x -> [1,0]
 ```
 
-The reduction is straightforward:
+The evaluation proceeds as follows:
 
 ```haskell
 m >>= f
