@@ -1241,6 +1241,13 @@ mapM_ xs (lift . f) == lift (mapM_ xs f)
 forM_ xs (lift . f) == lift (forM_ xs f)
 ```
 
+Monad Morphisms
+---------------
+
+TODO
+
+See: [mmorph](https://hackage.haskell.org/package/mmorph)
+
 Language Extensions
 ===================
 
