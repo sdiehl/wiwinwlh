@@ -6966,6 +6966,11 @@ be used to introspect such things.
 ~~~~ {.haskell include="src/29-ghc/heapview.hs"}
 ~~~~
 
+A constructor (in this for cons constructor of list type) is represented by a
+``CONSTR`` closure that holds two pointers to the head and the tail. The integer
+in the head argument is a static reference to the pre-allocated number and we
+see a single static reference in the SRT (static reference table).
+
 ```haskell
 ConsClosure {
   info = StgInfoTable {
@@ -6982,9 +6987,9 @@ ConsClosure {
 }
 ```
 
-We can also observe the evaluation and update of a thunk in process. The initial
-thunk is simply a thunk type with a pointer to the code to evaluate it to a
-value.
+We can also observe the evaluation and update of a thunk in process ( ``id
+(1+1)`` ). The initial thunk is simply a thunk type with a pointer to the code
+to evaluate it to a value.
 
 ```haskell
 ThunkClosure {
