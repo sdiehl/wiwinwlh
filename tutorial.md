@@ -7187,6 +7187,11 @@ SRT(fac): []
 EKG
 ---
 
+EKG is a monitoring tool that can monitor various aspect of GHC's runtime
+alongside an active process. The interface for the output is viewable within a
+browser ( typically ``http://localhost:8000`` ). The monitoring process is
+forked off (in a system thread) from the main process.
+
 ~~~~ {.haskell include="src/29-ghc/ekg.hs"}
 ~~~~
 
