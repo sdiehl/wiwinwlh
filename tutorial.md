@@ -7357,6 +7357,14 @@ name capture and substitution mechanics ourselves.
 Unbound Generics
 ----------------
 
+TODO
+
+~~~~ {.haskell include="src/30-languages/unbound-generics.hs"}
+~~~~
+
+Bound
+-----
+
 XXX
 
 LLVM 
