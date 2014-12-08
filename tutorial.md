@@ -1248,6 +1248,19 @@ TODO
 
 See: [mmorph](https://hackage.haskell.org/package/mmorph)
 
+Logging
+=======
+
+Writer
+------
+
+TODO
+
+hslogger
+--------
+
+TODO
+
 Language Extensions
 ===================
 
@@ -2139,6 +2152,11 @@ instance IsList [a] where
 ~~~~ {.haskell include="src/07-text-bytestring/overloadedlist.hs"}
 ~~~~
 
+data-default
+------------
+
+XXX
+
 Applicatives
 ============
 
@@ -2849,6 +2867,12 @@ See:
 * [Monads for Free!](http://www.andres-loeh.de/Free.pdf)
 * [I/O is not a Monad](http://r6.ca/blog/20110520T220201Z.html)
 
+operational
+-----------
+
+XXX
+
+See: [Operational](https://www.haskell.org/haskellwiki/Operational)
 
 Indexed Monads
 --------------
@@ -6414,11 +6438,23 @@ And again we get a nice typed ADT as a result.
 ]
 ```
 
+Cereal
+------
+
+TODO
+
+SafeCopy
+--------
+
+TODO
+
 Network & Web Programming
 =========================
 
 HTTP
 ----
+
+Haskell has a variety of HTTP request and processing libraries. 
 
 ~~~~ {.haskell include="src/27-web/http.hs"}
 ~~~~
@@ -6426,7 +6462,10 @@ HTTP
 Warp
 ----
 
-Warp is a web server, it writes data to sockets quickly.
+Warp is a particularly efficient web server, it's the backed request engine
+behind several of popular Haskell web frameworks. The internals have been finely
+tuned to utilize Haskell's concurrent runtime and is capable of handling a great
+deal of concurrent requests.
 
 ~~~~ {.haskell include="src/27-web/warp.hs"}
 ~~~~
@@ -6436,13 +6475,15 @@ See: [Warp](http://aosabook.org/en/posa/warp.html)
 Scotty
 ------
 
-Continuing with our trek through web libraries, Scotty is a web microframework similar in principle to Flask
-in Python or Sinatra in Ruby.
+Continuing with our trek through web libraries, Scotty is a web microframework
+similar in principle to Flask in Python or Sinatra in Ruby.
 
 ~~~~ {.haskell include="src/27-web/scotty.hs"}
 ~~~~
 
-Of importance to note is the Blaze library used here overloads do-notation but is not itself a proper monad.
+Of importance to note is the Blaze library used here overloads do-notation but
+is not itself a proper monad so the various laws and invariants that normally
+apply for monads may break down or fail with error terms.
 
 See: [Making a Website with Haskell](http://adit.io/posts/2013-04-15-making-a-website-with-haskell.html)
 
