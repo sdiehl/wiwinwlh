@@ -7175,7 +7175,10 @@ SRT(fac): []
 EKG
 ---
 
-XXX
+~~~~ {.haskell include="src/29-ghc/ekg.hs"}
+~~~~
+
+![](img/ekg.png)
 
 Profiling
 ---------
