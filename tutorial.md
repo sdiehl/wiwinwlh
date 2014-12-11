@@ -650,6 +650,13 @@ Failed, modules loaded: none.
 
 GHC has rightly suggested that the expression needed to finish the program is ``xs : [a]``.
 
+Nix
+---
+
+cabal2nix
+
+[cabal2nix4dev](https://github.com/dave4420/cabal2nix4dev/blob/master/cabal2nix4dev)
+
 Monads
 ======
 
@@ -1286,19 +1293,6 @@ TODO
 
 See: [mmorph](https://hackage.haskell.org/package/mmorph)
 
-Logging
-=======
-
-Writer
-------
-
-TODO
-
-hslogger
---------
-
-TODO
-
 Language Extensions
 ===================
 
@@ -1574,17 +1568,16 @@ The primary advantage of lazy evaluation in the large is that algorithms that
 operate over both unbounded and bounded data structures can inhabit the same
 type signatures and be composed without additional need to restructure their
 logic or force intermediate computations. Languages that attempt to bolt
-laziness onto a strict evaluation mode with often bifurcate classes of
-algorithms into ones that are had-adjusted to consume unbounded structures and
-mixing and matching between lazy vs strict processing often necessitates
-manifesting large intermediate structures in memory when such composition would
-"just work" in a lazy language.
-
+laziness on to a strict evaluation model often bifurcate classes of algorithms
+into ones that are hand-adjusted to consume unbounded structures and those which
+operate over bounded structures. In strict languages mixing and matching between
+lazy vs strict processing often necessitates manifesting large intermediate
+structures in memory when such composition would "just work" in a lazy language.
 
 By virtue of Haskell being the only language to actually explore this point in
 the design space, knowledge about lazy evaluation can often be non-intuitive to
 the novice. This does reflect on the model itself, merely on the need for more
-instruction material.
+instruction material and research on optimizing lazy compilers.
 
 See: 
 
@@ -1634,7 +1627,7 @@ the same program diverges.
 ~~~~
 
 In Haskell a *thunk* is created to stand for an unevaluated computation.
-Evaluation of a thunk is called ``forcing`` the thunk. The result is an *update*
+Evaluation of a thunk is called *forcing* the thunk. The result is an *update*,
 a referentially transparent effect, which replaces the memory representation of
 the thunk with the computed value. The fundamental idea is that a thunk is only
 updated once ( although it may be forced simultaneously in a multi-threaded
@@ -1702,6 +1695,9 @@ In practice a combination between the strictness analyzer and the inliner on
 function is inlinable at call site so manually using ``foldl'`` is most often
 not required.
 
+Of important note is that GHCi runs without any optimizations applied so the
+same program that diverges or performs poorly in GHCi may not diverge when
+compiled with GHC.
 
 Strictness Annotations
 ----------------------
@@ -2152,6 +2148,7 @@ unpack :: ByteString -> String
 ~~~~
 
 See: 
+
 * [Bytestring: Bits and Pieces](https://www.fpcomplete.com/school/to-infinity-and-beyond/pick-of-the-week/bytestring-bits-and-pieces)
 * [ByteString](http://hackage.haskell.org/package/bytestring-0.10.4.0/docs/Data-ByteString.html)
 
@@ -6383,6 +6380,24 @@ operator (``=$``) for combining Sources and Sink and a Conduit and a Sink respec
 
 See: [Conduit Overview](https://www.fpcomplete.com/user/snoyberg/library-documentation/conduit-overview)
 
+Logging
+=======
+
+Writer
+------
+
+TODO
+
+hslogger
+--------
+
+TODO
+
+Pipes
+-----
+
+See: [Streaming Logging](http://www.haskellforall.com/2014/02/streaming-logging.html)
+
 Data Formats
 =============
 
@@ -6780,10 +6795,11 @@ map =
 ```
 
 Machine generated names are created for a lot of transformation of Core.
-Generally they consist of a prefix and unique identifier. The prefix is open
-pass specific ( ``ds`` for desugar ) and sometimes specific names are generated
-for specific automatically generated code. A non exhaustive cheat sheet is given
-below for deciphering what a name is and what it might stand for:
+Generally they consist of a prefix and unique identifier. The prefix is often
+pass specific ( i.e. ``ds`` for desugar generated name s) and sometimes specific
+names are generated for specific automatically generated code. A non exhaustive
+cheat sheet is given below for deciphering what a name is and what it might
+stand for:
 
 Prefix       Description
 ----------   ---------------------------------
