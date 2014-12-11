@@ -504,11 +504,24 @@ See: [Avoiding Partial Functions](http://www.haskell.org/haskellwiki/Avoiding_pa
 Exhaustiveness
 --------------
 
-XXX
+Pattern matching in Haskell allows for the possibility of non-exhaustive
+patterns, or cases which are not exhaustive and instead of yielding a value
+diverge.  
+
+Partial functions from non-exhaustivity are controversial subject, and large use
+of non-exhaustive patterns is considered a dangerous code smell. Although the
+complete removal of non-exhaustive patterns from the language entirely would
+itself be too restrictive and forbid too many valid programs.
+
+For example, the following function given a Nothing will crash at runtime and is
+otherwise a valid type-checked program.
 
 ```haskell
 unsafe (Just x) = x + 1
 ```
+
+There are however flags you can pass to the compiler to warn you about such
+things or forbid them entirely either locally or globally.
 
 ```haskell
 $ ghc -c -Wall -Werror A.hs
@@ -524,6 +537,33 @@ with the ``OPTIONS_GHC`` pragma.
 {-# OPTIONS_GHC -Wall #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 ```
+
+A more subtle case is when implicitly pattern matching with a single
+"uni-pattern" in a lambda expression. The following will fail when given a
+Nothing.
+
+```haskell
+boom = \(Just a) -> something
+```
+
+This occurs frequently in let or do-blocks which after desugaring translate into
+a lambda like the above example.
+
+```haskell
+boom = let
+  Just a = something
+
+boom = do
+  Just a <- something
+```
+
+GHC can warn about these cases with the ``-fwarn-incomplete-uni-patterns`` flag.
+
+Grossly speaking any non-trivial program will use some measure of partial
+functions, it's simply a fact. This just means there exists obligations for the
+programmer than cannot be manifest in the Haskell type system. Although future
+projects like LiquidHaskell may potentially offer a way to overcome this with
+more sophisticated refinement types, this is an open research problem though.
 
 Debugger
 --------
@@ -2974,8 +3014,7 @@ variables converted into unbound type variables.
 System-F is the type system that underlies Haskell. System-F subsumes the HM
 type system in the sense that every type expressible in HM can be expressed
 within System-F. System-F is sometimes referred to in texts as the
-*Girald-Reynolds polymorphic lambda calculus* or **second-order lambda
-calculus**.
+*Girald-Reynolds polymorphic lambda calculus* or *second-order lambda calculus*.
 
 ```haskell
 t : t -> t     -- function types
@@ -3376,7 +3415,7 @@ example cons nil = cons 1 (cons 2 (cons 3 nil))
 
 See: [Mogensen–Scott encoding](http://en.wikipedia.org/wiki/Mogensen-Scott_encoding)
 
-Substitution
+Name Capture
 ------------
 
 The downside to using alphabetical terms to bound variable in a closure is that
@@ -3401,6 +3440,9 @@ variables in each subterm before performing substitution and introduces new
 names where necessary.  Such a substitution is called a *capture-avoiding
 substitution*. There are several techniques to implement capture-avoiding
 substitutions in an efficient way.
+
+This implementation is subtle to get right and many binder libraries exist to
+automate the process of doing substitution and alpha equivalence .
 
 de Bruijn Indices
 -----------------
