@@ -2964,14 +2964,18 @@ t : t -> t     -- function types
 σ : ∀ a . t    -- type scheme
 ```
 
-In an implementation, the function ``generalize`` converts all type variables within the type that into
-polymorphic type variables yielding a type scheme. The function ``instantiate`` maps a scheme to a type, but
-with any polymorphic variables converted into unbound type variables.
+In an implementation, the function ``generalize`` converts all type variables
+within the type that into polymorphic type variables yielding a type scheme. The
+function ``instantiate`` maps a scheme to a type, but with any polymorphic
+variables converted into unbound type variables.
 
 **Rank-N Types**
 
-System-F is the type system that underlies Haskell. System-F subsumes the HM type system in the sense that
-every type expressible in HM can be expressed within System-F.
+System-F is the type system that underlies Haskell. System-F subsumes the HM
+type system in the sense that every type expressible in HM can be expressed
+within System-F. System-F is sometimes referred to in texts as the
+*Girald-Reynolds polymorphic lambda calculus* or **second-order lambda
+calculus**.
 
 ```haskell
 t : t -> t     -- function types
@@ -2979,7 +2983,7 @@ t : t -> t     -- function types
   | ∀ a . t    -- forall 
 
 e : x          -- variables
-  | λx:t.e     -- value abstraction
+  | λ(x:t).e   -- value abstraction
   | e1 e2      -- value application
   | Λa.e       -- type abstraction 
   | e t        -- type application
@@ -3093,13 +3097,16 @@ Use of this extension is very rare, and there is some consideration that
 about telling us to enable it when one accidentally makes a typo in a type
 signature!
 
+XXX: note about ($) and ``runST``
+
 Scoped Type Variables
 ---------------------
 
-Normally the type variables used within the toplevel signature for a function are only scoped to the
-type-signature and not the body of the function and it's rigid signatures over terms and let/where clauses.
-Enabling ``-XScopedTypeVariables`` loosens this restriction allowing the type variables mentioned in the
-toplevel to be scoped within the body.
+Normally the type variables used within the toplevel signature for a function
+are only scoped to the type-signature and not the body of the function and it's
+rigid signatures over terms and let/where clauses.  Enabling
+``-XScopedTypeVariables`` loosens this restriction allowing the type variables
+mentioned in the toplevel to be scoped within the body.
 
 ~~~~ {.haskell include="src/11-quantification/scopedtvars.hs"}
 ~~~~
@@ -4601,15 +4608,17 @@ SJust a      Sing (SJust 'a)    Just a
 SNothing     Sing Nothing       Nothing
 ```
 
-Singleton types are an integral part of the small cottage industry of faking dependent types in Haskell, i.e.
-constructing types with terms impredicated upon values. Singleton types are a way of "cheating" by modeling
-the map between types and values as a structural property of the type.
+Singleton types are an integral part of the small cottage industry of faking
+dependent types in Haskell, i.e.  constructing types with terms predicated upon
+values. Singleton types are a way of "cheating" by modeling the map between
+types and values as a structural property of the type.
 
 ~~~~ {.haskell include="src/17-promotion/singleton_class.hs"}
 ~~~~
 
-The builtin singleton types provided in GHC.TypeLits have the useful implementation that type-level values can
-be reflected to the value-level and back up to the type-level, albeit under an existential.
+The builtin singleton types provided in ``GHC.TypeLits`` have the useful
+implementation that type-level values can be reflected to the value-level and
+back up to the type-level, albeit under an existential.
 
 ```haskell
 someNatVal :: Integer -> Maybe SomeNat
@@ -4836,11 +4845,16 @@ plus_suc :: forall n m. (n + (S m)) :~: (S (n + m))
 plus_suc = Refl
 ```
 
-Caveat should be that there might be a way to do this in GHC 7.6 that I'm not aware of.  In GHC 7.10 there are
-some planned changes to solver that should be able to resolve these issues.
+Caveat should be that there might be a way to do this in GHC 7.6 that I'm not
+aware of.  In GHC 7.10 there are some planned changes to solver that should be
+able to resolve these issues.  In particular there are plans to allow pluggable
+type system extensions that could outsource these kind of problems to third
+party SMT solvers which can solve these kind of numeric relations and return
+this information back to GHC's typechecker.
 
-As an aside this is a direct transliteration of the equivalent proof in Agda, which is accomplished via the
-same method but without the song and dance to get around the lack of dependent types.
+As an aside this is a direct transliteration of the equivalent proof in Agda,
+which is accomplished via the same method but without the song and dance to get
+around the lack of dependent types.
 
 ~~~~ {.haskell include="src/17-promotion/Vector.agda"}
 ~~~~
@@ -4848,8 +4862,8 @@ same method but without the song and dance to get around the lack of dependent t
 Generics
 ========
 
-Haskell has several techniques for automatic generation of type classes for a variety of tasks that consist
-largely of boilerplate code generation such as:
+Haskell has several techniques for automatic generation of type classes for a
+variety of tasks that consist largely of boilerplate code generation such as:
 
 * Pretty Printing
 * Equality
@@ -4860,7 +4874,8 @@ largely of boilerplate code generation such as:
 Typeable
 --------
 
-The ``Typeable`` class be used to create runtime type information for arbitrary types.
+The ``Typeable`` class be used to create runtime type information for arbitrary
+types.
 
 ```haskell
 typeOf :: Typeable a => a -> TypeRep
@@ -4869,8 +4884,9 @@ typeOf :: Typeable a => a -> TypeRep
 ~~~~ {.haskell include="src/18-generics/typeable.hs"}
 ~~~~
 
-Using the Typeable instance allows us to write down a type safe cast function which can safely use
-``unsafeCast`` and provide a proof that the resulting type matches the input.
+Using the Typeable instance allows us to write down a type safe cast function
+which can safely use ``unsafeCast`` and provide a proof that the resulting type
+matches the input.
 
 ```haskell
 cast :: (Typeable a, Typeable b) => a -> Maybe b
@@ -4881,18 +4897,20 @@ cast x
     ret = unsafeCast x
 ```
 
-Of historical note is that writing our own Typeable classes is currently possible of GHC 7.6 but allows us to
-introduce dangerous behavior that can cause crashes, and shouldn't be done except by GHC itself. As of 7.8 GHC
-forbids hand-written Typeable instances.
+Of historical note is that writing our own Typeable classes is currently
+possible of GHC 7.6 but allows us to introduce dangerous behavior that can cause
+crashes, and shouldn't be done except by GHC itself. As of 7.8 GHC forbids
+hand-written Typeable instances.
 
 See: [Typeable and Data in Haskell](http://chrisdone.com/posts/data-typeable)
 
 Dynamic
 -------
 
-Since we have a way of querying runtime type information we can use this machinery to implement a ``Dynamic``
-type. This allows us to box up any monotype into a uniform type that can be passed to any function taking a
-Dynamic type which can then unpack the underlying value in a type-safe way.
+Since we have a way of querying runtime type information we can use this
+machinery to implement a ``Dynamic`` type. This allows us to box up any monotype
+into a uniform type that can be passed to any function taking a Dynamic type
+which can then unpack the underlying value in a type-safe way.
 
 ```haskell
 toDyn :: Typeable a => a -> Dynamic
@@ -4910,8 +4928,9 @@ applied over dynamic objects.
 Data
 ----
 
-Just as Typeable let's create runtime type information where needed, the Data class allows us to reflect
-information about the structure of datatypes to runtime as needed.
+Just as Typeable let's create runtime type information where needed, the Data
+class allows us to reflect information about the structure of datatypes to
+runtime as needed.
 
 ```haskell
 class Typeable a => Data a where
@@ -4930,9 +4949,10 @@ class Typeable a => Data a where
   gmapQl :: (r -> r' -> r) -> r -> (forall d. Data d => d -> r') -> a -> r
 ```
 
-The types for ``gfoldl`` and ``gunfold`` are a little intimidating ( and depend on ``Rank2Types`` ), the best
-way to understand is to look at some examples. First the most trivial case a simple sum type ``Animal`` would
-produce the follow the following code:
+The types for ``gfoldl`` and ``gunfold`` are a little intimidating ( and depend
+on ``Rank2Types`` ), the best way to understand is to look at some examples.
+First the most trivial case a simple sum type ``Animal`` would produce the
+follow the following code:
 
 ```haskell
 data Animal = Cat | Dog deriving Typeable
@@ -4963,7 +4983,8 @@ cDog :: Constr
 cDog = mkConstr tAnimal "Dog" [] Prefix
 ```
 
-For a type with non-empty containers we get something a little more interesting. Consider the list type:
+For a type with non-empty containers we get something a little more interesting.
+Consider the list type:
 
 ```haskell
 instance Data a => Data [a] where
@@ -4990,9 +5011,10 @@ listDataType :: DataType
 listDataType = mkDataType "Prelude.[]" [nilConstr,consConstr]
 ```
 
-Looking at ``gfoldl`` we see the Data has an implementation of a function for us to walk an applicative over
-the elements of the constructor by applying a function ``k`` over each element and applying ``z`` at the
-spine. For example look at the instance for a 2-tuple as well:
+Looking at ``gfoldl`` we see the Data has an implementation of a function for us
+to walk an applicative over the elements of the constructor by applying a
+function ``k`` over each element and applying ``z`` at the spine. For example
+look at the instance for a 2-tuple as well:
 
 
 ```haskell
@@ -5014,16 +5036,18 @@ tuple2DataType :: DataType
 tuple2DataType = mkDataType "Prelude.(,)" [tuple2Constr]
 ```
 
-This is pretty cool, now within the same typeclass we have a generic way to introspect any ``Data`` instance
-and writing logic that depends on the structure and types of its subterms. We can now write a function which
-allow us to traverse an arbitrary instance Data and twiddle values based on pattern matching on the runtime
-types. So let's write down a function ``over`` which increments a ``Value`` type for both for n-tuples and
-lists.
+This is pretty neat, now within the same typeclass we have a generic way to
+introspect any ``Data`` instance and write logic that depends on the structure
+and types of its subterms. We can now write a function which allow us to
+traverse an arbitrary instance Data and twiddle values based on pattern matching
+on the runtime types. So let's write down a function ``over`` which increments a
+``Value`` type for both for n-tuples and lists.
 
 ~~~~ {.haskell include="src/18-generics/data.hs"}
 ~~~~
 
-We can also write generic operations to for instance count the number of parameters in a data type.
+We can also write generic operations to for instance count the number of
+parameters in a data type.
 
 ```haskell
 numHoles :: Data a => a -> Int
@@ -5038,17 +5062,20 @@ example2 = numHoles (Just 3)
 -- 1
 ```
 
-This method adapts itself well to generic traversals but the types quickly become rather hairy when dealing
-anymore more complicated involving folds and unsafe coercions.
+This method adapts itself well to generic traversals but the types quickly
+become rather hairy when dealing anymore more complicated involving folds and
+unsafe coercions.
 
 
 Generic
 -------
 
-The most modern method of doing generic programming uses type families to achieve a better of deriving the
-structural properties of arbitrary type classes.  Generic implements a typeclass with an associated type
-``Rep`` ( Representation ) together with a pair of functions that form a 2-sided inverse ( isomorphism ) for
-converting to and from the associated type and the derived type in question.
+The most modern method of doing generic programming uses type families to
+achieve a better of deriving the structural properties of arbitrary type
+classes.  Generic implements a typeclass with an associated type ``Rep`` (
+Representation ) together with a pair of functions that form a 2-sided inverse (
+isomorphism ) for converting to and from the associated type and the derived
+type in question.
 
 ```haskell
 class Generic a where
@@ -5065,7 +5092,8 @@ class Constructor c where
 ```
 
 [GHC.Generics](https://www.haskell.org/ghc/docs/7.4.1/html/libraries/ghc-prim-0.2.0.0/GHC-Generics.html)
-defines a set of named types for modeling the various structural properties of types in available in Haskell.
+defines a set of named types for modeling the various structural properties of
+types in available in Haskell.
 
 ```haskell
 -- | Sums: encode choice between constructors
@@ -5094,8 +5122,9 @@ type D1 = M1 D
 type C1 = M1 C
 ```
 
-Using the deriving mechanics GHC can generate this Generic instance for us mechanically, if we were to write
-it by hand for a simple type it might look like this:
+Using the deriving mechanics GHC can generate this Generic instance for us
+mechanically, if we were to write it by hand for a simple type it might look
+like this:
 
 ~~~~ {.haskell include="src/18-generics/generics.hs"}
 ~~~~
@@ -5123,9 +5152,10 @@ Rep [()] :: * -> *
            (M1 S NoSelector (K1 R ()) :*: M1 S NoSelector (K1 R [()])))
 ```
 
-Now the clever bit, instead writing our generic function over the datatype we instead write it over the Rep
-and then reify the result using ``from``. Some for an equivalent version of Haskell's default ``Eq`` that
-instead uses generic deriving we could write:
+Now the clever bit, instead writing our generic function over the datatype we
+instead write it over the Rep and then reify the result using ``from``. Some for
+an equivalent version of Haskell's default ``Eq`` that instead uses generic
+deriving we could write:
 
 ```haskell
 class GEq' f where
@@ -5151,9 +5181,10 @@ instance (GEq' a, GEq' b) => GEq' (a :*: b) where
   geq' (a1 :*: b1) (a2 :*: b2) = geq' a1 a2 && geq' b1 b2
 ```
 
-Now to to accommodate the two methods of writing classes (generic-deriving or custom implementations) we can
-use ``DefaultSignatures`` extension to allow the user to leave typeclass functions blank and defer to the
-Generic or to define their own.
+Now to to accommodate the two methods of writing classes (generic-deriving or
+custom implementations) we can use ``DefaultSignatures`` extension to allow the
+user to leave typeclass functions blank and defer to the Generic or to define
+their own.
 
 ```haskell
 {-# LANGUAGE DefaultSignatures #-}
@@ -5165,8 +5196,8 @@ class GEq a where
   geq x y = geq' (from x) (from y)
 ```
 
-Now anyone using our library need only derive Generic and create an empty instance of our typeclass instance
-without writing any boilerplate for GEq. 
+Now anyone using our library need only derive Generic and create an empty
+instance of our typeclass instance without writing any boilerplate for ``GEq``.
 
 See: 
 
@@ -5177,21 +5208,22 @@ See:
 Generic Deriving
 ----------------
 
-GHC.Generics, we can use GHC to do lots of non-trivial code generation which works spectacularly well.
+Using Generics, we can ask GHC to do lots of non-trivial code generation which
+works spectacularly well in practice. Some real world examples:
 
 The [hashable](http://hackage.haskell.org/package/hashable) library allows us to derive hashing functions.
 
 ~~~~ {.haskell include="src/18-generics/hashable.hs"}
 ~~~~
 
-The [cereal](http://hackage.haskell.org/package/cereal-0.4.0.1) library allows us to automatically derive a binary
-representation.
+The [cereal](http://hackage.haskell.org/package/cereal-0.4.0.1) library allows
+us to automatically derive a binary representation.
 
 ~~~~ {.haskell include="src/18-generics/cereal.hs"}
 ~~~~
 
-The [aeson](http://hackage.haskell.org/package/aeson) library allows us to derive JSON representations for
-JSON instances.
+The [aeson](http://hackage.haskell.org/package/aeson) library allows us to
+derive JSON representations for JSON instances.
 
 ~~~~ {.haskell include="src/18-generics/derive_aeson.hs"}
 ~~~~
@@ -5201,8 +5233,9 @@ See: [A Generic Deriving Mechanism for Haskell](http://dreixel.net/research/pdf/
 Uniplate
 --------
 
-Uniplate is a generics library for writing traversals and transformation for arbitrary data structures. It is
-extremely useful for writing AST transformations and rewrite systems.
+Uniplate is a generics library for writing traversals and transformation for
+arbitrary data structures. It is extremely useful for writing AST
+transformations and rewrite systems.
 
 ```haskell
 plate :: from -> Type from to
@@ -5214,20 +5247,21 @@ transform :: Uniplate on => (on -> on) -> on -> on
 rewrite   :: Uniplate on => (on -> Maybe on) -> on -> on
 ```
 
-The ``descend`` function will apply a function to each immediate descendent of an expression and then combines
-them up into the parent expression.
+The ``descend`` function will apply a function to each immediate descendent of
+an expression and then combines them up into the parent expression.
 
-The ``transform`` function will perform a single pass bottom-up transformation of all terms in the expression.
+The ``transform`` function will perform a single pass bottom-up transformation
+of all terms in the expression.
 
-The ``rewrite`` function will perform a exhaustive transformation of all terms in the expression to fixed
-point, using Maybe to signify termination.
+The ``rewrite`` function will perform a exhaustive transformation of all terms
+in the expression to fixed point, using Maybe to signify termination.
 
 ~~~~ {.haskell include="src/18-generics/uniplate.hs"}
 ~~~~
 
-Alternatively Uniplate instances can be derived automatically from instances of Data without the need to
-explicitly write a Uniplate instance. This approach carries a slight amount of overhead over an explicit
-hand-written instance.
+Alternatively Uniplate instances can be derived automatically from instances of
+Data without the need to explicitly write a Uniplate instance. This approach
+carries a slight amount of overhead over an explicit hand-written instance.
 
 ```haskell
 import Data.Data
@@ -5275,14 +5309,20 @@ Numbers
 Numeric Tower
 -------------
 
-Haskell's numeric tower is usuall the source of some confusion for novices.
+Haskell's numeric tower is unusual and the source of some confusion for novices.
 Haskell is one of the few languages to incorporate statically typed overloaded
 literals without a mechanism for "coercions" often found in other languages.
 
-An integer literal in Haskell is literally desugared into a function from a
-numeric typeclass which yields a polymorphic value that can be instantiated to
-nay instance of the ``Num`` or ``Fractional`` typeclass at the call-site,
-depending on the inferred type.
+To add to confusion numerical literals in Haskell are desugared into a function
+from a numeric typeclass which yields a polymorphic value that can be
+instantiated to nay instance of the ``Num`` or ``Fractional`` typeclass at the
+call-site, depending on the inferred type. 
+
+To use a blunt metaphor, uou're effectively placing an object in a hole and the
+size and shape of the hole defines the object you place there. This is very
+different than in other languages where a literal like ``2.718`` is hardcoded in
+the compiler to be a specific type ( double or something ) and you cast the
+value at runtime to be something smaller or larger as needed.
 
 ```haskell
 42 :: Num a => a
@@ -5321,9 +5361,11 @@ Rational fromRatoinal fromRational  truncate      truncate       truncate      i
 Integer
 -------
 
-The ``Integer`` type in GHC is implemented by the GMP (``libgmp``) arbitrary precision arithmetic library.
-Unlike the ``Int`` type the size of Integer values are bounded only by the available memory. Most notably
-libgmp is the on few libraries that compiled Haskell binaries are dynamically linked against. 
+The ``Integer`` type in GHC is implemented by the GMP (``libgmp``) arbitrary
+precision arithmetic library.  Unlike the ``Int`` type the size of Integer
+values are bounded only by the available memory. Most notably ``libgmp`` is one
+of the few libraries that compiled Haskell binaries are dynamically linked
+against. 
 
 An alternative library ``integer-simple`` can be linked in place of libgmp.
 
@@ -5365,9 +5407,10 @@ scientific :: Integer -> Int -> Scientific
 fromFloatDigits :: RealFloat a => a -> Scientific
 ```
 
-Scientific provides arbitrary-precision number represented using scientific notation. The constructor takes an
-arbitrarily sized Integer argument with for digits and a Int for the exponential. Alternatively the value can
-be parsed from a String or coerced from either Double/Float.
+Scientific provides arbitrary-precision number represented using scientific
+notation. The constructor takes an arbitrarily sized Integer argument with for
+digits and a Int for the exponential. Alternatively the value can be parsed from
+a String or coerced from either Double/Float.
 
 ~~~~ {.haskell include="src/19-numbers/scientific.hs"}
 ~~~~
@@ -5447,6 +5490,8 @@ The SBV library can abstract over different SMT solvers allow us to express the
 problem in a embedded domain language in Haskell and then offload the solving
 work to the third party library.
 
+XXX: Talk about SBV
+
 See:
 
 * [cvc4](http://cvc4.cs.nyu.edu/web/)
@@ -5510,9 +5555,9 @@ freeze :: MVector (PrimState m) a -> m (Vector a)
 thaw :: Vector a -> MVector (PrimState m) a
 ```
 
-Within the IO monad we can perform arbitrary read and writes on the mutable vector with constant time reads
-and writes. When needed a static Vector can be created to/from the ``MVector`` using the freeze/thaw
-functions.
+Within the IO monad we can perform arbitrary read and writes on the mutable
+vector with constant time reads and writes. When needed a static Vector can be
+created to/from the ``MVector`` using the freeze/thaw functions.
 
 
 ~~~~ {.haskell include="src/20-data-structures/vector_mutable.hs"}
@@ -5527,9 +5572,10 @@ lookup :: (Eq k, Hashable k) => k -> HashMap k v -> Maybe v
 insert :: (Eq k, Hashable k) => k -> v -> HashMap k v -> HashMap k v
 ```
 
-Both the ``HashMap`` and ``HashSet`` are purely functional data structures that are drop in replacements for
-the ``containers`` equivalents but with more efficient space and time performance. Additionally all stored
-elements must have a ``Hashable`` instance.
+Both the ``HashMap`` and ``HashSet`` are purely functional data structures that
+are drop in replacements for the ``containers`` equivalents but with more
+efficient space and time performance. Additionally all stored elements must have
+a ``Hashable`` instance.
 
 ~~~~ {.haskell include="src/20-data-structures/unordered.hs"}
 ~~~~
@@ -5553,10 +5599,12 @@ lookup :: (Eq k, Hashable k) => HashTable s k v -> k -> ST s (Maybe v)
 Graph
 -----
 
-The Graph module in the containers library is a somewhat antiquated API for working with directed graphs.  A
-little bit of data wrapping makes it a little more straightforward to use. The library is not necessarily
-well-suited for large graph-theoretic operations but is perfectly fine for example, to use in a typechecker
-which need to resolve strongly connected components of the module definition graph.
+The Graph module in the containers library is a somewhat antiquated API for
+working with directed graphs.  A little bit of data wrapping makes it a little
+more straightforward to use. The library is not necessarily well-suited for
+large graph-theoretic operations but is perfectly fine for example, to use in a
+typechecker which need to resolve strongly connected components of the module
+definition graph.
 
 ~~~~ {.haskell include="src/20-data-structures/graph.hs"}
 ~~~~
@@ -5635,9 +5683,10 @@ optimized for append/prepend operations and traversal.
 Matrices and HBlas
 ------------------
 
-Just as in C when working with n-dimensional matrices we'll typically overlay the high-level matrix structure
-onto a unboxed contiguous block of memory with index functions which perform the coordinate translations to
-calculate offsets. The two most common layouts are:
+Just as in C when working with n-dimensional matrices we'll typically overlay
+the high-level matrix structure onto a unboxed contiguous block of memory with
+index functions which perform the coordinate translations to calculate offsets.
+The two most common layouts are:
 
 * Row-major order
 * Column-major order
@@ -5646,14 +5695,16 @@ Which are best illustrated.
 
 ![](img/matrix.png)
 
-The calculations have a particularly nice implementation in Haskell in terms of scans over indices.
+The calculations have a particularly nice implementation in Haskell in terms of
+scans over indices.
 
 ~~~~ {.haskell include="src/20-data-structures/matrix_index.hs"}
 ~~~~
 
-Unboxed matrices of this type can also be passed to C or Fortran libraries such BLAS or LAPACK linear algebra
-libraries. The ``hblas`` package wraps many of these routines and forms the low-level wrappers for higher
-level-libraries that need access to these foreign routines.
+Unboxed matrices of this type can also be passed to C or Fortran libraries such
+BLAS or LAPACK linear algebra libraries. The ``hblas`` package wraps many of
+these routines and forms the low-level wrappers for higher level-libraries that
+need access to these foreign routines.
 
 For example the
 [dgemm](https://software.intel.com/sites/products/documentation/doclib/mkl_sa/11/tutorials/mkl_mmx_c/GUID-36BFBCE9-EB0A-43B0-ADAF-2B65275726EA.htm)
@@ -5664,8 +5715,9 @@ n)`` matrix.
 ~~~~ {.haskell include="src/20-data-structures/hblas.hs"}
 ~~~~
 
-Hopefully hblas and [numerical-core](https://github.com/wellposed/numerical) libraries will serve as a
-foundation to build out the Haskell numerical ecosystem in the coming years.
+Hopefully hblas and [numerical-core](https://github.com/wellposed/numerical)
+libraries will serve as a foundation to build out the Haskell numerical
+ecosystem in the coming years.
 
 See: [hblas](https://github.com/wellposed/hblas)
 
@@ -5686,9 +5738,10 @@ Wrapping pure C functions with primitive types is trivial.
 Storable Arrays
 ----------------
 
-There exists a ``Storable`` typeclass that can be used to provide low-level access to the memory underlying
-Haskell values. The Prelude defines Storable interfaces for most of the basic types as well as types in the
-``Foreign.C`` library.
+There exists a ``Storable`` typeclass that can be used to provide low-level
+access to the memory underlying Haskell values. The Prelude defines Storable
+interfaces for most of the basic types as well as types in the ``Foreign.C``
+library.
 
 ```haskell
 class Storable a where
@@ -5698,9 +5751,10 @@ class Storable a where
   poke :: Ptr a -> a -> IO ()
 ```
 
-To pass arrays from Haskell to C we can again use Storable Vector and several unsafe operations to grab a
-foreign pointer to the underlying data that can be handed off to C. Once we're in C land, nothing will protect
-us from doing evil things to memory!
+To pass arrays from Haskell to C we can again use Storable Vector and several
+unsafe operations to grab a foreign pointer to the underlying data that can be
+handed off to C. Once we're in C land, nothing will protect us from doing evil
+things to memory!
 
 ~~~~ {.cpp include="src/21-ffi/qsort.c"}
 ~~~~
@@ -5715,7 +5769,8 @@ foreign import ccall unsafe "stdlib.h malloc"
     malloc :: CSize -> IO (Ptr a)
 ```
 
-Prepending the function name with a ``&`` allows us to create a reference to the function itself.
+Prepending the function name with a ``&`` allows us to create a reference to the
+function pointer itself.
 
 ```haskell
 foreign import ccall unsafe "stdlib.h &malloc"
@@ -6511,7 +6566,57 @@ GHC
 Block Diagram
 -------------
 
+The flow of code through GHC is a process of translation between several
+intermediate languages and optimizations and transformations thereof. A common
+pattern for many of these AST types is they are parametrised over a binder type
+and at various stages the binders will be transformed, for example the Renamer
+pass effectively translates the ``HsSyn`` datatype from a AST parametrized over
+literal strings as the user enters into a ``HsSyn`` parameterized over qualified
+names that includes modules and package names into a higher level Name type.
+
 ![](img/ghc.png)
+
+* **Frontend**: An enormous AST that makes explicit possible all expressible syntax
+  ( declarations, do-notation, where clauses, .... ). This is unfiltered Haskell
+  and it is *big*.
+* **Renamer** takes syntax from the frontend and transforms all names to be
+  qualified (``base:Prelude.(>>=)`` instead of ``(>>=)``) and any shadowed names
+  in lambda binders transformed into unique names.
+* **Typechecker** is a large pass that serves two purposes, first is the core type
+  bidirectional inference engine where most of the work happens and the
+  translation between the frontend ``Core`` syntax.
+* **Desugarer** translates several higher level syntactic constructors 
+    - ``where`` statements are turned into (possibly recursive) nested ``let``
+      statements.
+    - Nested pattern matches are expanded out into splitting trees of case
+      statements.
+    - do-notation is expanded into explicit bind statements.
+    - Lots of others.
+* **Simplifier** transforms many Core constructs into forms that are more
+  adaptable to compilation. For example let statements will be floated or
+  raised, pattern matches will simplified, inner loops will be pulled out and
+  transformed into more optimal forms. Non-intuitively the resulting may
+  actually be much more complex (for humans) after going through the simplifier!
+* **Stg** pass translates the resulting Core into STG (Spineless Tagless
+   G-Machine) which effectively makes all laziness explicit and encodes the
+   thunks and update frames that will be handled during evaluation.
+* **Codegen/Cmm** pass will then translate STG into Cmm (flavoured C--) a simple
+  imperative language that manifests the low-level implementation details of
+  runtime types. The runtime closure types and stack frames are made explicit
+  and low-level information about the data and code (arity, updatability, free
+  variables, pointer layout) made manifest in the info tables present on most
+  constructs.
+* **Native Code** The final pass will than translate the resulting code into
+  either LLVM or Assembly via either through GHC's home built native code
+  generator (NCG) or the LLVM backend.
+
+
+Information for about each pass can dumped out via a rather large collection of
+flags. The GHC internals are very accessible although some passes are somewhat
+easier to understand than others. Most of the time ``-ddump-simpl`` and
+``-ddump-stg`` are sufficient to get an understanding of how the code will
+compile, unless of course you're dealing with very specialized optimizations or
+hacking on GHC itself.
 
 Flag                   Action
 --------------         ------------
@@ -6535,11 +6640,14 @@ Flag                   Action
 ``-ddump-asm``         The final assembly generated.
 ``-ddump-llvm``        The final LLVM IR generated.
 
-
 Core
 ----
 
-To inspect the core from GHCi we can invoke it using the following flags and the alias:
+Core is the explicitly typed System-F family syntax through that all Haskell
+constructs can be expressed in.
+
+To inspect the core from GHCi we can invoke it using the following flags and the
+alias:
 
 ```bash
 alias ghci-core="ghci -ddump-simpl -dsuppress-idinfo \
@@ -6620,12 +6728,14 @@ map =
 ```
 
 Of important note is that the Λ and λ for type-level and value-level lambda
-abstraction are represented by the same symbol (``\``) in core, which is a simplifying detail of the GHC's
-implementation but a source of some confusion when starting.
+abstraction are represented by the same symbol (``\``) in core, which is a
+simplifying detail of the GHC's implementation but a source of some confusion
+when starting.
 
 ```haskell
 -- System-F Notation
-Λ b c a. λ (f1 :: b -> c) (g :: a -> b ) (x1 :: a). f1 (g x1)
+Λ b c a. λ (f1 : b -> c) (g : a -> b) (x1 : a). f1 (g x1)
+
 -- Haskell Core
 \ (@ b) (@ c) (@ a) (f1 :: b -> c) (g :: a -> b) (x1 :: a) -> f1 (g x1)
 ```
@@ -6717,14 +6827,17 @@ infixr 0  $
 f $ x =  f x
 ```
 
-Having to enter a secondary closure everytime we used ``($)`` would introduce an enormous overhead. Fortunatly
-GHC has a pass to eliminate small funtions like this by simply replacing the function call with the body of
-it's definition at appropriate call-sites. There compiler contains a variety heuristics for determening when
-this kind of substitution is appropriate and the potential costs involved.
+Having to enter a secondary closure every time we used ``($)`` would introduce
+an enormous overhead. Fortunately GHC has a pass to eliminate small functions
+like this by simply replacing the function call with the body of it's definition
+at appropriate call-sites. There compiler contains a variety heuristics for
+determining when this kind of substitution is appropriate and the potential
+costs involved.
 
-In addition to the automatic inliner, manual pragmas are provided for more granular control over inlining.
-It's important to note that naive inlining quite often results in signifigantly worse perormance and longer
-compilation times.
+In addition to the automatic inliner, manual pragmas are provided for more
+granular control over inlining.  It's important to note that naive inlining
+quite often results in significantly worse performance and longer compilation
+times.
 
 ```haskell
 {-# INLINE func #-}
@@ -6732,9 +6845,10 @@ compilation times.
 {-# NOINLINE func #-}
 ```
 
-Cases marked with ``NOINLINE`` generally indicate that the logic in the function is using something like
-``unsafePerformIO`` or some other unholy act. In hese cases naive inlining might duplicate effects at multiple
-call-sites throughout the program.
+Cases marked with ``NOINLINE`` generally indicate that the logic in the function
+is using something like ``unsafePerformIO`` or some other unholy act. In hese
+cases naive inlining might duplicate effects at multiple call-sites throughout
+the program.
 
 See: 
 
@@ -6807,7 +6921,7 @@ negate = \ (@ a) (tpl :: Num a) ->
 
 ``Num`` and ``Ord`` have simple translation but for monads with existential type
 variables in their signatures, the only way to represent the equivalent
-dictionary is using RankNTypes. In addition a typeclass may also include
+dictionary is using ``RankNTypes``. In addition a typeclass may also include
 superclasses which would be included in the typeclass dictionary and
 parameterized over the same arguments.
 
@@ -6834,12 +6948,15 @@ data DTraversable t = DTraversable
 
 Indeed this is not that far from how GHC actually implements typeclasses. It
 elaborates into projection functions and data constructors nearly identical to
-this, and are implicitly threaded for every overloaded identifier that occurs.
+this, and are implicitly threaded for every overloaded identifier.
 
 See: [Scrap Your Type Classes](http://www.haskellforall.com/2012/05/scrap-your-type-classes.html)
 
 Static Compilation
 ------------------
+
+On Linux, Haskell programs can be compiled into a standalone statically linked
+binary that includes the runtime statically linked into it.
 
 ```bash
 $ ghc -O2 --make -static -optc-static -optl-static -optl-pthread Example.hs
@@ -6850,7 +6967,8 @@ $ ldd Example
  
 ```
 
-In addition the file size of the resulting binary can be reduced by stripping unneeded symbols.
+In addition the file size of the resulting binary can be reduced by stripping
+unneeded symbols.
 
 ```bash
 $ strip Example
@@ -6859,8 +6977,8 @@ $ strip Example
 Unboxed Types
 --------------
 
-The usual integer type in Haskell can be considered to be a regular algebraic datatype with a special
-constructor.
+The usual integer type in Haskell can be considered to be a regular algebraic
+datatype with a special constructor.
 
 ```haskell
 λ: :set -XMagicHash
@@ -6883,8 +7001,9 @@ Int# :: #
 "Haskell"# :: Addr#
 ```
 
-An unboxed type with kind ``#`` and will never unify a type variable of kind ``*``. Intuitively a type with
-kind ``*`` indicates a type with a uniform runtime representation that can be used polymorphically.
+An unboxed type with kind ``#`` and will never unify a type variable of kind
+``*``. Intuitively a type with kind ``*`` indicates a type with a uniform
+runtime representation that can be used polymorphically.
 
 - *Lifted* - Can contain a bottom term, represented by a pointer. ( ``Int``, ``Any``, ``(,)`` )
 - *Unlited* - Cannot contain a bottom term, represented by a value on the stack. ( ``Int#``, ``(#, #)`` )
@@ -6914,13 +7033,13 @@ plusInt a b = case a of {
 };
 ```
 
-Runtime values in Haskell are by-default normally represented uniformly by a
-boxed ``StgClosure*`` struct which itself contains several payload values which
-can themselves be either pointers to other boxed values or to unboxed literal
-values that fit within the system word size and are stored directly within the
-closure in memory. The layout of the box is described by a bitmap in the header
-for the closure which describes which values in the payload are either pointers
-or non-pointers.
+Runtime values in Haskell are by default represented uniformly by a boxed
+``StgClosure*`` struct which itself contains several payload values, which can
+themselves either be pointers to other boxed values or to unboxed literal values
+that fit within the system word size and are stored directly within the closure
+in memory. The layout of the box is described by a bitmap in the header for the
+closure which describes which values in the payload are either pointers or
+non-pointers.
 
 The ``unpackClosure#`` primop can be used to extract this information at runtime
 by reading off the bitmap on the closure.
@@ -6948,7 +7067,8 @@ runtime with the tag of the specific constructor. This is however not a runtime
 type tag since there is no way to recover the type from the tag as all
 constructor simply use the sequence (0, 1, 2, ...). The tag is used to
 discriminate cases in pattern matching. The builtin ``dataToTag#`` can  be used
-to pluck off the tag for an arbitrary datatype.
+to pluck off the tag for an arbitrary datatype. This is used in some cases when
+desugaring pattern matches.
 
 ```haskell
 dataToTag# :: a -> Int#
@@ -6957,13 +7077,26 @@ dataToTag# :: a -> Int#
 For example:
 
 ```haskell
+-- data Bool = False | True
+-- False ~ 0
+-- True  ~ 1
+
 a :: (Int, Int)
 a = (I# (dataToTag# False), I# (dataToTag# True))
 -- (0, 1)
 
+-- data Ordering = LT | EQ | GT
+-- LT ~ 0
+-- EQ ~ 1
+-- GT ~ 2
+
 b :: (Int, Int, Int)
 b = (I# (dataToTag# LT), I# (dataToTag# EQ), I# (dataToTag# GT))
 -- (0, 1, 2)
+
+-- data Either a b = Left a | Right b
+-- Left ~ 0
+-- Right ~ 1
 
 c :: (Int, Int)
 c = (I# (dataToTag# (Left 0)), I# (dataToTag# (Right 1)))
@@ -6996,10 +7129,13 @@ See:
 ghc-heap-view
 -------------
 
-In similar fashion to above we can actually inspect the ``StgClosure``
+Through some dark runtime magic can actually inspect the ``StgClosure``
 structures at runtime using various C and Cmm hacks to probe at the fields of
 the structure's representation to the runtime. The library ``ghc-heap-view`` can
-be used to introspect such things.
+be used to introspect such things, although there is really no use for this kind
+of thing in everyday code it is very helpful when studying the GHC internals to
+be able to inspect the runtime implementation details and get at the raw bits
+underlying all Haskell types.
 
 ~~~~ {.haskell include="src/29-ghc/heapview.hs"}
 ~~~~
