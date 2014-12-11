@@ -6324,6 +6324,11 @@ deterministic actions over files without having to worry about effect order.
 ~~~~ {.haskell include="src/25-streaming/pipes_file.hs"}
 ~~~~
 
+This is simple a sampling of the functionality of lens. The documentation for
+lens is extensive and great deal of care has been taken make the library
+extremely thorough. ``pipes`` is a shining example of an accessible yet category
+theoretic driven design.
+
 See: [Pipes Tutorial](http://hackage.haskell.org/package/pipes-4.1.0/docs/Pipes-Tutorial.html)
 
 Safe Pipes
@@ -6618,12 +6623,13 @@ names that includes modules and package names into a higher level Name type.
 
 ![](img/ghc.png)
 
-* **Frontend**: An enormous AST that makes explicit possible all expressible syntax
-  ( declarations, do-notation, where clauses, .... ). This is unfiltered Haskell
-  and it is *big*.
+* **Parser/Frontend**: An enormous AST translated from human syntax that makes
+  explicit possible all expressible syntax ( declarations, do-notation, where
+  clauses, syntax extensions, template haskell, ... ). This is unfiltered
+  Haskell and it is *enormous*.
 * **Renamer** takes syntax from the frontend and transforms all names to be
-  qualified (``base:Prelude.(>>=)`` instead of ``(>>=)``) and any shadowed names
-  in lambda binders transformed into unique names.
+  qualified (``base:Prelude.map`` instead of ``map``) and any shadowed names in
+  lambda binders transformed into unique names.
 * **Typechecker** is a large pass that serves two purposes, first is the core type
   bidirectional inference engine where most of the work happens and the
   translation between the frontend ``Core`` syntax.
@@ -6720,15 +6726,19 @@ artifacts.
 $ ghc-core --no-cast --no-asm
 ```
 
-Alternatively the major stages of the compiler ( parse tree, core, stg, cmm, asm ) can be manually outputted
-and inspected by passing several flags to the compiler:
+Alternatively the major stages of the compiler ( parse tree, core, stg, cmm, asm
+) can be manually outputted and inspected by passing several flags to the
+compiler:
 
 ```bash
 $ ghc -ddump-to-file -ddump-parsed -ddump-simpl -ddump-stg -ddump-cmm -ddump-asm
 ```
 
-Core from GHC is roughly human readable, but it's helpful to look at simple human written examples to get the
-hang of what's going on.
+Core
+----
+
+Core from GHC is roughly human readable, but it's helpful to look at simple
+human written examples to get the hang of what's going on.
 
 ```haskell
 id :: a -> a
@@ -6768,6 +6778,26 @@ map =
       : y ys -> : @ b (f y) (map @ a @ b f ys)
     }
 ```
+
+Machine generated names are created for a lot of transformation of Core.
+Generally they consist of a prefix and unique identifier. The prefix is open
+pass specific ( ``ds`` for desugar ) and sometimes specific names are generated
+for specific automatically generated code. A non exhaustive cheat sheet is given
+below for deciphering what a name is and what it might stand for:
+
+Prefix       Description
+----------   ---------------------------------
+``$f...``    Dict-fun identifiers (from inst decls)
+``$dmop``    Default method for 'op'
+``$wf``      Worker for function 'f'
+``$sf``      Specialised version of f
+``$gdm``     Generated class method
+``$d``       Dictionary names
+``$s``       Specialized function name
+``$f``       Foreign export
+``$pnC``     n'th superclass selector for class C
+``T:C``      Tycon for dictionary for class C
+``D:C``      Data constructor for dictionary for class C
 
 Of important note is that the Λ and λ for type-level and value-level lambda
 abstraction are represented by the same symbol (``\``) in core, which is a
@@ -6896,33 +6926,15 @@ See:
 
 * [Secrets of the Glasgow Haskell Compiler inliner](https://research.microsoft.com/en-us/um/people/simonpj/Papers/inlining/inline.pdf)
 
-
-Specialization
---------------
-
-XXX
-
-IO/ST
------
-
-Both the IO and the ST monad have special state in the GHC runtime and share a
-very similar implementation. The ``PrimMonad`` abstracts over both these monads
-and can be used to write operations that generic over both ST and IO. This is
-used extensively inside of the vector package.
-
-~~~~ {.haskell include="src/29-ghc/io_impl.hs"}
-~~~~
-
-~~~~ {.haskell include="src/29-ghc/monad_prim.hs"}
-~~~~
-
 Dictionaries
 ------------
 
-The Haskell language defines the notion of Typeclasses but is agnostic to how they are implemented in a
-Haskell compiler. GHC's particular implementation uses a pass called the *dictionary passing translation* part
-of the elaboration phase of the typechecker which translates Core functions with typeclass constraints into
-implicit parameters of which record-like structures containing the function implementations are passed.
+The Haskell language defines the notion of Typeclasses but is agnostic to how
+they are implemented in a Haskell compiler. GHC's particular implementation uses
+a pass called the *dictionary passing translation* part of the elaboration phase
+of the typechecker which translates Core functions with typeclass constraints
+into implicit parameters of which record-like structures containing the function
+implementations are passed.
 
 ```haskell
 class Num a where
@@ -6931,7 +6943,8 @@ class Num a where
   negate :: a -> a
 ```
 
-This class can be thought as the implementation equivalent to the following parameterized record of functions.
+This class can be thought as the implementation equivalent to the following
+parameterized record of functions.
 
 ```haskell
 data DNum a = DNum (a -> a -> a) (a -> a -> a) (a -> a)
@@ -6993,6 +7006,133 @@ elaborates into projection functions and data constructors nearly identical to
 this, and are implicitly threaded for every overloaded identifier.
 
 See: [Scrap Your Type Classes](http://www.haskellforall.com/2012/05/scrap-your-type-classes.html)
+
+
+Specialization
+--------------
+
+Overloading in Haskell is normally not completely free by default, although with
+an optimization called specialization it can be made to have zero cost at
+specific points in the code where performance is crucial. This is not enabled by
+default by virtue of the fact that GHC is not a whole-program optimizing
+compiler and most optimizations ( not all ) stop at module boundaries.
+
+GHC's method of implementing typeclasses means that explicit dictionaries are
+threaded around implicitly throughout the call sites. This is normally the most
+natural to implement this functionality although since it preserves separate
+compilation, since we can compiled a function independently where it is
+declared, not recompile at every point in the program where it's called. The
+dictionary passing allows the caller to thread the implementation logic for the
+types to the call-site where it can then be used throughout the body of the
+function.
+
+Of course this means that in order to get at a specific typeclass function we
+need to project ( possibly multiple times ) into the dictionary structure to
+pluck out the function reference. The runtime makes this very cheap but entirely
+free.
+
+Many C++ compilers or whole program optimizing compilers do the opposite
+however, they explicitly specialize each and every function at the call site
+replacing the overloaded function with it's type-specific implementation. We can
+selectively enable this kind of behavior 
+
+~~~~ {.haskell include="src/29-ghc/specialize.hs"}
+~~~~
+
+**Non-specialized**
+
+```haskell
+f :: forall a. Floating a => a -> a -> a
+f =
+  \ (@ a) ($dFloating :: Floating a) (eta :: a) (eta1 :: a) ->
+    let {
+      a :: Fractional a
+      a = $p1Floating @ a $dFloating } in
+    let {
+      $dNum :: Num a
+      $dNum = $p1Fractional @ a a } in
+    * @ a
+      $dNum
+      (exp @ a $dFloating (+ @ a $dNum eta eta1))
+      (exp @ a $dFloating (+ @ a $dNum eta eta1))
+```
+
+**Specialized**
+
+```haskell
+f1 :: Double -> Double -> Double
+f1 =
+  \ (eta :: Double) (eta1 :: Double) ->
+    let {
+      a :: Fractional Double
+      a = $p1Floating @ Double $fFloatingDouble } in
+    let {
+      $dNum :: Num Double
+      $dNum = $p1Fractional @ Double a } in
+    * @ Double
+      $dNum
+      (exp @ Double $fFloatingDouble (+ @ Double $dNum eta eta1))
+      (exp @ Double $fFloatingDouble (+ @ Double $dNum eta eta1))
+```
+
+
+In the specialized version the operations are simply unboxed machine arithmetic,
+this will map to about 6 or less sequential CPU instructions and is likely the
+same code generated by C.
+
+```haskell
+spec :: Double
+spec = D# (*## (expDouble# 30.0) (expDouble# 30.0))
+```
+
+The non-specialized version has to project into the typeclass dictionary
+(``$fFloatingFloat``) 6 times and likely go through around 25 branches to
+perform the same operation.
+
+```haskell
+nonspec :: Float
+nonspec =
+  f @ Float $fFloatingFloat (F# (__float 10.0)) (F# (__float 20.0))
+```
+
+For a tight loop over numeric types specializing at the call site can result in
+orders of magnitude performance increase. Although the cost in compile-time can
+often be non-trivial and when used function used at many call-sites this can
+slow GHC's simplifier pass to a crawl. 
+
+The best advice is profile and look for large uses of dictionary projection in
+tight loops and then specialize and inline in these places.
+
+IO/ST
+-----
+
+Both the IO and the ST monad have special state in the GHC runtime and share a
+very similar implementation. Both ``ST a`` and ``IO a`` are passing around an
+unboxed tuple of the form:
+
+```haskell
+(# token, a #)
+```
+
+The ``RealWorld#`` token is "deeply magical" and doesn't actually expand into
+any code when compiled, but simply threaded around through every bind of the IO
+or ST monad and has several properties of being unique and not being able to be
+duplicated to ensure sequential IO actions are actually sequential.
+``unsafePerformIO`` can thought of as the unique operation which discards the
+world token and plucks the ``a`` out, and is as the name implies not normally
+safe.
+
+The ``PrimMonad`` abstracts over both these monads with an associated data
+family for the world token or ST thread, and can be used to write operations
+that generic over both ST and IO.  This is used extensively inside of the vector
+package to allow vector algorithms to be written generically either inside of IO
+or ST.
+
+~~~~ {.haskell include="src/29-ghc/io_impl.hs"}
+~~~~
+
+~~~~ {.haskell include="src/29-ghc/monad_prim.hs"}
+~~~~
 
 Static Compilation
 ------------------
