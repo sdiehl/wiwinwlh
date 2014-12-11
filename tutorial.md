@@ -1052,8 +1052,6 @@ instance (Monoid w, Monad m) => MonadWriter w (WriterT w m)
 In terms of generality the mtl library is the most common general interface for these monads, which itself
 depends on the transformers library which generalizes the "basic" monads described above into transformers.
 
-See: [transformers](https://github.com/ekmett/transformers/tree/master/Control/Monad/Trans)
-
 Transformers
 ------------
 
@@ -4512,8 +4510,7 @@ e :: Proxy (Maybe ())
 e = Proxy
 ```
 
-This is provided by the [tagged](http://hackage.haskell.org/package/tagged-0.7.2/docs/Data-Proxy.html) package
-in 7.6 and provided by the Prelude in 7.8.
+This is provided by the by the Prelude in 7.8.
 
 Promoted Syntax
 ---------------
@@ -7871,8 +7868,14 @@ Lenses
 
 There are two implementations of note that are mostly compatible but differ in scope:
 
-* *lens* - The kitchen sink library with a wide variety of instances for many common libraries.
 * *lens-family-core* - The core abstractions in a standalone library with minimal dependencies.
+* *lens*
+
+**<span style="color:red">WARNING</span>: The ``lens`` library is considered by
+many Haskellers to be deeply pathological and introduces a needless amount of
+complexity. Some care should taken when considering it's use, it is included
+here for information only and not as endorsement for it's use. Consider
+``lens-family-core`` or ``fclabels`` instead.**
 
 van Laarhoven Lenses
 --------------------
@@ -8071,7 +8074,6 @@ See:
 
 * [A Little Lens Tutorial](https://www.fpcomplete.com/school/to-infinity-and-beyond/pick-of-the-week/a-little-lens-starter-tutorial)
 * [CPS based functional references](http://twanvl.nl/blog/haskell/cps-functional-references)
-* [Lens Derivation](https://github.com/ekmett/lens/wiki/Derivation)
 * [Lens infix operators](https://github.com/quchen/articles/blob/master/lens-infix-operators.md)
 
 lens-family

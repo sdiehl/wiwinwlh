@@ -3,18 +3,17 @@
 import Pipes
 import qualified Pipes.Prelude as P
 
-import Control.Monad
+count :: Producer Integer IO ()
+count = each [1..100]
 
-a :: Producer Integer IO ()
-a = each [1..100]
-
-b :: Pipe Integer String IO ()
-b = do
+fizzbuzz :: Pipe Integer String IO ()
+fizzbuzz = do
   n <- await
   if | n `mod` 15 == 0 -> yield "FizzBuzz"
      | n `mod` 5  == 0 -> yield "Fizz"
      | n `mod` 3  == 0 -> yield "Buzz"
      | otherwise       -> return ()
-  b
+  fizzbuzz
 
-main = runEffect $ a >-> b >-> P.stdoutLn
+main :: IO ()
+main = runEffect $ count >-> fizzbuzz >-> P.stdoutLn
