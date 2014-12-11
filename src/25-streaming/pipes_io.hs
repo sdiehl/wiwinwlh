@@ -15,5 +15,6 @@ b = do
      | n `mod` 5  == 0 -> yield "Fizz"
      | n `mod` 3  == 0 -> yield "Buzz"
      | otherwise       -> return ()
+  b
 
 main = runEffect $ a >-> b >-> P.stdoutLn
