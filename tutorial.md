@@ -2529,26 +2529,29 @@ See: [exceptions](http://hackage.haskell.org/package/exceptions)
 Either
 ------
 
-The instance of the Either monad is simple, note the bias toward Left when binding.
+The instance of the Either monad is simple, note the bias toward Left when
+binding.
 
 ~~~~ {.haskell include="src/09-errors/either_impl.hs"}
 ~~~~
 
-The silly example one always sees is writing safe division function that fails out with a Left value when a
-division by zero happens and holds the resulting value in Right otherwise.
+The silly example one always sees is writing safe division function that fails
+out with a Left value when a division by zero happens and holds the resulting
+value in Right otherwise.
 
 ~~~~ {.haskell include="src/09-errors/either.hs"}
 ~~~~
 
-This is admittedly pretty stupid but captures the essence of why Either/EitherT is a suitable monad for
-exception handling.
+This is admittedly pretty stupid but captures the essence of why Either/EitherT
+is a suitable monad for exception handling.
 
 ErrorT
 ------
 
-Another slightly clumsy method is to use the ``ErrorT`` transformer composed with an Identity and unrolling
-into an ``Either Exception a``. This method is simple but requires manual instantiation of an Exception ( or
-Typeable ) typeclass if a custom Exception type is desired.
+In the monad transformer style, we can use the ``ErrorT`` transformer composed
+with an Identity monad and unrolling into an ``Either Exception a``. This method
+is simple but requires manual instantiation of an Exception ( or Typeable )
+typeclass if a custom Exception type is desired.
 
 ~~~~ {.haskell include="src/09-errors/errors.hs"}
 ~~~~
@@ -3190,25 +3193,30 @@ See: [Fun with Phantom Types](http://www.researchgate.net/publication/228707929_
 GADTs
 -----
 
-GADTs are an extension to algebraic datatypes that allow us to qualify the constructors to datatypes with type
-equality constraints, allowing a class of types that are not expressible using vanilla ADTs.
+*Generalized Algebraic Data types* (GADTs) are an extension to algebraic
+datatypes that allow us to qualify the constructors to datatypes with type
+equality constraints, allowing a class of types that are not expressible using
+vanilla ADTs.
 
-``-XGADTs`` implicitly enables an alternative syntax for datatype declarations ( ``-XGADTSyntax`` )  such the
-following declaration are equivalent:
+``-XGADTs`` implicitly enables an alternative syntax for datatype declarations (
+``-XGADTSyntax`` )  such that the following declarations are equivalent:
 
 ```haskell
+-- Vanilla
 data List a
   = Empty
   | Cons a (List a)
 
+-- GADTSyntax
 data List a where
   Empty :: List a
   Cons :: a -> List a -> List a
 ```
 
-For an example use consider the data type ``Term``, we have a term in which we ``Succ`` which takes a ``Term``
-parameterized by ``a`` which span all types. Problems arise between the clash whether (``a ~ Bool``) or (``a ~
-Int``) when trying to write the evaluator.
+For an example use consider the data type ``Term``, we have a term in which we
+``Succ`` which takes a ``Term`` parameterized by ``a`` which span all types.
+Problems arise between the clash whether (``a ~ Bool``) or (``a ~ Int``) when
+trying to write the evaluator.
 
 ```haskell
 data Term a
@@ -3222,16 +3230,17 @@ eval (Succ t)     = 1 + eval t
 eval (IsZero i)   = eval i == 0
 ```
 
-And we admit the construction of meaningless terms which forces more error handling cases.
+And we admit the construction of meaningless terms which forces more error
+handling cases.
 
 ```haskell
 -- This is a valid type.
 failure = Succ ( Lit True )
 ```
 
-Using a GADT we can express the type invariants for our language (i.e. only type-safe expressions are
-representable). Pattern matching on this GADTs then carries type equality constraints without the need for
-explicit tags.
+Using a GADT we can express the type invariants for our language (i.e. only
+type-safe expressions are representable). Pattern matching on this GADTs then
+carries type equality constraints without the need for explicit tags.
 
 ~~~~ {.haskell include="src/12-gadts/gadt.hs"}
 ~~~~
@@ -3243,8 +3252,8 @@ This time around:
 failure = Succ ( Lit True )
 ```
 
-Explicit constraints (``a ~ b``) can be added to a function's context that the compiler should be able to
-deduce that two types are equal up to unification.
+Explicit constraints (``a ~ b``) can be added to a function's context that the
+compiler should be able to deduce that two types are equal up to unification.
 
 ```haskell
 -- f :: a -> a -> (a,a)
@@ -8549,22 +8558,101 @@ Then using ``Data.Aeson.Lens`` we can traverse the structure using our lens comb
 Categories
 ==========
 
-Alas we come to the topic of category theory. Some might say all discussion of Haskell eventually leads here
-at one point or another...
+Alas we come to the topic of category theory. Some might say all discussion of
+Haskell eventually leads here at one point or another.
 
-Nevertheless the overall importance of category theory in the context of Haskell has been somewhat overstated
-and unfortunately mystified to some extent. The reality is that amount of category theory which is directly
-applicable to Haskell roughly amounts to a subset of the first chapter of any undergraduate text.
+Nevertheless the overall importance of category theory in the context of Haskell
+has been somewhat overstated and unfortunately mystified to some extent. The
+reality is that amount of category theory which is directly applicable to
+Haskell roughly amounts to a subset of the first chapter of any undergraduate
+text.
+
+Algebraic Relations
+-------------------
+
+Grossly speaking category theory is not terribly important to Haskell
+programming, and although some libraries derive some inspiration from the
+subject most do not. What is more important is a general understanding of
+equational reasoning and a familiarity with various algebraic relations.
+
+Certain relations show up so frequently we typically refer to their properties
+by name ( often drawn from an equivalent abstract algebra concept ). Consider a
+binary operation ``a `op` b``.
+
+**Associativity**
+
+```haskell
+a `op` (b `op` c) = (a `op` b) `op` c
+```
+
+**Commutativity**
+
+```haskell
+a `op` b = b `op` a
+```
+
+**Units**
+
+```haskell
+a `op` e = a
+e `op` a = a
+```
+
+**Inversion**
+
+```haskell
+(inv a) `op` a = e
+a `op` (inv a) = e
+```
+
+**Zeros**
+
+```haskell
+a `op` e = e
+e `op` a = e
+```
+
+**Linearity**
+
+```haskell
+f (x `op` y) = f x `op` f y
+```
+
+**Idempotency**
+
+```haskell
+f (f x) = f x
+```
+
+**Distributivity**
+
+```haskell
+a `f` (b `g` c) = (a `f` b) `g` (a `f` c)
+(b `g` c) `f` a = (b `f` a) `g` (c `f` a)
+```
+
+**Anticommutativity**
+
+```haskell
+a `op` b = inv (b `op` a)
+```
+
+And of course combinations of these properties over multiple functions gives
+rise to higher order systems of relations that occur over and over again
+throughout functional programming, and once we recognize them we can abstract
+over them. For instance a monoid is a combination of a unit and a single
+associative operation.
 
 Categories
 ----------
 
-The most basic structure is a category which is an algebraic structure of objects (``Obj``) and morphisms
-(``Hom``) with the structure that morphisms compose associatively and the existence of a identity morphism for
-each object.
+The most basic structure is a category which is an algebraic structure of
+objects (``Obj``) and morphisms (``Hom``) with the structure that morphisms
+compose associatively and the existence of a identity morphism for each object.
 
-With kind polymorphism enabled we can write down the general category parameterized by a type variable "c" for
-category, and the instance ``Hask`` the category of Haskell types with functions between types as morphisms.
+With kind polymorphism enabled we can write down the general category
+parameterized by a type variable "c" for category, and the instance ``Hask`` the
+category of Haskell types with functions between types as morphisms.
 
 ~~~~ {.haskell include="src/33-categories/categories.hs"}
 ~~~~
@@ -8572,7 +8660,9 @@ category, and the instance ``Hask`` the category of Haskell types with functions
 Isomorphisms
 ------------
 
-Two objects of a category are said to be isomorphic if there exists a morphism with 2-sided inverse.
+Two objects of a category are said to be isomorphic if we can construct a
+morphism with 2-sided inverse that takes the structure of an object to another
+form and back to itself when inverted.
 
 ```haskell
 f  :: a -> b
@@ -8602,9 +8692,10 @@ instance Category Iso where
 Duality
 -------
 
-One of the central ideas is the notion of duality, that reversing some internal structure yields a new
-structure with a "mirror" set of theorems. The dual of a category reverse the direction of the morphisms
-forming the category C<sup>Op</sup>.
+One of the central ideas is the notion of duality, that reversing some internal
+structure yields a new structure with a "mirror" set of theorems. The dual of a
+category reverse the direction of the morphisms forming the category
+C<sup>Op</sup>.
 
 ~~~~ {.haskell include="src/33-categories/dual.hs"}
 ~~~~
@@ -8616,8 +8707,8 @@ See:
 Functors
 --------
 
-Functors are mappings between the objects and morphisms of categories that preserve identities and
-composition.
+Functors are mappings between the objects and morphisms of categories that
+preserve identities and composition.
 
 ~~~~ {.haskell include="src/33-categories/functors.hs"}
 ~~~~
@@ -8630,8 +8721,8 @@ fmap (a . b) ≡ (fmap a) . (fmap b)
 Natural Transformations
 -----------------------
 
-Natural transformations are mappings between functors that are invariant under interchange of morphism
-composition order.
+Natural transformations are mappings between functors that are invariant under
+interchange of morphism composition order.
 
 ```haskell
 type Nat f g = forall a. f a -> g a
@@ -8702,16 +8793,18 @@ f . g x = c x . g
 ```
 
 
-A lot of the expressive power of Haskell types comes from the interesting fact that with a few caveats,
-Haskell polymorphic functions are natural transformations.
+A lot of the expressive power of Haskell types comes from the interesting fact
+that, with a few caveats, polymorphic Haskell functions are natural
+transformations.
 
 See: [You Could Have Defined Natural Transformations](http://blog.sigfpe.com/2008/05/you-could-have-defined-natural.html)
 
 Yoneda Lemma
 ------------
 
-The Yoneda lemma is an elementary, but deep result in Category theory. The Yoneda lemma states that for any
-functor ``F``, the types ``F a`` and ``∀ b. (a -> b) -> F b`` are isomorphic.
+The Yoneda lemma is an elementary, but deep result in Category theory. The
+Yoneda lemma states that for any functor ``F``, the types ``F a`` and ``∀ b. (a
+-> b) -> F b`` are isomorphic.
 
 ```haskell
 {-# LANGUAGE RankNTypes #-}
@@ -8730,13 +8823,15 @@ embed . unembed ≡ id
 unembed . embed ≡ id
 ```
 
-The most broad hand-wavy statement of the theorem is that an object in a category can be represented by the
-set of morphisms into it, and that the information about these morphisms alone sufficiently determines all
-properties of the object itself.
+The most broad hand-wavy statement of the theorem is that an object in a
+category can be represented by the set of morphisms into it, and that the
+information about these morphisms alone sufficiently determines all properties
+of the object itself.
 
-In terms of Haskell types, given a fixed type ``a`` and a functor ``f``, if we have some a higher order
-polymorphic function ``g`` that when given a function of type ``a -> b`` yields ``f b`` then the behavior
-``g`` is entirely determined by ``a -> b`` and the behavior of ``g`` can written purely in terms of ``f a``.
+In terms of Haskell types, given a fixed type ``a`` and a functor ``f``, if we
+have some a higher order polymorphic function ``g`` that when given a function
+of type ``a -> b`` yields ``f b`` then the behavior ``g`` is entirely determined
+by ``a -> b`` and the behavior of ``g`` can written purely in terms of ``f a``.
 
 See:
 
@@ -8755,8 +8850,8 @@ f >=> g ≡ \x -> f x >>= g
 (<=<) = flip (>=>)
 ```
 
-The monad laws stated in terms of the Kleisli category of a monad ``m`` are stated much more symmetrically as
-one associativity law and two identity laws.
+The monad laws stated in terms of the Kleisli category of a monad ``m`` are
+stated much more symmetrically as one associativity law and two identity laws.
 
 ```haskell
 (f >=> g) >=> h ≡ f >=> (g >=> h)
@@ -8764,12 +8859,14 @@ return >=> f ≡ f
 f >=> return ≡  f
 ```
 
-Stated simply that the monad laws above are just the category laws in the Kleisli category.
+Stated simply that the monad laws above are just the category laws in the
+Kleisli category.
 
 ~~~~ {.haskell include="src/33-categories/kleisli.hs"}
 ~~~~
 
-For example, ``Just`` is just an identity morphism in the Kleisli category of the ``Maybe`` monad.
+For example, ``Just`` is just an identity morphism in the Kleisli category of
+the ``Maybe`` monad.
 
 ```haskell
 Just >=> f ≡ f
