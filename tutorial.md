@@ -520,8 +520,8 @@ otherwise a valid type-checked program.
 unsafe (Just x) = x + 1
 ```
 
-There are however flags you can pass to the compiler to warn you about such
-things or forbid them entirely either locally or globally.
+There are however flags we can pass to the compiler to warn us about such things
+or forbid them entirely either locally or globally.
 
 ```haskell
 $ ghc -c -Wall -Werror A.hs
@@ -656,16 +656,18 @@ Nix
 Nix is a package management system with a larger scope than cabal. It is
 generally not a Haskell specific project although much work has been done to
 integrate it with the existing cabal infrastructure. *Nix is not a replacement
-for a cabal* but can be used to subsume of cabal's work by building up isolated
-development environments that can include Haskell libraries ( installed from
-binary packages ) and arbitrary system libraries that can be linked into
-compiled Haskell programs.
+for a cabal* but can be used to subsume some of cabal's work by building up
+isolated development environments that can include Haskell libraries (
+installed from binary packages ) and arbitrary system libraries that can be
+linked into compiled Haskell programs.
 
 Use of Nix is somewhat controversial in some aspects since it requires us to buy
 into a much larger system and write an additional set of configuration files in
 an entirely difference Nix specification language. It is unclear what the future
 of Haskell and Nix will be and whether it is a workaround around some current
 cabal pain points or a deeper unifying model.
+
+XXX
 
 cabal2nix
 
@@ -764,7 +766,7 @@ do { f ; m } ≡ f >> do { m }
 do { m } ≡ m
 ```
 
-So for example:
+So for example the following are equivalent:
 
 ```haskell
 do
@@ -5380,11 +5382,11 @@ from a numeric typeclass which yields a polymorphic value that can be
 instantiated to nay instance of the ``Num`` or ``Fractional`` typeclass at the
 call-site, depending on the inferred type. 
 
-To use a blunt metaphor, uou're effectively placing an object in a hole and the
+To use a blunt metaphor, we're effectively placing an object in a hole and the
 size and shape of the hole defines the object you place there. This is very
-different than in other languages where a literal like ``2.718`` is hardcoded in
-the compiler to be a specific type ( double or something ) and you cast the
-value at runtime to be something smaller or larger as needed.
+different than in other languages where a numeric literal like ``2.718`` is hard
+coded in the compiler to be a specific type ( double or something ) and you cast
+the value at runtime to be something smaller or larger as needed.
 
 ```haskell
 42 :: Num a => a
@@ -6733,7 +6735,8 @@ Core is the explicitly typed System-F family syntax through that all Haskell
 constructs can be expressed in.
 
 To inspect the core from GHCi we can invoke it using the following flags and the
-alias:
+following shell alias. We have explicitly disable the printing of certain
+metadata and longform names to make the representation easier to read.
 
 ```bash
 alias ghci-core="ghci -ddump-simpl -dsuppress-idinfo \
@@ -6757,8 +6760,8 @@ returnIO
 returnIO (: ((\ (@ t) (x :: t) -> (x, x)) `cast` ...) ([]))
 ```
 
-[ghc-core](http://hackage.haskell.org/package/ghc-core) is also very useful for looking at GHC's compilation
-artifacts.
+[ghc-core](http://hackage.haskell.org/package/ghc-core) is also very useful for
+looking at GHC's compilation artifacts.
 
 ```bash
 $ ghc-core --no-cast --no-asm
