@@ -653,6 +653,20 @@ GHC has rightly suggested that the expression needed to finish the program is ``
 Nix
 ---
 
+Nix is a package management system with a larger scope than cabal. It is
+generally not a Haskell specific project although much work has been done to
+integrate it with the existing cabal infrastructure. *Nix is not a replacement
+for a cabal* but can be used to subsume of cabal's work by building up isolated
+development environments that can include Haskell libraries ( installed from
+binary packages ) and arbitrary system libraries that can be linked into
+compiled Haskell programs.
+
+Use of Nix is somewhat controversial in some aspects since it requires us to buy
+into a much larger system and write an additional set of configuration files in
+an entirely difference Nix specification language. It is unclear what the future
+of Haskell and Nix will be and whether it is a workaround around some current
+cabal pain points or a deeper unifying model.
+
 cabal2nix
 
 [cabal2nix4dev](https://github.com/dave4420/cabal2nix4dev/blob/master/cabal2nix4dev)
