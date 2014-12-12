@@ -1279,6 +1279,22 @@ State monads.
 ~~~~ {.haskell include="src/03-monad-transformers/newtype_deriving.hs"}
 ~~~~
 
+Pattern matching on a newtype constructor compiles into nothing. For example
+the``extractB`` function does not scrutinize the ``MkB`` constructor like the
+``extractA`` does, because ``MkB`` does not exist at runtime, it is purely a
+compile-time construct. 
+
+```haskell
+data A = MkA Int
+newtype B = MkB Int
+
+extractA :: A -> Int
+extractA (MkA x) = x
+
+extractB :: B -> Int
+extractB (MkB x) = x
+```
+
 Efficiency
 ----------
 
@@ -1305,7 +1321,15 @@ forM_ xs (lift . f) == lift (forM_ xs f)
 Monad Morphisms
 ---------------
 
-TODO
+```haskell
+lift :: Monad m => m a -> t m a
+```
+
+```haskell
+hoist :: Monad m => (forall a. m a -> n a) -> t m b -> t n b
+embed :: Monad n => (forall a. m a -> t n a) -> t m b -> t n b
+squash :: (Monad m, MMonad t) => t (t m) a -> t m a
+```
 
 See: [mmorph](https://hackage.haskell.org/package/mmorph)
 
@@ -1331,26 +1355,23 @@ as an arbitrary baseline let's consider ``FlexibleInstances`` and ``OverloadedSt
 
 See: [GHC Extension Reference](http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/flag-reference.html#idp14615552)
 
-Stephen's Commentary
---------------------
-
-Ok, so now let's begin what I'll call *Stephen's Commentary* because it's just
-my subjective opinions about which of these are useful/good/bad.
+The Benign
+----------
 
 It's not obvious which extensions are the most common but it's fairly safe to
 say that these extensions are benign and are safely used extensively:  
 
+* NoMonomorphismRestriction
 * FlexibleContexts
 * FlexibleInstances
+* GeneralizedNewtypeDeriving
 * GADTs
 * FunctionalDependencies
-* NoMonomorphismRestriction
 * OverloadedStrings
 * TypeSynonymInstances
 * BangPatterns
 * DeriveGeneric
 * DeriveDataTypeable
-* GeneralizedNewtypeDeriving
 * ScopedTypeVariables
 
 The Dangerous
@@ -6882,6 +6903,7 @@ Prefix       Description
 ``$pnC``     n'th superclass selector for class C
 ``T:C``      Tycon for dictionary for class C
 ``D:C``      Data constructor for dictionary for class C
+``NTCo:T``   Coercion for newtype T to its underlying runtime representation
 
 Of important note is that the Λ and λ for type-level and value-level lambda
 abstraction are represented by the same symbol (``\``) in core, which is a
@@ -7186,6 +7208,10 @@ slow GHC's simplifier pass to a crawl.
 
 The best advice is profile and look for large uses of dictionary projection in
 tight loops and then specialize and inline in these places.
+
+Using the ``SPECIALISE INLINE`` pragma can unintentionally cause GHC to diverge
+if applied over a recursive function, it will try to specialize itself
+infinitely.
 
 IO/ST
 -----
