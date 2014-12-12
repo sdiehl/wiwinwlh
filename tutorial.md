@@ -3184,8 +3184,9 @@ Impredicative Types
 -------------------
 
 Although extremely brittle, GHC also has limited support impredicative
-polymorphism which loosens the restriction that that quantifiers must precede
-arrow types and now may be placed inside of type-constructors.
+polymorphism which allows instantiating type variable with a polymorphic type.
+Implied is that this which loosens the restriction that that quantifiers must
+precede arrow types and now may be placed inside of type-constructors.
 
 ```haskell
 -- Can't unify ( Int ~ Char )
@@ -3203,7 +3204,40 @@ Use of this extension is very rare, and there is some consideration that
 about telling us to enable it when one accidentally makes a typo in a type
 signature!
 
-XXX: note about ($) and ``runST``
+Of some note to the very interested, the ``($)`` operator is wired into GHC in a
+very special way as to allow allow ``runST`` to be applied via ``($)`` by
+special-casing the ``($)`` operator only when used for the ST monad. If this
+sounds like an ugly hack it's because it is, but a rather convenient hack.
+
+For example we define a function ``apply`` which should behave identically to
+``($)`` we'll get an error about polymorphic instantiation even though they are
+defined identically!
+
+```haskell
+{-# LANGUAGE RankNTypes #-}
+
+import Control.Monad.ST
+
+f `apply` x =  f x
+
+foo :: (forall s. ST s a) -> a
+foo st = runST $ st
+
+bar :: (forall s. ST s a) -> a
+bar st = runST `apply` st
+```
+
+```haskell
+    Couldn't match expected type `forall s. ST s a'
+                with actual type `ST s0 a'
+    In the second argument of `apply', namely `st'
+    In the expression: runST `apply` st
+    In an equation for `bar': bar st = runST `apply` st
+```
+
+See: 
+
+* [SPJ Notes on ($)](https://www.haskell.org/pipermail/glasgow-haskell-users/2010-November/019431.html]
 
 Scoped Type Variables
 ---------------------
@@ -5854,9 +5888,13 @@ Storable Arrays
 ----------------
 
 There exists a ``Storable`` typeclass that can be used to provide low-level
-access to the memory underlying Haskell values. The Prelude defines Storable
-interfaces for most of the basic types as well as types in the ``Foreign.C``
-library.
+access to the memory underlying Haskell values. ``Ptr`` objects in Haskell
+behave much like C pointers although arithmetic with them is in terms of bytes
+only, not the size of the type associated with the pointer ( this differs from
+C).
+
+The Prelude defines Storable interfaces for most of the basic types as well as
+types in the ``Foreign.C`` library.
 
 ```haskell
 class Storable a where
