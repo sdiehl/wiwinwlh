@@ -1381,9 +1381,10 @@ size Leaf = 0
 size (Bin _ t) = 1 + 2 * size t
 ```
 
-The problem with this expression is that the inferred type variable ``a``  in ``size`` spans two possible
-types (``a`` and ``(a,a)``), the recursion is polymorphic. These two types won't pass the occurs-check of
-typechecker and yield to an incorrect inferred type.
+The problem with this expression is that the inferred type variable ``a``  in
+``size`` spans two possible types (``a`` and ``(a,a)``), the recursion is
+polymorphic. These two types won't pass the occurs-check of typechecker and
+yields an incorrect inferred type.
 
 ```haskell
     Occurs check: cannot construct the infinite type: t0 = (t0, t0)
@@ -1591,9 +1592,15 @@ lazy vs strict processing often necessitates manifesting large intermediate
 structures in memory when such composition would "just work" in a lazy language.
 
 By virtue of Haskell being the only language to actually explore this point in
-the design space, knowledge about lazy evaluation can often be non-intuitive to
-the novice. This does reflect on the model itself, merely on the need for more
-instruction material and research on optimizing lazy compilers.
+the design space to the point of being industrial strength; knowledge about lazy
+evaluation is not widely absorbed into the collective programmer consciousness
+and can often be non-intuitive to the novice. This does reflect on the model
+itself, merely on the need for more instruction material and research on
+optimizing lazy compilers.
+
+The paradox of Haskell is that it many explores so many definably unique ideas (
+laziness, purity, typeclasses ) that it becomes difficult to separate out the
+discussion of any one from the gestalt of the whole implementation.
 
 See: 
 
@@ -7587,8 +7594,8 @@ EKG
 
 EKG is a monitoring tool that can monitor various aspect of GHC's runtime
 alongside an active process. The interface for the output is viewable within a
-browser ( typically ``http://localhost:8000`` ). The monitoring process is
-forked off (in a system thread) from the main process.
+browser interaface. The monitoring process is forked off (in a system thread)
+from the main process.
 
 ~~~~ {.haskell include="src/29-ghc/ekg.hs"}
 ~~~~
@@ -7759,11 +7766,6 @@ TODO
 
 ~~~~ {.haskell include="src/30-languages/unbound-generics.hs"}
 ~~~~
-
-Bound
------
-
-XXX
 
 LLVM 
 ----
