@@ -663,7 +663,7 @@ linked into compiled Haskell programs.
 
 Use of Nix is somewhat controversial in some aspects since it requires us to buy
 into a much larger system and write an additional set of configuration files in
-an entirely difference Nix specification language. It is unclear what the future
+an entirely different Nix specification language. It is unclear what the future
 of Haskell and Nix will be and whether it is a workaround around some current
 cabal pain points or a deeper unifying model.
 
@@ -5958,7 +5958,7 @@ $ threadscope Example.eventlog
 ![](img/threadscope.png)
 
 See Simon Marlows's *Parallel and Concurrent Programming in Haskell* for a
-detailed guide on interpeting and profiling using Threascope.
+detailed guide on interpreting and profiling using Threadscope.
 
 Strategies
 ----------
@@ -6247,7 +6247,12 @@ let z = y in a # a # a $ b; let z = y in a # a # a # b;
 Generic Parsing
 ---------------
 
-XXX
+Previously we defined generic operations for pretty printing and this begs the
+question of whether we can write a parser on top of Generics. The answer is
+generally yes, so long as there is a direct mapping between the specific lexemes
+and sum and products types. Consider the simplest case where we just read off
+the names of the constructors using the regular Generics machinery and then
+build a Parsec parser terms of them.
 
 ~~~~ {.haskell include="src/24-parsing/generics.hs"}
 ~~~~
@@ -6261,7 +6266,7 @@ Feynman
 ```
 
 Indentation Parsing
-------------------
+-------------------
 
 XXX
 
@@ -6272,17 +6277,24 @@ Attoparsec is a parser combinator like Parsec but more suited for bulk parsing o
 instead of parsing language syntax to ASTs. When written properly Attoparsec parsers can be [extremely
 efficient](http://www.serpentine.com/blog/2014/05/31/attoparsec/).
 
-For a langauge:
+One notable distinction between Parsec and Attoparsec is that backtracking
+operator (``try``) is not present and reflects on attoparsec's different
+underlying parser model.
+
+For a simple little lambda calculus language we can use attoparsec much in the
+same we used parsec:
 
 ~~~~ {.haskell include="src/24-parsing/attoparsec_lang.hs"}
 ~~~~
 
-For an example try the above parser on the following simple lambda expression.
+For an example try the above parser with the following simple lambda expression.
 
 ~~~~ {.ocaml include="src/24-parsing/simple.ml"}
 ~~~~
 
-For a network protocol:
+Attoparsec adapts very well to binary and network protocol style parsing as
+well, this is extracted from a small implementation of a distributed consensus
+network protocol:
 
 ~~~~ {.haskell include="src/24-parsing/attoparsec.hs"}
 ~~~~
