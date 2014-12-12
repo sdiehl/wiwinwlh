@@ -1331,15 +1331,38 @@ as an arbitrary baseline let's consider ``FlexibleInstances`` and ``OverloadedSt
 
 See: [GHC Extension Reference](http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/flag-reference.html#idp14615552)
 
+Stephen's Commentary
+--------------------
+
+Ok, so now let's begin what I'll call *Stephen's Commentary* because it's just
+my subjective opinions about which of these are useful/good/bad.
+
+It's not obvious which extensions are the most common but it's fairly safe to
+say that these extensions are benign and are safely used extensively:  
+
+* FlexibleContexts
+* FlexibleInstances
+* GADTs
+* FunctionalDependencies
+* NoMonomorphismRestriction
+* OverloadedStrings
+* TypeSynonymInstances
+* BangPatterns
+* DeriveGeneric
+* DeriveDataTypeable
+* GeneralizedNewtypeDeriving
+* ScopedTypeVariables
+
 The Dangerous
 -------------
 
 GHC's typechecker sometimes just casually tells us to enable language extensions when it can't solve certain
 problems. These include:
 
-* ``OverlappingInstances``
-* ``IncoherentInstances``
-* ``ImpredicativeTypes``
+* DatatypeContexts
+* OverlappingInstances
+* IncoherentInstances
+* ImpredicativeTypes
 
 These almost always these indicate a design flaw and shouldn't be turned on to remedy the error at hand, as
 much as GHC might suggest otherwise!
@@ -1499,11 +1522,11 @@ Misc Syntax Extensions
 ```haskell
 {-# LANGUAGE TupleSections #-}
 
-fst' :: a -> (a, Bool)
-fst' = (,True)
+first :: a -> (a, Bool)
+first = (,True)
 
-snd' :: a -> (Bool, a)
-snd' = (True,)
+second :: a -> (Bool, a)
+second = (True,)
 ```
 
 **Multi-way if-expressions**
