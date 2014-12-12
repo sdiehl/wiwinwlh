@@ -3237,7 +3237,7 @@ bar st = runST `apply` st
 
 See: 
 
-* [SPJ Notes on ($)](https://www.haskell.org/pipermail/glasgow-haskell-users/2010-November/019431.html]
+* [SPJ Notes on ($)](https://www.haskell.org/pipermail/glasgow-haskell-users/2010-November/019431.html)
 
 Scoped Type Variables
 ---------------------
@@ -3246,7 +3246,8 @@ Normally the type variables used within the toplevel signature for a function
 are only scoped to the type-signature and not the body of the function and it's
 rigid signatures over terms and let/where clauses.  Enabling
 ``-XScopedTypeVariables`` loosens this restriction allowing the type variables
-mentioned in the toplevel to be scoped within the body.
+mentioned in the toplevel to be scoped within the value-level body of a function
+and all signatures contained therein.
 
 ~~~~ {.haskell include="src/11-quantification/scopedtvars.hs"}
 ~~~~
@@ -3259,21 +3260,23 @@ Void
 
 The Void type is the type with no inhabitants. It unifies only with itself.
 
-Using a newtype wrapper we can create a type where recursion makes it impossible to construct an inhabitant.
+Using a newtype wrapper we can create a type where recursion makes it impossible
+to construct an inhabitant.
 
 ```haskell
 -- Void :: Void -> Void
 newtype Void = Void Void
 ```
 
-Or using ``-XEmptyDataDecls`` we can also construct the uninhabited type equivalently as a data declaration
-with no constructors.
+Or using ``-XEmptyDataDecls`` we can also construct the uninhabited type
+equivalently as a data declaration with no constructors.
 
 ```haskell
 data Void
 ```
 
-The only inhabitant of both of these construction is a diverging bottom term like (``undefined``).
+The only inhabitant of both of these types is a diverging term like
+(``undefined``).
 
 Phantom Types
 -------------
@@ -7062,9 +7065,9 @@ times.
 ```
 
 Cases marked with ``NOINLINE`` generally indicate that the logic in the function
-is using something like ``unsafePerformIO`` or some other unholy act. In hese
-cases naive inlining might duplicate effects at multiple call-sites throughout
-the program.
+is using something like ``unsafePerformIO`` or some other unholy function. In
+these cases naive inlining might duplicate effects at multiple call-sites
+throughout the program which would be undesirable.
 
 See: 
 
@@ -7122,7 +7125,9 @@ negate = \ (@ a) (tpl :: Num a) ->
 variables in their signatures, the only way to represent the equivalent
 dictionary is using ``RankNTypes``. In addition a typeclass may also include
 superclasses which would be included in the typeclass dictionary and
-parameterized over the same arguments.
+parameterized over the same arguments and an implicit superclass constructor
+function is created to pull out functions from the superclass for the current
+monad.
 
 ```haskell
 data DMonad m = DMonad
@@ -7149,13 +7154,10 @@ Indeed this is not that far from how GHC actually implements typeclasses. It
 elaborates into projection functions and data constructors nearly identical to
 this, and are implicitly threaded for every overloaded identifier.
 
-See: [Scrap Your Type Classes](http://www.haskellforall.com/2012/05/scrap-your-type-classes.html)
-
-
 Specialization
 --------------
 
-Overloading in Haskell is normally not completely free by default, although with
+Overloading in Haskell is normally not entirely free by default, although with
 an optimization called specialization it can be made to have zero cost at
 specific points in the code where performance is crucial. This is not enabled by
 default by virtue of the fact that GHC is not a whole-program optimizing
@@ -7163,22 +7165,21 @@ compiler and most optimizations ( not all ) stop at module boundaries.
 
 GHC's method of implementing typeclasses means that explicit dictionaries are
 threaded around implicitly throughout the call sites. This is normally the most
-natural to implement this functionality although since it preserves separate
-compilation, since we can compiled a function independently where it is
-declared, not recompile at every point in the program where it's called. The
-dictionary passing allows the caller to thread the implementation logic for the
-types to the call-site where it can then be used throughout the body of the
-function.
+natural way to implement this functionality since it preserves separate
+compilation. A function can be compiled independently of where it is declared,
+not recompiled at every point in the program where it's called. The dictionary
+passing allows the caller to thread the implementation logic for the types to
+the call-site where it can then be used throughout the body of the function.
 
 Of course this means that in order to get at a specific typeclass function we
 need to project ( possibly multiple times ) into the dictionary structure to
-pluck out the function reference. The runtime makes this very cheap but entirely
-free.
+pluck out the function reference. The runtime makes this very cheap but not
+entirely free.
 
 Many C++ compilers or whole program optimizing compilers do the opposite
 however, they explicitly specialize each and every function at the call site
 replacing the overloaded function with it's type-specific implementation. We can
-selectively enable this kind of behavior 
+selectively enable this kind of behavior using class specialization.
 
 ~~~~ {.haskell include="src/29-ghc/specialize.hs"}
 ~~~~
@@ -7201,28 +7202,9 @@ f =
       (exp @ a $dFloating (+ @ a $dNum eta eta1))
 ```
 
-**Specialized**
-
-```haskell
-f1 :: Double -> Double -> Double
-f1 =
-  \ (eta :: Double) (eta1 :: Double) ->
-    let {
-      a :: Fractional Double
-      a = $p1Floating @ Double $fFloatingDouble } in
-    let {
-      $dNum :: Num Double
-      $dNum = $p1Fractional @ Double a } in
-    * @ Double
-      $dNum
-      (exp @ Double $fFloatingDouble (+ @ Double $dNum eta eta1))
-      (exp @ Double $fFloatingDouble (+ @ Double $dNum eta eta1))
-```
-
-
-In the specialized version the operations are simply unboxed machine arithmetic,
-this will map to about 6 or less sequential CPU instructions and is likely the
-same code generated by C.
+In the specialized version the typeclass operations placed directly at the call
+site and are simply unboxed arithmetic. This will map to a tight set of
+sequential CPU instructions and is very likely the same code generated by C.
 
 ```haskell
 spec :: Double
@@ -7772,6 +7754,32 @@ MAIN        MAIN                     42           0    0.0    0.7   100.0  100.0
 
 Rewrites and Fusion
 -------------------
+
+```haskell
+{-# RULES "map/map" forall f g xs.  map f (map g xs) = map (f.g) xs #-}
+```
+
+{-# RULES "foldr/build"
+    forall k z (g :: forall b. (a -> b -> b) -> b -> b) . 
+    foldr k z (build g) = g k z
+ #-}
+
+```haskell
+foldr :: (a -> b -> b) -> b -> [a] -> b
+foldr c n []     = n
+foldr c n (x:xs) = c x (foldr c n xs)
+ 
+build :: (forall b. (a -> b -> b) -> b -> b) -> [a]
+build g = g (:) []
+```
+
+```haskell
+foldr c n (build g) = g c n
+```
+
+GHC makes no checks for the confluence, so if nonsensical rules or infinitely
+diverging rules are added then GHC will happily rewrite your program or spin
+forever. 
 
 TODO
 
