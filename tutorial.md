@@ -5762,13 +5762,19 @@ pi        = 16 * atan (1/5) - 4 * atan (1/239)
 SAT Solvers
 -----------
 
-Solutions to a statement of the form:
+A collection of constraint problems known as satisfiability problems show up in
+a number of different disciplines from type checking to package management.
+Simply put a satisfiability problem attempts to find solutions to a statements
+of conjoined conjunctions and disjunctions in terms of a series of variables.
+For example:
 
 ```text
 (A v ¬B v C) ∧ (B v D v E) ∧ (D v F)
 ```
 
-Can be written as zero-terminated lists of integers:
+To use the picosat library to solve this, it can be written as zero-terminated
+lists of integers and fed to the solver according to a number-to-variable
+relation:
 
 ```haskell
 1 -2 3  -- (A v ¬B v C)
