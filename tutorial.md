@@ -1874,8 +1874,10 @@ Strictness Annotations
 ----------------------
 
 The extension ``BangPatterns`` allows an alternative syntax to force arguments
-to functions to be wrapped in seq. A bang operator on an arguments forces it's
-evaluation to weak head normal form before matching it.
+to functions to be wrapped in seq. A bang operator on an arguments forces its
+evaluation to weak head normal form before performing the pattern match. This
+can be used to keep specific arguments evaluated throughout recursion instead of
+creating a giant chain of thunks.
 
 ```haskell
 {-# LANGUAGE BangPatterns #-}
@@ -1887,7 +1889,7 @@ sum = go 0
     go  acc []     = acc
 ```
 
-This is desugared into code semantically equivalent to the following:
+This is desugared into code effectively equivalent to the following:
 
 ```haskell
 sum :: Num a => [a] -> a
@@ -1898,7 +1900,8 @@ sum = go 0
     go acc []                  = acc
 ```
 
-Function application to seq'd arguments often enough that is has a special operator.
+Function application to seq'd arguments often enough that is has a special
+operator.
 
 ```haskell
 ($!) :: (a -> b) -> a -> b
@@ -5934,6 +5937,38 @@ sc2 = scc' (fromList ex2)
 ```
 
 See: [GraphSCC](http://hackage.haskell.org/package/GraphSCC)
+
+Graph Theory
+------------
+
+```haskell
+import qualified Data.Graph.Inductive as G
+
+cyc3 :: G.Gr Char String
+cyc3 = G.buildGr
+       [([("ca",3)],1,'a',[("ab",2)]),
+                ([],2,'b',[("bc",3)]),
+                ([],3,'c',[])]
+
+-- Loop query
+ex1 :: Bool
+ex1 = G.hasLoop x
+
+-- Dominators
+ex2 :: [(G.Node, [G.Node])]
+ex2 = G.dom x 0
+```
+
+```haskell
+x :: G.Gr Int ()
+x = G.insEdges edges gr
+  where
+  gr = G.insNodes nodes G.empty
+  edges = [(0,1,()), (0,2,()), (2,1,()), (2,3,())]
+  nodes = zip [0,1 ..] [2,3,4,1]
+```
+
+![](img/graphviz.png)
 
 DList
 -----
