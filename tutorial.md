@@ -8236,6 +8236,22 @@ Cmm:
  }]
 ```
 
+Cmm      Description
+------   ----------
+``C_``   char
+``D_``   double
+``F_``   float
+``W_``   word
+``P_``   garbage collected pointer
+``I_``   int
+``L_``   long
+``FN_``  function pointer (no arguments)
+``EF_``  extern function pointer
+``I8``   8-bit integer
+``I16``  16-bit integer
+``I32``  32-bit integer
+``I64``  64-bit integer
+
 Handwritten Cmm can be included in a module manually by first compiling it
 through GHC into an object and then using the FFI as usual.
 
@@ -8250,6 +8266,23 @@ See:
 * [CmmType](http://hackage.haskell.org/trac/ghc/wiki/Commentary/Compiler/CmmType)
 * [MiscClosures](https://github.com/ghc/ghc/blob/master/includes/stg/MiscClosures.h)
 * [StgCmmArgRep](https://github.com/ghc/ghc/blob/master/compiler/codeGen/StgCmmArgRep.hs)
+
+* [Apply.cmm](https://github.com/ghc/ghc/blob/master/rts/Apply.cmm)
+
+Pointer Tagging
+----------------
+
+32 bit arch
+TAG_BITS = 2
+
+64-bit arch
+TAG_BITS = 3
+
+```cpp
+#define TAG_MASK ((1 << TAG_BITS) - 1)
+#define UNTAG(p) (p & ~TAG_MASK)
+#define GETTAG(p) (p & TAG_MASK)
+```
 
 EKG
 ---
@@ -8340,10 +8373,12 @@ Rewrites and Fusion
 {-# RULES "map/map" forall f g xs.  map f (map g xs) = map (f.g) xs #-}
 ```
 
+```haskell
 {-# RULES "foldr/build"
     forall k z (g :: forall b. (a -> b -> b) -> b -> b) . 
     foldr k z (build g) = g k z
  #-}
+```
 
 ```haskell
 foldr :: (a -> b -> b) -> b -> [a] -> b
