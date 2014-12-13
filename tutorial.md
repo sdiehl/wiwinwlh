@@ -1781,9 +1781,32 @@ Prelude.undefined
 ```
 
 A term is said to be in *weak head normal-form* if the outermost constructor or
-lambda cannot be reduced further. A term is said to be in normal form if it is
+lambda cannot be reduced further. A term is said to be in *normal form* if it is
 fully evaluated and all sub-expressions and thunks contained within are
 evaluated.
+
+```haskell
+-- In Normal Form
+42
+(2, "foo")
+\x -> x + 1
+
+-- Not in Normal Form
+1 + 2
+(\x -> x + 1) 2
+"foo" ++ "bar"
+(1 + 1, "foo")
+
+-- In Weak Head Normal Form
+(1 + 1, "foo")
+\x -> 2 + 2
+'f' : ("oo" ++ "bar")
+
+-- Not In Weak Head Normal Form
+1 + 1
+(\x -> x + 1) 2
+"foo" ++ "bar"
+```
 
 For example in a lazy language the following program terminates even though it
 contains diverging terms. 
@@ -8267,7 +8290,12 @@ See:
 * [MiscClosures](https://github.com/ghc/ghc/blob/master/includes/stg/MiscClosures.h)
 * [StgCmmArgRep](https://github.com/ghc/ghc/blob/master/compiler/codeGen/StgCmmArgRep.hs)
 
+Cmm Runtime:
+
 * [Apply.cmm](https://github.com/ghc/ghc/blob/master/rts/Apply.cmm)
+* [StgStdThunks.cmm](https://github.com/ghc/ghc/blob/master/rts/StgStdThunks.cmm)
+* [StgMiscClosures.cmm](https://github.com/ghc/ghc/blob/master/rts/StgMiscClosures.cmm)
+* [Updates.cmm](https://github.com/ghc/ghc/blob/master/rts/Updates.cmm)
 
 Pointer Tagging
 ----------------
