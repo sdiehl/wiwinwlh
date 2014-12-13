@@ -4354,14 +4354,28 @@ datatypes.
 * ``phantom``
 
 They were added to the language to address a rather nasty and long-standing bug
-around the correspondence between a newtype and it's runtime representation.
+around the correspondence between a newtype and it's runtime representation. The
+fundamental distinction that roles introduce is there are two notions of type
+equality:
 
-Roles are normally automatically inferred but with the ``RoleAnnotations``
-extension they can be manually annotated. Except in rare cases this should not
-be necessary although it is helpful to know what is going on under the hood.
+* ``nominal`` - Two types are the same.
+* ``representational`` - Two types have the same runtime representation.
+
+~~~~ {.haskell include="src/16-type-families/roles.hs"}
+~~~~
+
+Roles are normally automatically inferred automatically, but with the
+``RoleAnnotations`` extension they can be manually annotated. Except in rare
+cases this should not be necessary although it is helpful to know what is going
+on under the hood.
 
 ~~~~ {.haskell include="src/16-type-families/role_infer.hs"}
 ~~~~
+
+See:
+
+* [Roles: A New Feature of GHC](http://typesandkinds.wordpress.com/2013/08/15/roles-a-new-feature-of-ghc/)
+* [Roles](https://ghc.haskell.org/trac/ghc/wiki/Roles)
 
 Coercible 
 ---------
@@ -5875,8 +5889,8 @@ insert :: (Eq k, Hashable k) => HashTable s k v -> k -> v -> ST s ()
 lookup :: (Eq k, Hashable k) => HashTable s k v -> k -> ST s (Maybe v)
 ```
 
-Graph
------
+Graphs
+------
 
 The Graph module in the containers library is a somewhat antiquated API for
 working with directed graphs.  A little bit of data wrapping makes it a little
