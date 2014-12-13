@@ -667,7 +667,7 @@ an entirely different Nix specification language. It is unclear what the future
 of Haskell and Nix will be and whether it is a workaround around some current
 cabal pain points or a deeper unifying model.
 
-XXX
+TODO
 
 cabal2nix
 
@@ -694,7 +694,6 @@ enlightenment:
 In other words, the only path to understanding monads is to read the fine source, fire up GHC and write some
 code. Analogies and metaphors will not lead to understanding.
 
-See: [Monad Tutorial Fallacy](http://byorgey.wordpress.com/2009/01/12/abstraction-intuition-and-the-monad-tutorial-fallacy/)
 
 Monadic Myths
 -------------
@@ -1082,6 +1081,110 @@ few lines:
 
 ~~~~ {.haskell include="src/02-monads/state_impl.hs"}
 ~~~~
+
+Monad Tutorials
+---------------
+
+So many monad tutorials have been written that it begs the question, what are
+monads so difficult when first learning Haskell. I suggest there are three
+aspects to why this is so:
+
+1. *There are several levels on indirection with desugaring.*
+
+A lot of Haskell that we write is radically rearranged and transformed into
+entirely form under the hood.
+
+Most monad tutorials will not manually expand out the do-sugar. This leaves the
+beginner thinking that monads are a way of dropping into a pseudo-imperative
+language inside of code and further fuels that misconception that specific
+instances like IO are monads in their full generality.
+
+```haskell
+main = do
+  x <- getLine
+  putStrLn x
+  return ()
+```
+
+Being able to manually desugar is crucial to understanding.
+
+```haskell
+main = 
+  getLine >>= \x ->
+    putStrLn x >>= \_ ->
+      return ()
+```
+
+2. *Asymmetric binary infix operators for higher order functions are not common
+   in other languages.*
+
+```haskell
+(>>=) :: Monad m => m a -> (a -> m b) -> m b
+```
+
+On the left hand side of the operator we have an ``m a`` and on the right we
+have ``a -> m b``. Although some languages do have infix operators that are
+themselves higher order functions, it is still a rather rate occurrence.
+
+So with a function desugared, it can confusing that ``(>>=)`` operator is in
+fact building up a much larger function by composing functions together.
+
+```haskell
+main = 
+  getLine >>= \x ->
+    putStrLn >>= \_ ->
+      return ()
+```
+
+Written in prefix form, it becomes a little bit more digestible.
+
+```haskell
+main = 
+  (>>=) getLine (\x ->
+    (>>=) putStrLn (\_ ->
+          return ()
+    )
+  )
+```
+
+Perhaps even removing the operator entirely might be more intuitive coming from
+other languages.
+
+```haskell
+main = bind getLine (\x -> bind putStrLn (\_ -> return ()))
+  where
+    bind x y = x >>= y
+```
+
+3. *Ad-hoc polymorphism is not common place in other languages.*
+
+Haskell's implementation overloading can be unintuitive if not familiar with
+type inference. It is abstracted away from the user but the ``(>>=)`` or
+``bind`` function is really a function of 3 arguments with the extra typeclass
+dictionary argument (``$fMonad``) implicitly threaded around.
+
+```haskell
+main $fMonad = bind $fMonad getLine (\x -> bind $fMonad putStrLn (\_ -> return $fMonad ()))
+```
+
+Except in the case where the parameter of the monad class is unified ( through
+inference ) with a concrete class instance, in which case the instance
+dictionary (``$fMonadIO``) is instead spliced throughout.
+
+```haskell
+main :: IO ()
+main = bind $fMonadIO getLine (\x -> bind $fMonadIO putStrLn (\_ -> return $fMonadIO ()))
+```
+
+Now, all of these transformations are trivial once we understand them, they're
+just typically not discussed. In my opinion the fundamental fallacy of monad
+tutorials is that not intuition for monads is hard to convey ( nor are metaphors
+required!), but that novices often come to monads with an incomplete
+understanding of points (1), (2), and (3) and then trip on the simple fact that
+monads are the first example of a Haskell construct that is the confluence of
+all three.
+
+See: [Monad Tutorial Fallacy](http://byorgey.wordpress.com/2009/01/12/abstraction-intuition-and-the-monad-tutorial-fallacy/)
 
 Monad Transformers
 ==================
@@ -1997,17 +2100,20 @@ isJust (Just x) = True
 isJust Nothing  = False
 ```
 
-The problem with the boolean type is that there is effectively no difference between True and False at the
-type level. A proposition taking a value to a Bool takes any information given and destroys it. To reason
-about the behavior we have to trace the provenance of the proposition we're getting the boolean answer from,
-and this introduces whole slew of possibilities for misinterpretation. In the worst case, the only way to
-reason about safe and unsafe use of a function is by trusting that a predicate's lexical name reflects
-its provenance!
+The problem with the boolean type is that there is effectively no difference
+between True and False at the type level. A proposition taking a value to a Bool
+takes any information given and destroys it. To reason about the behavior we
+have to trace the provenance of the proposition we're getting the boolean answer
+from, and this introduces whole slew of possibilities for misinterpretation. In
+the worst case, the only way to reason about safe and unsafe use of a function
+is by trusting that a predicate's lexical name reflects its provenance!
 
-For instance, testing some proposition over a Bool value representing whether the branch can perform the
-computation safely in the presence of a null is subject to accidental interchange. Consider that in a
-language like C or Python testing whether a value is null is indistinguishable to the language from
-testing whether the value is *not null*. Which of these programs encodes safe usage and which segfaults?
+For instance, testing some proposition over a Bool value representing whether
+the branch can perform the computation safely in the presence of a null is
+subject to accidental interchange. Consider that in a language like C or Python
+testing whether a value is null is indistinguishable to the language from
+testing whether the value is *not null*. Which of these programs encodes safe
+usage and which segfaults?
 
 ```python
 # This one?
@@ -2023,12 +2129,13 @@ elif not p(x):
     # use x
 ```
 
-For inspection we can't tell without knowing how p is defined, the compiler can't distinguish the two
-and thus the language won't save us if we happen to mix them up. Instead of making invalid states
-*unrepresentable* we've made the invalid state *indistinguishable* from the valid one!
+For inspection we can't tell without knowing how p is defined, the compiler
+can't distinguish the two either and thus the language won't save us if we
+happen to mix them up. Instead of making invalid states *unrepresentable* we've
+made the invalid state *indistinguishable* from the valid one!
 
-The more desirable practice is to match match on terms which explicitly witness the proposition as a type (
-often in a sum type ) and won't typecheck otherwise.
+The more desirable practice is to match match on terms which explicitly witness
+the proposition as a type ( often in a sum type ) and won't typecheck otherwise.
 
 ```haskell
 case x of
@@ -2257,7 +2364,7 @@ instance IsList [a] where
 data-default
 ------------
 
-XXX
+TODO
 
 Applicatives
 ============
@@ -2975,7 +3082,7 @@ See:
 operational
 -----------
 
-XXX
+TODO
 
 See: [Operational](https://www.haskell.org/haskellwiki/Operational)
 
@@ -3204,12 +3311,13 @@ Use of this extension is very rare, and there is some consideration that
 about telling us to enable it when one accidentally makes a typo in a type
 signature!
 
-Of some note to the very interested, the ``($)`` operator is wired into GHC in a
-very special way as to allow allow ``runST`` to be applied via ``($)`` by
-special-casing the ``($)`` operator only when used for the ST monad. If this
-sounds like an ugly hack it's because it is, but a rather convenient hack.
+Some notable trivia, the ``($)`` operator is wired into GHC in a very special
+way as to allow allow impredicative instantiation of ``runST`` to be applied via
+``($)`` by special-casing the ``($)`` operator only when used for the ST monad.
+If this sounds like an ugly hack it's because it is, but a rather convenient
+hack.
 
-For example we define a function ``apply`` which should behave identically to
+For example if we define a function ``apply`` which should behave identically to
 ``($)`` we'll get an error about polymorphic instantiation even though they are
 defined identically!
 
@@ -3237,7 +3345,7 @@ bar st = runST `apply` st
 
 See: 
 
-* [SPJ Notes on ($)](https://www.haskell.org/pipermail/glasgow-haskell-users/2010-November/019431.html)
+* [SPJ Notes on $](https://www.haskell.org/pipermail/glasgow-haskell-users/2010-November/019431.html)
 
 Scoped Type Variables
 ---------------------
@@ -3610,7 +3718,7 @@ Interpreters
 Expression Problem
 ------------------
 
-XXX
+TODO
 
 Final Interpreters
 ------------------
@@ -4239,7 +4347,7 @@ be necessary although it is helpful to know what is going on under the hood.
 Coercible 
 ---------
 
-XXX
+TODO
 
 Monotraversable
 ---------------
@@ -4393,7 +4501,7 @@ function and reify it as a value.
 Reflection
 ----------
 
-XXX
+TODO
 
 Promotion
 =========
@@ -5453,7 +5561,7 @@ rewriteBiM   :: (Monad m, Biplate from to) => (to -> m (Maybe to)) -> from -> m 
 Sums of Products
 ----------------
 
-XXX
+TODO
 
 Numbers
 =======
@@ -5642,7 +5750,7 @@ The SBV library can abstract over different SMT solvers allow us to express the
 problem in a embedded domain language in Haskell and then offload the solving
 work to the third party library.
 
-XXX: Talk about SBV
+TODO: Talk about SBV
 
 See:
 
@@ -5938,7 +6046,7 @@ Function Pointers
 
 Pass a function pointer to a Haskell function into to C.
 
-XXX
+TODO
 
 Concurrency
 ===========
@@ -6353,7 +6461,7 @@ Feynman
 Indentation Parsing
 -------------------
 
-XXX
+TODO
 
 Attoparsec
 ----------
@@ -6508,6 +6616,13 @@ operator (``=$``) for combining Sources and Sink and a Conduit and a Sink respec
 ~~~~
 
 See: [Conduit Overview](https://www.fpcomplete.com/user/snoyberg/library-documentation/conduit-overview)
+
+ResourceT
+---------
+
+TODO
+
+See: [ResourceT](https://www.fpcomplete.com/user/snoyberg/library-documentation/resourcet)
 
 Logging
 =======
@@ -7035,6 +7150,7 @@ See:
 
 * [Core Spec](https://github.com/ghc/ghc/blob/master/docs/core-spec/core-spec.pdf)
 * [Core By Example](http://alpmestan.com/2013/06/27/ghc-core-by-example-episode-1/)
+* [CoreSynType](https://ghc.haskell.org/trac/ghc/wiki/Commentary/Compiler/CoreSynType)
 
 Inliner
 -------
@@ -7264,6 +7380,10 @@ or ST.
 ~~~~ {.haskell include="src/29-ghc/monad_prim.hs"}
 ~~~~
 
+See:
+
+* [Evaluation order and state tokens](https://www.fpcomplete.com/user/snoyberg/general-haskell/advanced/evaluation-order-and-state-tokens)
+
 Static Compilation
 ------------------
 
@@ -7367,7 +7487,7 @@ data A = A {-# UNPACK #-} !Int
 Size {ptrs = 0, nptrs = 1, size = 16}
 ```
 
-While the default packed datatype contains 1 point and 0 non-pointers.
+While the default packed datatype contains 1 pointer and 0 non-pointers.
 
 ```haskell
 data B = B Int
@@ -7425,7 +7545,7 @@ Chars from inside Haskell.
 unpackCString# :: Addr# -> [Char]
 ```
 
-This is done in the early frontend desugarer phrase, where literals are
+This is done in the early frontend desugarer phase, where literals are
 translated into ``Addr#`` inline instead of giant chain of Cons'd characters. So
 our "Hello World" translates into the following Core:
 
@@ -7441,7 +7561,7 @@ See:
 ghc-heap-view
 -------------
 
-Through some dark runtime magic can actually inspect the ``StgClosure``
+Through some dark runtime magic we can actually inspect the ``StgClosure``
 structures at runtime using various C and Cmm hacks to probe at the fields of
 the structure's representation to the runtime. The library ``ghc-heap-view`` can
 be used to introspect such things, although there is really no use for this kind
@@ -7551,8 +7671,8 @@ closure is to be allocated that captures the variables explicitly mentioned.
 
 Thunks themselves are either reentrant (``\r``) or updatable (``\u``) indicating
 that the thunk and either yields a value to the stack or is allocated on the
-heap and after being evaluated initially all subsequent entry's of the thunk
-will yield the already-computed value without needing to redo work.
+heap after the update frame is evaluated All subsequent entry's of the thunk
+will yield the already-computed value without needing to redo the same work.
 
 A lambda form also indicates the *static reference table* a collection of
 references to static heap allocated values referred to by the body of the
@@ -7627,10 +7747,10 @@ fac :: Int -> Int -> Int =
 SRT(fac): [fac, $fNumInt]
 ```
 
-Notice that the factorial function allocates three thunks inside of the loop
-which are updated when computed. It also includes static references to both
-itself and the dictionary for instance of ``Num`` typeclass over the type
-``Int``.
+Notice that the factorial function allocates two thunks ( look for ``\u``)
+inside of the loop which are updated when computed. It also includes static
+references to both itself (for recursion) and the dictionary for instance of
+``Num`` typeclass over the type ``Int``.
 
 Worker/Wrapper
 --------------
@@ -7669,6 +7789,392 @@ fac :: Int -> Int -> Int =
         };
 SRT(fac): []
 ```
+
+See:
+
+* [Writing Haskell as Fast as C](https://donsbot.wordpress.com/2008/05/06/write-haskell-as-fast-as-c-exploiting-strictness-laziness-and-recursion/)
+
+Z-Encoding
+----------
+
+String     Z-Encoded String
+------     ----------------
+``foo``    ``foo``
+``z``      ``zz``
+``Z``      ``ZZ``
+``.``      ``.``
+``_``      ``_``
+``()``     ``Z0T``
+``(,)``    ``Z2T``
+``(,,)``   ``Z3T``
+``_``      ``zu``
+``(``      ``ZL``
+``)``      ``ZR``
+``:``      ``ZC``
+``#``      ``zh``
+``.``      ``zi``
+``(#,#)``  ``Z2H``
+``(->)``   ``ZLzmzgZR
+
+
+So for some real examples:
+
+Z-Encoded String                        String
+--------------------------------        -------------
+``ZCMain_main_closure``                 ``:Main_main_closure``
+``base_GHCziBase_map_closure``          ``base_GHC.Base_map_closure``
+``base_GHCziInt_I32zh_con_info``        ``base_GHC.Int_I32#_con_info``
+``ghczmprim_GHCziTuple_Z3T_con_info``   ``ghc-prim_GHC.Tuple_(,,)_con_in``
+``ghczmprim_GHCziTypes_ZC_con_info``    ``ghc-prim_GHC.Types_:_con_info``
+
+Cmm
+---
+
+There are many closures types to support all sorts of functionality (STM,
+asynchronous exceptions, parallelism, ...) inside the runtime. Let's simply
+consider the core types used for simple Haskell evaluation:
+
+Symbol   Meaning
+------   ----------------
+``0``    No argument
+``p``    Garage Collected Pointer
+``n``    Word-sized non-pointer
+``l``    64-bit non-pointer (long)
+``v``    Void
+``f``    Float
+``d``    Double
+``v16``  16-byte vector
+``v32``  32-byte vector
+``v64``  64-byte vector
+
+**Initialization / Termination**
+
+* stg_init_finish
+* stg_init
+* StgReturn
+
+Standard         Fast application
+-------------    ------------------
+stg_ap_0         stg_ap_0_fast
+stg_ap_v         stg_ap_v_fast
+stg_ap_f         stg_ap_f_fast
+stg_ap_d         stg_ap_d_fast
+stg_ap_l         stg_ap_l_fast
+stg_ap_v16       stg_ap_v16_fast
+stg_ap_v32       stg_ap_v32_fast
+stg_ap_v64       stg_ap_v64_fast
+stg_ap_n         stg_ap_n_fast
+stg_ap_p         stg_ap_p_fast
+stg_ap_pv        stg_ap_pv_fast
+stg_ap_pp        stg_ap_pp_fast
+stg_ap_ppv       stg_ap_ppv_fast
+stg_ap_ppp       stg_ap_ppp_fast
+stg_ap_pppv      stg_ap_pppv_fast
+stg_ap_pppp      stg_ap_pppp_fast
+stg_ap_ppppp     stg_ap_ppppp_fast
+stg_ap_pppppp    stg_ap_pppppp_fast
+
+As of GHC 7.8.3 the ``ArgSpec`` constants have the following definitions, these
+show up in the info tables.
+
+ArgSpec   Meaning
+-------   ---------
+3         0     
+4         n         
+5         p        
+6         f        
+7         d        
+8         l        
+9         v16      
+10        v32      
+11        v64      
+12        nn        
+13        np       
+14        pn       
+15        pp       
+16        nnn      
+17        nnp      
+18        npn      
+19        npp      
+20        pnn      
+21        pnp      
+22        ppn      
+23        ppp      
+24        pppp     
+25        ppppp    
+26        pppppp   
+27        ppppppp  
+28        pppppppp 
+
+**Indirections**
+
+* stg_IND
+* stg_IND_STATIC
+* stg_BLACKHOLE
+
+
+* stg_PAP
+* stg_AP
+* stg_AP_NOUPD
+* stg_AP_STACK
+* stg_AP_STACK_NOUPD
+
+**Stack frames**
+
+* stg_upd_frame
+* stg_bh_upd_frame
+
+**Applications with Updates ( Thunks )**
+
+* stg_ap_1_upd
+* stg_ap_2_upd
+* stg_ap_3_upd
+* stg_ap_4_upd
+* stg_ap_5_upd
+* stg_ap_6_upd
+* stg_ap_7_upd
+
+**Garbage Collection**
+
+* stg_gc_fun
+
+**Cmm Registers**
+
+* Sp
+* SpLim
+* Hp
+* HpLim
+* HpAlloc
+* R1
+* R2
+* R3
+* R4
+* R5
+* R6
+* R7
+* R8
+* R9
+* R10
+
+The R1 register always holds the active closure.
+
+**x86:**
+
+CPU     Cmm Value
+----    ---------
+ebx     Base
+ebp     Sp
+esi     R1
+edi     Hp
+
+**x86-64**
+    
+CPU     Cmm Value
+----    ---------
+r13     Base
+rbp     Sp
+rbx     R1      
+r12     Hp
+
+
+Consider a constant static constructor.
+
+Haskell:
+
+```haskell
+unit = ()
+```
+
+Cmm:
+
+```cpp
+[section "data" {
+     unit_closure:
+         const ()_static_info;
+ }]
+```
+
+Consider a constructor with an argument.
+
+Haskell:
+
+```haskell
+con :: Maybe ()
+con = Just ()
+```
+
+Cmm:
+
+```cpp
+[section "data" {
+     con_closure:
+         const Just_static_info;
+         const ()_closure+1;
+         const 1;
+ }]
+```
+
+Consider a literal constant. This is a static value.
+
+Haskell:
+
+```haskell
+lit :: Int
+lit = 1
+```
+
+Cmm:
+
+```cpp
+[section "data" {
+     lit_closure:
+         const I#_static_info;
+         const 1;
+ }]
+```
+
+Consider the identity function.
+
+Haskell:
+
+```haskell
+id x = x
+```
+
+Cmm:
+
+```cpp
+[section "data" {
+     id_closure:
+         const id_info;
+ },
+ id_info()
+         { label: id_info
+           rep:HeapRep static { Fun {arity: 1 fun_type: ArgSpec 5} }
+         }
+     ch1:
+         R1 = R2;
+         jump stg_ap_0_fast; // [R1]
+ }]
+```
+
+Consider the constant function.
+
+Haskell:
+
+```haskell
+constant x y = x
+```
+
+Cmm:
+
+```cpp
+[section "data" {
+     constant_closure:
+         const constant_info;
+ },
+ constant_info()
+         { label: constant_info
+           rep:HeapRep static { Fun {arity: 2 fun_type: ArgSpec 12} }
+         }
+     cgT:
+         R1 = R2;
+         jump stg_ap_0_fast; // [R1]
+ }]
+```
+
+Consider a function where application of a function ( of unknown arity ) occurs.
+
+Haskell:
+
+```haskell
+compose f g x = f (g x)
+```
+
+Cmm:
+
+```cpp
+[section "data" {
+     compose_closure:
+         const compose_info;
+ },
+ compose_info()
+         { label: compose_info
+           rep:HeapRep static { Fun {arity: 3 fun_type: ArgSpec 20} }
+         }
+     ch9:
+         Hp = Hp + 32;
+         if (Hp > HpLim) goto chd;
+         I64[Hp - 24] = stg_ap_2_upd_info;
+         I64[Hp - 8] = R3;
+         I64[Hp + 0] = R4;
+         R1 = R2;
+         R2 = Hp - 24;
+         jump stg_ap_p_fast; // [R1, R2]
+     che:
+         R1 = compose_closure;
+         jump stg_gc_fun; // [R1, R4, R3, R2]
+     chd:
+         HpAlloc = 32;
+         goto che;
+ }]
+```
+
+Consider a function which branches using pattern matching:
+
+Haskell:
+
+```haskell
+match :: Either a a -> a
+match x = case x of
+  Left a -> a
+  Right b -> b
+```
+
+Cmm:
+
+```cpp
+[section "data" {
+     match_closure:
+         const match_info;
+ },
+ sio_ret()
+         { label: sio_info
+           rep:StackRep []
+         }
+     ciL:
+         _ciM::I64 = R1 & 7;
+         if (_ciM::I64 >= 2) goto ciN;
+         R1 = I64[R1 + 7];
+         Sp = Sp + 8;
+         jump stg_ap_0_fast; // [R1]
+     ciN:
+         R1 = I64[R1 + 6];
+         Sp = Sp + 8;
+         jump stg_ap_0_fast; // [R1]
+ },
+ match_info()
+         { label: match_info
+           rep:HeapRep static { Fun {arity: 1 fun_type: ArgSpec 5} }
+         }
+     ciP:
+         if (Sp - 8 < SpLim) goto ciR;
+         R1 = R2;
+         I64[Sp - 8] = sio_info;
+         Sp = Sp - 8;
+         if (R1 & 7 != 0) goto ciU;
+         jump I64[R1]; // [R1]
+     ciR:
+         R1 = match_closure;
+         jump stg_gc_fun; // [R1, R2]
+     ciU: jump sio_info; // [R1]
+ }]
+```
+
+See:
+
+* [MiscClosures](https://github.com/ghc/ghc/blob/master/includes/stg/MiscClosures.h)
+* [StgCmmArgRep](https://github.com/ghc/ghc/blob/master/compiler/codeGen/StgCmmArgRep.hs)
 
 EKG
 ---
