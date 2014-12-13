@@ -1164,16 +1164,16 @@ type inference. It is abstracted away from the user but the ``(>>=)`` or
 dictionary argument (``$fMonad``) implicitly threaded around.
 
 ```haskell
-main $fMonad = bind $fMonad getLine (\x -> bind $fMonad putStrLn (\_ -> return $fMonad ()))
+main $fMonad = bind $dMonad getLine (\x -> bind $dMonad putStrLn (\_ -> return $dMonad ()))
 ```
 
 Except in the case where the parameter of the monad class is unified ( through
 inference ) with a concrete class instance, in which case the instance
-dictionary (``$fMonadIO``) is instead spliced throughout.
+dictionary (``$dMonadIO``) is instead spliced throughout.
 
 ```haskell
 main :: IO ()
-main = bind $fMonadIO getLine (\x -> bind $fMonadIO putStrLn (\_ -> return $fMonadIO ()))
+main = bind $dMonadIO getLine (\x -> bind $dMonadIO putStrLn (\_ -> return $dMonadIO ()))
 ```
 
 Now, all of these transformations are trivial once we understand them, they're
@@ -7437,41 +7437,6 @@ Using the ``SPECIALISE INLINE`` pragma can unintentionally cause GHC to diverge
 if applied over a recursive function, it will try to specialize itself
 infinitely.
 
-IO/ST
------
-
-Both the IO and the ST monad have special state in the GHC runtime and share a
-very similar implementation. Both ``ST a`` and ``IO a`` are passing around an
-unboxed tuple of the form:
-
-```haskell
-(# token, a #)
-```
-
-The ``RealWorld#`` token is "deeply magical" and doesn't actually expand into
-any code when compiled, but simply threaded around through every bind of the IO
-or ST monad and has several properties of being unique and not being able to be
-duplicated to ensure sequential IO actions are actually sequential.
-``unsafePerformIO`` can thought of as the unique operation which discards the
-world token and plucks the ``a`` out, and is as the name implies not normally
-safe.
-
-The ``PrimMonad`` abstracts over both these monads with an associated data
-family for the world token or ST thread, and can be used to write operations
-that generic over both ST and IO.  This is used extensively inside of the vector
-package to allow vector algorithms to be written generically either inside of IO
-or ST.
-
-~~~~ {.haskell include="src/29-ghc/io_impl.hs"}
-~~~~
-
-~~~~ {.haskell include="src/29-ghc/monad_prim.hs"}
-~~~~
-
-See:
-
-* [Evaluation order and state tokens](https://www.fpcomplete.com/user/snoyberg/general-haskell/advanced/evaluation-order-and-state-tokens)
-
 Static Compilation
 ------------------
 
@@ -7645,6 +7610,42 @@ print (unpackCString# "Hello World"#)
 See: 
 
 * [Unboxed Values as First-Class Citizens](http://www.haskell.org/ghc/docs/papers/unboxed-values.ps.gz)
+
+IO/ST
+-----
+
+Both the IO and the ST monad have special state in the GHC runtime and share a
+very similar implementation. Both ``ST a`` and ``IO a`` are passing around an
+unboxed tuple of the form:
+
+```haskell
+(# token, a #)
+```
+
+The ``RealWorld#`` token is "deeply magical" and doesn't actually expand into
+any code when compiled, but simply threaded around through every bind of the IO
+or ST monad and has several properties of being unique and not being able to be
+duplicated to ensure sequential IO actions are actually sequential.
+``unsafePerformIO`` can thought of as the unique operation which discards the
+world token and plucks the ``a`` out, and is as the name implies not normally
+safe.
+
+The ``PrimMonad`` abstracts over both these monads with an associated data
+family for the world token or ST thread, and can be used to write operations
+that generic over both ST and IO.  This is used extensively inside of the vector
+package to allow vector algorithms to be written generically either inside of IO
+or ST.
+
+~~~~ {.haskell include="src/29-ghc/io_impl.hs"}
+~~~~
+
+~~~~ {.haskell include="src/29-ghc/monad_prim.hs"}
+~~~~
+
+See:
+
+* [Evaluation order and state tokens](https://www.fpcomplete.com/user/snoyberg/general-haskell/advanced/evaluation-order-and-state-tokens)
+
 
 ghc-heap-view
 -------------
