@@ -2428,6 +2428,12 @@ liftA3 :: Applicative f => (a -> b -> c -> d) -> f a -> f b -> f c -> f d
 liftA3 f a b c = f <$> a <*> b <*> c
 ```
 
+Applicative also has functions ``*>`` and ``<*`` that sequence applicative
+actions while discarding the value of one of the arguments. The operator ``*>``
+discard the left while ``<*`` discards the right. For example in a monadic
+parser combinator library the ``*>`` would parse with first parser argument but
+return the second.
+
 The Applicative functions ``<$>`` and ``<*>`` are generalized by ``liftM`` and
 ``ap`` for monads.
 
@@ -6942,8 +6948,8 @@ Flag                   Action
 ``-ddump-cse``         Output of the common subsexpression elimination pass.
 ``-ddump-prep``        The CorePrep pass.
 ``-ddump-stg``         The resulting STG.
-``-ddump-cmm``         The resulting C--.
-``-ddump-opt-cmm``     The resulting C-- optimization pass.
+``-ddump-cmm``         The resulting Cmm.
+``-ddump-opt-cmm``     The resulting Cmm optimization pass.
 ``-ddump-asm``         The final assembly generated.
 ``-ddump-llvm``        The final LLVM IR generated.
 
@@ -7395,7 +7401,7 @@ $ ghc -O2 --make -static -optc-static -optl-static -optl-pthread Example.hs
 $ file Example                                                                                       
 Example: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), statically linked, for GNU/Linux 2.6.32, not stripped
 $ ldd Example                                                                                        
-	not a dynamic executable
+        not a dynamic executable
  
 ```
 
@@ -7814,7 +7820,7 @@ String     Z-Encoded String
 ``#``      ``zh``
 ``.``      ``zi``
 ``(#,#)``  ``Z2H``
-``(->)``   ``ZLzmzgZR
+``(->)``   ``ZLzmzgZR``
 
 
 So for some real examples:
@@ -8233,12 +8239,12 @@ tracking down hotspots in the program.
 $ ghc -O2 program.hs -prof -auto-all
 $ ./program +RTS -p
 $ cat program.prof
-	Mon Oct 27 23:00 2014 Time and Allocation Profiling Report  (Final)
+        Mon Oct 27 23:00 2014 Time and Allocation Profiling Report  (Final)
 
-	   program +RTS -p -RTS
+           program +RTS -p -RTS
 
-	total time  =        0.01 secs   (7 ticks @ 1000 us, 1 processor)
-	total alloc =   1,937,336 bytes  (excludes profiling overheads)
+        total time  =        0.01 secs   (7 ticks @ 1000 us, 1 processor)
+        total alloc =   1,937,336 bytes  (excludes profiling overheads)
 
 COST CENTRE MODULE           %time %alloc
 
@@ -8313,8 +8319,8 @@ data T a b
   | B b -- ^ Documentation for B
 ```
 
-Elements within a module (value, types, classes) can be hyperlinked by enclosing the identifier in single
-quotes.
+Elements within a module (value, types, classes) can be hyperlinked by enclosing
+the identifier in single quotes.
 
 ```haskell
 data T a b
@@ -8346,6 +8352,20 @@ Modules themselves can be referenced by enclosing them in double quotes.
 -- 120
 ```
 
+Headers for specific blocks can be added by prefacing the comment in the module
+block with a star:
+
+```haskell
+module Foo (
+  -- * My Header
+  example1,
+  example2
+)
+```
+
+Sections can also be delineated by ``$`` blocks that refer to references in the
+body of the module:
+
 ```haskell
 module Foo (
   -- $section1
@@ -8357,6 +8377,34 @@ module Foo (
 -- Here is the documentation section that describes the symbols
 -- 'example1' and 'example2'.
 ```
+
+Links can be added with the syntax:
+
+```haskell
+<url text>
+```
+
+Images can can also be included, so long as the path is relative to the haddock
+or an absolute references.
+
+```haskell
+<<diagram.png title>>
+```
+
+Haddock options can also be specified with pragmas in the source, either on a
+module or project level.
+
+```haskell
+{-# OPTIONS_HADDOCK show-extensions, ignore-exports #-}
+```
+
+Option           Description
+------           -------------------------------
+ignore-exports   Ignores the export list and includes all signatures in scope.
+not-home         Module will not be considered the root documentation.
+show-extensions  Annotates the documentation with the language extensions used.
+hide             Forces the module to be hidden from Haddock.
+prune            omits definitions with no annotations
 
 Languages
 =========
