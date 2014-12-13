@@ -1755,6 +1755,7 @@ See:
 * [Reasoning about Laziness](http://www.slideshare.net/tibbe/reasoning-about-laziness)
 * [Lazy Evaluation of Haskell](http://www.vex.net/~trebla/haskell/lazy.xhtml)
 * [More Points For Lazy Evaluation](http://augustss.blogspot.hu/2011/05/more-points-for-lazy-evaluation-in.html)
+* [How Lazy Evaluation Works in Haskell](https://hackhands.com/lazy-evaluation-works-haskell/)
 
 Seq and WHNF
 ------------
@@ -4141,6 +4142,15 @@ found 8 outliers among 100 samples (8.0%)
 variance introduced by outliers: 67.628%
 variance is severely inflated by outliers
 ```
+
+Criterion can also generate a HTML page containing the benchmark results plotted
+
+```bash
+$ ghc -O2 --make criterion.hs
+$ ./criterion -o bench.html
+```
+
+![](img/criterion.png)
 
 Tasty
 -----
