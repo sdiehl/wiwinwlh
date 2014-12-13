@@ -1,0 +1,20 @@
+#include "Cmm.h"
+
+factorial {
+  entry:
+      W_ n  ;
+      W_ acc;
+      n = R1 ;
+      acc = n ;
+      n = n - 1 ;
+    
+  for:
+      if (n <= 0 ) {
+          RET_N(acc);
+      } else {
+          acc = acc * n  ;
+          n = n - 1 ;
+          goto for ;
+      }
+      RET_N(0);
+}

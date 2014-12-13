@@ -8236,8 +8236,18 @@ Cmm:
  }]
 ```
 
+Handwritten Cmm can be included in a module manually by first compiling it
+through GHC into an object and then using the FFI as usual.
+
+~~~~ {.cpp include="src/29-ghc/factorial.cmm"}
+~~~~
+
+~~~~ {.haskell include="src/29-ghc/cmm_include.hs"}
+~~~~
+
 See:
 
+* [CmmType](http://hackage.haskell.org/trac/ghc/wiki/Commentary/Compiler/CmmType)
 * [MiscClosures](https://github.com/ghc/ghc/blob/master/includes/stg/MiscClosures.h)
 * [StgCmmArgRep](https://github.com/ghc/ghc/blob/master/compiler/codeGen/StgCmmArgRep.hs)
 
