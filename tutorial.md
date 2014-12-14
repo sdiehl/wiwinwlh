@@ -578,13 +578,38 @@ or asynchronous exceptions is in similar style to debugging segfaults with gdb.
 λ: :back
 ```
 
-With profiling enabled GHC can also print a stack trace when an livering term is
-hit:
+Stacktraces
+-----------
+
+With runtime profiling enabled GHC can also print a stack trace when an
+diverging bottom term (error, undefined) is hit, though this requires a special
+flag and is disabled by default. For example:
+
+~~~~ {.haskell include="src/01-basics/stacktrace.hs"}
+~~~~
 
 ```haskell
-$ ghc -rtsopts=all -prof -auto-all --make myfile.hs
-./executable +RTS -xc
+$ ghc -O0 -rtsopts=all -prof -auto-all --make stacktrace.hs
+./stacktrace +RTS -xc
 ```
+
+And indeed the runtime tells us that the exception occurred in the function
+``g`` and enumerates the call stack.
+
+```haskell
+*** Exception (reporting due to +RTS -xc): (THUNK_2_0), stack trace:
+  Main.g,
+  called from Main.f,
+  called from Main.main,
+  called from Main.CAF
+  --> evaluated by: Main.main,
+  called from Main.CAF
+```
+
+It is best to run this without
+optimizations applied ``-O0`` so as to preserve the original call stack as
+represented in the source.  With optimizations applied this may often entirely
+different since GHC will rearrange the program in rather drastic ways.
 
 Trace
 ------
@@ -2334,7 +2359,6 @@ Text.Builder
 
 TODO
 
-
 ByteString
 ----------
 
@@ -2647,14 +2671,14 @@ addA f g = arr (\ x -> (x, x)) >>>
 addA f g = f &&& g >>> arr (\ (y, z) -> y + z)
 ```
 
+In practice this notation is not used often and in the future may become deprecated.
+
 See: [Arrow Notation](https://downloads.haskell.org/~ghc/7.8.3/docs/html/users_guide/arrow-notation.html)
 
 Contravariant Functors
 ----------------------
 
 TODO
-
-In practice this notation is not used often and in the future may become deprecated.
 
 Bifunctors
 ----------
@@ -5619,8 +5643,8 @@ Sums of Products
 
 TODO
 
-Numbers
-=======
+Mathematics
+===========
 
 Numeric Tower
 -------------
@@ -5690,13 +5714,21 @@ See: [GHC, primops and exorcising GMP](http://www.well-typed.com/blog/32/)
 Complex
 -------
 
+Haskell supports arithmetic with complex numbers via a Complex datatype. The
+first argument is the real part, while the second is the imaginary. 
+
+```haskell
+-- 1 + 2i
+let complex = 1 :+ 2
+```
+
 ```haskell
 data Complex a = a :+ a 
 mkPolar :: RealFloat a => a -> a -> Complex a
 ```
 
-The ``Num`` instance for ``Complex`` is only defined if parameter of
-``Complex`` is an instance of ``RealFloat``.
+The ``Num`` instance for ``Complex`` is only defined if parameter of ``Complex``
+is an instance of ``RealFloat``.
 
 ```haskell
 λ: 0 :+ 1
@@ -6957,8 +6989,12 @@ transactions. For example, we can build a simple key-value store wrapped around 
 Persistent
 ----------
 
+TODO
+
 Esqueleto
 ---------
+
+TODO
 
 GHC
 ===
