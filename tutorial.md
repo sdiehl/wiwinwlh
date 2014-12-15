@@ -6170,7 +6170,26 @@ foreign import ccall unsafe "stdlib.h &malloc"
 Function Pointers
 -----------------
 
-Pass a function pointer to a Haskell function into to C.
+Using the above FFI functionality, it's trivial to pass C function pointers into
+Haskell, but what about the inverse passing a function pointer to a Haskell
+function into C using ``foreign import ccall "wrapper"``. 
+
+~~~~ {.cpp include="src/21-ffi/pointer.c"}
+~~~~
+
+~~~~ {.haskell include="src/21-ffi/pointer_use.hs"}
+~~~~
+
+Will yield the following output:
+
+```bash
+Hello from Haskell, here's a number passed between runtimes:
+42
+Back inside of C again.
+```
+
+Exposing a C API
+----------------
 
 TODO
 
