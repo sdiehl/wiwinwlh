@@ -8,4 +8,5 @@ dist/
 *.o
 includes
 *.html
+*.epub
 *.agdai
