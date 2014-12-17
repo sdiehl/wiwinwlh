@@ -408,13 +408,28 @@ lifestyle.
 :set prompt "ΠΣ: "
 ```
 
+Editor Integration
+------------------
+
 For editor integration with vim and emacs:
 
 ```haskell
 cabal install hdevtools
 cabal install ghc-mod
 cabal install hlint
+cabal install ghcid
+cabal install ghci-ng
 ```
+
+TODO
+
+**Vim**
+
+https://github.com/begriffs/haskell-vim-now
+
+**Emacs**
+
+https://github.com/chrisdone/emacs-haskell-config
 
 Bottoms
 -------
@@ -6183,6 +6198,7 @@ function into C using ``foreign import ccall "wrapper"``.
 Will yield the following output:
 
 ```bash
+Inside of C, now we'll call Haskell
 Hello from Haskell, here's a number passed between runtimes:
 42
 Back inside of C again.
