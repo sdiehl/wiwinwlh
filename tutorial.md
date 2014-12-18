@@ -9194,10 +9194,13 @@ splus   :: Sing Nat a -> Sing Nat b -> Sing Nat (Plus a b)
 Lenses
 ======
 
-There are two implementations of note that are mostly compatible but differ in scope:
+There are several implementations of note that are mostly compatible but differ
+in scope:
 
 * *lens-family-core* - The core abstractions in a standalone library with minimal dependencies.
-* *lens*
+* *fc-labels* 
+* *data-lens-light* 
+* *lens* - The pathological lens library.
 
 **<span style="color:red">WARNING</span>: The ``lens`` library is considered by
 many Haskellers to be deeply pathological and introduces a needless amount of
