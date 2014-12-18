@@ -6439,6 +6439,10 @@ $ threadscope Example.eventlog
 See Simon Marlows's *Parallel and Concurrent Programming in Haskell* for a
 detailed guide on interpreting and profiling using Threadscope.
 
+See:
+
+* [Performance profiling with ghc-events-analyze](http://www.well-typed.com/blog/86/)
+
 Strategies
 ----------
 
@@ -6743,11 +6747,6 @@ Bach
 λ: parseTest parseScientist "Feynman"
 Feynman
 ```
-
-Indentation Parsing
--------------------
-
-TODO
 
 Attoparsec
 ----------
@@ -9491,9 +9490,9 @@ The sheer number of operators provided by lens is a polarizing for some, but all
 written in terms of the textual functions (``set``, ``view``, ``over``, ``at``, ...) and some people prefer to
 use these instead. 
 
-Surprisingly lenses can be used as a very general foundation to write logic over a wide variety of data
-structures and computations and subsume many of the existing patterns found in the Prelude under a new common
-framework.
+If one buys into lens model, it can serve as a partial foundation to write logic
+over a wide variety of data structures and computations and subsume many of the
+existing patterns found in the Prelude.
 
 ~~~~ {.haskell include="src/32-lenses/complexlens.hs"}
 ~~~~
