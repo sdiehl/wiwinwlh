@@ -709,7 +709,13 @@ cabal pain points or a deeper unifying model.
 
 TODO
 
-cabal2nix
+The Nix Workflow consists of a sequence like the following:
+
+```bash
+$ cabal init
+... usual setup
+$ cabal2nix library.cabal --sha=./
+```
 
 [cabal2nix4dev](https://github.com/dave4420/cabal2nix4dev/blob/master/cabal2nix4dev)
 
@@ -743,7 +749,7 @@ The following are all **false**:
 * Monads are impure.
 * Monads are about effects.
 * Monads are about state.
-* Monads are about sequencing.
+* Monads are about imperative sequencing.
 * Monads are about IO.
 * Monads are dependent on laziness.
 * Monads are a "back-door" in the language to perform side-effects.
@@ -9207,6 +9213,21 @@ many Haskellers to be deeply pathological and introduces a needless amount of
 complexity. Some care should taken when considering it's use, it is included
 here for information only and not as endorsement for it's use. Consider
 ``lens-family-core`` or ``fclabels`` instead.**
+
+Should I Use Lens?
+------------------
+
+No. The ``lens`` library is deeply problematic and should be avoided. While
+there are some good ideas ( mostly from the original van Laarhoven
+interpretation ) with the general ideas of lenses. This specific lens library
+implementation is contains an enormous amount of unidiomatic and over-engineered
+Haskell code whose marginal utility is grossly outweighed by the sheer weight of
+the entire edifice to set up such a structure and the mental strain that it
+forces it on other developers to deduce the types involved.
+
+lens is effectively a laboratory for a certain set of ideas, it's idiosyncratic
+with respect to the rest of the ecosystem and should not be used for production
+code.
 
 van Laarhoven Lenses
 --------------------
