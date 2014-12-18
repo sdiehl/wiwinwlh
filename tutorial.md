@@ -598,7 +598,7 @@ Stacktraces
 
 With runtime profiling enabled GHC can also print a stack trace when an
 diverging bottom term (error, undefined) is hit, though this requires a special
-flag and is disabled by default. For example:
+flag and profiling to be enabled, both are disabled by default. So for example:
 
 ~~~~ {.haskell include="src/01-basics/stacktrace.hs"}
 ~~~~
@@ -625,6 +625,10 @@ It is best to run this without
 optimizations applied ``-O0`` so as to preserve the original call stack as
 represented in the source.  With optimizations applied this may often entirely
 different since GHC will rearrange the program in rather drastic ways.
+
+See:
+
+*[xc flag](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/runtime-control.html#idp13041968)
 
 Trace
 ------
@@ -3787,8 +3791,8 @@ this form evaluation requires unpacking into a seperate Value type to wrap the l
 
 See: 
 
-* [Boxes Go Bananas: Encoding Higher-Order Abstract Syntax with Parametric Polymorphism](http://www.seas.upenn.edu/~sweirich/papers/itabox/icfp-published-version.pdf)
 * [PHOAS](http://adam.chlipala.net/papers/PhoasICFP08/PhoasICFP08Talk.pdf)
+* [Encoding Higher-Order Abstract Syntax with Parametric Polymorphism](http://www.seas.upenn.edu/~sweirich/papers/itabox/icfp-published-version.pdf)
 
 Interpreters
 ============
@@ -8489,6 +8493,62 @@ These occur in Cmm most frequently via the following macro definitions:
 #define TAG_MASK ((1 << TAG_BITS) - 1)
 #define UNTAG(p) (p & ~TAG_MASK)
 #define GETTAG(p) (p & TAG_MASK)
+```
+
+So for instance in ``stg_ap_p_*`` family of functions, there will be a test for
+whether the active closure ``R1`` is already evaluated.
+
+```cpp
+if (GETTAG(R1)==1) {
+    Sp_adj(0);
+    jump %GET_ENTRY(R1-1) [R1,R2];
+}
+```
+
+Or avoiding accessing the info table:
+
+```cpp
+#define LOAD_INFO
+  if (GETTAG(P1) != 0) {
+      jump %ENTRY_CODE(Sp(0));
+  }
+  info = %INFO_PTR(P1);
+```
+
+```cpp
+#define ENTER()                                   
+ again:                                           
+  W_ info;                                        
+  LOAD_INFO                                       
+  switch [INVALID_OBJECT .. N_CLOSURE_TYPES]      
+         (TO_W_( %INFO_TYPE(%STD_INFO(info)) )) { 
+  case                                            
+    IND,                                          
+    IND_PERM,                                     
+    IND_STATIC:                                   
+   {                                              
+      P1 = StgInd_indirectee(P1);                 
+      goto again;                                 
+   }                                              
+  case                                            
+    FUN,                                          
+    FUN_1_0,                                      
+    FUN_0_1,                                      
+    FUN_2_0,                                      
+    FUN_1_1,                                      
+    FUN_0_2,                                      
+    FUN_STATIC,                                   
+    BCO,                                          
+    PAP:                                          
+   {                                              
+      jump %ENTRY_CODE(Sp(0));                    
+   }                                              
+  default:                                        
+   {                                              
+      UNTAG_R1                                    
+      jump %ENTRY_CODE(info);                     
+   }                                              
+  }
 ```
 
 EKG
