@@ -9289,16 +9289,16 @@ complexity. Some care should taken when considering it's use, it is included
 here for information only and not as endorsement for it's use. Consider
 ``lens-family-core`` or ``fclabels`` instead.**
 
-Should I Use Lens?
-------------------
+Should I use lens library?
+--------------------------
 
 No. The ``lens`` library is deeply problematic and should be avoided. While
 there are some good ideas ( mostly from the original van Laarhoven
-interpretation ) with the general ideas of lenses. This specific lens library
-implementation is contains an enormous amount of unidiomatic and over-engineered
-Haskell code whose marginal utility is grossly outweighed by the sheer weight of
-the entire edifice to set up such a structure and the mental strain that it
-forces it on other developers to deduce the types involved.
+interpretation ) with the general ideas of lenses. This specific ``lens``
+library implementation contains an enormous amount of unidiomatic and
+over-engineered Haskell code whose marginal utility is grossly outweighed by the
+sheer weight of the entire edifice,  and the mental strain that it forces it on
+other developers to deduce the types involved in even the simplest expressions.
 
 lens is effectively a laboratory for a certain set of ideas, it's idiosyncratic
 with respect to the rest of the ecosystem and should not be used for production
