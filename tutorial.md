@@ -723,6 +723,121 @@ $ cabal2nix library.cabal --sha=./
 
 [cabal2nix4dev](https://github.com/dave4420/cabal2nix4dev/blob/master/cabal2nix4dev)
 
+Haddock
+-------
+
+Haddock is the automatic documentation tool for Haskell source code. It
+integrates with the usual cabal toolchain.
+
+```haskell
+-- | Documentation for f
+f :: a -> a
+f = ...
+```
+
+```haskell
+-- | Multiline documentation for the function
+-- f with multiple arguments.
+fmap :: Functor f => 
+     => (a -> b)  -- ^ function
+     -> f a       -- ^ input
+     -> f b       -- ^ output
+```
+
+```haskell
+data T a b
+  = A a -- ^ Documentation for A
+  | B b -- ^ Documentation for B
+```
+
+Elements within a module (value, types, classes) can be hyperlinked by enclosing
+the identifier in single quotes.
+
+```haskell
+data T a b
+  = A a -- ^ Documentation for 'A'
+  | B b -- ^ Documentation for 'B'
+```
+
+Modules themselves can be referenced by enclosing them in double quotes.
+
+```haskell
+-- | Here we use "Data.Text" library and import
+-- the 'Data.Text.pack' function.
+```
+
+```haskell
+-- | An example of a code block.
+-- 
+-- @
+--    f x = f (f x)
+-- @
+
+-- > f x = f (f x)
+```
+
+```haskell
+-- | Example of an interactive shell session.
+--
+-- >>> factorial 5
+-- 120
+```
+
+Headers for specific blocks can be added by prefacing the comment in the module
+block with a star:
+
+```haskell
+module Foo (
+  -- * My Header
+  example1,
+  example2
+)
+```
+
+Sections can also be delineated by ``$`` blocks that refer to references in the
+body of the module:
+
+```haskell
+module Foo (
+  -- $section1
+  example1,
+  example2
+)
+
+-- $section1
+-- Here is the documentation section that describes the symbols
+-- 'example1' and 'example2'.
+```
+
+Links can be added with the syntax:
+
+```haskell
+<url text>
+```
+
+Images can can also be included, so long as the path is relative to the haddock
+or an absolute references.
+
+```haskell
+<<diagram.png title>>
+```
+
+Haddock options can also be specified with pragmas in the source, either on a
+module or project level.
+
+```haskell
+{-# OPTIONS_HADDOCK show-extensions, ignore-exports #-}
+```
+
+Option           Description
+------           -------------------------------
+ignore-exports   Ignores the export list and includes all signatures in scope.
+not-home         Module will not be considered the root documentation.
+show-extensions  Annotates the documentation with the language extensions used.
+hide             Forces the module to be hidden from Haddock.
+prune            omits definitions with no annotations
+
+
 Monads
 ======
 
@@ -8551,6 +8666,51 @@ Or avoiding accessing the info table:
   }
 ```
 
+Code Generators
+---------------
+
+* ``-fllvm``
+* ``-fasm``
+
+TODO
+
+Rewrites and Fusion
+-------------------
+
+```haskell
+{-# RULES "map/map" forall f g xs.  map f (map g xs) = map (f.g) xs #-}
+```
+
+```haskell
+{-# RULES "foldr/build"
+    forall k z (g :: forall b. (a -> b -> b) -> b -> b) . 
+    foldr k z (build g) = g k z
+ #-}
+```
+
+```haskell
+foldr :: (a -> b -> b) -> b -> [a] -> b
+foldr c n []     = n
+foldr c n (x:xs) = c x (foldr c n xs)
+ 
+build :: (forall b. (a -> b -> b) -> b -> b) -> [a]
+build g = g (:) []
+```
+
+```haskell
+foldr c n (build g) = g c n
+```
+
+GHC makes no checks for the confluence, so if nonsensical rules or infinitely
+diverging rules are added then GHC will happily rewrite your program or spin
+forever. 
+
+TODO
+
+
+Profiling
+=========
+
 EKG
 ---
 
@@ -8564,8 +8724,8 @@ from the main process.
 
 ![](img/ekg.png)
 
-Profiling
----------
+RTS Profiling
+-------------
 
 The GHC runtime system can be asked to dump information about 
 
@@ -8632,150 +8792,6 @@ MAIN        MAIN                     42           0    0.0    0.7   100.0  100.0
  CAF        GHC.IO.Encoding.Iconv    69           0    0.0    0.0     0.0    0.0
  CAF        GHC.Show                 60           0    0.0    0.0     0.0    0.0
 ```
-
-Rewrites and Fusion
--------------------
-
-```haskell
-{-# RULES "map/map" forall f g xs.  map f (map g xs) = map (f.g) xs #-}
-```
-
-```haskell
-{-# RULES "foldr/build"
-    forall k z (g :: forall b. (a -> b -> b) -> b -> b) . 
-    foldr k z (build g) = g k z
- #-}
-```
-
-```haskell
-foldr :: (a -> b -> b) -> b -> [a] -> b
-foldr c n []     = n
-foldr c n (x:xs) = c x (foldr c n xs)
- 
-build :: (forall b. (a -> b -> b) -> b -> b) -> [a]
-build g = g (:) []
-```
-
-```haskell
-foldr c n (build g) = g c n
-```
-
-GHC makes no checks for the confluence, so if nonsensical rules or infinitely
-diverging rules are added then GHC will happily rewrite your program or spin
-forever. 
-
-TODO
-
-Haddock
--------
-
-```haskell
--- | Documentation for f
-f :: a -> a
-f = ...
-```
-
-```haskell
--- | Multiline documentation for the function
--- f with multiple arguments.
-fmap :: Functor f => 
-     => (a -> b)  -- ^ function
-     -> f a       -- ^ input
-     -> f b       -- ^ output
-```
-
-```haskell
-data T a b
-  = A a -- ^ Documentation for A
-  | B b -- ^ Documentation for B
-```
-
-Elements within a module (value, types, classes) can be hyperlinked by enclosing
-the identifier in single quotes.
-
-```haskell
-data T a b
-  = A a -- ^ Documentation for 'A'
-  | B b -- ^ Documentation for 'B'
-```
-
-Modules themselves can be referenced by enclosing them in double quotes.
-
-```haskell
--- | Here we use "Data.Text" library and import
--- the 'Data.Text.pack' function.
-```
-
-```haskell
--- | An example of a code block.
--- 
--- @
---    f x = f (f x)
--- @
-
--- > f x = f (f x)
-```
-
-```haskell
--- | Example of an interactive shell session.
---
--- >>> factorial 5
--- 120
-```
-
-Headers for specific blocks can be added by prefacing the comment in the module
-block with a star:
-
-```haskell
-module Foo (
-  -- * My Header
-  example1,
-  example2
-)
-```
-
-Sections can also be delineated by ``$`` blocks that refer to references in the
-body of the module:
-
-```haskell
-module Foo (
-  -- $section1
-  example1,
-  example2
-)
-
--- $section1
--- Here is the documentation section that describes the symbols
--- 'example1' and 'example2'.
-```
-
-Links can be added with the syntax:
-
-```haskell
-<url text>
-```
-
-Images can can also be included, so long as the path is relative to the haddock
-or an absolute references.
-
-```haskell
-<<diagram.png title>>
-```
-
-Haddock options can also be specified with pragmas in the source, either on a
-module or project level.
-
-```haskell
-{-# OPTIONS_HADDOCK show-extensions, ignore-exports #-}
-```
-
-Option           Description
-------           -------------------------------
-ignore-exports   Ignores the export list and includes all signatures in scope.
-not-home         Module will not be considered the root documentation.
-show-extensions  Annotates the documentation with the language extensions used.
-hide             Forces the module to be hidden from Haddock.
-prune            omits definitions with no annotations
 
 Languages
 =========
