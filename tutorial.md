@@ -8353,6 +8353,71 @@ Cmm      Description
 ``I32``  32-bit integer
 ``I64``  64-bit integer
 
+
+Many of the predefined closures (``stg_ap_p_fast``, etc) are themselves
+mechanically generated and more or less share the same form ( a giant switch
+statement on closure type, update frame, stack adjustment). Inside of GHC is a
+file named ``GenApply.hs`` that generates most of these functions. For example
+the output for ``stg_ap_p_fast``. See the Gist link in the reading section for
+the current source file that GHC generates.
+
+```cpp
+stg_ap_p_fast
+{   W_ info;
+    W_ arity;
+    if (GETTAG(R1)==1) {
+        Sp_adj(0);
+        jump %GET_ENTRY(R1-1) [R1,R2];
+    }
+    #ifdef PROFILING
+    if (Sp - WDS(2) < SpLim) {
+        Sp_adj(-2);
+        W_[Sp+WDS(1)] = R2;
+        Sp(0) = stg_ap_p_info;
+        jump __stg_gc_enter_1 [R1];
+    }
+    #else
+    if (Sp - WDS(2) < SpLim) {
+        Sp_adj(-2);
+        W_[Sp+WDS(1)] = R2;
+        Sp(0) = stg_ap_p_info;
+        jump __stg_gc_enter_1 [R1];
+    }
+    #endif
+    R1 = UNTAG(R1);
+    info = %GET_STD_INFO(R1);
+    switch [INVALID_OBJECT .. N_CLOSURE_TYPES] (TO_W_(%INFO_TYPE(info))) {
+        case FUN,
+             FUN_1_0,
+             FUN_0_1,
+             FUN_2_0,
+             FUN_1_1,
+             FUN_0_2,
+             FUN_STATIC: {
+            arity = TO_W_(StgFunInfoExtra_arity(%GET_FUN_INFO(R1)));
+            ASSERT(arity > 0);
+            if (arity == 1) {
+                Sp_adj(0);
+                R1 = R1 + 1;
+                jump %GET_ENTRY(UNTAG(R1)) [R1,R2];
+            } else {
+                Sp_adj(-2);
+                W_[Sp+WDS(1)] = R2;
+                if (arity < 8) {
+                  R1 = R1 + arity;
+                }
+                BUILD_PAP(1,1,stg_ap_p_info,FUN);
+            }
+        }
+        default: {
+            Sp_adj(-2);
+            W_[Sp+WDS(1)] = R2;
+            jump RET_LBL(stg_ap_p) [];
+        }
+    }
+}
+```
+
 Handwritten Cmm can be included in a module manually by first compiling it
 through GHC into an object and then using the FFI as usual.
 
@@ -8375,6 +8440,8 @@ Cmm Runtime:
 * [StgMiscClosures.cmm](https://github.com/ghc/ghc/blob/master/rts/StgMiscClosures.cmm)
 * [Updates.cmm](https://github.com/ghc/ghc/blob/master/rts/Updates.cmm)
 
+* [Precompiled Closures ( Autogen Output)](https://gist.github.com/sdiehl/e5c9daab7a6d1da0ede7)
+
 Pointer Tagging
 ----------------
 
@@ -8395,7 +8462,7 @@ EKG
 
 EKG is a monitoring tool that can monitor various aspect of GHC's runtime
 alongside an active process. The interface for the output is viewable within a
-browser interaface. The monitoring process is forked off (in a system thread)
+browser interface. The monitoring process is forked off (in a system thread)
 from the main process.
 
 ~~~~ {.haskell include="src/29-ghc/ekg.hs"}
