@@ -1,3 +1,7 @@
+<p class="center logo">
+![](img/title.png)
+</p>
+
 Stephen Diehl (<a class="author" href="https://twitter.com/smdiehl">@smdiehl</a> )
 
 The source for all code is [available
