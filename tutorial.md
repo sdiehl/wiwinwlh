@@ -1929,32 +1929,22 @@ See:
 Strictness
 ----------
 
-* Strict - XXX
-* Non-strict - XXX
-* Lazy - XXX
+* Strict - Evaluation is said to be strict if all arguments are evaluated before
+  the body of a function.
+* Non-strict - Evaluation is non-strict if the arguments are not necessarily
+  evaluated before entering the body of a function.
+
+These ideas give rise to several models, Haskell itself use the *call-by-need*
+model.
+
+Model          Strictness    Description
+-------------  ------------- ---------------
+Call-by-value  Strict        arguments evaluated before function entered
+Call-by-name   Non-strict    arguments passed unevaluated
+Call-by-need   Non-strict    arguments passed unevaluated but an expression is only evaluated once (sharing)
 
 Seq and WHNF
 ------------
-
-In Haskell evaluation only occurs at outer constructor of case-statements in
-Core. If we pattern match on a list we don't implicitly force all values in the
-list. A element in a data structure is only evaluated up to the most outer
-constructor. For example, to evaluate the length of a list we need only
-scrutinize the outer Cons constructors without regard for their inner values.
-
-```haskell
-λ: length [undefined, 1]
-2
-
-λ: head [undefined, 1]
-Prelude.undefined
-
-λ: snd (undefined, 1)
-1
-
-λ: fst (undefined, 1)
-Prelude.undefined
-```
 
 A term is said to be in *weak head normal-form* if the outermost constructor or
 lambda cannot be reduced further. A term is said to be in *normal form* if it is
@@ -1982,6 +1972,26 @@ evaluated.
 1 + 1
 (\x -> x + 1) 2
 "foo" ++ "bar"
+```
+
+In Haskell normal evaluation only occurs at outer constructor of case-statements
+in Core. If we pattern match on a list we don't implicitly force all values in
+the list. A element in a data structure is only evaluated up to the most outer
+constructor. For example, to evaluate the length of a list we need only
+scrutinize the outer Cons constructors without regard for their inner values.
+
+```haskell
+λ: length [undefined, 1]
+2
+
+λ: head [undefined, 1]
+Prelude.undefined
+
+λ: snd (undefined, 1)
+1
+
+λ: fst (undefined, 1)
+Prelude.undefined
 ```
 
 For example in a lazy language the following program terminates even though it
@@ -2410,14 +2420,56 @@ class Foldable f where
   foldMap :: Monoid m => (a -> m) -> f a -> m
 ```
 
+The ``foldMap`` function is extremely general and non-intuitively many of the
+monomorphic list folds can themselves be written in terms of this single
+polymorphic function.
+
+``foldMap`` takes a function of values to a monoidal quantity, a functor over
+the values and collapses the functor into the monoid. For instance for the
+trivial Sum monoid.
+
 ```haskell
-Data.Foldable.foldr :: Foldable t => (a -> b -> b) -> b -> t a -> b
-Data.Foldable.foldl :: Foldable t => (a -> b -> a) -> a -> t b -> a
-Data.Traversable.traverse :: (Applicative f, Traversable t) => (a -> f b) -> t a -> f (t b)
+λ: foldMap Sum [1..10]
+Sum {getSum = 55}
 ```
 
-Most of the operations over lists can be generalized in terms in combinations of ``traverse`` and ``foldMap``
-to derive more generation functions that work over all data structures implementing Foldable.
+The full Foldable class (with all default implementations) contains a variety of
+derived functions which themselves can be written in terms of ``foldMap`` and
+``Endo``.
+
+```haskell
+newtype Endo a = Endo {appEndo :: a -> a}
+
+instance Monoid (Endo a) where
+        mempty = Endo id
+        Endo f `mappend` Endo g = Endo (f . g)
+```
+
+```haskell
+class Foldable t where
+    fold    :: Monoid m => t m -> m
+    foldMap :: Monoid m => (a -> m) -> t a -> m
+
+    foldr   :: (a -> b -> b) -> b -> t a -> b
+    foldr'  :: (a -> b -> b) -> b -> t a -> b
+
+    foldl   :: (b -> a -> b) -> b -> t a -> b
+    foldl'  :: (b -> a -> b) -> b -> t a -> b
+
+    foldr1  :: (a -> a -> a) -> t a -> a
+    foldl1  :: (a -> a -> a) -> t a -> a
+```
+
+For example:
+
+```haskell
+foldr :: (a -> b -> b) -> b -> t a -> b
+foldr f z t = appEndo (foldMap (Endo . f) t) z
+```
+
+Most of the operations over lists can be generalized in terms in combinations of
+Foldable and Traversable to derive more general functions that work over all
+data structures implementing Foldable.
 
 ```haskell
 Data.Foldable.elem    :: (Eq a, Foldable t) => a -> t a -> Bool
@@ -2455,9 +2507,22 @@ unfoldr :: (b -> Maybe (a, b)) -> b -> [a]
 ```
 
 A recursive function consumes data and eventually terminates, a corecursive
-function generates data and **coterminates**.
+function generates data and **coterminates**. A corecursive function is said to
+*productive* if can always evaluate more of the resulting value in bounded time.
 
-TODO
+```haskell
+import Data.List
+
+f :: Int -> Maybe (Int, Int)
+f 0 = Nothing
+f x = Just (x, x-1)
+
+rev :: [Int]
+rev = unfoldr f 10
+
+fibs :: [Int]
+fibs = unfoldr (\(a,b) -> Just (a,(b,a+b))) (0,1)
+```
 
 Split
 -----
@@ -8781,7 +8846,7 @@ These occur in Cmm most frequently via the following macro definitions:
 #define GETTAG(p) (p & TAG_MASK)
 ```
 
-So for instance in ``stg_ap_p_*`` family of functions, there will be a test for
+So for instance in many of the precompiled functions, there will be a test for
 whether the active closure ``R1`` is already evaluated.
 
 ```cpp
@@ -8789,16 +8854,6 @@ if (GETTAG(R1)==1) {
     Sp_adj(0);
     jump %GET_ENTRY(R1-1) [R1,R2];
 }
-```
-
-Or avoiding accessing the info table:
-
-```cpp
-#define LOAD_INFO
-  if (GETTAG(P1) != 0) {
-      jump %ENTRY_CODE(Sp(0));
-  }
-  info = %INFO_PTR(P1);
 ```
 
 Code Generators
@@ -9429,16 +9484,14 @@ Should I use lens library?
 --------------------------
 
 No. The ``lens`` library is deeply problematic and should be avoided. While
-there are some good ideas ( mostly from the original van Laarhoven
-interpretation ) with the general ideas of lenses. This specific ``lens``
-library implementation contains an enormous amount of unidiomatic and
+there are some good ideas around the general ideas of lenses. This specific
+``lens`` library implementation contains an enormous amount of unidiomatic and
 over-engineered Haskell code whose marginal utility is grossly outweighed by the
-sheer weight of the entire edifice,  and the mental strain that it forces it on
+sheer weight of the entire edifice and the mental strain that it forces it on
 other developers to deduce the types involved in even the simplest expressions.
 
 lens is effectively a laboratory for a certain set of ideas, it's idiosyncratic
-with respect to the rest of the ecosystem and should not be used for production
-code.
+with respect to the rest of the ecosystem.
 
 van Laarhoven Lenses
 --------------------
