@@ -4283,6 +4283,36 @@ See:
 
 * [recursion-schemes](http://hackage.haskell.org/package/recursion-schemes)
 
+Hint and Mueval
+---------------
+
+GHC itself can actually interpreter arbitrary Haskell source on the fly by
+hooking into the GHC's bytecode interpreter ( the same used for GHCi ). The hint
+package allows us to parse, typecheck, and evaluate arbitrary strings into
+arbitrary Haskell programs and evaluate them.
+
+```haskell
+import Language.Haskell.Interpreter
+
+foo :: Interpreter String
+foo = eval "(\\x -> x) 1"
+
+example :: IO (Either InterpreterError String)
+example = runInterpreter foo
+```
+
+This is generally not a wise thing to build a library around, unless of course
+the purpose of the program is itself to evaluate arbitrary Haskell code (
+something like a online Haskell shell or the likes ).
+
+Both hint and mueval do effectively the same task, desigend around slightly
+different internals of the GHC Api.
+
+See:
+
+* [hint](http://hackage.haskell.org/package/mueval)
+* [mueval](http://hackage.haskell.org/package/mueval)
+
 Testing
 =======
 
