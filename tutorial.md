@@ -2233,7 +2233,8 @@ that supply much of the same functionality in a way that appeals to more modern
 design principles.
 
 * [base-prelude](http://hackage.haskell.org/package/base-prelude)
-* [classy-prelude](http://hackage.haskell.org/package/class-prelude)
+* [basic-prelude](http://hackage.haskell.org/package/basic-prelude)
+* [classy-prelude](http://hackage.haskell.org/package/classy-prelude)
 
 Partial Functions
 -----------------
