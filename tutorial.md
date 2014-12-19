@@ -25,8 +25,8 @@ Cabal
 
 Cabal is the build system for Haskell, it also doubles as a package manager.
 
-For example to install the [parsec](http://hackage.haskell.org/package/parsec) package from Hackage to our
-system invoke the install command:
+For example to install the [parsec](http://hackage.haskell.org/package/parsec)
+package from Hackage to our system invoke the install command:
 
 ```bash
 $ cabal install parsec           # latest version
@@ -57,12 +57,13 @@ $ cabal init
 $ cabal configure
 ```
 
-A ``.cabal`` file will be created with the configuration options for our new project.
+A ``.cabal`` file will be created with the configuration options for our new
+project.
 
 The latest feature of Cabal is the addition of Sandboxes ( in cabal
 > 1.18 ) which are self contained environments of Haskell packages
-separate from the global package index stored in the ``./.cabal-sandbox`` of our project's root. To create a
-new sandbox for our cabal project run.
+separate from the global package index stored in the ``./.cabal-sandbox`` of our
+project's root. To create a new sandbox for our cabal project run.
 
 ```bash
 $ cabal sandbox init
@@ -74,34 +75,39 @@ In addition the sandbox can be torn down.
 $ cabal sandbox delete
 ```
 
-Invoking the cabal commands when in the working directory of a project with a sandbox configuration set up
-alters the behavior of cabal itself. For example the ``cabal install`` command will only alter the install to
-the local package index and will not touch the global configuration. 
+Invoking the cabal commands when in the working directory of a project with a
+sandbox configuration set up alters the behavior of cabal itself. For example
+the ``cabal install`` command will only alter the install to the local package
+index and will not touch the global configuration. 
 
-To install the dependencies from the cabal file into the newly created sandbox run:
+To install the dependencies from the cabal file into the newly created sandbox
+run:
 
 ```bash
 $ cabal install --only-dependencies
 ```
 
-Dependencies can also be built in parallel by passing ``-j<n>`` where ``n`` is the number of concurrent
-builds.
+Dependencies can also be built in parallel by passing ``-j<n>`` where ``n`` is
+the number of concurrent builds.
 
 ```bash
 $ cabal install -j4 --only-dependencies
 ```
 
-Let's look at an example cabal file, there are two main entry points that any package may provide: a ``library``
-and an ``executable``. Multiple executables can be defined, but only one library. In addition there is a
-special form of executable entry point ``Test-Suite`` which defines an interface for unit tests to be invoked
-from cabal.
+Let's look at an example cabal file, there are two main entry points that any
+package may provide: a ``library`` and an ``executable``. Multiple executables
+can be defined, but only one library. In addition there is a special form of
+executable entry point ``Test-Suite`` which defines an interface for unit tests
+to be invoked from cabal.
 
-For a library the ``exposed-modules`` field in the cabal file indicates which modules within the package
-structure will be publicly visible when the package is installed, these are the user-facing APIs that we wish
-to exposes to downstream consumers.
+For a library the ``exposed-modules`` field in the cabal file indicates which
+modules within the package structure will be publicly visible when the package
+is installed, these are the user-facing APIs that we wish to exposes to
+downstream consumers.
 
-For an executable the ``main-is`` field indicates the Main module for the project that exports the ``main``
-function to run for the executable logic of the application.
+For an executable the ``main-is`` field indicates the Main module for the
+project that exports the ``main`` function to run for the executable logic of
+the application.
 
 ```bash
 name:               mylibrary
@@ -157,17 +163,20 @@ $ cabal repl
 $ cabal repl <name>
 ```
 
-The ``<name>`` metavariable is either one of the executable or library declarations in the cabal file, and can
-optionally be disambiguated by the prefix ``exe:<name>`` or ``lib:<name>`` respectively.
+The ``<name>`` metavariable is either one of the executable or library
+declarations in the cabal file, and can optionally be disambiguated by the
+prefix ``exe:<name>`` or ``lib:<name>`` respectively.
 
-To build the package locally into the ``./dist/build`` folder execute the ``build`` command.
+To build the package locally into the ``./dist/build`` folder execute the
+``build`` command.
 
 ```bash
 $ cabal build 
 ```
 
-To run the tests, our package must itself be reconfigured with the ``--enable-tests`` and the
-``build-depends`` from the Test-Suite must be manually installed if not already.
+To run the tests, our package must itself be reconfigured with the
+``--enable-tests`` and the ``build-depends`` from the Test-Suite must be
+manually installed if not already.
 
 ```bash
 $ cabal configure --enable-tests
@@ -176,33 +185,37 @@ $ cabal test
 $ cabal test <name>
 ```
 
-In addition arbitrary shell commands can also be invoked with the GHC environmental variables set up for the
-sandbox. Quite common is to invoke a new shell with this command such that the ``ghc`` and ``ghci`` commands
-use the sandbox ( they don't by default, which is a common source of frustration ).
+In addition arbitrary shell commands can also be invoked with the GHC
+environmental variables set up for the sandbox. Quite common is to invoke a new
+shell with this command such that the ``ghc`` and ``ghci`` commands use the
+sandbox ( they don't by default, which is a common source of frustration ).
 
 ```bash
 $ cabal exec 
 $ cabal exec sh # launch a shell with GHC sandbox path set.
 ```
 
-The haddock documentation can be built for the local project by executing the ``haddock`` command, it will be
-built to the ``./dist`` folder.
+The haddock documentation can be built for the local project by executing the
+``haddock`` command, it will be built to the ``./dist`` folder.
 
 ```bash
 $ cabal haddock
 ```
 
-When we're finally ready to upload to Hackage ( presuming we have a Hackage account set up ), then we can
-build the tarball and upload with the following commands:
+When we're finally ready to upload to Hackage ( presuming we have a Hackage
+account set up ), then we can build the tarball and upload with the following
+commands:
 
 ```bash
 $ cabal sdist
 $ cabal upload dist/mylibrary-0.1.tar.gz
 ```
 
-Using the ``cabal repl`` and ``cabal run`` commands are preferable but sometimes we'd like to manually perform
-their equivalents at the shell, there are several useful aliases that rely on shell directory expansion to
-find the package database in the current working directory and launch GHC with the appropriate flags:
+Using the ``cabal repl`` and ``cabal run`` commands are preferable but sometimes
+we'd like to manually perform their equivalents at the shell, there are several
+useful aliases that rely on shell directory expansion to find the package
+database in the current working directory and launch GHC with the appropriate
+flags:
 
 ```bash
 alias ghc-sandbox="ghc -no-user-package-db -package-db .cabal-sandbox/*-packages.conf.d"
@@ -210,7 +223,8 @@ alias ghci-sandbox="ghci -no-user-package-db -package-db .cabal-sandbox/*-packag
 alias runhaskell-sandbox="runhaskell -no-user-package-db -package-db .cabal-sandbox/*-packages.conf.d"
 ```
 
-There is also a zsh script to show the sandbox status of the current working directory in our shell.
+There is also a zsh script to show the sandbox status of the current working
+directory in our shell.
 
 ```bash
 function cabal_sandbox_info() {
@@ -227,32 +241,34 @@ function cabal_sandbox_info() {
 RPROMPT="\$(cabal_sandbox_info) $RPROMPT"
 ```
 
-The cabal configuration is stored in ``$HOME/.cabal/config`` and contains various options including credential
-information for Hackage upload. One addition to configuration is to completely disallow the installation of
-packages outside of sandboxes to prevent accidental collisions.
+The cabal configuration is stored in ``$HOME/.cabal/config`` and contains
+various options including credential information for Hackage upload. One
+addition to configuration is to completely disallow the installation of packages
+outside of sandboxes to prevent accidental collisions.
 
 ```perl
 -- Don't allow global install of packages.
 require-sandbox: True
 ```
 
-A library can also be compiled with runtime profiling information enabled. More on this is discussed in the
-section on Concurrency and profiling.
+A library can also be compiled with runtime profiling information enabled. More
+on this is discussed in the section on Concurrency and profiling.
 
 ```perl
 library-profiling: True
 ```
 
-Another common flag to enable is the ``documentation`` which forces the local build of Haddock documentation,
-which can be useful for offline reference. On a Linux filesystem these are built to the
-``/usr/share/doc/ghc/html/libraries/`` directory.
+Another common flag to enable is the ``documentation`` which forces the local
+build of Haddock documentation, which can be useful for offline reference. On a
+Linux filesystem these are built to the ``/usr/share/doc/ghc/html/libraries/``
+directory.
 
 ```perl
 documentation: True
 ```
 
-If GHC is currently installed the documentation for the Prelude and Base libraries should be available at this
-local link:
+If GHC is currently installed the documentation for the Prelude and Base
+libraries should be available at this local link:
 
 [/usr/share/doc/ghc/html/libraries/index.html](file:///usr/share/doc/ghc/html/libraries/index.html)
 
@@ -265,7 +281,8 @@ See:
 GHCi
 ----
 
-GHCi is the interactive shell for the GHC compiler. GHCi is where we will spend most of our time.
+GHCi is the interactive shell for the GHC compiler. GHCi is where we will spend
+most of our time.
 
 Command    Shortcut   Action
 ---------  ---------  --------------------------
@@ -276,7 +293,8 @@ Command    Shortcut   Action
 `:print`   `:p`       Print the expression
 `:edit`    `:e`       Load file in system editor.
 
-The introspection commands are an essential part of debugging and interacting with Haskell code:
+The introspection commands are an essential part of debugging and interacting
+with Haskell code:
 
 ```haskell
 λ: :type 3
@@ -303,8 +321,8 @@ data [] a = ... | a : [a]       -- Defined in `GHC.Types'
 infixr 5 :
 ```
 
-The current state of the global environment in the shell can also be queried. Such as module-level bindings
-and types:
+The current state of the global environment in the shell can also be queried.
+Such as module-level bindings and types:
 
 ```haskell
 λ: :browse
@@ -343,8 +361,8 @@ with the following modifiers:
 ```
 
 Language extensions and compiler pragmas can be set at the prompt. See the [Flag
-Reference](http://www.haskell.org/ghc/docs/latest/html/users_guide/flag-reference.html) for the vast set of
-compiler flag options. For example several common ones are:
+Reference](http://www.haskell.org/ghc/docs/latest/html/users_guide/flag-reference.html)
+for the vast set of compiler flag options. For example several common ones are:
 
 ```haskell
 :set -XNoMonomorphismRestriction
@@ -384,8 +402,9 @@ it :: Prelude.Integer
 "hello ghci"
 ```
 
-The configuration for the GHCi shell can be customized globally by defining a ``ghci.conf`` in 
-``$HOME/.ghc/`` or in the in current working directory as ``./.ghci.conf``.
+The configuration for the GHCi shell can be customized globally by defining a
+``ghci.conf`` in ``$HOME/.ghc/`` or in the in current working directory as
+``./.ghci.conf``.
 
 For example we can add a command to use the Hoogle type search from within GHCi.
 
@@ -404,8 +423,8 @@ Data.Traversable fmapDefault :: Traversable t => (a -> b) -> t a -> t b
 Prelude fmap :: Functor f => (a -> b) -> f a -> f b
 ```
 
-For reasons of sexiness it is desirable to set your GHC prompt to a ``λ`` or a ``ΠΣ`` if you're into that
-lifestyle.
+For reasons of sexiness it is desirable to set your GHC prompt to a ``λ`` or a
+``ΠΣ`` if you're into that lifestyle.
 
 ```haskell
 :set prompt "λ: "
@@ -443,8 +462,9 @@ error :: String -> a
 undefined :: a
 ```
 
-The bottom is a singular value that inhabits every type. When evaluated the semantics of Haskell no longer
-yield a meaningful value. It's usually written as the symbol ⊥ (i.e. the compiler flipping you off ).
+The bottom is a singular value that inhabits every type. When evaluated the
+semantics of Haskell no longer yield a meaningful value. It's usually written as
+the symbol ⊥ (i.e. the compiler flipping you off ).
 
 An example of a infinite looping term:
 
@@ -453,15 +473,16 @@ f :: a
 f = let x = x in x
 ```
 
-The ``undefined`` function is nevertheless extremely practical to accommodate writing incomplete programs and
-for debugging.
+The ``undefined`` function is nevertheless extremely practical to accommodate
+writing incomplete programs and for debugging.
 
 ```haskell
 f :: a -> Complicated Type
 f = undefined -- write tomorrow, typecheck today!
 ```
 
-Partial functions from non-exhaustive pattern matching is probably the most common introduction of bottoms.
+Partial functions from non-exhaustive pattern matching is probably the most
+common introduction of bottoms.
 
 ```haskell
 data F = A | B
@@ -469,9 +490,10 @@ case x of
   A -> ()
 ```
 
-The above is translated into the following GHC Core with the exception inserted for the non-exhaustive
-patterns. GHC can be made more vocal about incomplete patterns using the ``-fwarn-incomplete-patterns`` and
-``-fwarn-incomplete-uni-patterns`` flags.
+The above is translated into the following GHC Core with the exception inserted
+for the non-exhaustive patterns. GHC can be made more vocal about incomplete
+  patterns using the ``-fwarn-incomplete-patterns`` and
+  ``-fwarn-incomplete-uni-patterns`` flags.
 
 ```haskell
 case x of _ {
@@ -480,8 +502,9 @@ case x of _ {
 }
 ```
 
-The same holds with record construction with missing fields, although there's almost never a good reason to
-construct a record with missing fields and GHC will warn us by default.
+The same holds with record construction with missing fields, although there's
+almost never a good reason to construct a record with missing fields and GHC
+will warn us by default.
 
 ```haskell
 data Foo = Foo { example1 :: Int }
@@ -494,16 +517,18 @@ Again this has an error term put in place by the compiler:
 Foo (recConError "<interactive>:4:9-12|a")
 ```
 
-What's not immediately apparent is that they are used extensively throughout the Prelude, some for practical
-reasons others for historical reasons. The canonical example is the ``head`` function which as written ``[a]
--> a`` could not be well-typed without the bottom.
+What's not immediately apparent is that they are used extensively throughout the
+Prelude, some for practical reasons others for historical reasons. The canonical
+example is the ``head`` function which as written ``[a] -> a`` could not be
+well-typed without the bottom.
 
 ~~~~ {.haskell include="src/01-basics/bottoms.hs"}
 ~~~~
 
-It's rare to see these partial functions thrown around carelessly in production code and the preferred method
-is instead to use the safe variants provided in ``Data.Maybe`` combined with the usual fold functions
-``maybe`` and ``either`` or to use pattern matching.
+It's rare to see these partial functions thrown around carelessly in production
+code and the preferred method is instead to use the safe variants provided in
+``Data.Maybe`` combined with the usual fold functions ``maybe`` and ``either``
+or to use pattern matching.
 
 ```haskell
 listToMaybe :: [a] -> Maybe a
@@ -511,9 +536,10 @@ listToMaybe []     =  Nothing
 listToMaybe (a:_)  =  Just a
 ```
 
-When a bottom define in terms of error is invoked it typically will not generate any position information, but
-the function used to provide assertions ``assert`` can be short circuited to generate position information in
-the place of either ``undefined`` or ``error`` call.
+When a bottom define in terms of error is invoked it typically will not generate
+any position information, but the function used to provide assertions ``assert``
+can be short circuited to generate position information in the place of either
+``undefined`` or ``error`` call.
 
 ~~~~ {.haskell include="src/01-basics/fail.hs"}
 ~~~~
@@ -587,8 +613,9 @@ more sophisticated refinement types, this is an open research problem though.
 Debugger
 --------
 
-Although its use is somewhat rare, GHCi has a builtin debugger.  Debugging uncaught exceptions from bottoms
-or asynchronous exceptions is in similar style to debugging segfaults with gdb.
+Although its use is somewhat rare, GHCi actually does have a builtin debugger.
+Debugging uncaught exceptions from bottoms or asynchronous exceptions is in
+similar style to debugging segfaults with gdb.
 
 ```haskell
 λ: :set -fbreak-on-exception
@@ -632,15 +659,16 @@ different since GHC will rearrange the program in rather drastic ways.
 
 See:
 
-*[xc flag](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/runtime-control.html#idp13041968)
+* [xc flag](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/runtime-control.html#idp13041968)
 
 Trace
 ------
 
-Haskell being pure has the unique property that most code is introspectable on its own, as such the "printf"
-style of debugging is often unnecessary when we can simply open GHCi and test the function. Nevertheless
-Haskell does come with a unsafe ``trace`` function which can be used to perform arbitrary print statements
-outside of the IO monad.
+Haskell being pure has the unique property that most code is introspectable on
+its own, as such the "printf" style of debugging is often unnecessary when we
+can simply open GHCi and test the function. Nevertheless Haskell does come with
+a unsafe ``trace`` function which can be used to perform arbitrary print
+statements outside of the IO monad.
 
 ~~~~ {.haskell include="src/01-basics/trace.hs"}
 ~~~~
@@ -667,10 +695,11 @@ tracePrintfM s = traceM . printf s
 Type Holes
 ----------
 
-Since GHC 7.8 we have a new tool for debugging incomplete programs by means of *type holes*. By placing a
-underscore on any value on the right hand-side of a declaration GHC will throw an error during type-checker
-that reflects the possible values that could placed at this point in the program to make to make the program
-type-check.
+Since GHC 7.8 we have a new tool for debugging incomplete programs by means of
+*type holes*. By placing a underscore on any value on the right hand-side of a
+declaration GHC will throw an error during type-checker that reflects the
+possible values that could placed at this point in the program to make to make
+the program type-check.
 
 ```haskell
 instance Functor [] where
@@ -696,7 +725,8 @@ src/typehole.hs:7:32:
 Failed, modules loaded: none.
 ```
 
-GHC has rightly suggested that the expression needed to finish the program is ``xs : [a]``.
+GHC has rightly suggested that the expression needed to finish the program is
+``xs : [a]``.
 
 Nix
 ---
@@ -848,8 +878,8 @@ Monads
 Eightfold Path to Monad Satori
 ------------------------------
 
-Much ink has been spilled waxing lyrical about the supposed mystique of monads. Instead I suggest a path to
-enlightenment:
+Much ink has been spilled waxing lyrical about the supposed mystique of monads.
+Instead I suggest a path to enlightenment:
 
 1. Don't read the monad tutorials.
 2. No really, don't read the monad tutorials.
@@ -860,8 +890,9 @@ enlightenment:
 7. Use monads in real code.
 8. Don't write monad-analogy tutorials.
 
-In other words, the only path to understanding monads is to read the fine source, fire up GHC and write some
-code. Analogies and metaphors will not lead to understanding.
+In other words, the only path to understanding monads is to read the fine
+source, fire up GHC and write some code. Analogies and metaphors will not lead
+to understanding.
 
 
 Monadic Myths
@@ -884,9 +915,10 @@ See: [What a Monad Is Not](http://www.haskell.org/haskellwiki/What_a_Monad_is_no
 Laws
 ----
 
-Monads are not complicated, the implementation is a typeclass with two functions, ``(>>=)`` pronounced "bind"
-and ``return``. Any preconceptions one might have for the word "return" should be discarded, it has an
-entirely different meaning.
+Monads are not complicated, the implementation is a typeclass with two
+functions, ``(>>=)`` pronounced "bind" and ``return``. Any preconceptions one
+might have for the word "return" should be discarded, it has an entirely
+different meaning.
 
 ```haskell
 class Monad m where
@@ -913,7 +945,8 @@ m >>= return ≡ m
 (m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)
 ```
 
-There is an auxiliary function (``(>>)``) defined in terms of the bind operation that discards its argument.
+There is an auxiliary function (``(>>)``) defined in terms of the bind operation
+that discards its argument.
 
 ```haskell
 (>>) :: Monad m => m a -> m b -> m b
@@ -925,8 +958,9 @@ See: [Monad Laws](http://www.haskell.org/haskellwiki/Monad_laws)
 Do Notation
 -----------
 
-Monads syntax in Haskell is written in sugared form that is entirely equivalent to just applications of the
-monad operations. The desugaring is defined recursively by the rules: 
+Monads syntax in Haskell is written in sugared form that is entirely equivalent
+to just applications of the monad operations. The desugaring is defined
+recursively by the rules: 
 
 ```haskell
 do { a <- f ; m } ≡ f >>= \a -> do { m }
@@ -1008,8 +1042,9 @@ See: [Haskell 2010: Do Expressions](http://www.haskell.org/onlinereport/haskell2
 Maybe
 -----
 
-The *Maybe* monad is the simplest first example of a monad instance. The Maybe monad models computations which
-fail to yield a value at any point during computation.
+The *Maybe* monad is the simplest first example of a monad instance. The Maybe
+monad models computations which fail to yield a value at any point during
+computation.
 
 ```haskell
 data Maybe a = Just a | Nothing
@@ -1065,7 +1100,8 @@ m >>= f
 ==> [1,0,1,0,1,0,1,0]
 ```
 
-The list comprehension syntax in Haskell can be implemented in terms of the list monad.
+The list comprehension syntax in Haskell can be implemented in terms of the list
+monad.
 
 ```haskell
 a = [f x y | x <- xs, y <- ys, x == y ]
@@ -1084,8 +1120,8 @@ b = do
 IO
 --
 
-A value of type ``IO a`` is a computation which, when performed, does some I/O before returning a value of
-type ``a``. Desugaring the IO monad:
+A value of type ``IO a`` is a computation which, when performed, does some I/O
+before returning a value of type ``a``. Desugaring the IO monad:
 
 ```haskell
 main :: IO ()
@@ -1111,12 +1147,14 @@ See: [Haskell 2010: Basic/Input Output](http://www.haskell.org/onlinereport/hask
 Whats the point?
 ----------------
 
-Consider the non-intuitive fact that we now have a uniform interface for talking about three very different
-but foundational ideas for programming: *Failure*, *Collections*, and *Effects*.
+Consider the non-intuitive fact that we now have a uniform interface for talking
+about three very different but foundational ideas for programming: *Failure*,
+*Collections*, and *Effects*.
 
-Let's write down a new function called ``sequence`` which folds a function ``mcons``, which we can think of as
-analogues to the list constructor (i.e. ``(a : b : [])``) except it pulls the two list elements out of of two
-monadic values (``p``,``q``) using bind.
+Let's write down a new function called ``sequence`` which folds a function
+``mcons``, which we can think of as analogues to the list constructor (i.e. ``(a
+: b : [])``) except it pulls the two list elements out of of two monadic values
+(``p``,``q``) using bind.
 
 ```haskell
 sequence :: Monad m => [m a] -> m [a] 
@@ -1133,8 +1171,9 @@ What does this function mean in terms of each of the monads discussed above?
 
 **Maybe**
 
-Sequencing a list of a ``Maybe`` values allows us to collect the results of a series of computations which can
-possibly fail and yield the aggregated values only if they all succeeded. 
+Sequencing a list of a ``Maybe`` values allows us to collect the results of a
+series of computations which can possibly fail and yield the aggregated values
+only if they all succeeded. 
 
 ```haskell
 sequence :: [Maybe a] -> Maybe [a]
@@ -1149,9 +1188,9 @@ sequence [Just 3, Just 4, Nothing]
 
 **List**
 
-Since the bind operation for the list monad forms the pairwise list of elements from the two operands, folding
-the bind over a list of lists with ``sequence`` implements the general Cartesian product for an arbitrary
-number of lists.
+Since the bind operation for the list monad forms the pairwise list of elements
+from the two operands, folding the bind over a list of lists with ``sequence``
+implements the general Cartesian product for an arbitrary number of lists.
 
 ```haskell
 sequence :: [[a]] -> [[a]]
@@ -1164,8 +1203,8 @@ sequence [[1,2,3],[10,20,30]]
 
 **IO**
 
-Sequence takes a list of IO actions, performs them sequentially, and returns the list of resulting values in
-the order sequenced.
+Sequence takes a list of IO actions, performs them sequentially, and returns the
+list of resulting values in the order sequenced.
 
 ```haskell
 sequence :: [IO a] -> IO [a]
@@ -1178,10 +1217,12 @@ sequence [getLine, getLine]
 -- ["a","b"]
 ```
 
-So there we have it, three fundamental concepts of computation that are normally defined independently of each
-other actually all share this similar structure that can be abstracted out and reused to build higher
-abstractions that work for all current and future implementations. If you want a motivating reason for
-understanding monads, this is it! This is the essence of what I wish I knew about monads looking back.
+So there we have it, three fundamental concepts of computation that are normally
+defined independently of each other actually all share this similar structure
+that can be abstracted out and reused to build higher abstractions that work for
+all current and future implementations. If you want a motivating reason for
+understanding monads, this is it! This is the essence of what I wish I knew
+about monads looking back.
 
 See: [Control.Monad](http://hackage.haskell.org/package/base-4.6.0.1/docs/Control-Monad.html#g:4)
 
@@ -1224,11 +1265,12 @@ A simple implementation of the Writer monad:
 ~~~~ {.haskell include="src/02-monads/writer_impl.hs"}
 ~~~~
 
-This implementation is lazy so some care must be taken that one actually wants to only generate a stream of
-thunks.  Often this it is desirable to produce a computation which requires a stream of thunks that can pulled
-lazily out of the ``runWriter``, but often times the requirement is to produce a finite stream of values that
-are forced at the invocation of ``runWriter``. Undesired laziness from Writer is a common source of grief, but
-is very remediable.
+This implementation is lazy so some care must be taken that one actually wants
+to only generate a stream of thunks.  Often this it is desirable to produce a
+computation which requires a stream of thunks that can pulled lazily out of the
+``runWriter``, but often times the requirement is to produce a finite stream of
+values that are forced at the invocation of ``runWriter``. Undesired laziness
+from Writer is a common source of grief, but is very remediable.
 
 State Monad
 -----------
@@ -1244,9 +1286,9 @@ execState :: State s a -> s -> s
 ~~~~ {.haskell include="src/02-monads/state.hs"}
 ~~~~
 
-The state monad is often mistakenly described as being impure, but it is in fact entirely pure and the same
-effect could be achieved by explicitly passing state. A simple implementation of the State monad is only a
-few lines:
+The state monad is often mistakenly described as being impure, but it is in fact
+entirely pure and the same effect could be achieved by explicitly passing state.
+A simple implementation of the State monad is only a few lines:
 
 ~~~~ {.haskell include="src/02-monads/state_impl.hs"}
 ~~~~
@@ -1361,10 +1403,11 @@ Monad Transformers
 mtl / transformers
 ------------------
 
-So the descriptions of Monads in the previous chapter are a bit of a white lie. Modern Haskell monad libraries
-typically use a more general form of the written in terms of monad transformers which allow us to compose
-monads together to form composite monads. The monads mentioned previously are subsumed by the special case of
-the transformer form composed with the Identity monad.
+So the descriptions of Monads in the previous chapter are a bit of a white lie.
+Modern Haskell monad libraries typically use a more general form of the written
+in terms of monad transformers which allow us to compose monads together to form
+composite monads. The monads mentioned previously are subsumed by the special
+case of the transformer form composed with the Identity monad.
 
 Monad   Transformer  Type            Transformed Type
 ------  -----------  --------------- -------------------
@@ -1384,14 +1427,15 @@ instance Monad m => MonadReader r (ReaderT r m)
 instance (Monoid w, Monad m) => MonadWriter w (WriterT w m)
 ```
 
-In terms of generality the mtl library is the most common general interface for these monads, which itself
-depends on the transformers library which generalizes the "basic" monads described above into transformers.
+In terms of generality the mtl library is the most common general interface for
+these monads, which itself depends on the transformers library which generalizes
+the "basic" monads described above into transformers.
 
 Transformers
 ------------
 
-At their core monad transformers allow us to nest monadic computations in a stack with an interface to
-exchange values between the levels, called ``lift``.
+At their core monad transformers allow us to nest monadic computations in a
+stack with an interface to exchange values between the levels, called ``lift``.
 
 ```haskell
 lift :: (Monad m, MonadTrans t) => m a -> t m a
@@ -2708,8 +2752,9 @@ functor, and not a monad.
 ~~~~ {.haskell include="src/08-applicatives/applicative.hs"}
 ~~~~
 
-The pattern ``f <$> a <*> b ...`` shows us so frequently that there are a family of functions to lift
-applicatives of a fixed number arguments.  This pattern also shows up frequently with monads (``liftM``, ``liftM2``, ``liftM3``).
+The pattern ``f <$> a <*> b ...`` shows us so frequently that there are a family
+of functions to lift applicatives of a fixed number arguments.  This pattern
+also shows up frequently with monads (``liftM``, ``liftM2``, ``liftM3``).
 
 ```haskell
 liftA :: Applicative f => (a -> b) -> f a -> f b
