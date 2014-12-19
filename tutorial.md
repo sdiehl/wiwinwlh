@@ -1926,6 +1926,13 @@ See:
 * [More Points For Lazy Evaluation](http://augustss.blogspot.hu/2011/05/more-points-for-lazy-evaluation-in.html)
 * [How Lazy Evaluation Works in Haskell](https://hackhands.com/lazy-evaluation-works-haskell/)
 
+Strictness
+----------
+
+* Strict - XXX
+* Non-strict - XXX
+* Lazy - XXX
+
 Seq and WHNF
 ------------
 
@@ -2363,23 +2370,37 @@ If coming from an imperative background retraining one's self to think about ite
 maps, folds, and scans can be challenging.
 
 ```haskell
--- pseudocode
 Prelude.foldl :: (a -> b -> a) -> a -> [b] -> a
 Prelude.foldr :: (a -> b -> b) -> b -> [a] -> b
 
+-- pseudocode
 foldr f z [a...] = f a (f b ( ... (f y z) ... )) 
 foldl f z [a...] = f ... (f (f z a) b) ... y 
 ```
 
-Foldable and Traversable are the general interface for all traversables and folds of any data structure which
-is parameterized over its element type ( List, Map, Set, Maybe, ...). These are two classes are used
-everywhere in modern Haskell and are extremely important.
+For a concrete consider the simple arithmetic sequence over the binary operator
+``(+)``:
 
-A foldable instance allows us to apply functions to data types of monoidal values that collapse the
-structure using some logic over ``mappend``.
+```haskell
+-- foldr (+) 1 [2..]
+(1 + (2 + (3 + (4 + ...))))
+```
 
-A traversable instance allows us to apply functions to data types that walk the structure left-to-right within
-an applicative context.
+```haskell
+-- foldl (+) 1 [2..]
+((((1 + 2) + 3) + 4) + ...)
+```
+
+Foldable and Traversable are the general interface for all traversals and folds
+of any data structure which is parameterized over its element type ( List, Map,
+Set, Maybe, ...). These are two classes are used everywhere in modern Haskell
+and are extremely important.
+
+A foldable instance allows us to apply functions to data types of monoidal
+values that collapse the structure using some logic over ``mappend``.
+
+A traversable instance allows us to apply functions to data types that walk the
+structure left-to-right within an applicative context.
 
 ```haskell
 class (Functor f, Foldable f) => Traversable f where
@@ -2425,6 +2446,18 @@ data Tree a = Node a [Tree a]
 ```
 
 See: [Typeclassopedia](http://www.haskell.org/haskellwiki/Typeclassopedia)
+
+Corecursion
+-----------
+
+```haskell
+unfoldr :: (b -> Maybe (a, b)) -> b -> [a]
+```
+
+A recursive function consumes data and eventually terminates, a corecursive
+function generates data and **coterminates**.
+
+TODO
 
 Split
 -----
@@ -3451,6 +3484,11 @@ inferred by the inference engine.
 ~~~~ {.haskell include="src/11-quantification/skolem_capture.hs"}
 ~~~~
 
+In this example in order for the expression to be well typed, ``f`` would
+necessarily have (``Int -> Int``) which implies that ``a ~ Int`` over the whole
+type, but since ``a`` is bound under the quantifier it must not be unified with
+``Int`` and so the typechecker must fail with a skolem capture error.
+
 ```perl
 Couldn't match expected type `a' with actual type `t'
 `a' is a rigid type variable bound by a type expected by the context: a -> a 
@@ -3459,9 +3497,13 @@ In the expression: x In the first argument of `escape', namely `(\ a -> x)'
 In the expression: escape (\ a -> x)
 ```
 
-This can be used for our advantage, for example the ST monad uses a second rank
-type to prevent the capture of references between ST monads with separate state
-threads where the ``s`` type variable is bound within a rank-2 type.
+This can actually be used for our advantage to enforce several types of
+invariants about scope and use of specific type variables. For example the ST
+monad uses a second rank type to prevent the capture of references between ST
+monads with separate state threads where the ``s`` type variable is bound within
+a rank-2 type and cannot escape, statically guaranteeing that the implementation
+details of the ST internals can't leak out and thus ensuring it's referential
+transparency.
 
 Existential Quantification
 --------------------------
@@ -3564,45 +3606,6 @@ and all signatures contained therein.
 GADTs
 =====
 
-Void
-----
-
-The Void type is the type with no inhabitants. It unifies only with itself.
-
-Using a newtype wrapper we can create a type where recursion makes it impossible
-to construct an inhabitant.
-
-```haskell
--- Void :: Void -> Void
-newtype Void = Void Void
-```
-
-Or using ``-XEmptyDataDecls`` we can also construct the uninhabited type
-equivalently as a data declaration with no constructors.
-
-```haskell
-data Void
-```
-
-The only inhabitant of both of these types is a diverging term like
-(``undefined``).
-
-Phantom Types
--------------
-
-Phantom types are parameters that appear on the left hand side of a type declaration but which are not
-constrained by the values of the types inhabitants. They are effectively slots for us to encode additional
-information at the type-level.
-
-~~~~ {.haskell include="src/12-gadts/phantom.hs"}
-~~~~
-
-Notice t type variable ``tag`` does not appear in the right hand side of the declaration. Using this allows us
-to express invariants at the type-level that need not manifest at the value-level. We're effectively
-programming by adding extra information at the type-level.
-
-See: [Fun with Phantom Types](http://www.researchgate.net/publication/228707929_Fun_with_phantom_types/file/9c960525654760c169.pdf)
-
 GADTs
 -----
 
@@ -3665,31 +3668,50 @@ This time around:
 failure = Succ ( Lit True )
 ```
 
-Explicit constraints (``a ~ b``) can be added to a function's context that the
-compiler should be able to deduce that two types are equal up to unification.
+Explicit equality constraints (``a ~ b``) can be added to a function's context.
+For example the following expand out to the same types.
+
 
 ```haskell
--- f :: a -> a -> (a,a)
--- f :: (a ~ b) => a -> b -> (a,b)
-f x y = (x,y)
+f :: a -> a -> (a, a)
+f :: (a ~ b) => a -> b -> (a,b)
 ```
 
 ```haskell
-data Exp a where
-  LitInt  :: Int  -> Exp Int
-  LitBool :: Bool -> Exp Bool
-  If      :: Exp Bool -> Exp a -> Exp a -> Exp a
+(Int ~ Int)  => ...
+(a ~ Int)    => ...
+(Int ~ a)    => ...
+(a ~ b)      => ...
+(Int ~ Bool) => ... -- Will not typecheck.
+```
 
+This is effectively the implementation detail of what GHC is doing behind the
+scenes to implement GADTs ( implicitly passing and threading equality terms
+around ). If we wanted we could do the same setup that GHC does just using
+equality constraints and existential quantification.
+
+```haskell
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE ExistentialQuantification #-}
+
+-- Using Constraints
 data Exp a
-  = (a ~ Int) => LitInt Int
-  | (a ~ Bool) => LitBool Bool
-  | If (Exp Bool) (Exp Int) (Exp Int)
+  = (a ~ Int) => LitInt a
+  | (a ~ Bool) => LitBool a
+  | forall b. (b ~ Bool) => If (Exp b) (Exp a) (Exp a)
+
+-- Using GADTs
+-- data Exp a where
+--   LitInt  :: Int  -> Exp Int
+--   LitBool :: Bool -> Exp Bool
+--   If      :: Exp Bool -> Exp a -> Exp a -> Exp a
 
 eval :: Exp a -> a
 eval e = case e of
   LitInt i   -> i
   LitBool b  -> b
   If b tr fl -> if eval b then eval tr else eval fl
+
 ```
 
 Kind Signatures
@@ -3710,8 +3732,19 @@ Either :: * -> * -> *
 ```
 
 There are in fact some extensions to this system that will covered later ( see:
-PolyKinds and Unboxed types ) but most kinds in everyday code are simply either
-stars or arrows.
+PolyKinds and Unboxed types in later sections ) but most kinds in everyday code
+are simply either stars or arrows.
+
+With the KindSignatures extension enabled we can now annotate top level type
+signatures with their explicit kinds, bypassing the normal kind inference
+procedures.
+
+```haskell
+{-# LANGUAGE KindSignatures #-}
+
+id :: forall (a :: *). a -> a
+id x = x
+```
 
 On top of default GADT declaration we can also constrain the parameters of the
 GADT to specific kinds. For basic usage Haskell's kind inference can deduce this
@@ -3720,6 +3753,53 @@ the kind system this becomes essential.
 
 ~~~~ {.haskell include="src/12-gadts/kindsignatures.hs"}
 ~~~~
+
+Void
+----
+
+The Void type is the type with no inhabitants. It unifies only with itself.
+
+Using a newtype wrapper we can create a type where recursion makes it impossible
+to construct an inhabitant.
+
+```haskell
+-- Void :: Void -> Void
+newtype Void = Void Void
+```
+
+Or using ``-XEmptyDataDecls`` we can also construct the uninhabited type
+equivalently as a data declaration with no constructors.
+
+```haskell
+data Void
+```
+
+The only inhabitant of both of these types is a diverging term like
+(``undefined``).
+
+Phantom Types
+-------------
+
+Phantom types are parameters that appear on the left hand side of a type declaration but which are not
+constrained by the values of the types inhabitants. They are effectively slots for us to encode additional
+information at the type-level.
+
+~~~~ {.haskell include="src/12-gadts/phantom.hs"}
+~~~~
+
+Notice t type variable ``tag`` does not appear in the right hand side of the declaration. Using this allows us
+to express invariants at the type-level that need not manifest at the value-level. We're effectively
+programming by adding extra information at the type-level.
+
+See: [Fun with Phantom Types](http://www.researchgate.net/publication/228707929_Fun_with_phantom_types/file/9c960525654760c169.pdf)
+
+
+Stronger Invariants
+-------------------
+
+Stronger invariants using GADTs and Phantom Types
+
+TODO
 
 Type Equality
 -------------
@@ -6338,6 +6418,43 @@ Exposing a C API
 
 TODO
 
+Embedding Haskell
+-----------------
+
+```haskell
+#include <stdio.h>
+#include "HsFFI.h"
+#include "foo_stub.h"
+extern void __stginit_Foo ( void );
+
+int main(int argc, char *argv[])
+{
+  int i;
+
+  hs_init(&argc, &argv);
+  hs_add_root(__stginit_Foo);
+
+  for (i = 0; i < 5; i++) {
+    printf("%d\n", foo(2500));
+  }
+
+  hs_exit();
+  return 0;
+}
+```
+
+TODO
+
+Foreign Pointers
+----------------
+
+TODO
+
+Embedding Python
+-----------------
+
+TODO
+
 Concurrency
 ===========
 
@@ -7667,19 +7784,28 @@ $ strip Example
 Unboxed Types
 --------------
 
-The usual integer type in Haskell can be considered to be a regular algebraic
-datatype with a special constructor.
+The usual numerics types in Haskell can be considered to be a regular algebraic
+datatype with special constructor arguments for their underlying unboxed values.
+Normally unboxed types and explicit unboxing are not used in normal code, they
+are an implementation detail of the compiler and many optimizations exist to do
+the unboxing in a way that is guaranteed to be safe and preserve the high level
+semantics of Haskell. Nevertheless it is somewhat enlightening to understand how
+the types are implemented.
+
+```haskell
+data Int = I# Int#
+
+data Integer
+  = S# Int#              -- Small integers
+  | J# Int# ByteArray#   -- Large GMP integers
+
+data Float = F# Float#
+```
 
 ```haskell
 λ: :set -XMagicHash
 λ: :m +GHC.Types
 λ: :m +GHC.Prim
-
-λ: :i Int
-data Int = I# Int#      -- Defined in GHC.Types
-
-λ: :k Int#
-Int# :: #
 
 λ: :type 3#
 3# :: GHC.Prim.Int#
@@ -7689,6 +7815,12 @@ Int# :: #
 
 λ: :type "Haskell"#
 "Haskell"# :: Addr#
+
+λ: :i Int
+data Int = I# Int#      -- Defined in GHC.Types
+
+λ: :k Int#
+Int# :: #
 ```
 
 An unboxed type with kind ``#`` and will never unify a type variable of kind
@@ -8485,6 +8617,42 @@ Cmm      Description
 ``I64``  64-bit integer
 
 
+```cpp
+#define ENTER()                                   
+ again:                                           
+  W_ info;                                        
+  LOAD_INFO                                       
+  switch [INVALID_OBJECT .. N_CLOSURE_TYPES]      
+         (TO_W_( %INFO_TYPE(%STD_INFO(info)) )) { 
+  case                                            
+    IND,                                          
+    IND_PERM,                                     
+    IND_STATIC:                                   
+   {                                              
+      P1 = StgInd_indirectee(P1);                 
+      goto again;                                 
+   }                                              
+  case                                            
+    FUN,                                          
+    FUN_1_0,                                      
+    FUN_0_1,                                      
+    FUN_2_0,                                      
+    FUN_1_1,                                      
+    FUN_0_2,                                      
+    FUN_STATIC,                                   
+    BCO,                                          
+    PAP:                                          
+   {                                              
+      jump %ENTRY_CODE(Sp(0));                    
+   }                                              
+  default:                                        
+   {                                              
+      UNTAG_R1                                    
+      jump %ENTRY_CODE(info);                     
+   }                                              
+  }
+```
+
 Many of the predefined closures (``stg_ap_p_fast``, etc) are themselves
 mechanically generated and more or less share the same form ( a giant switch
 statement on closure type, update frame, stack adjustment). Inside of GHC is a
@@ -8631,42 +8799,6 @@ Or avoiding accessing the info table:
       jump %ENTRY_CODE(Sp(0));
   }
   info = %INFO_PTR(P1);
-```
-
-```cpp
-#define ENTER()                                   
- again:                                           
-  W_ info;                                        
-  LOAD_INFO                                       
-  switch [INVALID_OBJECT .. N_CLOSURE_TYPES]      
-         (TO_W_( %INFO_TYPE(%STD_INFO(info)) )) { 
-  case                                            
-    IND,                                          
-    IND_PERM,                                     
-    IND_STATIC:                                   
-   {                                              
-      P1 = StgInd_indirectee(P1);                 
-      goto again;                                 
-   }                                              
-  case                                            
-    FUN,                                          
-    FUN_1_0,                                      
-    FUN_0_1,                                      
-    FUN_2_0,                                      
-    FUN_1_1,                                      
-    FUN_0_2,                                      
-    FUN_STATIC,                                   
-    BCO,                                          
-    PAP:                                          
-   {                                              
-      jump %ENTRY_CODE(Sp(0));                    
-   }                                              
-  default:                                        
-   {                                              
-      UNTAG_R1                                    
-      jump %ENTRY_CODE(info);                     
-   }                                              
-  }
 ```
 
 Code Generators
