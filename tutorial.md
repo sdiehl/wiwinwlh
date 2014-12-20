@@ -2261,9 +2261,9 @@ implicit import and force the use of Foldable and Traversable instead:
 
 ```haskell
 import  Data.List hiding ( 
-    all , and , any , concat , concatMap , elem , filter ,
-    find , foldl , foldl' , foldl1 , foldr , foldr1 ,
-    mapAccumL , mapAccumR , maximum , maximumBy , minimum , 
+    all , and , any , concat , concatMap find , foldl , 
+    foldl' , foldl1 , foldr , foldr1 , mapAccumL , 
+    mapAccumR , maximum , maximumBy , minimum , 
     minimumBy , notElem , or , product , sum )
 
 import Control.Monad hiding ( 
@@ -3908,6 +3908,10 @@ See: [Fun with Phantom Types](http://www.researchgate.net/publication/228707929_
 Stronger Invariants
 -------------------
 
+**Smart Constructors**
+
+**GADTs**
+
 Stronger invariants using GADTs and Phantom Types
 
 TODO
@@ -4943,6 +4947,19 @@ function and reify it as a value.
 ~~~~ {.haskell include="src/16-type-families/dict.hs"}
 ~~~~
 
+Both Constraints and AnyK types are somewhat unique in the Haskell
+implementation, in that they have the ``BOX`` kind.
+
+```haskell
+λ: import GHC.Prim
+
+λ: :kind AnyK
+AnyK :: BOX
+
+λ: :kind Constraint
+Constraint :: BOX
+```
+
 Reflection
 ----------
 
@@ -5048,15 +5065,6 @@ unFlip :: Flip f x y -> f y x
 unFlip (Flip x) = x
 ```
 
-**AnyK**
-
-```haskell
-λ: import GHC.Prim
-λ: :kind AnyK
-AnyK :: BOX
-λ: :kind Constraint
-Constraint :: BOX
-```
 
 Data Kinds
 ----------
@@ -6002,11 +6010,6 @@ rewriteBiM   :: (Monad m, Biplate from to) => (to -> m (Maybe to)) -> from -> m 
 
 ~~~~ {.haskell include="src/18-generics/biplate.hs"}
 ~~~~
-
-Sums of Products
-----------------
-
-TODO
 
 Mathematics
 ===========
