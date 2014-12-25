@@ -7799,6 +7799,50 @@ times.
 {-# NOINLINE func #-}
 ```
 
+For example the contrived case where we apply a binary function to two
+arguments. The function body is small and instead of entering another closure
+just to apply the given function, we could in fact just inline the function
+application at the call site.
+
+```haskell
+{-# INLINE foo #-}
+{-# NOINLINE bar #-}
+
+foo :: (a -> b -> c) -> a -> b -> c
+foo f x y = f x y
+
+bar :: (a -> b -> c) -> a -> b -> c
+bar f x y = f x y
+
+test1 :: Int
+test1 = foo (+) 10 20
+
+test2 :: Int
+test2 = bar (+) 20 30
+```
+
+Looking at the core, we can see that in ``test2`` the function has indeed been
+expanded at the call site and simply performs the addition there instead of
+another indirection.
+
+```haskell
+test1 :: Int
+test1 =
+  let {
+    f :: Int -> Int -> Int
+    f = + $fNumInt } in
+  let {
+    x :: Int
+    x = I# 10 } in
+  let {
+    y :: Int
+    y = I# 20 } in
+  f x y
+
+test2 :: Int
+test2 = bar (+ $fNumInt) (I# 20) (I# 30)
+```
+
 Cases marked with ``NOINLINE`` generally indicate that the logic in the function
 is using something like ``unsafePerformIO`` or some other unholy function. In
 these cases naive inlining might duplicate effects at multiple call-sites
