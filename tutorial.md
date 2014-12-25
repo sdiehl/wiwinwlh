@@ -2347,8 +2347,12 @@ f $! x  = let !vx = x in f vx
 Deepseq
 -------
 
-There are often times when for performance reasons we need to deeply evaluate a data structure to normal form
-leaving no terms unevaluated. The ``deepseq`` library performs this task.
+There are often times when for performance reasons we need to deeply evaluate a
+data structure to normal form leaving no terms unevaluated. The ``deepseq``
+library performs this task.
+
+The typeclass ``NFData`` (Normal Form Data) allows us to seq all elements of a
+structure across any subtypes which themselves implement NFData.
 
 ```haskell
 class NFData a where
