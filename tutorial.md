@@ -540,7 +540,7 @@ Haskell has a variety of editor tools that can be used to provide interactive
 development feedback and functionality such as querying types of subexpressions,
 linting, type checking, and code completion.
 
-![](http://www.stephendiehl.com/images/errors.png)
+![](img/errors.png)
 
 Many prepackaged setups exist to expedite the process of setting up many of the
 programmer editors for Haskell development:
