@@ -41,7 +41,7 @@ Sections that have had been added or large changes since last version:
 * Haddock
 * Monad Tutorials Commentary
 * Monad Morphisms
-* Corecrusions
+* Corecursion
 * Category
 * Arrows
 * Bifunctors
@@ -8432,7 +8432,6 @@ String     Z-Encoded String
 ``z``      ``zz``
 ``Z``      ``ZZ``
 ``.``      ``.``
-``_``      ``_``
 ``()``     ``Z0T``
 ``(,)``    ``Z2T``
 ``(,,)``   ``Z3T``
