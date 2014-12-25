@@ -17,6 +17,60 @@ This code and text are dedicated to the public domain. You can copy, modify,
 distribute and perform the work, even for commercial purposes, all without
 asking permission.
 
+**Changelog**
+
+**2.2**
+
+Sections that have had been added or large changes since last version: 
+
+* Irrefutable Patterns
+* Hackage
+* Exhaustiveness
+* Stacktraces
+* Laziness
+* Skolem Capture
+* Foreign Function Pointers
+* Attoparsec Parser
+* Inline Cmm
+* IO/ST Implementation / PrimMonad
+* Specialization
+* unbound-generics
+* Editor Integration
+* EKG
+* Nix
+* Haddock
+* Monad Tutorials Commentary
+* Monad Morphisms
+* Corecrusions
+* Category
+* Arrows
+* Bifunctors
+* ExceptT
+* hint / mueval
+* Roles
+* Higher Kinds
+* Kind Polymorphism
+* Numeric Tower
+* SAT Solvers
+* Graph
+* Sparks
+* Threadscope
+* Generic Parsers
+* GHC Block Diagram
+* GHC Debug Flags
+* Core
+* Inliner
+* Unboxed Types
+* Runtime Memory Representation
+* ghc-heapview
+* STG
+* Worker/Wrapper
+* Z-Encoding
+* Cmm
+* Runtime Optimizations
+* RTS Profiling
+* Algebraic Relations
+
 Basics
 ======
 
@@ -278,6 +332,54 @@ See:
 * [An Introduction to Cabal Sandboxes](http://coldwa.st/e/blog/2013-08-20-Cabal-sandbox.html)
 * [Storage and Identification of Cabalized Packages](http://www.vex.net/~trebla/haskell/sicp.xhtml)
 
+Hackage
+-------
+
+Hackage is the canonical source open source Haskell packages. Being a
+transitional language, Hackage is many things to many things to many people but
+seem to be two dominant philosophies:
+
+**Reusable Code / Building Blocks**
+
+Libraries exist as stable, community supported, building blocks for building
+higher level functionality on top of a edifice which is common and stable. The
+author(s) of the library have written the library as a means of packaging up
+their understanding of a problem domain so that others can build on their
+understanding and expertise.
+
+**A Staging Area / Request for Comments**
+
+A common philosophy is that Hackage is a place to upload experimental libraries
+up as a means of getting community feedback and making the code publicly
+available.  The library author(s) often rationalize putting these kind of
+libraries up undocumented, often not indicating what the library even does, by
+simply stating that they intend to tear it all down and rewrite it later. This
+unfortunately means a lot of Hackage namespace has become polluted with dead-end
+bit-rotting code.
+
+Many other language ecosystems (Python, NodeJS, Ruby) favor the former
+philosophy, and coming to Haskell can be kind of unnerving to see *thousands of
+libraries without the slightest hint of documentation or description of
+purpose*. It is an open question about the cultural differences between the two
+philosophies and how sustainable the current cultural state of Hackage is.
+
+Needless to say there is a lot of very low-quality Haskell code and
+documentation out there today, and being conservative in library assessment is a
+necessary skill.
+
+As a rule of thumb if the Haddock docs for the library does not have a **minimal
+worked example**, it is usually safe to assume that it is a RFC-style library
+and probably should be avoided.
+
+There are several authors who it usually safe to assume have uploaded a stable
+and usable library. These include, but are not limited to:
+
+* Bryan O'Sullivan
+* Johan Tibell
+* Simon Marlow
+* Gabriel Gonzalez
+* Roman Leshchinskiy
+
 GHCi
 ----
 
@@ -438,6 +540,7 @@ Haskell has a variety of editor tools that can be used to provide interactive
 development feedback and functionality such as querying types of subexpressions,
 linting, type checking, and code completion.
 
+![](http://www.stephendiehl.com/images/errors.png)
 
 Many prepackaged setups exist to expedite the process of setting up many of the
 programmer editors for Haskell development:
@@ -676,7 +779,7 @@ See:
 * [xc flag](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/runtime-control.html#idp13041968)
 
 Trace
-------
+-----
 
 Haskell being pure has the unique property that most code is introspectable on
 its own, as such the "printf" style of debugging is often unnecessary when we
@@ -759,17 +862,81 @@ an entirely different Nix specification language. It is unclear what the future
 of Haskell and Nix will be and whether it is a workaround around some current
 cabal pain points or a deeper unifying model.
 
-TODO
+One the package is installed you can start a nix shell on the fly with a bunch
+of packages installed the nixos repos.
 
-The Nix Workflow consists of a sequence like the following:
+```bash
+$ nix-shell -p haskellPackages.parsec -p haskellPackages.mtl --command ghci
+```
+
+This is of course not limited to haskell packages, and there is a wide variety
+of binary packages and libraries available. If your library depends on a
+specific version of GNU readline, Nix can for example manage this dependency
+while system libraries are outside the scope of ``cabal-install``.
+
+```bash
+$ nix-shell -p llvm -p julia -p emacs
+```
+
+The Nix workflow for Haskell consists of a sequence like the following:
 
 ```bash
 $ cabal init
-... usual setup
-$ cabal2nix library.cabal --sha=./
+... usual setup ...
+$ cabal2nix mylibrary.cabal --sha256=0 > shell.nix
 ```
 
-[cabal2nix4dev](https://github.com/dave4420/cabal2nix4dev/blob/master/cabal2nix4dev)
+This will generate a file like the following:
+
+```ocaml
+# This file was auto-generated by cabal2nix. Please do NOT edit manually!
+
+{ cabal, mtl, transformers
+}:
+
+cabal.mkDerivation (self: {
+  pname = "mylibrary";
+  version = "0.1.0.0";
+  sha256 = "0";
+  isLibrary = true;
+  isExecutable = true;
+  buildDepends = [
+    mtl transformers
+  ];
+})
+```
+
+We'll need to manually edit the file:
+
+```ocaml
+# This file was auto-generated by cabal2nix. Please do NOT edit manually!
+
+{ haskellPackages ? (import <nixpkgs> {}).haskellPackages }:
+
+haskellPackages.cabal.mkDerivation (self: {
+  pname = "mylibrary";
+  version = "0.1.0.0";
+  sha256 = "./.";
+  isLibrary = true;
+  isExecutable = true;
+  buildDepends = with haskellPackages; [
+    mtl transformers cabalInstall
+  ];
+  buildTools = [ cabalInstall ];
+})
+```
+
+There you go, now you can launch the cabal repl for your project with:
+
+```bash
+$ nix-shell --command "cabal repl"
+```
+
+This process has been automated by another library cabal2nix4dev:
+
+See:
+
+* [cabal2nix4dev](https://github.com/dave4420/cabal2nix4dev/blob/master/cabal2nix4dev)
 
 Haddock
 -------
@@ -2658,7 +2825,17 @@ See: [Text](http://hackage.haskell.org/package/text-1.1.0.1/docs/Data-Text.html)
 Text.Builder
 ------------
 
-TODO
+```haskell
+toLazyText :: Builder -> Data.Text.Lazy.Internal.Text
+fromLazyText :: Data.Text.Lazy.Internal.Text -> Builder
+```
+
+The Text.Builder allows the efficient monoidal construction of lazy Text types
+without having to go through inefficient forms like String or List types as
+intermediates.
+
+~~~~ {.haskell include="src/07-text-bytestring/builder.hs"}
+~~~~
 
 ByteString
 ----------
@@ -2712,11 +2889,6 @@ instance IsList [a] where
 
 ~~~~ {.haskell include="src/07-text-bytestring/overloadedlist.hs"}
 ~~~~
-
-data-default
-------------
-
-TODO
 
 Applicatives
 ============
@@ -2976,11 +3148,6 @@ addA f g = f &&& g >>> arr (\ (y, z) -> y + z)
 In practice this notation is not used often and in the future may become deprecated.
 
 See: [Arrow Notation](https://downloads.haskell.org/~ghc/7.8.3/docs/html/users_guide/arrow-notation.html)
-
-Contravariant Functors
-----------------------
-
-TODO
 
 Bifunctors
 ----------
@@ -3437,13 +3604,6 @@ See:
 
 * [Monads for Free!](http://www.andres-loeh.de/Free.pdf)
 * [I/O is not a Monad](http://r6.ca/blog/20110520T220201Z.html)
-
-operational
------------
-
-TODO
-
-See: [Operational](https://www.haskell.org/haskellwiki/Operational)
 
 Indexed Monads
 --------------
@@ -3919,17 +4079,6 @@ programming by adding extra information at the type-level.
 See: [Fun with Phantom Types](http://www.researchgate.net/publication/228707929_Fun_with_phantom_types/file/9c960525654760c169.pdf)
 
 
-Stronger Invariants
--------------------
-
-**Smart Constructors**
-
-**GADTs**
-
-Stronger invariants using GADTs and Phantom Types
-
-TODO
-
 Type Equality
 -------------
 
@@ -4124,11 +4273,6 @@ See:
 
 Interpreters
 ============
-
-Expression Problem
-------------------
-
-TODO
 
 Final Interpreters
 ------------------
@@ -4807,11 +4951,6 @@ See:
 * [Roles: A New Feature of GHC](http://typesandkinds.wordpress.com/2013/08/15/roles-a-new-feature-of-ghc/)
 * [Roles](https://ghc.haskell.org/trac/ghc/wiki/Roles)
 
-Coercible 
----------
-
-TODO
-
 Monotraversable
 ---------------
 
@@ -4973,11 +5112,6 @@ AnyK :: BOX
 λ: :kind Constraint
 Constraint :: BOX
 ```
-
-Reflection
-----------
-
-TODO
 
 Promotion
 =========
@@ -6571,48 +6705,6 @@ Hello from Haskell, here's a number passed between runtimes:
 Back inside of C again.
 ```
 
-Exposing a C API
-----------------
-
-TODO
-
-Embedding Haskell
------------------
-
-```haskell
-#include <stdio.h>
-#include "HsFFI.h"
-#include "foo_stub.h"
-extern void __stginit_Foo ( void );
-
-int main(int argc, char *argv[])
-{
-  int i;
-
-  hs_init(&argc, &argv);
-  hs_add_root(__stginit_Foo);
-
-  for (i = 0; i < 5; i++) {
-    printf("%d\n", foo(2500));
-  }
-
-  hs_exit();
-  return 0;
-}
-```
-
-TODO
-
-Foreign Pointers
-----------------
-
-TODO
-
-Embedding Python
------------------
-
-TODO
-
 Concurrency
 ===========
 
@@ -6648,8 +6740,6 @@ rseq :: a -> Eval a
 
 runEval :: Eval a -> a
 ```
-
-TODO
 
 ```haskell
 -- Evaluates the arguments to f in parallel before application.
@@ -7181,31 +7271,6 @@ operator (``=$``) for combining Sources and Sink and a Conduit and a Sink respec
 
 See: [Conduit Overview](https://www.fpcomplete.com/user/snoyberg/library-documentation/conduit-overview)
 
-ResourceT
----------
-
-TODO
-
-See: [ResourceT](https://www.fpcomplete.com/user/snoyberg/library-documentation/resourcet)
-
-Logging
-=======
-
-Writer
-------
-
-TODO
-
-hslogger
---------
-
-TODO
-
-Pipes
------
-
-See: [Streaming Logging](http://www.haskellforall.com/2014/02/streaming-logging.html)
-
 Data Formats
 =============
 
@@ -7360,16 +7425,6 @@ And again we get a nice typed ADT as a result.
 ]
 ```
 
-Cereal
-------
-
-TODO
-
-SafeCopy
---------
-
-TODO
-
 Network & Web Programming
 =========================
 
@@ -7423,16 +7478,6 @@ transactions. For example, we can build a simple key-value store wrapped around 
 
 ~~~~ {.haskell include="src/28-databases/acid.hs"}
 ~~~~
-
-Persistent
-----------
-
-TODO
-
-Esqueleto
----------
-
-TODO
 
 GHC
 ===
@@ -8414,9 +8459,11 @@ Z-Encoded String                        Decoded String
 Cmm
 ---
 
-There are many closures types to support all sorts of functionality (STM,
-asynchronous exceptions, parallelism, ...) inside the runtime. Let's simply
-consider the core types used for simple Haskell evaluation:
+Cmm is GHC's complex internal intermediate representation that maps directly
+onto the generated code.
+
+There are several common suffixes you'll see used in all closures and function
+names:
 
 Symbol   Meaning
 ------   ----------------
@@ -8431,98 +8478,11 @@ Symbol   Meaning
 ``v32``  32-byte vector
 ``v64``  64-byte vector
 
-**Initialization / Termination**
-
-* stg_init_finish
-* stg_init
-* StgReturn
-
-Standard         Fast application
--------------    ------------------
-stg_ap_0         stg_ap_0_fast
-stg_ap_v         stg_ap_v_fast
-stg_ap_f         stg_ap_f_fast
-stg_ap_d         stg_ap_d_fast
-stg_ap_l         stg_ap_l_fast
-stg_ap_v16       stg_ap_v16_fast
-stg_ap_v32       stg_ap_v32_fast
-stg_ap_v64       stg_ap_v64_fast
-stg_ap_n         stg_ap_n_fast
-stg_ap_p         stg_ap_p_fast
-stg_ap_pv        stg_ap_pv_fast
-stg_ap_pp        stg_ap_pp_fast
-stg_ap_ppv       stg_ap_ppv_fast
-stg_ap_ppp       stg_ap_ppp_fast
-stg_ap_pppv      stg_ap_pppv_fast
-stg_ap_pppp      stg_ap_pppp_fast
-stg_ap_ppppp     stg_ap_ppppp_fast
-stg_ap_pppppp    stg_ap_pppppp_fast
-
-As of GHC 7.8.3 the ``ArgSpec`` constants have the following definitions, these
-show up in the info tables.
-
-ArgSpec   Meaning
--------   ---------
-3         0     
-4         n         
-5         p        
-6         f        
-7         d        
-8         l        
-9         v16      
-10        v32      
-11        v64      
-12        nn        
-13        np       
-14        pn       
-15        pp       
-16        nnn      
-17        nnp      
-18        npn      
-19        npp      
-20        pnn      
-21        pnp      
-22        ppn      
-23        ppp      
-24        pppp     
-25        ppppp    
-26        pppppp   
-27        ppppppp  
-28        pppppppp 
-
-**Indirections**
-
-* stg_IND
-* stg_IND_STATIC
-* stg_BLACKHOLE
-
-
-* stg_PAP
-* stg_AP
-* stg_AP_NOUPD
-* stg_AP_STACK
-* stg_AP_STACK_NOUPD
-
-**Stack frames**
-
-* stg_upd_frame
-* stg_bh_upd_frame
-
-**Applications with Updates ( Thunks )**
-
-* stg_ap_1_upd
-* stg_ap_2_upd
-* stg_ap_3_upd
-* stg_ap_4_upd
-* stg_ap_5_upd
-* stg_ap_6_upd
-* stg_ap_7_upd
-
-**Garbage Collection**
-
-* stg_gc_fun
-
 **Cmm Registers**
+
+There are 10 registers that described in the machine model. **Sp** is the
+pointer to top of the stack, **SpLim** is the pointer to last element in the
+stack.
 
 * Sp
 * SpLim
@@ -8540,26 +8500,9 @@ ArgSpec   Meaning
 * R9
 * R10
 
-The R1 register always holds the active closure.
+The **R1** register always holds the active closure.
 
-**x86:**
-
-CPU     Cmm Value
-----    ---------
-ebx     Base
-ebp     Sp
-esi     R1
-edi     Hp
-
-**x86-64**
-    
-CPU     Cmm Value
-----    ---------
-r13     Base
-rbp     Sp
-rbx     R1      
-r12     Hp
-
+**Examples**
 
 Consider a constant static constructor.
 
@@ -8775,42 +8718,6 @@ Cmm      Description
 ``I64``  64-bit integer
 
 
-```cpp
-#define ENTER()                                   
- again:                                           
-  W_ info;                                        
-  LOAD_INFO                                       
-  switch [INVALID_OBJECT .. N_CLOSURE_TYPES]      
-         (TO_W_( %INFO_TYPE(%STD_INFO(info)) )) { 
-  case                                            
-    IND,                                          
-    IND_PERM,                                     
-    IND_STATIC:                                   
-   {                                              
-      P1 = StgInd_indirectee(P1);                 
-      goto again;                                 
-   }                                              
-  case                                            
-    FUN,                                          
-    FUN_1_0,                                      
-    FUN_0_1,                                      
-    FUN_2_0,                                      
-    FUN_1_1,                                      
-    FUN_0_2,                                      
-    FUN_STATIC,                                   
-    BCO,                                          
-    PAP:                                          
-   {                                              
-      jump %ENTRY_CODE(Sp(0));                    
-   }                                              
-  default:                                        
-   {                                              
-      UNTAG_R1                                    
-      jump %ENTRY_CODE(info);                     
-   }                                              
-  }
-```
-
 Many of the predefined closures (``stg_ap_p_fast``, etc) are themselves
 mechanically generated and more or less share the same form ( a giant switch
 statement on closure type, update frame, stack adjustment). Inside of GHC is a
@@ -8949,48 +8856,6 @@ if (GETTAG(R1)==1) {
 }
 ```
 
-Code Generators
----------------
-
-* ``-fllvm``
-* ``-fasm``
-
-TODO
-
-Rewrites and Fusion
--------------------
-
-```haskell
-{-# RULES "map/map" forall f g xs.  map f (map g xs) = map (f.g) xs #-}
-```
-
-```haskell
-{-# RULES "foldr/build"
-    forall k z (g :: forall b. (a -> b -> b) -> b -> b) . 
-    foldr k z (build g) = g k z
- #-}
-```
-
-```haskell
-foldr :: (a -> b -> b) -> b -> [a] -> b
-foldr c n []     = n
-foldr c n (x:xs) = c x (foldr c n xs)
- 
-build :: (forall b. (a -> b -> b) -> b -> b) -> [a]
-build g = g (:) []
-```
-
-```haskell
-foldr c n (build g) = g c n
-```
-
-GHC makes no checks for the confluence, so if nonsensical rules or infinitely
-diverging rules are added then GHC will happily rewrite your program or spin
-forever. 
-
-TODO
-
-
 Profiling
 =========
 
@@ -9082,10 +8947,11 @@ Languages
 Unbound
 -------
 
-Several libraries exist to mechanize the process of writing name capture and substitution, since it is largely
-mechanical. Probably the most robust is the ``unbound`` library.  For example we can implement the infer
-function for a small Hindley-Milner system over a simple typed lambda calculus without having to write the
-name capture and substitution mechanics ourselves.
+Several libraries exist to mechanize the process of writing name capture and
+substitution, since it is largely mechanical. Probably the most robust is the
+``unbound`` library.  For example we can implement the infer function for a
+small Hindley-Milner system over a simple typed lambda calculus without having
+to write the name capture and substitution mechanics ourselves.
 
 ~~~~ {.haskell include="src/30-languages/unbound.hs"}
 ~~~~
@@ -9093,10 +8959,16 @@ name capture and substitution mechanics ourselves.
 Unbound Generics
 ----------------
 
-TODO
+Recently unbound was ported to use GHC.Generics instead of Template Haskell. The
+API is effectively the same, so for example a simple lambda calculus could be
+written as:
 
 ~~~~ {.haskell include="src/30-languages/unbound-generics.hs"}
 ~~~~
+
+See:
+
+* [unbound-generics](https://github.com/lambdageek/unbound-generics)
 
 LLVM 
 ----
@@ -9752,25 +9624,27 @@ data Foo = Foo { _field :: Int } deriving Show
 makeLenses ''Foo
 ```
 
-The simplest usage of lens is simply as a more compositional way of dealing with record access and updates,
-shown below in comparison with traditional record syntax:
+The simplest usage of lens is simply as a more compositional way of dealing with
+record access and updates, shown below in comparison with traditional record
+syntax:
 
 ~~~~ {.haskell include="src/32-lenses/simplelens.hs"}
 ~~~~
 
-Of course this just scratches the surface of lens, the real strength comes when dealing with complex and
+This pattern has great utility when it comes when dealing with complex and
 deeply nested structures:
 
 ~~~~ {.haskell include="src/32-lenses/lens.hs"}
 ~~~~
 
-Lens also provides us with an optional dense slurry of operators that expand into combinations of the core
-combinators. Many of the operators do have a [consistent naming
+Lens also provides us with an optional dense slurry of operators that expand
+into combinations of the core combinators. Many of the operators do have a
+[consistent naming
 scheme](https://www.fpcomplete.com/school/to-infinity-and-beyond/pick-of-the-week/a-little-lens-starter-tutorial#actually-there-are-a-whole-lot-of-operators-in-lens---over-100).
 
-The sheer number of operators provided by lens is a polarizing for some, but all of the operators can be
-written in terms of the textual functions (``set``, ``view``, ``over``, ``at``, ...) and some people prefer to
-use these instead. 
+The sheer number of operators provided by lens is a polarizing for some, but all
+of the operators can be written in terms of the textual functions (``set``,
+``view``, ``over``, ``at``, ...) and some people prefer to use these instead. 
 
 If one buys into lens model, it can serve as a partial foundation to write logic
 over a wide variety of data structures and computations and subsume many of the
@@ -10245,3 +10119,5 @@ Resources
 * [Category Theory, Awodey](http://www.amazon.com/Category-Theory-Oxford-Logic-Guides/dp/0199237182)
 * [Category Theory Foundations](https://www.youtube.com/watch?v=ZKmodCApZwk)
 * [The Catsters](http://www.youtube.com/user/TheCatsters)
+
+
