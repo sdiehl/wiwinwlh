@@ -7219,7 +7219,7 @@ deterministic actions over files without having to worry about effect order.
 ~~~~
 
 This is simple a sampling of the functionality of lens. The documentation for
-lens is extensive and great deal of care has been taken make the library
+pipes is extensive and great deal of care has been taken make the library
 extremely thorough. ``pipes`` is a shining example of an accessible yet category
 theoretic driven design.
 
