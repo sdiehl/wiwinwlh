@@ -434,7 +434,24 @@ For reasons of sexiness it is desirable to set your GHC prompt to a ``λ`` or a
 Editor Integration
 ------------------
 
-For editor integration with vim and emacs:
+Haskell has a variety of editor tools that can be used to provide interactive
+development feedback and functionality such as querying types of subexpressions,
+linting, type checking, and code completion.
+
+
+Many prepackaged setups exist to expedite the process of setting up many of the
+programmer editors for Haskell development:
+
+**Vim**
+
+https://github.com/begriffs/haskell-vim-now
+
+**Emacs**
+
+https://github.com/chrisdone/emacs-haskell-config
+
+The tools that many of these packages use behind the hood are usually available
+on cabal.
 
 ```haskell
 cabal install hdevtools
@@ -444,15 +461,12 @@ cabal install ghcid
 cabal install ghci-ng
 ```
 
-TODO
+In particular both ``ghc-mod`` and hdevtools can remarkably improve the
+efficiency and productivity.
 
-**Vim**
+See:
 
-https://github.com/begriffs/haskell-vim-now
-
-**Emacs**
-
-https://github.com/chrisdone/emacs-haskell-config
+* [A Vim + Haskell Workflow](http://www.stephendiehl.com/posts/vim_haskell.html)
 
 Bottoms
 -------
