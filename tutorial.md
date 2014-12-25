@@ -862,8 +862,8 @@ an entirely different Nix specification language. It is unclear what the future
 of Haskell and Nix will be and whether it is a workaround around some current
 cabal pain points or a deeper unifying model.
 
-One the package is installed you can start a nix shell on the fly with a bunch
-of packages installed the nixos repos.
+Once the NixOS package manager is installed you can start a nix shell on the fly
+with a bunch of packages installed the nixos repos.
 
 ```bash
 $ nix-shell -p haskellPackages.parsec -p haskellPackages.mtl --command ghci
@@ -920,7 +920,7 @@ haskellPackages.cabal.mkDerivation (self: {
   isLibrary = true;
   isExecutable = true;
   buildDepends = with haskellPackages; [
-    mtl transformers cabalInstall
+    mtl transformers
   ];
   buildTools = [ cabalInstall ];
 })
@@ -1827,6 +1827,8 @@ hoist :: Monad m => (forall a. m a -> n a) -> t m b -> t n b
 embed :: Monad n => (forall a. m a -> t n a) -> t m b -> t n b
 squash :: (Monad m, MMonad t) => t (t m) a -> t m a
 ```
+
+TODO
 
 See: [mmorph](https://hackage.haskell.org/package/mmorph)
 
