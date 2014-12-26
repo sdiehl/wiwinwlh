@@ -21,7 +21,7 @@ asking permission.
 
 **2.2**
 
-Sections that have had been added or large changes since last version: 
+Sections that have had been added or seen large changes:
 
 * Irrefutable Patterns
 * Hackage
@@ -32,7 +32,7 @@ Sections that have had been added or large changes since last version:
 * Foreign Function Pointers
 * Attoparsec Parser
 * Inline Cmm
-* IO/ST Implementation / PrimMonad
+* PrimMonad
 * Specialization
 * unbound-generics
 * Editor Integration
@@ -2076,6 +2076,9 @@ import qualified "mtl" Control.Monad.Reader as Reader
 
 **Record WildCards**
 
+Record wild cars allow us to expand out the names of a record as variables
+scoped as the labels of the record implicitly.
+
 ~~~~ {.haskell include="src/04-extensions/wildcards.hs"}
 ~~~~
 
@@ -2155,6 +2158,8 @@ See:
 
 Strictness
 ----------
+
+There are several evaluation models for the lambda calculus:
 
 * Strict - Evaluation is said to be strict if all arguments are evaluated before
   the body of a function.
@@ -6538,6 +6543,11 @@ See: [GraphSCC](http://hackage.haskell.org/package/GraphSCC)
 Graph Theory
 ------------
 
+The ``fgl`` library provides are more efficient graph structure and a wide
+variety of common graph-theoretic operations. For example calculating the
+dominance frontier of a graph shows up quite frequently in control flow analysis
+for compiler design.
+
 ```haskell
 import qualified Data.Graph.Inductive as G
 
@@ -6622,10 +6632,6 @@ n)`` matrix.
 
 ~~~~ {.haskell include="src/20-data-structures/hblas.hs"}
 ~~~~
-
-Hopefully hblas and [numerical-core](https://github.com/wellposed/numerical)
-libraries will serve as a foundation to build out the Haskell numerical
-ecosystem in the coming years.
 
 See: [hblas](https://github.com/wellposed/hblas)
 
@@ -7470,9 +7476,6 @@ apply for monads may break down or fail with error terms.
 
 See: [Making a Website with Haskell](http://adit.io/posts/2013-04-15-making-a-website-with-haskell.html)
 
-Cryptography
-============
-
 Databases
 =========
 
@@ -7553,12 +7556,12 @@ Flag                   Action
 ``-ddump-types``       Typed AST representation.
 ``-ddump-deriv``       Output of deriving instances.
 ``-ddump-ds``          Output of the desugar pass.
-``-ddump-spec``        Outut of specialisation pass.
+``-ddump-spec``        Output of specialisation pass.
 ``-ddump-rules``       Output of applying rewrite rules.
-``-ddump-vect``        Output results of vectorizer pass.
+``-ddump-vect``        Output results of vectorize pass.
 ``-ddump-simpl``       Ouptut of the SimplCore pass. 
 ``-ddump-inlinings``   Output of the inliner.
-``-ddump-cse``         Output of the common subsexpression elimination pass.
+``-ddump-cse``         Output of the common subexpression elimination pass.
 ``-ddump-prep``        The CorePrep pass.
 ``-ddump-stg``         The resulting STG.
 ``-ddump-cmm``         The resulting Cmm.
@@ -7613,8 +7616,7 @@ compiler:
 $ ghc -ddump-to-file -ddump-parsed -ddump-simpl -ddump-stg -ddump-cmm -ddump-asm
 ```
 
-Core
-----
+**Reading Core**
 
 Core from GHC is roughly human readable, but it's helpful to look at simple
 human written examples to get the hang of what's going on.
@@ -7693,7 +7695,7 @@ when starting.
 \ (@ b) (@ c) (@ a) (f1 :: b -> c) (g :: a -> b) (x1 :: a) -> f1 (g x1)
 ```
 
-The ``seq`` function has a intuitive implementation in the Core langauge. 
+The ``seq`` function has a intuitive implementation in the Core language.
 
 ```haskell
 x `seq` y
