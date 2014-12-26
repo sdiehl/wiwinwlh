@@ -2525,18 +2525,18 @@ The total versions provided fall into three cases:
 ```haskell
 -- Total
 headMay :: [a] -> Maybe a
-readMay :: Read a => String -> Maybea
+readMay :: Read a => String -> Maybe a
 atMay :: [a] -> Int -> Maybe a
 
 -- Total
 headDef :: a -> [a] -> a
-readDef :: Read a => a -> String -> Maybea
+readDef :: Read a => a -> String -> a
 atDef   :: a -> [a] -> Int -> a
 
 -- Partial
 headNote :: String -> [a] -> a
-readNote :: Read a => String -> String -> Maybea
-atNote   :: String -> [a] -> Int -> Maybe a
+readNote :: Read a => String -> String -> a
+atNote   :: String -> [a] -> Int -> a
 ```
 
 Boolean Blindness
