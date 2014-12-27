@@ -336,8 +336,8 @@ Hackage
 -------
 
 Hackage is the canonical source open source Haskell packages. Being a
-transitional language, Hackage is many things to many things to many people but
-seem to be two dominant philosophies:
+transitional language, Hackage is many things to many people but there seems to
+be two dominant philosophies:
 
 **Reusable Code / Building Blocks**
 
@@ -9507,10 +9507,10 @@ Lenses
 There are several implementations of note that are mostly compatible but differ
 in scope:
 
-* *lens-family-core* - The core abstractions in a standalone library with minimal dependencies.
+* *lens-family-core*
 * *fc-labels* 
 * *data-lens-light* 
-* *lens* - The pathological lens library.
+* *lens*
 
 **<span style="color:red">WARNING</span>: The ``lens`` library is considered by
 many Haskellers to be deeply pathological and introduces a needless amount of
@@ -9521,15 +9521,16 @@ here for information only and not as endorsement for it's use. Consider
 Should I use lens library?
 --------------------------
 
-No. The ``lens`` library is deeply problematic and should be avoided. While
-there are some good ideas around the general ideas of lenses. This specific
-``lens`` library implementation contains an enormous amount of unidiomatic and
-over-engineered Haskell code whose marginal utility is grossly outweighed by the
-sheer weight of the entire edifice and the mental strain that it forces it on
-other developers to deduce the types involved in even the simplest expressions.
+No. The ``lens`` library is deeply problematic when considered in the context of
+the rest of the Haskell ecosystem and should be avoided. While there are some
+good ideas around the general ideas of lenses, the ``lens`` library's
+implementation contains an enormous amount of unidiomatic and over-engineered
+Haskell code whose marginal utility is grossly outweighed by the sheer weight of
+the entire edifice and the mental strain that it forces it on other developers
+to deduce the types involved in even the simplest expressions.
 
-lens is effectively a laboratory for a certain set of ideas, it's idiosyncratic
-with respect to the rest of the ecosystem.
+lens is effectively a laboratory for a certain set of emerging ideas, it's
+idiosyncratic with respect to the rest of the ecosystem.
 
 van Laarhoven Lenses
 --------------------
