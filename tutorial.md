@@ -2308,8 +2308,8 @@ function is inlinable at call site so manually using ``foldl'`` is most often
 not required.
 
 Of important note is that GHCi runs without any optimizations applied so the
-same program that diverges or performs poorly in GHCi may not diverge when
-compiled with GHC.
+same program that performs poorly in GHCi may not have the same performance
+characteristics when compiled with GHC.
 
 Strictness Annotations
 ----------------------
@@ -4779,26 +4779,29 @@ Type Families
 MultiParam Typeclasses
 ----------------------
 
-Resolution of vanilla Haskell 98 typeclasses proceeds via very simple context reduction that minimizes
-interdependency between predicates, resolves superclasses, and reduces the types to head normal form. For
-example:
+Resolution of vanilla Haskell 98 typeclasses proceeds via very simple context
+reduction that minimizes interdependency between predicates, resolves
+superclasses, and reduces the types to head normal form. For example:
 
 ```haskell
 (Eq [a], Ord [a]) => [a]
 ==> Ord a => [a]
 ```
 
-If a single parameter typeclass expresses a property of a type ( i.e. it's in a class or not in class ) then a
-multiparamater typeclass expresses relationships between types. For example whether if we wanted to express
-the relation a type can be converted to another type we might use a class like:
+If a single parameter typeclass expresses a property of a type ( i.e. it's in a
+class or not in class ) then a multiparamater typeclass expresses relationships
+between types. For example whether if we wanted to express the relation a type
+can be converted to another type we might use a class like:
 
 ~~~~ {.haskell include="src/16-type-families/mparam.hs"}
 ~~~~
 
-Of course now our instances for ``Convertible Int`` are not unique anymore, so there no longer exists a nice
-procedure for determining the inferred type of ``b`` from just ``a``. To remedy this let's add a functional
-dependency ``a -> b``, which says tells GHC that an instance ``a`` uniquely determines the instance that b can
-be.  So we'll see that our two instances relating ``Int`` to both ``Integer`` and ``Char`` conflict.
+Of course now our instances for ``Convertible Int`` are not unique anymore, so
+there no longer exists a nice procedure for determining the inferred type of
+``b`` from just ``a``. To remedy this let's add a functional dependency ``a ->
+b``, which says tells GHC that an instance ``a`` uniquely determines the
+instance that b can be.  So we'll see that our two instances relating ``Int`` to
+both ``Integer`` and ``Char`` conflict.
 
 ~~~~ {.haskell include="src/16-type-families/mparam_fun.hs"}
 ~~~~
@@ -4809,8 +4812,10 @@ Functional dependencies conflict between instance declarations:
   instance Convertible Int Char
 ```
 
-Now there's a simpler procedure for determining instances uniquely and multiparameter typeclasses become more
-usable and inferable again.
+Now there's a simpler procedure for determining instances uniquely and
+multiparameter typeclasses become more usable and inferable again. Effectively a
+functional dependency ``| a -> b`` says that we can't define multiple
+multiparameter typeclass instances with the same ``a but different ``b``.
 
 ```haskell
 λ: convert (42 :: Int)
@@ -4819,16 +4824,19 @@ usable and inferable again.
 42
 ```
 
-Now let's make things not so simple. Turning on ``UndecidableInstances`` loosens the constraint on context
-reduction can only allow constraints of the class to become structural smaller than it's head. As a result
-implicit computation can now occur *within in the type class instance search*. Combined with a type-level
-representation of Peano numbers we find that we can encode basic arithmetic at the type-level.
+Now let's make things not so simple. Turning on ``UndecidableInstances`` loosens
+the constraint on context reduction can only allow constraints of the class to
+become structural smaller than it's head. As a result implicit computation can
+now occur *within in the type class instance search*. Combined with a type-level
+representation of Peano numbers we find that we can encode basic arithmetic at
+the type-level.
 
 ~~~~ {.haskell include="src/16-type-families/fundeps.hs"}
 ~~~~
 
-If the typeclass contexts look similar to Prolog you're not wrong, if one reads the contexts qualifier
-``(=>)`` backwards as backwards turnstiles ``:-`` then it's precisely the same equations.
+If the typeclass contexts look similar to Prolog you're not wrong, if one reads
+the contexts qualifier ``(=>)`` backwards as backwards turnstiles ``:-`` then
+it's precisely the same equations.
 
 ```prolog
 add(0, A, A).
@@ -4838,9 +4846,9 @@ pred(0, 0).
 pred(S(A), A).
 ```
 
-This is kind of abusing typeclasses and if used carelessly it can fail to terminate or overflow at
-compile-time. ``UndecidableInstances`` shouldn't be turned on without careful forethought about what it
-implies.
+This is kind of abusing typeclasses and if used carelessly it can fail to
+terminate or overflow at compile-time. ``UndecidableInstances`` shouldn't be
+turned on without careful forethought about what it implies.
 
 ```haskell
 <interactive>:1:1:
@@ -4850,16 +4858,18 @@ implies.
 Type Families
 -------------
 
-Type families allows us to write functions in the type domain which take types as arguments which can yield
-either types or values indexed on their arguments which are evaluated at compile-time in during typechecking.
-Type families come in two varieties: **data families** and **type synonym families**.
+Type families allows us to write functions in the type domain which take types
+as arguments which can yield either types or values indexed on their arguments
+which are evaluated at compile-time in during typechecking.  Type families come
+in two varieties: **data families** and **type synonym families**.
 
 * **type familes** are named function on types
 * **data familes** are type-indexed data types
 
-First let's look at *type synonym families*, there are two equivalent syntactic ways of constructing them.
-Either as *associated* type families declared within a typeclass or as standalone declarations at the
-toplevel. The following forms are semantically equivalent, although the unassociated form is strictly more
+First let's look at *type synonym families*, there are two equivalent syntactic
+ways of constructing them.  Either as *associated* type families declared within
+a typeclass or as standalone declarations at the toplevel. The following forms
+are semantically equivalent, although the unassociated form is strictly more
 general:
 
 ```haskell
@@ -4893,9 +4903,10 @@ instance Convertible Char where
   convert = ord
 ```
 
-Using the same example we used for multiparamater + functional dependencies illustration we see that there is
-a direct translation between the type family approach and functional dependencies. These two approaches have
-the same expressive power.
+Using the same example we used for multiparamater + functional dependencies
+illustration we see that there is a direct translation between the type family
+approach and functional dependencies. These two approaches have the same
+expressive power.
 
 An associated type family can be queried using the ``:kind!`` command in GHCi.
 
@@ -4908,13 +4919,16 @@ Rep Char :: *
 = Int
 ```
 
-*Data families* on the other hand allow us to create new type parameterized data constructors. Normally we can
-only define typeclasses functions whose behavior results in a uniform result which is purely a result of the
-typeclasses arguments. With data families we can allow specialized behavior indexed on the type.
+*Data families* on the other hand allow us to create new type parameterized data
+constructors. Normally we can only define typeclasses functions whose behavior
+results in a uniform result which is purely a result of the typeclasses
+arguments. With data families we can allow specialized behavior indexed on the
+type.
 
-For example if we wanted to create more complicated vector structures ( bit-masked vectors, vectors of tuples,
-... ) that exposed a uniform API but internally handled the differences in their data layout we can use data
-families to accomplish this:
+For example if we wanted to create more complicated vector structures (
+bit-masked vectors, vectors of tuples, ... ) that exposed a uniform API but
+internally handled the differences in their data layout we can use data families
+to accomplish this:
 
 ~~~~ {.haskell include="src/16-type-families/datafamily.hs"}
 ~~~~
@@ -4922,11 +4936,13 @@ families to accomplish this:
 Injectivity
 -----------
 
-The type level functions defined by type-families are not neccessarily *injective*, the function may map two
-disctinct input types to the same output type. This differs from the behavior of type constructors ( which are
-also type-level functions ) which are injective.
+The type level functions defined by type-families are not neccessarily
+*injective*, the function may map two disctinct input types to the same output
+type. This differs from the behavior of type constructors ( which are also
+type-level functions ) which are injective.
 
-For example for the constructor ``Maybe``,  ``Maybe t1 = Maybe t2`` implies that ``t1 = t2``.
+For example for the constructor ``Maybe``,  ``Maybe t1 = Maybe t2`` implies that
+``t1 = t2``.
 
 ```haskell
 data Maybe a = Nothing | Just a
@@ -4975,8 +4991,8 @@ See:
 Monotraversable
 ---------------
 
-Using type families, mono-traversable generalizes the notion of Functor, Foldable, and Traversable to include
-both monomorphic and polymorphic types.
+Using type families, mono-traversable generalizes the notion of Functor,
+Foldable, and Traversable to include both monomorphic and polymorphic types.
 
 ```haskell
 omap :: MonoFunctor mono => (Element mono -> Element mono) -> mono -> mono
@@ -4992,8 +5008,9 @@ ofoldr :: MonoFoldable mono
         => (Element mono -> b -> b) -> b -> mono -> b
 ```
 
-For example the text type normally does not admit either any of these type-classes since, but now we can write
-down the instances that model the interface of Foldable and Traversable.
+For example the text type normally does not admit either any of these
+type-classes since, but now we can write down the instances that model the
+interface of Foldable and Traversable.
 
 ~~~~ {.haskell include="src/16-type-families/mono.hs"}
 ~~~~
@@ -5003,9 +5020,10 @@ See: [From Semigroups to Monads](http://fundeps.com/tables/FromSemigroupToMonads
 NonEmpty
 --------
 
-Rather than having degenerate (and often partial) cases of many of the Prelude functions to accommodate the
-null case of lists, it is sometimes preferable to statically enforce empty lists from even being constructed
-as an inhabitant of a type.
+Rather than having degenerate (and often partial) cases of many of the Prelude
+functions to accommodate the null case of lists, it is sometimes preferable to
+statically enforce empty lists from even being constructed as an inhabitant of a
+type.
 
 ```haskell
 infixr 5 :|, <|
@@ -5030,9 +5048,10 @@ Manual Proofs
 -------------
 
 One of most deep results in computer science, the [Curry–Howard
-correspondence](https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence), is the relation that
-logical propositions can be modeled by types and instantiating those types constitute proofs of these
-propositions. Programs are proofs and proofs are programs.
+correspondence](https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence),
+is the relation that logical propositions can be modeled by types and
+instantiating those types constitute proofs of these propositions. Programs are
+proofs and proofs are programs.
 
 Types       Logic
 -------     -----------
@@ -5045,9 +5064,10 @@ Types       Logic
 ``A × B``   A ∧ B
 ``A -> B``  A ⇒ B
 
-In dependently typed languages we can exploit this result to it's full extent, in Haskell we don't have the
-strength that dependent types provide but can still prove trivial results. For example, now we can model a
-type level function for addition and provide a small proof that zero is an additive identity.
+In dependently typed languages we can exploit this result to it's full extent,
+in Haskell we don't have the strength that dependent types provide but can still
+prove trivial results. For example, now we can model a type level function for
+addition and provide a small proof that zero is an additive identity.
 
 ```haskell
 P 0                   [ base step ]
@@ -5066,13 +5086,14 @@ Axiom 2: a + suc b = suc (a + b)
 ∎
 ```
 
-Translated into Haskell our axioms are simply are type definitions and recursing over the inductive datatype
-constitutes the inductive step of our our proof.
+Translated into Haskell our axioms are simply are type definitions and recursing
+over the inductive datatype constitutes the inductive step of our our proof.
 
 ~~~~ {.haskell include="src/16-type-families/proof.hs"}
 ~~~~
 
-Using the ``TypeOperators`` extension we can also use infix notation at the type-level.
+Using the ``TypeOperators`` extension we can also use infix notation at the
+type-level.
 
 ```haskell
 data a :=: b where
@@ -5093,9 +5114,9 @@ plus_suc (Succ n) m = cong (plus_suc n m)
 Constraint Kinds
 ----------------
 
-GHC's implementation also exposes the predicates that bound quantifiers in Haskell as types themselves, with
-the ``-XConstraintKinds`` extension enabled. Using this extension we work with constraints as first class
-types.
+GHC's implementation also exposes the predicates that bound quantifiers in
+Haskell as types themselves, with the ``-XConstraintKinds`` extension enabled.
+Using this extension we work with constraints as first class types.
 
 ```haskell
 Num :: * -> Constraint
@@ -6755,46 +6776,50 @@ The most basic "atom" of parallelism in Haskell is a spark. It is a hint to the
 GHC runtime that a computation can be evaluated to weak head normal form in
 parallel.
 
-
 ```haskell
 rpar :: a -> Eval a
-rseq :: a -> Eval a
+rseq :: Strategy a
+rdeepseq :: NFData a => Strategy a
 
 runEval :: Eval a -> a
 ```
 
+``rpar a`` spins off a separate spark that evolutes a to weak head normal form
+and places the computation in the spark pool. When the runtime determines that
+there is an available CPU to evaluate the computation it will evaluate (
+*convert* ) the spark. If the main thread of the main thread of the program is
+the evaluator for the spark, the spark is said to have *fizzled*. Fizzling is
+generally bad and indicates that the logic or parallelism strategy is not well
+suited to the work that is being evaluated.
+
+The spark pool is also limited ( but user-adjustable ) to a default of 8000 (as
+of GHC 7.8.3 ). Sparks that are created beyond that limit are said to
+*overflow*.
+
 ```haskell
 -- Evaluates the arguments to f in parallel before application.
-par2 f x y = x `par` y `par` f x y
+par2 f x y = x `rpar` y `rpar` f x y
 ```
 
-The parallel computations themselves are encapsulated in the ``Eval`` monad,
-whose evaluation is a pure computation.
-
-```haskell
-example :: (a -> b) -> a -> a -> (b, b)
-example f x y = runEval $ do
-  a <- rpar $ f x
-  b <- rpar $ f y
-  rseq a
-  rseq b
-  return (a, b)
-```
-
-The value passed to ``rpar`` is called a spark and represent a single unit of
-work that is stored in a spark pool that the GHC runtime distributes across
-available processors. An argument to ``rseq`` forces the evaluation of a spark
-before evaluation continues.
-
-When a spark is evaluated is said to be *converted*. There are several other
-possible outcomes for a spark.
+An argument to ``rseq`` forces the evaluation of a spark before evaluation
+continues.
 
 Action          Description
 -------------   --------------
-``Overflowed``  Insufficient space in the spark pool when spawning.
+``Fizzled``     The resulting value has already been evaluated by the main thread so the spark need not be converted.
 ``Dud``         The expression has already been evaluated, the computed value is returned and the spark is not converted.
 ``GC'd``        The spark is added to the spark pool but the result is not referenced, so it is garbage collected.
-``Fizzled``     The resulting value has already been evaluated by the main thread so the spark need not be converted.
+``Overflowed``  Insufficient space in the spark pool when spawning.
+
+
+The parallel runtime is necessary to use sparks, and the resulting program must
+be compiled with ``-threaded``. Additionally the program itself can be specified
+to take runtime options with ``-rtsopts`` such as the number of cores to use.
+
+```haskell
+ghc -threaded -rtsopts program.hs
+./program +RTS -s N8 -- use 8 cores
+```
 
 The runtime can be asked to dump information about the spark evaluation by
 passing the ``-s`` flag.
@@ -6811,6 +6836,19 @@ $ ./spark +RTS -N4 -s
   TASKS: 6 (1 bound, 5 peak workers (5 total), using -N4)
 
   SPARKS: 20000 (20000 converted, 0 overflowed, 0 dud, 0 GC'd, 0 fizzled)
+```
+
+The parallel computations themselves are sequenced in the ``Eval`` monad, whose
+evaluation with ``runEval`` is itself a pure computation.
+
+```haskell
+example :: (a -> b) -> a -> a -> (b, b)
+example f x y = runEval $ do
+  a <- rpar $ f x
+  b <- rpar $ f y
+  rseq a
+  rseq b
+  return (a, b)
 ```
 
 Threadscope
@@ -6924,12 +6962,12 @@ modifyTVar :: TVar a -> (a -> a) -> STM ()
 modifyTVar' :: TVar a -> (a -> a) -> STM ()
 ```
 
-Software Transactional Memory is a technique for guaranteeing atomicity of values in parallel computations,
-such that all contexts view the same data when read and writes are guaranteed never to result in inconsistent
-states.
+Software Transactional Memory is a technique for guaranteeing atomicity of
+values in parallel computations, such that all contexts view the same data when
+read and writes are guaranteed never to result in inconsistent states.
 
-The strength of Haskell's purity guarantees that transactions within STM are pure and can always be rolled
-back if a commit fails.
+The strength of Haskell's purity guarantees that transactions within STM are
+pure and can always be rolled back if a commit fails.
 
 ~~~~ {.haskell include="src/22-concurrency/stm.hs"}
 ~~~~
@@ -6939,8 +6977,9 @@ See: [Beautiful Concurrency](https://www.fpcomplete.com/school/advanced-haskell/
 par-monad
 ---------
 
-Using the Par monad we express our computation as a data flow graph which is scheduled in order of the
-connections between forked computations which exchange resulting computations with ``IVar``.
+Using the Par monad we express our computation as a data flow graph which is
+scheduled in order of the connections between forked computations which exchange
+resulting computations with ``IVar``.
 
 ```haskell
 new :: Par (IVar a)
