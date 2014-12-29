@@ -3225,6 +3225,16 @@ evaluate :: a -> IO a
 ~~~~ {.haskell include="src/09-errors/ioexception.hs"}
 ~~~~
 
+Because a value will not be evaluated unless needed, if one desires to know for
+sure that an exception is either caught or not it can be deeply forced into head
+normal form before invoking catch. The ``strictCatch`` is not provided by
+standard library but has a simple implementation in terms of ``deepseq``.
+
+```haskell
+strictCatch :: (NFData a, Exception e) => IO a -> (e -> IO a) -> IO a
+strictCatch = catch . (toNF =<<)
+```
+
 Exceptions
 ----------
 
@@ -8065,8 +8075,17 @@ data Float = F# Float#
 λ: :type 3#
 3# :: GHC.Prim.Int#
 
+λ: :type 3##
+3## :: GHC.Prim.Word#
+
 λ: :type 3.14#
 3.14# :: GHC.Prim.Float#
+
+λ: :type 3.14##
+3.14## :: GHC.Prim.Double#
+
+λ: :type 'c'#
+'c'# :: GHC.Prim.Char#
 
 λ: :type "Haskell"#
 "Haskell"# :: Addr#
