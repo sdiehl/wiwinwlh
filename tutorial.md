@@ -335,7 +335,7 @@ See:
 Hackage
 -------
 
-Hackage is the canonical source open source Haskell packages. Being a
+Hackage is the canonical source of open source Haskell packages. Being a
 transitional language, Hackage is many things to many people but there seems to
 be two dominant philosophies:
 
