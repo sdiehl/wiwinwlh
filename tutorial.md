@@ -233,8 +233,8 @@ To run the tests, our package must itself be reconfigured with the
 manually installed if not already.
 
 ```bash
-$ cabal configure --enable-tests
 $ cabal install --only-dependencies --enable-tests
+$ cabal configure --enable-tests
 $ cabal test
 $ cabal test <name>
 ```
@@ -4020,6 +4020,19 @@ eval e = case e of
 
 ```
 
+In the presence of GADTs inference becomes intractable in many cases, often
+requiring an explicit annotation. For example ``f`` can either have ``T a ->
+[a]`` or ``T a -> [Int]`` and neither is principle.
+
+```haskell
+data T :: * -> * where
+  T1 :: Int -> T Int
+  T2 :: T a
+
+f (T1 n) = [n]
+f T2     = []
+```
+
 Kind Signatures
 ---------------
 
@@ -4813,9 +4826,9 @@ Functional dependencies conflict between instance declarations:
 ```
 
 Now there's a simpler procedure for determining instances uniquely and
-multiparameter typeclasses become more usable and inferable again. Effectively a
+multiparamater typeclasses become more usable and inferable again. Effectively a
 functional dependency ``| a -> b`` says that we can't define multiple
-multiparameter typeclass instances with the same ``a but different ``b``.
+multiparamater typeclass instances with the same ``a`` but different ``b``.
 
 ```haskell
 λ: convert (42 :: Int)
@@ -8635,7 +8648,7 @@ Haskell and slowly understand the equivalence and mechanical translation maps
 one to the other. 
 
 There are generally two parts to every Cmm definition, the **info table** and
-the **code objects**. The info table maps directly ``StgInfoTable`` struct and
+the **entry code**. The info table maps directly ``StgInfoTable`` struct and
 contains various fields related to the type of the closure, it's payload, and
 references. The code objects are basic blocks of generated code that correspond
 to the logic of the Haskell function/constructor.
