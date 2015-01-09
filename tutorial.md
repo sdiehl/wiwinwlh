@@ -265,6 +265,29 @@ $ cabal sdist
 $ cabal upload dist/mylibrary-0.1.tar.gz
 ```
 
+Sometimes you'd also like to add a library from a local project into a sandbox.
+In this case the add-source command can be used to bring it into the sandbox
+from a local directory.
+
+```bash
+$ cabal sandbox add-source /path/to/project
+```
+
+The current state of a sandbox can be frozen with all current package
+constraints enumerated. 
+
+```bash
+$ cabal freeze
+```
+
+This will create a file ``cabal.config`` with the constraint set.
+
+```haskell
+constraints: mtl ==2.2.1,
+             text ==1.1.1.3,
+             transformers ==0.4.1.0
+```
+
 Using the ``cabal repl`` and ``cabal run`` commands are preferable but sometimes
 we'd like to manually perform their equivalents at the shell, there are several
 useful aliases that rely on shell directory expansion to find the package
