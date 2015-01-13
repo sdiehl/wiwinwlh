@@ -1,6 +1,8 @@
 What I Wish I Knew When Learning Haskell
 ----------------------------------------
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sdiehl/wiwinwlh?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [Read Here](http://dev.stephendiehl.com/hask/)
 
 If you want to submit a fix for a typo or fix for code then just submit a pull request, and I'm happy to
