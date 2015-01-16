@@ -504,14 +504,14 @@ Several commands for interactive options have shortcuts:
 
 
 ```haskell
-λ: set +t
+λ: :set +t
 λ: []
 []
 it :: [a]
 ```
 
 ```haskell
-λ: set +s
+λ: :set +s
 λ: foldr (+) 0 [1..25]
 325
 it :: Prelude.Integer
