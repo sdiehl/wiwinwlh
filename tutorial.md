@@ -365,7 +365,7 @@ be two dominant philosophies:
 **Reusable Code / Building Blocks**
 
 Libraries exist as stable, community supported, building blocks for building
-higher level functionality on top of a edifice which is common and stable. The
+higher level functionality on top of an edifice which is common and stable. The
 author(s) of the library have written the library as a means of packaging up
 their understanding of a problem domain so that others can build on their
 understanding and expertise.
@@ -606,7 +606,7 @@ The bottom is a singular value that inhabits every type. When evaluated the
 semantics of Haskell no longer yield a meaningful value. It's usually written as
 the symbol ⊥ (i.e. the compiler flipping you off ).
 
-An example of a infinite looping term:
+An example of an infinite looping term:
 
 ```haskell
 f :: a
@@ -807,7 +807,7 @@ Trace
 Haskell being pure has the unique property that most code is introspectable on
 its own, as such the "printf" style of debugging is often unnecessary when we
 can simply open GHCi and test the function. Nevertheless Haskell does come with
-a unsafe ``trace`` function which can be used to perform arbitrary print
+an unsafe ``trace`` function which can be used to perform arbitrary print
 statements outside of the IO monad.
 
 ~~~~ {.haskell include="src/01-basics/trace.hs"}
@@ -836,7 +836,7 @@ Type Holes
 ----------
 
 Since GHC 7.8 we have a new tool for debugging incomplete programs by means of
-*type holes*. By placing a underscore on any value on the right hand-side of a
+*type holes*. By placing an underscore on any value on the right hand-side of a
 declaration GHC will throw an error during type-checker that reflects the
 possible values that could placed at this point in the program to make to make
 the program type-check.
@@ -2231,7 +2231,7 @@ evaluated.
 
 In Haskell normal evaluation only occurs at outer constructor of case-statements
 in Core. If we pattern match on a list we don't implicitly force all values in
-the list. A element in a data structure is only evaluated up to the most outer
+the list. An element in a data structure is only evaluated up to the most outer
 constructor. For example, to evaluate the length of a list we need only
 scrutinize the outer Cons constructors without regard for their inner values.
 
@@ -4522,7 +4522,7 @@ example = runInterpreter foo
 
 This is generally not a wise thing to build a library around, unless of course
 the purpose of the program is itself to evaluate arbitrary Haskell code (
-something like a online Haskell shell or the likes ).
+something like an online Haskell shell or the likes ).
 
 Both hint and mueval do effectively the same task, desigend around slightly
 different internals of the GHC Api.
@@ -5345,7 +5345,7 @@ of the generalized algebraic datatype.
 ~~~~ {.haskell include="src/17-promotion/datakinds.hs"}
 ~~~~
 
-So now if we try to zip two ``Vec`` types with the wrong shape then we get a error at compile-time about the
+So now if we try to zip two ``Vec`` types with the wrong shape then we get an error at compile-time about the
 off-by-one error.
 
 ```haskell
@@ -5355,8 +5355,8 @@ example2 = zipVec vec4 vec5
 --   Actual type: Vec Five Int
 ```
 
-The same technique we can use to create a container which is statically indexed by a empty or non-empty flag,
-such that if we try to take the head of a empty list we'll get a compile-time error, or stated equivalently we
+The same technique we can use to create a container which is statically indexed by an empty or non-empty flag,
+such that if we try to take the head of an empty list we'll get a compile-time error, or stated equivalently we
 have an obligation to prove to the compiler that the argument we hand to the head function is non-empty.
 
 ~~~~ {.haskell include="src/17-promotion/nonempty.hs"}
@@ -6192,7 +6192,7 @@ an expression and then combines them up into the parent expression.
 The ``transform`` function will perform a single pass bottom-up transformation
 of all terms in the expression.
 
-The ``rewrite`` function will perform a exhaustive transformation of all terms
+The ``rewrite`` function will perform an exhaustive transformation of all terms
 in the expression to fixed point, using Maybe to signify termination.
 
 ~~~~ {.haskell include="src/18-generics/uniplate.hs"}
@@ -6351,7 +6351,7 @@ fromFloatDigits :: RealFloat a => a -> Scientific
 
 Scientific provides arbitrary-precision number represented using scientific
 notation. The constructor takes an arbitrarily sized Integer argument with for
-digits and a Int for the exponential. Alternatively the value can be parsed from
+digits and an Int for the exponential. Alternatively the value can be parsed from
 a String or coerced from either Double/Float.
 
 ~~~~ {.haskell include="src/19-numbers/scientific.hs"}
@@ -6435,7 +6435,7 @@ function interface or via a common interface called SMT-lib. The two most common
 of use in Haskell are ``cvc4`` from Stanford and ``z3`` from Microsoft Research.
 
 The SBV library can abstract over different SMT solvers allow us to express the
-problem in a embedded domain language in Haskell and then offload the solving
+problem in an embedded domain language in Haskell and then offload the solving
 work to the third party library.
 
 TODO: Talk about SBV
@@ -6669,7 +6669,7 @@ Matrices and HBlas
 ------------------
 
 Just as in C when working with n-dimensional matrices we'll typically overlay
-the high-level matrix structure onto a unboxed contiguous block of memory with
+the high-level matrix structure onto an unboxed contiguous block of memory with
 index functions which perform the coordinate translations to calculate offsets.
 The two most common layouts are:
 
@@ -7329,7 +7329,7 @@ guarantees for delivery or recovery in case of errors so it's necessary to desig
 provide the desired behavior at the application layer.
 
 In Haskell we'd like to guarantee that if we're polling on a socket we get messages delivered in a timely
-fashion or consider the resource in a error state and recover from it. Using ``pipes-safe`` we can manage the
+fashion or consider the resource in an error state and recover from it. Using ``pipes-safe`` we can manage the
 life cycle of lazy IO resources and can safely handle failures, resource termination and finalization
 gracefully. In other languages this kind of logic would be smeared across several places, or put in some
 global context and prone to introduce errors and subtle race conditions. Using pipes we instead get a nice
@@ -7780,7 +7780,7 @@ when starting.
 \ (@ b) (@ c) (@ a) (f1 :: b -> c) (g :: a -> b) (x1 :: a) -> f1 (g x1)
 ```
 
-The ``seq`` function has a intuitive implementation in the Core language.
+The ``seq`` function has an intuitive implementation in the Core language.
 
 ```haskell
 x `seq` y
@@ -8991,7 +8991,7 @@ Depending on the type of the closure involved, GHC will utilize the last few
 bits in a pointer to the closure to store information that can be read off from
 the bits of pointer itself before jumping into or access the info tables. For
 thunks this can be information like whether it is evaluated to WHNF or not, for
-constructors it contains the constructor tag (if it fits) to avoid a info table
+constructors it contains the constructor tag (if it fits) to avoid an info table
 lookup.
 
 Depending on the architecture the tag bits are either the last 2 or 3 bits of a
@@ -10056,7 +10056,7 @@ Categories
 
 The most basic structure is a category which is an algebraic structure of
 objects (``Obj``) and morphisms (``Hom``) with the structure that morphisms
-compose associatively and the existence of a identity morphism for each object.
+compose associatively and the existence of an identity morphism for each object.
 
 With kind polymorphism enabled we can write down the general category
 parameterized by a type variable "c" for category, and the instance ``Hask`` the
