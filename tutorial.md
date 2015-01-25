@@ -2105,9 +2105,6 @@ scoped as the labels of the record implicitly.
 ~~~~ {.haskell include="src/04-extensions/wildcards.hs"}
 ~~~~
 
-```haskell
-```
-
 Pattern Synonyms
 ----------------
 
@@ -4153,8 +4150,8 @@ into the body of the pattern match.
 As of GHC 7.8 these constructors and functions are included in the Prelude in the
 [Data.Type.Equality](http://hackage.haskell.org/package/base-4.7.0.0/docs/Data-Type-Equality.html) module.
 
-Lambda Calculus
-===============
+Interpreters
+============
 
 The lambda calculus forms the theoretical and pracitcal foundational for many languages. At the heart of every
 calculus is three components:
@@ -4181,123 +4178,7 @@ data Exp
 A lambda expression in which all variables that appear in the body of the expression are referenced in an
 outer lambda binder is said to be *closed* while an expression with unbound free variables is *open*.
 
-SK Combinators
---------------
-
-A closed lambda expression is also sometimes called a combinator, it takes several arguments and manipulates
-and applies them in some pattern to yield a result. The most famous combinators are the ``SKI`` combinators
-which are interesting in context of several proofs concerning properties of the lambda calculus.
-
-```haskell
-s :: (a -> b -> c) -> (a -> b) -> a -> c
-s f g x =  f x (g x)
-
-k :: a -> b -> a
-k x y = x
-
-i :: a -> a
-i x = x
-
-true = k
-false = k i
-```
-
-In fact the ``I`` combinator can actually be derived ( in several ways ) in terms of the more basic ``SK``
-combinators.
-
-```haskell
-SKK
-=((λxyz.xz(yz))(λxy.x)(λxy.x))
-=((λyz.(λxy.x)z(yz))(λxy.x))
-=λz.(λxy.x)z((λxy.x)z)
-=λz.(λy.z)((λxy.x)z)
-=λz.z
-=I
-```
-
-In fact, in an untyped lambda calculus the Y combinator can also be written in terms of SK.
-
-```haskell
-Y=SSK(S(K(SS(S(SSK))))K)
-```
-
-Really, all we need is ``S`` and ``K``!
-
-Church Encoding
----------------
-
-In Church's original formulation of the lambda calculus there were no ground types ( integer, booleans, lists
-), and remarkably we can actually build all of these constructions using nothing more than lambdas.
-
-Data types like the natural numbers above can also be encoded as lambda expressions with constructors for the
-datatype modeled as indexed parameters to the lambda expressions.  Using this method we can encode recursive
-definition of natural numbers, lists, and even the expression type for the untyped lambda calculus.
-
-~~~~ {.haskell include="src/13-lambda-calculus/church_encoding.hs"}
-~~~~
-
-Although theoretically interesting, Church numbers are not of much practical use in Haskell. Although one
-particular encoding of the list ( Church list ) type turns out to be very useful in practice.
-
-```haskell
-example :: (a -> b -> b) -> b -> b
-example cons nil = cons 1 (cons 2 (cons 3 nil))
-```
-
-~~~~ {.haskell include="src/13-lambda-calculus/church_list.hs"}
-~~~~
-
 See: [Mogensen–Scott encoding](http://en.wikipedia.org/wiki/Mogensen-Scott_encoding)
-
-Name Capture
-------------
-
-The downside to using alphabetical terms to bound variable in a closure is that
-dealing with open lambda expressions. For instance if we perform the naive
-substitution ``s = [y / x]`` over the term:
-
-```haskell
-λy.yx
-```
-
-We get the result:
-
-```haskell
-λx.xx
-```
-
-Which fundamentally changes the meaning of the expression. We expect that
-substitution should preserve alpha equivalence.
-
-To overcome this we ensure that our substitution function checks the free
-variables in each subterm before performing substitution and introduces new
-names where necessary.  Such a substitution is called a *capture-avoiding
-substitution*. There are several techniques to implement capture-avoiding
-substitutions in an efficient way.
-
-This implementation is subtle to get right and many binder libraries exist to
-automate the process of doing substitution and alpha equivalence .
-
-de Bruijn Indices
------------------
-
-Instead of using string names, an alternative representation of the lambda
-calculus uses integers to stand for names on binders. 
-
-              Named                    de Bruijn
-----------    -----                    --------
-**S**         ``λx y z. x z (y z)``    ``λ λ λ (3 1) (2 1)``
-**K**         ``λ x y. x``             ``λ λ 2``
-**I**         ``λ x. x``               ``λ 1``
-
-In this system the process of substitution becomes much more mechanical and
-simply involves shifting indices and can be made very efficient. Although in
-this form human intution about expressions breaks down and such it is better to
-convert to this kind of form as an interemdiate step after parsing into a named
-form.
-
-~~~~ {.haskell include="src/13-lambda-calculus/debruijn.hs"}
-~~~~
 
 HOAS
 ----
@@ -4328,8 +4209,6 @@ See:
 * [PHOAS](http://adam.chlipala.net/papers/PhoasICFP08/PhoasICFP08Talk.pdf)
 * [Encoding Higher-Order Abstract Syntax with Parametric Polymorphism](http://www.seas.upenn.edu/~sweirich/papers/itabox/icfp-published-version.pdf)
 
-Interpreters
-============
 
 Final Interpreters
 ------------------
