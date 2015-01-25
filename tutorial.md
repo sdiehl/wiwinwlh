@@ -1834,7 +1834,7 @@ side which performs the bind in the base monad instead of lifting on each iterat
 ```haskell
 -- Less Efficient      More Efficient
 forever (lift m)    == lift (forever m)
-mapM_ xs (lift . f) == lift (mapM_ xs f)
+mapM_ (lift . f) xs == lift (mapM_ f xs)
 forM_ xs (lift . f) == lift (forM_ xs f)
 ```
 
