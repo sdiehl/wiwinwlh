@@ -1671,15 +1671,14 @@ lift . return = return
 lift (m >>= f) = lift m >>= (lift . f)
 ```
 
-Or equivalently written in do notation we have:
+Or equivalently:
 
 **Law #1**
 
 ```haskell
-  do x <- lift m
-     x
+  lift (return x)
 
-= do m
+= return x
 ```
 
 **Law #2**
