@@ -1608,7 +1608,7 @@ mtl / transformers
 ------------------
 
 So the descriptions of Monads in the previous chapter are a bit of a white lie.
-Modern Haskell monad libraries typically use a more general form of the written
+Modern Haskell monad libraries typically use a more general form of these written
 in terms of monad transformers which allow us to compose monads together to form
 composite monads. The monads mentioned previously are subsumed by the special
 case of the transformer form composed with the Identity monad.
