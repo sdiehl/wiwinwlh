@@ -939,14 +939,16 @@ We'll need to manually edit the file:
 haskellPackages.cabal.mkDerivation (self: {
   pname = "mylibrary";
   version = "0.1.0.0";
-  sha256 = "./.";
+  src = "./.";
   isLibrary = true;
   isExecutable = true;
   buildDepends = with haskellPackages; [
     mtl transformers
   ];
-  buildTools = [ cabalInstall ];
+  buildTools = with haskellPackages; [ cabalInstall ];
 })
+
+
 ```
 
 There you go, now you can launch the cabal repl for your project with:
