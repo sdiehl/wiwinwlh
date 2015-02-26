@@ -3577,7 +3577,7 @@ instance MonadFix Maybe where
                   unJust Nothing  = error "mfix Maybe: Nothing"
 ```
 
-The regular do-notation can also be extended with ``-XRecursiveDo`` to accomodate recursive monaidc bindings.
+The regular do-notation can also be extended with ``-XRecursiveDo`` to accomodate recursive monadic bindings.
 
 ~~~~ {.haskell include="src/10-advanced-monads/monadfix.hs"}
 ~~~~
