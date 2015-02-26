@@ -4071,7 +4071,7 @@ Maybe :: * -> *
 Either :: * -> * -> *
 ```
 
-There are in fact some extensions to this system that will covered later ( see:
+There are in fact some extensions to this system that will be covered later ( see:
 PolyKinds and Unboxed types in later sections ) but most kinds in everyday code
 are simply either stars or arrows.
 
