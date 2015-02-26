@@ -4154,7 +4154,7 @@ As of GHC 7.8 these constructors and functions are included in the Prelude in th
 Interpreters
 ============
 
-The lambda calculus forms the theoretical and pracitcal foundational for many languages. At the heart of every
+The lambda calculus forms the theoretical and practical foundation for many languages. At the heart of every
 calculus is three components:
 
 - **Var** - A variable
