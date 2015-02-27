@@ -3577,7 +3577,7 @@ instance MonadFix Maybe where
                   unJust Nothing  = error "mfix Maybe: Nothing"
 ```
 
-The regular do-notation can also be extended with ``-XRecursiveDo`` to accomodate recursive monaidc bindings.
+The regular do-notation can also be extended with ``-XRecursiveDo`` to accomodate recursive monadic bindings.
 
 ~~~~ {.haskell include="src/10-advanced-monads/monadfix.hs"}
 ~~~~
@@ -4071,7 +4071,7 @@ Maybe :: * -> *
 Either :: * -> * -> *
 ```
 
-There are in fact some extensions to this system that will covered later ( see:
+There are in fact some extensions to this system that will be covered later ( see:
 PolyKinds and Unboxed types in later sections ) but most kinds in everyday code
 are simply either stars or arrows.
 
@@ -4154,7 +4154,7 @@ As of GHC 7.8 these constructors and functions are included in the Prelude in th
 Interpreters
 ============
 
-The lambda calculus forms the theoretical and pracitcal foundational for many languages. At the heart of every
+The lambda calculus forms the theoretical and practical foundation for many languages. At the heart of every
 calculus is three components:
 
 - **Var** - A variable
