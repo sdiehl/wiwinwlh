@@ -3506,6 +3506,7 @@ add x y k = k (x + y)
 ~~~~
 
 * [Wikibooks: Continuation Passing Style](http://en.wikibooks.org/wiki/Haskell/Continuation_passing_style)
+* [MonadCont Under the Hood](https://wiki.haskell.org/MonadCont_under_the_hood)
 
 MonadPlus
 ---------
