@@ -2171,7 +2171,7 @@ discussion of any one from the gestalt of the whole implementation.
 
 See: 
 
-* [Oh My Laziness!](http://alpmestan.com/2013/10/02/oh-my-laziness/)
+* [Oh My Laziness!](http://alpmestan.com/posts/2013-10-02-oh-my-laziness.html)
 * [Reasoning about Laziness](http://www.slideshare.net/tibbe/reasoning-about-laziness)
 * [Lazy Evaluation of Haskell](http://www.vex.net/~trebla/haskell/lazy.xhtml)
 * [More Points For Lazy Evaluation](http://augustss.blogspot.hu/2011/05/more-points-for-lazy-evaluation-in.html)
