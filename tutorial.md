@@ -4976,7 +4976,7 @@ Types       Logic
 ``a : A``   proof
 ``B(x)``    predicate
 ``Void``    ⊥
-``Unit``    ?
+``Unit``    ⊤
 ``A + B``   A ∨ B
 ``A × B``   A ∧ B
 ``A -> B``  A ⇒ B
@@ -5000,7 +5000,7 @@ Axiom 2: a + suc b = suc (a + b)
   0 + suc a
 = suc (0 + a)  [by Axiom 2]
 = suc a        [Induction hypothesis]
-?
+∎
 ```
 
 Translated into Haskell our axioms are simply are type definitions and recursing
@@ -6276,7 +6276,7 @@ of conjoined conjunctions and disjunctions in terms of a series of variables.
 For example:
 
 ```text
-(A v ￢B v C) ∧ (B v D v E) ∧ (D v F)
+(A v ¬B v C) ∧ (B v D v E) ∧ (D v F)
 ```
 
 To use the picosat library to solve this, it can be written as zero-terminated
@@ -6284,7 +6284,7 @@ lists of integers and fed to the solver according to a number-to-variable
 relation:
 
 ```haskell
-1 -2 3  -- (A v ￢B v C)
+1 -2 3  -- (A v ¬B v C)
 2 4 5   -- (B v D v E)
 4 6     -- (D v F)
 ```
