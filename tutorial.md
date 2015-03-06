@@ -2328,7 +2328,7 @@ In practice a combination between the strictness analyzer and the inliner on
 function is inlinable at call site so manually using ``foldl'`` is most often
 not required.
 
-One important note is that GHCi runs without any optimizations applied so the
+Of important note is that GHCi runs without any optimizations applied so the
 same program that performs poorly in GHCi may not have the same performance
 characteristics when compiled with GHC.
 
