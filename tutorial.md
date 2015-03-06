@@ -2045,9 +2045,9 @@ Pattern Guards
 {-# LANGUAGE PatternGuards #-}
 
 combine env x y
-   | Just a <- lookup env x
-   , Just b <- lookup env y
-   = Just a + b
+   | Just a <- lookup x env
+   , Just b <- lookup y env
+   = Just $ a + b
 
    | otherwise = Nothing
 ```
