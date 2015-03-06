@@ -9528,8 +9528,8 @@ type Lens' a b = forall f. Functor f => (b -> f b) -> (a -> f a)
 newtype Const x a  = Const { runConst :: x } deriving Functor
 newtype Identity a = Identity { runIdentity :: a } deriving Functor
 
-lens :: (s -> a) -> (s -> a -> s) -> Lens' s a
-lens getter setter l b = setter b <$> l (getter b)
+lens :: (a -> b) -> (a -> b -> a) -> Lens' a b
+lens getter setter l a = setter a <$> l (getter a)
 
 set :: Lens' a b -> b -> a -> a
 set l b = runIdentity . l (const (Identity b))
