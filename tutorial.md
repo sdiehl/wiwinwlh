@@ -9563,8 +9563,8 @@ infixr 8 ^.
 Such that we have:
 
 ```haskell
-s ^. (lens getter setter)       -- getter s
-s  & (lens getter setter) .~ b  -- setter s b
+a ^. (lens getter setter)       -- getter a
+a  & (lens getter setter) .~ b  -- setter a b
 ```
 
 **Law 1**
