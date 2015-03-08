@@ -9550,8 +9550,13 @@ infixr 8 ^.
 (&) :: a -> (a -> b) -> b
 (&) = flip ($)
 
+(^.) :: a -> Lens' a b -> b
 (^.) = flip get
+
+(.~) :: Lens' a b -> b -> a -> a
 (.~) = set
+
+(%~) :: Lens' a b -> (b -> b) -> a -> a
 (%~) = over
 ```
 
