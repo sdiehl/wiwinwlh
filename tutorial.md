@@ -394,7 +394,7 @@ As a rule of thumb if the Haddock docs for the library does not have a **minimal
 worked example**, it is usually safe to assume that it is a RFC-style library
 and probably should be avoided.
 
-There are several authors who it usually safe to assume have uploaded a stable
+There are several authors who it is usually safe to assume have uploaded a stable
 and usable library. These include, but are not limited to:
 
 * Bryan O'Sullivan
@@ -500,7 +500,7 @@ Several commands for interactive options have shortcuts:
 ------  ---------
 ``+t``  Show types of evaluated expressions
 ``+s``  Show timing and memory usage
-``+m``  Enable multi-line expression delimited by ``:{`` and ``:}``.
+``+m``  Enable multi-line expressions delimited by ``:{`` and ``:}``.
 
 
 ```haskell
@@ -528,7 +528,7 @@ it :: Prelude.Integer
 ```
 
 The configuration for the GHCi shell can be customized globally by defining a
-``ghci.conf`` in ``$HOME/.ghc/`` or in the in current working directory as
+``ghci.conf`` in ``$HOME/.ghc/`` or in the current working directory as
 ``./.ghci.conf``.
 
 For example we can add a command to use the Hoogle type search from within GHCi.
@@ -603,7 +603,7 @@ undefined :: a
 ```
 
 The bottom is a singular value that inhabits every type. When evaluated the
-semantics of Haskell no longer yield a meaningful value. It's usually written as
+semantics of Haskell no longer yields a meaningful value. It's usually written as
 the symbol ⊥ (i.e. the compiler flipping you off ).
 
 An example of an infinite looping term:
@@ -676,9 +676,9 @@ listToMaybe []     =  Nothing
 listToMaybe (a:_)  =  Just a
 ```
 
-When a bottom define in terms of error is invoked it typically will not generate
+When a bottom defined in terms of error is invoked it typically will not generate
 any position information, but the function used to provide assertions ``assert``
-can be short circuited to generate position information in the place of either
+can be a short circuit to generate position information in the place of either
 ``undefined`` or ``error`` call.
 
 ~~~~ {.haskell include="src/01-basics/fail.hs"}
@@ -832,13 +832,13 @@ tracePrintfM :: (Monad m, PrintfArg a) => String -> a -> m ()
 tracePrintfM s = traceM . printf s
 ```
 
-Type Holes
-----------
+Typed Holes
+-----------
 
 Since GHC 7.8 we have a new tool for debugging incomplete programs by means of
-*type holes*. By placing an underscore on any value on the right hand-side of a
+*typed holes*. By placing an underscore on any value on the right hand-side of a
 declaration GHC will throw an error during type-checker that reflects the
-possible values that could placed at this point in the program to make to make
+possible values that could placed at this point in the program to make
 the program type-check.
 
 ```haskell
@@ -847,18 +847,18 @@ instance Functor [] where
 ```
 
 ```bash
-[1 of 1] Compiling Main             ( src/typehole.hs, interpreted )
+[1 of 1] Compiling Main             ( src/typedhole.hs, interpreted )
 
-src/typehole.hs:7:32:
+src/typedhole.hs:7:32:
     Found hole ‘_’ with type: [a]
     Where: ‘a’ is a rigid type variable bound by
                the type signature for fmap :: (a -> b) -> [a] -> [b]
-               at src/typehole.hs:7:3
+               at src/typedhole.hs:7:3
     Relevant bindings include
-      xs :: [a] (bound at src/typehole.hs:7:13)
-      x :: a (bound at src/typehole.hs:7:11)
-      f :: a -> b (bound at src/typehole.hs:7:8)
-      fmap :: (a -> b) -> [a] -> [b] (bound at src/typehole.hs:7:3)
+      xs :: [a] (bound at src/typedhole.hs:7:13)
+      x :: a (bound at src/typedhole.hs:7:11)
+      f :: a -> b (bound at src/typedhole.hs:7:8)
+      fmap :: (a -> b) -> [a] -> [b] (bound at src/typedhole.hs:7:3)
     In the second argument of ‘fmap’, namely ‘_’
     In the second argument of ‘(:)’, namely ‘fmap f _’
     In the expression: f x : fmap f _
@@ -866,7 +866,7 @@ Failed, modules loaded: none.
 ```
 
 GHC has rightly suggested that the expression needed to finish the program is
-``xs : [a]``.
+``xs :: [a]``.
 
 Nix
 ---
@@ -886,7 +886,7 @@ of Haskell and Nix will be and whether it is a workaround around some current
 cabal pain points or a deeper unifying model.
 
 Once the NixOS package manager is installed you can start a nix shell on the fly
-with a bunch of packages installed the nixos repos.
+with a bunch of packages installed in the nixos repos.
 
 ```bash
 $ nix-shell -p haskellPackages.parsec -p haskellPackages.mtl --command ghci
@@ -990,7 +990,7 @@ data T a b
   | B b -- ^ Documentation for B
 ```
 
-Elements within a module (value, types, classes) can be hyperlinked by enclosing
+Elements within a module (values, types, classes) can be hyperlinked by enclosing
 the identifier in single quotes.
 
 ```haskell
@@ -1075,7 +1075,7 @@ ignore-exports   Ignores the export list and includes all signatures in scope.
 not-home         Module will not be considered the root documentation.
 show-extensions  Annotates the documentation with the language extensions used.
 hide             Forces the module to be hidden from Haddock.
-prune            omits definitions with no annotations
+prune            Omits definitions with no annotations.
 
 
 Monads
@@ -1358,8 +1358,8 @@ about three very different but foundational ideas for programming: *Failure*,
 *Collections*, and *Effects*.
 
 Let's write down a new function called ``sequence`` which folds a function
-``mcons``, which we can think of as analogues to the list constructor (i.e. ``(a
-: b : [])``) except it pulls the two list elements out of of two monadic values
+``mcons``, which we can think of as analogous to the list constructor (i.e. ``(a
+: b)``) except it pulls the two list elements out of two monadic values
 (``p``,``q``) using bind.
 
 ```haskell
@@ -1472,7 +1472,7 @@ A simple implementation of the Writer monad:
 ~~~~
 
 This implementation is lazy so some care must be taken that one actually wants
-to only generate a stream of thunks.  Often this it is desirable to produce a
+to only generate a stream of thunks.  Often times it is desirable to produce a
 computation which requires a stream of thunks that can pulled lazily out of the
 ``runWriter``, but often times the requirement is to produce a finite stream of
 values that are forced at the invocation of ``runWriter``. Undesired laziness
@@ -1502,14 +1502,14 @@ A simple implementation of the State monad is only a few lines:
 Monad Tutorials
 ---------------
 
-So many monad tutorials have been written that it begs the question, what are
+So many monad tutorials have been written that it begs the question, what makes
 monads so difficult when first learning Haskell. I suggest there are three
 aspects to why this is so:
 
 1. *There are several levels on indirection with desugaring.*
 
 A lot of Haskell that we write is radically rearranged and transformed into
-entirely form under the hood.
+entirely new form under the hood.
 
 Most monad tutorials will not manually expand out the do-sugar. This leaves the
 beginner thinking that monads are a way of dropping into a pseudo-imperative
@@ -1541,9 +1541,9 @@ main =
 
 On the left hand side of the operator we have an ``m a`` and on the right we
 have ``a -> m b``. Although some languages do have infix operators that are
-themselves higher order functions, it is still a rather rate occurrence.
+themselves higher order functions, it is still a rather rare occurrence.
 
-So with a function desugared, it can confusing that ``(>>=)`` operator is in
+So with a function desugared, it can be confusing that ``(>>=)`` operator is in
 fact building up a much larger function by composing functions together.
 
 ```haskell
@@ -1573,15 +1573,15 @@ main = bind getLine (\x -> bind putStrLn (\_ -> return ()))
     bind x y = x >>= y
 ```
 
-3. *Ad-hoc polymorphism is not common place in other languages.*
+3. *Ad-hoc polymorphism is not commonplace in other languages.*
 
 Haskell's implementation overloading can be unintuitive if not familiar with
 type inference. It is abstracted away from the user but the ``(>>=)`` or
 ``bind`` function is really a function of 3 arguments with the extra typeclass
-dictionary argument (``$fMonad``) implicitly threaded around.
+dictionary argument (``$dMonad``) implicitly threaded around.
 
 ```haskell
-main $fMonad = bind $dMonad getLine (\x -> bind $dMonad putStrLn (\_ -> return $dMonad ()))
+main $dMonad = bind $dMonad getLine (\x -> bind $dMonad putStrLn (\_ -> return $dMonad ()))
 ```
 
 Except in the case where the parameter of the monad class is unified ( through
@@ -1863,7 +1863,7 @@ It's important to distinguish the categories of language extensions fall into:
 
 The inherent problem with classifying the extensions into **General** and **Specialized** category is that
 it's a subjective classification. Haskellers who do type astronautics will have a very different
-interpretation of Haskell then people who do database programming. As such this is a conservative assessment,
+interpretation of Haskell than people who do database programming. As such this is a conservative assessment,
 as an arbitrary baseline let's consider ``FlexibleInstances`` and ``OverloadedStrings`` "everyday" while
 ``GADTs`` and ``TypeFamilies`` are "specialized".
 
@@ -1908,7 +1908,7 @@ problems. These include:
 * IncoherentInstances
 * ImpredicativeTypes
 
-These almost always these indicate a design flaw and shouldn't be turned on to remedy the error at hand, as
+These almost always indicate a design flaw and shouldn't be turned on to remedy the error at hand, as
 much as GHC might suggest otherwise!
 
 Inference
@@ -2009,7 +2009,7 @@ As everyone eventually finds out there are several functions within implementati
 language ) that can be used to subvert the type-system, they are marked with the prefix ``unsafe``.  These
 functions exist only for when one can manually prove the soundness of an expression but can't express this
 property in the type-system. Using these functions without fulfilling the proof obligations will cause all
-measure of undefined behavior with unimaginable pain and suffering, and are <span style="font-weight:
+measure of undefined behavior with unimaginable pain and suffering, and is <span style="font-weight:
 bold">strongly discouraged</span>. When initially starting out with Haskell there are no legitimate reason to
 use these functions at all, period.
 
@@ -2019,8 +2019,8 @@ unsafePerformIO :: IO a -> a
 ```
 
 The Safe Haskell language extensions allow us to restrict the use of unsafe language features using ``-XSafe``
-which restricts the import of modules which are themselves marked as Safe. It also forbids the use of certain
-language extensions (``-XTemplateHaskell``) which can be used to produce unsafe code. The primary use case of
+which restricts us to the import of modules which are themselves marked as Safe. It also forbids the use of certain
+language extensions (e.g. ``-XTemplateHaskell``) which can be used to produce unsafe code. The primary use case of
 these extensions is security auditing.
 
 ```haskell
@@ -2100,7 +2100,7 @@ import qualified "mtl" Control.Monad.Reader as Reader
 
 **Record WildCards**
 
-Record wild cars allow us to expand out the names of a record as variables
+Record wild cards allow us to expand out the names of a record as variables
 scoped as the labels of the record implicitly.
 
 ~~~~ {.haskell include="src/04-extensions/wildcards.hs"}
@@ -2109,8 +2109,8 @@ scoped as the labels of the record implicitly.
 Pattern Synonyms
 ----------------
 
-Suppose we were writing a typechecker, it would very to common to include a
-distinct ``TArr`` term ease the telescoping of function signatures, this is what
+Suppose we were writing a typechecker, it would be very common to include a
+distinct ``TArr`` term to ease the telescoping of function signatures, this is what
 GHC does in its Core language. Even though technically it could be written in
 terms of more basic application of the ``(->)`` constructor. 
 
@@ -2124,7 +2124,7 @@ data Type
 ```
 
 With pattern synonyms we can eliminate the extraneous constructor without
-loosing the convenience of pattern matching on arrow types.
+losing the convenience of pattern matching on arrow types.
 
 ```haskell
 {-# LANGUAGE PatternSynonyms #-}
@@ -2165,7 +2165,7 @@ and can often be non-intuitive to the novice. This does reflect on the model
 itself, merely on the need for more instruction material and research on
 optimizing lazy compilers.
 
-The paradox of Haskell is that it many explores so many definably unique ideas (
+The paradox of Haskell is that it explores so many definably unique ideas (
 laziness, purity, typeclasses ) that it becomes difficult to separate out the
 discussion of any one from the gestalt of the whole implementation.
 
@@ -2253,7 +2253,7 @@ contains diverging terms.
 ~~~~ {.haskell include="src/05-laziness/nodiverge.hs"}
 ~~~~
 
-In a strict language like OCaml ( ignoring it's suspensions for the moment ),
+In a strict language like OCaml ( ignoring its suspensions for the moment ),
 the same program diverges.
 
 ~~~~ {.haskell include="src/05-laziness/diverge.ml"}
@@ -2264,13 +2264,13 @@ Evaluation of a thunk is called *forcing* the thunk. The result is an *update*,
 a referentially transparent effect, which replaces the memory representation of
 the thunk with the computed value. The fundamental idea is that a thunk is only
 updated once ( although it may be forced simultaneously in a multi-threaded
-environment ) and it's resulting value is shared when referenced subsequently.
+environment ) and its resulting value is shared when referenced subsequently.
 
-The command ``:sprintf`` can be used to introspect the state of unevaluated
+The command ``:sprint`` can be used to introspect the state of unevaluated
 thunks inside an expression without forcing evaluation. For instance:
 
 ```haskell
-λ: let a = [1..]
+λ: let a = [1..] :: [Integer]
 λ: let b = map (+ 1) a
 
 λ: :sprint a
@@ -2289,7 +2289,7 @@ a = 1 : 2 : 3 : 4 : 5 : 6 : 7 : 8 : 9 : 10 : 11 : _
 b = _ : _ : _ : _ : _ : _ : _ : _ : _ : _ : 12 : _
 ```
 
-While a thunk is being computed it's memory representation is replaced with a
+While a thunk is being computed its memory representation is replaced with a
 special form known as *blackhole* which indicates that computation is ongoing
 and allows a short circuit for when a computation might depend on it itself to
 complete. The implementation of this is some of the more subtle details of the
@@ -2362,7 +2362,7 @@ sum = go 0
     go acc []                  = acc
 ```
 
-Function application to seq'd arguments often enough that is has a special
+Function application to seq'd arguments is common enough that it has a special
 operator.
 
 ```haskell
@@ -2433,11 +2433,11 @@ Moral Correctness
 
 The caveat with lazy evaluation is that it implies inductive reasoning about
 functions must always take into account the fact that a function may contain
-bottoms. And as such claims about inductive proofs of functions have to couched
+bottoms. And as such claims about inductive proofs of functions have to be couched
 in an implied set of qualifiers "up to the fast and loose reasoning" assuming
 the non-existence of bottoms.
 
-In the "Fast and Loose reasoning is Morally Correct" paper John Hughes et all,
+In the "Fast and Loose reasoning is Morally Correct" paper John Hughes et al.
 showed that if two terms have the same semantics in the total language, then
 they have related semantics in the partial language and gave a prescription by
 which we can translate our knowledge between the two domains given a specific
@@ -2533,7 +2533,7 @@ read :: Read a => String -> a
 Safe
 ----
 
-The Prelude has total variants of the historical partial functions (i.e. ``Text.Read.readMaybe``)in some
+The Prelude has total variants of the historical partial functions (e.g. ``Text.Read.readMaybe``)in some
 cases, but often these are found in the various utility libraries like ``safe``.
 
 The total versions provided fall into three cases:
@@ -2591,7 +2591,7 @@ usage and which segfaults?
 if p(x):
     # use x
 elif not p(x):
-    # dont use x
+    # don't use x
 
 # Or this one?
 if p(x):
@@ -3698,7 +3698,7 @@ Free theorems
 -------------
 
 A universally quantified type-variable actually implies quite a few rather deep
-properties about the implementation of a function that can be deduced from it's
+properties about the implementation of a function that can be deduced from its
 type signature. For instance the identity function in Haskell is guaranteed to
 only have one implementation since the only information that the information
 that can present in the body 
@@ -3830,7 +3830,7 @@ invariants about scope and use of specific type variables. For example the ST
 monad uses a second rank type to prevent the capture of references between ST
 monads with separate state threads where the ``s`` type variable is bound within
 a rank-2 type and cannot escape, statically guaranteeing that the implementation
-details of the ST internals can't leak out and thus ensuring it's referential
+details of the ST internals can't leak out and thus ensuring its referential
 transparency.
 
 Existential Quantification
@@ -3922,7 +3922,7 @@ Scoped Type Variables
 ---------------------
 
 Normally the type variables used within the toplevel signature for a function
-are only scoped to the type-signature and not the body of the function and it's
+are only scoped to the type-signature and not the body of the function and its
 rigid signatures over terms and let/where clauses.  Enabling
 ``-XScopedTypeVariables`` loosens this restriction allowing the type variables
 mentioned in the toplevel to be scoped within the value-level body of a function
@@ -4253,8 +4253,8 @@ type (->) a b = a -> b          -- b ^ a
 ```
 
 Intuitively it follows the notion that the cardinality of set of inhabitants of a type can always be given as
-a function of the number of it's holes. A product type admits a number of inhabitants as a function of the
-product (i.e. cardinality of the Cartesian product), a sum type as as the sum of it's holes and a function
+a function of the number of its holes. A product type admits a number of inhabitants as a function of the
+product (i.e. cardinality of the Cartesian product), a sum type as as the sum of its holes and a function
 type as the exponential of the span of the domain and codomain.
 
 ```haskell
@@ -4303,7 +4303,7 @@ hylo :: Functor f => Algebra f b -> Coalgebra f a -> a -> b
 ```
 
 In Haskell a F-algebra in a functor ``f a`` together with function ``f a -> a``.
-A colagebra reverses the function. For a functor ``f`` we can form it's
+A colagebra reverses the function. For a functor ``f`` we can form its
 recursive unrolling using the recursive ``Fix`` newtype wrapper.
 
 
@@ -4743,7 +4743,7 @@ multiparamater typeclass instances with the same ``a`` but different ``b``.
 
 Now let's make things not so simple. Turning on ``UndecidableInstances`` loosens
 the constraint on context reduction can only allow constraints of the class to
-become structural smaller than it's head. As a result implicit computation can
+become structural smaller than its head. As a result implicit computation can
 now occur *within in the type class instance search*. Combined with a type-level
 representation of Peano numbers we find that we can encode basic arithmetic at
 the type-level.
@@ -4882,7 +4882,7 @@ datatypes.
 * ``phantom``
 
 They were added to the language to address a rather nasty and long-standing bug
-around the correspondence between a newtype and it's runtime representation. The
+around the correspondence between a newtype and its runtime representation. The
 fundamental distinction that roles introduce is there are two notions of type
 equality:
 
@@ -4981,7 +4981,7 @@ Types       Logic
 ``A × B``   A ∧ B
 ``A -> B``  A ⇒ B
 
-In dependently typed languages we can exploit this result to it's full extent,
+In dependently typed languages we can exploit this result to its full extent,
 in Haskell we don't have the strength that dependent types provide but can still
 prove trivial results. For example, now we can model a type level function for
 addition and provide a small proof that zero is an additive identity.
@@ -5219,7 +5219,7 @@ lifting types to the kind level.
 Vectors
 -------
 
-Using this new structure we can create a ``Vec`` type which is parameterized by it's length as well as it's
+Using this new structure we can create a ``Vec`` type which is parameterized by its length as well as its
 element type now that we have a kind language rich enough to encode the successor type in the kind signature
 of the generalized algebraic datatype. 
 
@@ -5534,7 +5534,7 @@ TemplateHaskell or a Generic deriving.
 HLists
 ------
 
-A heterogeneous list is a cons list whose type statically encodes the ordered types of of it's values.
+A heterogeneous list is a cons list whose type statically encodes the ordered types of its values.
 
 ~~~~ {.haskell include="src/17-promotion/hlist.hs"}
 ~~~~
@@ -6250,10 +6250,10 @@ Constructive Reals
 Instead of modeling the real numbers of finite precision floating point numbers
 we alternatively work with ``Num`` of that internally manipulate the power
 series expansions for the expressions when performing operations like arithmetic
-or transcendental functions without loosing precision when performing
+or transcendental functions without losing precision when performing
 intermediate computations. Then when simply slice of a fixed number of terms and
 approximate the resulting number to a desired precision. This approach is not
-without it's limitations and caveats ( notably that it may diverge ) but works
+without its limitations and caveats ( notably that it may diverge ) but works
 quite well in practice.
 
 ```haskell
@@ -6843,7 +6843,7 @@ rdeepseq x = rseq (force x)
 ```
 
 We now can create a "higher order" strategy that takes two strategies and itself yields a a computation which
-when evaluated uses the passed strategies in it's scheduling.
+when evaluated uses the passed strategies in its scheduling.
 
 ~~~~ {.haskell include="src/22-concurrency/strategies_param.hs"}
 ~~~~
@@ -6964,7 +6964,7 @@ us write code to generate parsers which themselves looks very similar to the par
 ``<|>``       The choice operator tries to parse the first argument before proceeding to the second. Can be chained sequentially to a generate a sequence of options.
 ``many``      Consumes an arbitrary number of patterns matching the given pattern and returns them as a list.
 ``many1``     Like many but requires at least one match. 
-``optional``  Optionally parses a given pattern returning it's value as a Maybe.
+``optional``  Optionally parses a given pattern returning its value as a Maybe.
 ``try``       Backtracking operator will let us parse ambiguous matching expressions and restart with a different pattern.
 
 There are two styles of writing Parsec, one can choose to write with monads or with applicatives.
@@ -7751,7 +7751,7 @@ f $ x =  f x
 
 Having to enter a secondary closure every time we used ``($)`` would introduce
 an enormous overhead. Fortunately GHC has a pass to eliminate small functions
-like this by simply replacing the function call with the body of it's definition
+like this by simply replacing the function call with the body of its definition
 at appropriate call-sites. There compiler contains a variety heuristics for
 determining when this kind of substitution is appropriate and the potential
 costs involved.
@@ -8496,7 +8496,7 @@ Cmm is GHC's complex internal intermediate representation that maps directly
 onto the generated code for the compiler target. Cmm code code generated from
 Haskell is CPS-converted, all functions never return a value, they simply call
 the next frame in the continuation stack. All evaluation of functions proceed by
-indirectly jumping to a code object with it's arguments placed on the stack by
+indirectly jumping to a code object with its arguments placed on the stack by
 the caller.
 
 This is drastically different than C's evaluation model, where are placed on the
@@ -8553,7 +8553,7 @@ one to the other.
 
 There are generally two parts to every Cmm definition, the **info table** and
 the **entry code**. The info table maps directly ``StgInfoTable`` struct and
-contains various fields related to the type of the closure, it's payload, and
+contains various fields related to the type of the closure, its payload, and
 references. The code objects are basic blocks of generated code that correspond
 to the logic of the Haskell function/constructor.
 
@@ -9215,7 +9215,7 @@ data QuasiQuoter = QuasiQuoter
 ```
 
 The logic evaluating, splicing, and introspecting compile-time values is embedded within the Q monad, which
-has a ``runQ`` which can be used to evaluate it's context. These functions of this monad is deeply embedded in
+has a ``runQ`` which can be used to evaluate its context. These functions of this monad is deeply embedded in
 the implementation of GHC.
 
 ```haskell
@@ -9276,7 +9276,7 @@ Using
 [Language.Haskell.TH](http://hackage.haskell.org/package/template-haskell-2.4.0.0/docs/Language-Haskell-TH-Syntax.html#t:Dec)
 we can piece together Haskell AST element by element but subject to our own custom logic to generate the code.
 This can be somewhat painful though as the source-language (called ``HsSyn``) to Haskell is enormous,
-consisting of around 100 nodes in it's AST many of which are dependent on the state of language pragmas.
+consisting of around 100 nodes in its AST many of which are dependent on the state of language pragmas.
 
 ```haskell
 -- builds the function (f = \(a,b) -> a)
@@ -9457,7 +9457,7 @@ Trying it out by splicing code at the expression level, type level and as patter
 ~~~~ {.haskell include="src/31-template-haskell/splice_singleton.hs"}
 ~~~~
 
-The [singletons](https://hackage.haskell.org/package/singletons) package takes this idea to it's logical
+The [singletons](https://hackage.haskell.org/package/singletons) package takes this idea to its logical
 conclusion allow us to toplevel declarations of seemingly regular Haskell syntax with singletons spliced in,
 the end result resembles the constructions in a dependently typed language if one squints hard enough.
 
@@ -9489,8 +9489,8 @@ in scope:
 
 **<span style="color:red">WARNING</span>: The ``lens`` library is considered by
 many Haskellers to be deeply pathological and introduces a needless amount of
-complexity. Some care should taken when considering it's use, it is included
-here for information only and not as endorsement for it's use. Consider
+complexity. Some care should taken when considering its use, it is included
+here for information only and not as endorsement for its use. Consider
 ``lens-family-core`` or ``fclabels`` instead.**
 
 Should I use lens library?
@@ -9510,7 +9510,7 @@ idiosyncratic with respect to the rest of the ecosystem.
 van Laarhoven Lenses
 --------------------
 
-At it's core a lens is a form of coupled getter and setter functions as a value under an existential functor.
+At its core a lens is a form of coupled getter and setter functions as a value under an existential functor.
 
 ```haskell
 --         +---- a : Type of structure
