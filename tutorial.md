@@ -9576,7 +9576,7 @@ get l (set l b a) = b
 **Law 2**
 
 ```haskell
-set l (view l a) a = a
+set l (get l a) a = a
 ```
 
 **Law 3**
