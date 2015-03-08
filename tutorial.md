@@ -9550,16 +9550,21 @@ infixr 8 ^.
 (&) :: a -> (a -> b) -> b
 (&) = flip ($)
 
+(^.) :: a -> Lens' a b -> b
 (^.) = flip get
+
+(.~) :: Lens' a b -> b -> a -> a
 (.~) = set
+
+(%~) :: Lens' a b -> (b -> b) -> a -> a
 (%~) = over
 ```
 
 Such that we have:
 
 ```haskell
-s ^. (lens getter setter)       -- getter s
-s  & (lens getter setter) .~ b  -- setter s b
+a ^. (lens getter setter)       -- getter a
+a  & (lens getter setter) .~ b  -- setter a b
 ```
 
 **Law 1**
@@ -9571,7 +9576,7 @@ get l (set l b a) = b
 **Law 2**
 
 ```haskell
-set l (view l a) a = a
+set l (get l a) a = a
 ```
 
 **Law 3**
