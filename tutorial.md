@@ -9545,7 +9545,7 @@ over l f a = set l (f (get l a)) a
 infixl 1 &
 infixr 4 .~
 infixr 4 %~
-infixr 8 ^.
+infixl 8 ^.
 
 (&) :: a -> (a -> b) -> b
 (&) = flip ($)
