@@ -1541,7 +1541,7 @@ main =
 
 On the left hand side of the operator we have an ``m a`` and on the right we
 have ``a -> m b``. Although some languages do have infix operators that are
-themselves higher order functions, it is still a rather rate occurrence.
+themselves higher order functions, it is still a rather rare occurrence.
 
 So with a function desugared, it can confusing that ``(>>=)`` operator is in
 fact building up a much larger function by composing functions together.
