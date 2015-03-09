@@ -2266,11 +2266,11 @@ the thunk with the computed value. The fundamental idea is that a thunk is only
 updated once ( although it may be forced simultaneously in a multi-threaded
 environment ) and it's resulting value is shared when referenced subsequently.
 
-The command ``:sprintf`` can be used to introspect the state of unevaluated
+The command ``:sprint`` can be used to introspect the state of unevaluated
 thunks inside an expression without forcing evaluation. For instance:
 
 ```haskell
-λ: let a = [1..]
+λ: let a = [1..] :: [Integer]
 λ: let b = map (+ 1) a
 
 λ: :sprint a
