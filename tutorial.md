@@ -832,11 +832,11 @@ tracePrintfM :: (Monad m, PrintfArg a) => String -> a -> m ()
 tracePrintfM s = traceM . printf s
 ```
 
-Type Holes
-----------
+Typed Holes
+-----------
 
 Since GHC 7.8 we have a new tool for debugging incomplete programs by means of
-*type holes*. By placing an underscore on any value on the right hand-side of a
+*typed holes*. By placing an underscore on any value on the right hand-side of a
 declaration GHC will throw an error during type-checker that reflects the
 possible values that could placed at this point in the program to make to make
 the program type-check.
@@ -847,18 +847,18 @@ instance Functor [] where
 ```
 
 ```bash
-[1 of 1] Compiling Main             ( src/typehole.hs, interpreted )
+[1 of 1] Compiling Main             ( src/typedhole.hs, interpreted )
 
-src/typehole.hs:7:32:
+src/typedhole.hs:7:32:
     Found hole ‘_’ with type: [a]
     Where: ‘a’ is a rigid type variable bound by
                the type signature for fmap :: (a -> b) -> [a] -> [b]
-               at src/typehole.hs:7:3
+               at src/typedhole.hs:7:3
     Relevant bindings include
-      xs :: [a] (bound at src/typehole.hs:7:13)
-      x :: a (bound at src/typehole.hs:7:11)
-      f :: a -> b (bound at src/typehole.hs:7:8)
-      fmap :: (a -> b) -> [a] -> [b] (bound at src/typehole.hs:7:3)
+      xs :: [a] (bound at src/typedhole.hs:7:13)
+      x :: a (bound at src/typedhole.hs:7:11)
+      f :: a -> b (bound at src/typedhole.hs:7:8)
+      fmap :: (a -> b) -> [a] -> [b] (bound at src/typedhole.hs:7:3)
     In the second argument of ‘fmap’, namely ‘_’
     In the second argument of ‘(:)’, namely ‘fmap f _’
     In the expression: f x : fmap f _
@@ -866,7 +866,7 @@ Failed, modules loaded: none.
 ```
 
 GHC has rightly suggested that the expression needed to finish the program is
-``xs : [a]``.
+``xs :: [a]``.
 
 Nix
 ---
