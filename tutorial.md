@@ -3761,7 +3761,7 @@ e : x          -- variables
   | λ(x:t).e   -- value abstraction
   | e1 e2      -- value application
   | Λa.e       -- type abstraction 
-  | e t        -- type application
+  | e_t        -- type application
 ```
 
 ```haskell
