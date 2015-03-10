@@ -3767,7 +3767,7 @@ e : x          -- variables
 ```haskell
 id : ∀ t. t -> t
 id = Λt. λx:t. x
-id = (\ (@ t) (x :: t) -> x
+-- id = \ (@ t) (x :: t) -> x
 
 tr :: ∀ a. ∀ b. a -> b -> a
 tr = Λa. Λb. λx:a. λy:b. x
@@ -3776,11 +3776,11 @@ fl :: ∀ a. ∀ b. a -> b -> b
 fl = Λa. Λb. λx:a. λy:b. y
 
 nil :: ∀ a. [a]
-nil = Λa. Λb. -> λ (z :: b) . λ (f :: a -> b -> b). z
+nil = Λa. Λb. λz:b. λf:(a -> b -> b). z
 
-cons :: forall a. a -> [a] -> [a]
-cons = Λ a -> λ(x :: a) -> λ(xs :: forall b. b -> (a -> b -> b) -> b)
-    -> Λ b -> λ(z :: b) -> λ(f :: a -> b -> b) -> f x (xs @ b z f)
+cons :: ∀ a. a -> [a] -> [a]
+cons = Λa. λx:a. λxs:(∀ b. b -> (a -> b -> b) -> b)
+    -> Λb -> λz:b -> λf : (a -> b -> b) -> f x (xs_b z f)
 ```
 
 Normally when Haskell's typechecker infers a type signature it places all quantifiers of type variables at the
