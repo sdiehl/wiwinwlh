@@ -3779,8 +3779,8 @@ nil :: ∀ a. [a]
 nil = Λa. Λb. λz:b. λf:(a -> b -> b). z
 
 cons :: ∀ a. a -> [a] -> [a]
-cons = Λa. λx:a. λxs:(∀ b. b -> (a -> b -> b) -> b)
-    -> Λb -> λz:b -> λf : (a -> b -> b) -> f x (xs_b z f)
+cons = Λa. λx:a. λxs:(∀ b. b -> (a -> b -> b) -> b).
+    Λb. λz:b. λf : (a -> b -> b). f x (xs_b z f)
 ```
 
 Normally when Haskell's typechecker infers a type signature it places all quantifiers of type variables at the
