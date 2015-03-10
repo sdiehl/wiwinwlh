@@ -3764,7 +3764,7 @@ e : x          -- variables
   | e_t        -- type application
 ```
 
-Here's an example with equivalents of GHC core in comments.
+An example with equivalents of GHC Core in comments:
 
 ```haskell
 id : ∀ t. t -> t
