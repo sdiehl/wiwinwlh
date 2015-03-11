@@ -30,10 +30,15 @@ id' = id
 infixl 1 &
 infixr 4 .~
 infixr 4 %~
-infixr 8 ^.
+infixl 8 ^.
 
+(^.) :: a -> Lens' a b -> b
 (^.) = flip view
+
+(.~) :: Lens' a b -> b -> a -> a
 (.~) = set
+
+(%~) :: Lens' a b -> (b -> b) -> a -> a
 (%~) = over
 
 (&) :: a -> (a -> b) -> b
