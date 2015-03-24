@@ -6174,7 +6174,7 @@ class (RealFrac a, Floating a) => RealFloat a
 
 ![](img/numerics.png)
 
-Conversions between concrete numeric types (from : top row, to : left column )
+Conversions between concrete numeric types ( from : left column, to : top row )
 is accomplished with several generic functions.
 
          Double       Float         Int           Word           Integer       Rational
