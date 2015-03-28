@@ -6140,10 +6140,10 @@ Haskell's numeric tower is unusual and the source of some confusion for novices.
 Haskell is one of the few languages to incorporate statically typed overloaded
 literals without a mechanism for "coercions" often found in other languages.
 
-To add to confusion numerical literals in Haskell are desugared into a function
-from a numeric typeclass which yields a polymorphic value that can be
-instantiated to nay instance of the ``Num`` or ``Fractional`` typeclass at the
-call-site, depending on the inferred type. 
+To add to the confusion numerical literals in Haskell are desugared into a
+function from a numeric typeclass which yields a polymorphic value that can be
+instantiated to any instance of the ``Num`` or ``Fractional`` typeclass at the
+call-site, depending on the inferred type.
 
 To use a blunt metaphor, we're effectively placing an object in a hole and the
 size and shape of the hole defines the object you place there. This is very
