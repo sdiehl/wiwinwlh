@@ -6259,11 +6259,11 @@ Statistics
 Constructive Reals
 ------------------
 
-Instead of modeling the real numbers of finite precision floating point numbers
-we alternatively work with ``Num`` of that internally manipulate the power
+Instead of modeling the real numbers on finite precision floating point numbers
+we alternatively work with ``Num`` which internally manipulate the power
 series expansions for the expressions when performing operations like arithmetic
-or transcendental functions without loosing precision when performing
-intermediate computations. Then when simply slice of a fixed number of terms and
+or transcendental functions without losing precision when performing
+intermediate computations. Then we simply slice off a fixed number of terms and
 approximate the resulting number to a desired precision. This approach is not
 without its limitations and caveats ( notably that it may diverge ) but works
 quite well in practice.
