@@ -6163,7 +6163,7 @@ The numeric typeclass hierarchy is defined as such:
 
 ```haskell
 class Num a
-class (Num a, Ord a) => Real
+class (Num a, Ord a) => Real a
 class Num a => Fractional a
 class (Real a, Enum a) => Integral a
 class (Real a, Fractional a) => RealFrac a
