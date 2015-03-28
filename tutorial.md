@@ -156,7 +156,7 @@ to be invoked from cabal.
 
 For a library the ``exposed-modules`` field in the cabal file indicates which
 modules within the package structure will be publicly visible when the package
-is installed, these are the user-facing APIs that we wish to exposes to
+is installed, these are the user-facing APIs that we wish to expose to
 downstream consumers.
 
 For an executable the ``main-is`` field indicates the Main module for the
@@ -288,7 +288,7 @@ constraints: mtl ==2.2.1,
              transformers ==0.4.1.0
 ```
 
-Using the ``cabal repl`` and ``cabal run`` commands are preferable but sometimes
+Using the ``cabal repl`` and ``cabal run`` commands is preferable but sometimes
 we'd like to manually perform their equivalents at the shell, there are several
 useful aliases that rely on shell directory expansion to find the package
 database in the current working directory and launch GHC with the appropriate
