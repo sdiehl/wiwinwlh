@@ -156,7 +156,7 @@ to be invoked from cabal.
 
 For a library the ``exposed-modules`` field in the cabal file indicates which
 modules within the package structure will be publicly visible when the package
-is installed, these are the user-facing APIs that we wish to exposes to
+is installed, these are the user-facing APIs that we wish to expose to
 downstream consumers.
 
 For an executable the ``main-is`` field indicates the Main module for the
@@ -288,7 +288,7 @@ constraints: mtl ==2.2.1,
              transformers ==0.4.1.0
 ```
 
-Using the ``cabal repl`` and ``cabal run`` commands are preferable but sometimes
+Using the ``cabal repl`` and ``cabal run`` commands is preferable but sometimes
 we'd like to manually perform their equivalents at the shell, there are several
 useful aliases that rely on shell directory expansion to find the package
 database in the current working directory and launch GHC with the appropriate
@@ -359,7 +359,7 @@ Hackage
 -------
 
 Hackage is the canonical source of open source Haskell packages. Being a
-transitional language, Hackage is many things to many people but there seems to
+transitional language, Hackage is many things to many people but there seem to
 be two dominant philosophies:
 
 **Reusable Code / Building Blocks**
@@ -6140,10 +6140,10 @@ Haskell's numeric tower is unusual and the source of some confusion for novices.
 Haskell is one of the few languages to incorporate statically typed overloaded
 literals without a mechanism for "coercions" often found in other languages.
 
-To add to confusion numerical literals in Haskell are desugared into a function
-from a numeric typeclass which yields a polymorphic value that can be
-instantiated to nay instance of the ``Num`` or ``Fractional`` typeclass at the
-call-site, depending on the inferred type. 
+To add to the confusion numerical literals in Haskell are desugared into a
+function from a numeric typeclass which yields a polymorphic value that can be
+instantiated to any instance of the ``Num`` or ``Fractional`` typeclass at the
+call-site, depending on the inferred type.
 
 To use a blunt metaphor, we're effectively placing an object in a hole and the
 size and shape of the hole defines the object you place there. This is very
@@ -6163,7 +6163,7 @@ The numeric typeclass hierarchy is defined as such:
 
 ```haskell
 class Num a
-class (Num a, Ord a) => Real
+class (Num a, Ord a) => Real a
 class Num a => Fractional a
 class (Real a, Enum a) => Integral a
 class (Real a, Fractional a) => RealFrac a
@@ -6190,9 +6190,9 @@ Integer
 
 The ``Integer`` type in GHC is implemented by the GMP (``libgmp``) arbitrary
 precision arithmetic library.  Unlike the ``Int`` type the size of Integer
-values are bounded only by the available memory. Most notably ``libgmp`` is one
+values is bounded only by the available memory. Most notably ``libgmp`` is one
 of the few libraries that compiled Haskell binaries are dynamically linked
-against. 
+against.
 
 An alternative library ``integer-simple`` can be linked in place of libgmp.
 
@@ -6242,9 +6242,9 @@ scientific :: Integer -> Int -> Scientific
 fromFloatDigits :: RealFloat a => a -> Scientific
 ```
 
-Scientific provides arbitrary-precision number represented using scientific
-notation. The constructor takes an arbitrarily sized Integer argument with for
-digits and an Int for the exponential. Alternatively the value can be parsed from
+Scientific provides arbitrary-precision numbers represented using scientific
+notation. The constructor takes an arbitrarily sized Integer argument for the
+digits and an Int for the exponent. Alternatively the value can be parsed from
 a String or coerced from either Double/Float.
 
 ~~~~ {.haskell include="src/19-numbers/scientific.hs"}
@@ -6259,11 +6259,11 @@ Statistics
 Constructive Reals
 ------------------
 
-Instead of modeling the real numbers of finite precision floating point numbers
-we alternatively work with ``Num`` of that internally manipulate the power
+Instead of modeling the real numbers on finite precision floating point numbers
+we alternatively work with ``Num`` which internally manipulate the power
 series expansions for the expressions when performing operations like arithmetic
-or transcendental functions without loosing precision when performing
-intermediate computations. Then when simply slice of a fixed number of terms and
+or transcendental functions without losing precision when performing
+intermediate computations. Then we simply slice off a fixed number of terms and
 approximate the resulting number to a desired precision. This approach is not
 without its limitations and caveats ( notably that it may diverge ) but works
 quite well in practice.
@@ -6283,7 +6283,7 @@ SAT Solvers
 
 A collection of constraint problems known as satisfiability problems show up in
 a number of different disciplines from type checking to package management.
-Simply put a satisfiability problem attempts to find solutions to a statements
+Simply put a satisfiability problem attempts to find solutions to a statement
 of conjoined conjunctions and disjunctions in terms of a series of variables.
 For example:
 
@@ -6327,9 +6327,9 @@ bankrolled by large institutions ) and usually have to called out to via foreign
 function interface or via a common interface called SMT-lib. The two most common
 of use in Haskell are ``cvc4`` from Stanford and ``z3`` from Microsoft Research.
 
-The SBV library can abstract over different SMT solvers allow us to express the
-problem in an embedded domain language in Haskell and then offload the solving
-work to the third party library.
+The SBV library can abstract over different SMT solvers to allow us to express
+the problem in an embedded domain language in Haskell and then offload the
+solving work to the third party library.
 
 TODO: Talk about SBV
 
