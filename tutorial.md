@@ -6283,7 +6283,7 @@ SAT Solvers
 
 A collection of constraint problems known as satisfiability problems show up in
 a number of different disciplines from type checking to package management.
-Simply put a satisfiability problem attempts to find solutions to a statements
+Simply put a satisfiability problem attempts to find solutions to a statement
 of conjoined conjunctions and disjunctions in terms of a series of variables.
 For example:
 
@@ -6327,9 +6327,9 @@ bankrolled by large institutions ) and usually have to called out to via foreign
 function interface or via a common interface called SMT-lib. The two most common
 of use in Haskell are ``cvc4`` from Stanford and ``z3`` from Microsoft Research.
 
-The SBV library can abstract over different SMT solvers allow us to express the
-problem in an embedded domain language in Haskell and then offload the solving
-work to the third party library.
+The SBV library can abstract over different SMT solvers to allow us to express
+the problem in an embedded domain language in Haskell and then offload the
+solving work to the third party library.
 
 TODO: Talk about SBV
 
