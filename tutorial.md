@@ -6190,9 +6190,9 @@ Integer
 
 The ``Integer`` type in GHC is implemented by the GMP (``libgmp``) arbitrary
 precision arithmetic library.  Unlike the ``Int`` type the size of Integer
-values are bounded only by the available memory. Most notably ``libgmp`` is one
+values is bounded only by the available memory. Most notably ``libgmp`` is one
 of the few libraries that compiled Haskell binaries are dynamically linked
-against. 
+against.
 
 An alternative library ``integer-simple`` can be linked in place of libgmp.
 
