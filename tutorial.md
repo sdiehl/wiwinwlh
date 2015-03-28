@@ -6242,9 +6242,9 @@ scientific :: Integer -> Int -> Scientific
 fromFloatDigits :: RealFloat a => a -> Scientific
 ```
 
-Scientific provides arbitrary-precision number represented using scientific
-notation. The constructor takes an arbitrarily sized Integer argument with for
-digits and an Int for the exponential. Alternatively the value can be parsed from
+Scientific provides arbitrary-precision numbers represented using scientific
+notation. The constructor takes an arbitrarily sized Integer argument for the
+digits and an Int for the exponent. Alternatively the value can be parsed from
 a String or coerced from either Double/Float.
 
 ~~~~ {.haskell include="src/19-numbers/scientific.hs"}
