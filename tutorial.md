@@ -359,7 +359,7 @@ Hackage
 -------
 
 Hackage is the canonical source of open source Haskell packages. Being a
-transitional language, Hackage is many things to many people but there seems to
+transitional language, Hackage is many things to many people but there seem to
 be two dominant philosophies:
 
 **Reusable Code / Building Blocks**
