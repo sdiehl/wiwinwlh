@@ -684,7 +684,7 @@ can be short circuited to generate position information in the place of either
 ~~~~ {.haskell include="src/01-basics/fail.hs"}
 ~~~~
 
-See: [Avoiding Partial Functions](http://www.haskell.org/haskellwiki/Avoiding_partial_functions)
+See: [Avoiding Partial Functions](https://wiki.haskell.org/Avoiding_partial_functions)
 
 Exhaustiveness
 --------------
@@ -1091,7 +1091,7 @@ Instead I suggest a path to enlightenment:
 2. No really, don't read the monad tutorials.
 3. Learn about Haskell types.
 4. Learn what a typeclass is.
-5. Read the [Typeclassopedia](http://www.haskell.org/haskellwiki/Typeclassopedia).
+5. Read the [Typeclassopedia](http://wiki.haskell.org/Typeclassopedia).
 6. Read the monad definitions.
 7. Use monads in real code.
 8. Don't write monad-analogy tutorials.
@@ -1116,7 +1116,7 @@ The following are all **false**:
 * Monads are an embedded imperative language inside Haskell.
 * Monads require knowing abstract mathematics.
 
-See: [What a Monad Is Not](http://www.haskell.org/haskellwiki/What_a_Monad_is_not)
+See: [What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
 
 Laws
 ----
@@ -1159,7 +1159,7 @@ that discards its argument.
 m >> k = m >>= \_ -> k
 ```
 
-See: [Monad Laws](http://www.haskell.org/haskellwiki/Monad_laws)
+See: [Monad Laws](http://wiki.haskell.org/Monad_laws)
 
 Do Notation
 -----------
@@ -2755,7 +2755,7 @@ data Tree a = Node a [Tree a]
   deriving (Show, Functor, Foldable, Traversable)
 ```
 
-See: [Typeclassopedia](http://www.haskell.org/haskellwiki/Typeclassopedia)
+See: [Typeclassopedia](http://wiki.haskell.org/Typeclassopedia)
 
 Corecursion
 -----------
@@ -3035,7 +3035,7 @@ join :: Monad m => m (m a) -> m a
 join x = x >>= id
 ```
 
-See: [Functor-Applicative-Monad Proposal](http://www.haskell.org/haskellwiki/Functor-Applicative-Monad_Proposal)
+See: [Functor-Applicative-Monad Proposal](http://wiki.haskell.org/Functor-Applicative-Monad_Proposal)
 
 Alternative
 -----------
@@ -6386,7 +6386,7 @@ iterateN :: Int -> (a -> a) -> a -> Vector a
 ~~~~ {.haskell include="src/20-data-structures/vector.hs"}
 ~~~~
 
-See: [Numerical Haskell: A Vector Tutorial](http://www.haskell.org/haskellwiki/Numeric_Haskell:_A_Vector_Tutorial)
+See: [Numerical Haskell: A Vector Tutorial](http://wiki.haskell.org/Numeric_Haskell:_A_Vector_Tutorial)
 
 Mutable Vectors
 ---------------
