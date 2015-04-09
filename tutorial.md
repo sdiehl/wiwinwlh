@@ -6903,7 +6903,7 @@ pure and can always be rolled back if a commit fails.
 
 See: [Beautiful Concurrency](https://www.fpcomplete.com/school/advanced-haskell/beautiful-concurrency)
 
-par-monad
+Monad Par
 ---------
 
 Using the Par monad we express our computation as a data flow graph which is
