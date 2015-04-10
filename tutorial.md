@@ -1509,7 +1509,7 @@ aspects to why this is so:
 1. *There are several levels on indirection with desugaring.*
 
 A lot of Haskell that we write is radically rearranged and transformed into
-entirely new form under the hood.
+an entirely new form under the hood.
 
 Most monad tutorials will not manually expand out the do-sugar. This leaves the
 beginner thinking that monads are a way of dropping into a pseudo-imperative
@@ -1575,8 +1575,8 @@ main = bind getLine (\x -> bind putStrLn (\_ -> return ()))
 
 3. *Ad-hoc polymorphism is not commonplace in other languages.*
 
-Haskell's implementation overloading can be unintuitive if not familiar with
-type inference. It is abstracted away from the user but the ``(>>=)`` or
+Haskell's implementation of overloading can be unintuitive if one is not familiar 
+with type inference. It is abstracted away from the user but the ``(>>=)`` or
 ``bind`` function is really a function of 3 arguments with the extra typeclass
 dictionary argument (``$dMonad``) implicitly threaded around.
 
@@ -1595,8 +1595,8 @@ main = bind $dMonadIO getLine (\x -> bind $dMonadIO putStrLn (\_ -> return $dMon
 
 Now, all of these transformations are trivial once we understand them, they're
 just typically not discussed. In my opinion the fundamental fallacy of monad
-tutorials is that not intuition for monads is hard to convey ( nor are metaphors
-required!), but that novices often come to monads with an incomplete
+tutorials is not that intuition for monads is hard to convey ( nor are metaphors
+required! ), but that novices often come to monads with an incomplete
 understanding of points (1), (2), and (3) and then trip on the simple fact that
 monads are the first example of a Haskell construct that is the confluence of
 all three.
@@ -1702,8 +1702,9 @@ See: [Monad Transformers: Step-By-Step](http://www.cs.virginia.edu/~wh5a/persona
 ReaderT
 -------
 
-For example there exist three possible forms of Reader monad. The first is the Haskell 98 version that no
-longer exists but is useful for pedagogy. Together with the *transformers* variant and the *mtl* variants.
+For example, there exist three possible forms of th Reader monad. The first is
+the Haskell 98 version that no longer exists but is useful for pedagogy. The other two
+are the *transformers* variant and the *mtl* variants.
 
 *Reader*
 
@@ -1755,7 +1756,7 @@ In practice only the last one is used in modern Haskell.
 Basics
 ------
 
-The most basic use requires us to use the T-variants of the each of the monad transformers for the outer
+The most basic use requires us to use the T-variants of each of the monad transformers for the outer
 layers and to explicit ``lift`` and ``return`` values between each the layers. Monads have kind ``(* -> *)``
 so monad transformers which take monads to monads have ``((* -> *) -> * -> *)``:
 
@@ -1777,7 +1778,7 @@ Newtype Deriving
 ----------------
 
 Newtypes let us reference a data type with a single constructor as a new distinct type, with no runtime
-overhead from boxing, unlike a algebraic datatype with single constructor.  Newtype wrappers around strings
+overhead from boxing, unlike an algebraic datatype with single constructor.  Newtype wrappers around strings
 and numeric types can often drastically reduce accidental errors.  Using ``-XGeneralizedNewtypeDeriving`` we
 can recover the functionality of instances of the underlying type.
 
@@ -1794,8 +1795,8 @@ In the expression: v + x
 ```
 
 Using newtype deriving with the mtl library typeclasses we can produce flattened transformer types that don't
-require explicit lifting in the transform stack. For example a little stack machine the Reader Writer and
-State monads.
+require explicit lifting in the transform stack. For example, here is a little stack machine involving the 
+Reader, Writer and State monads.
 
 ~~~~ {.haskell include="src/03-monad-transformers/newtype_deriving.hs"}
 ~~~~
@@ -1803,7 +1804,7 @@ State monads.
 Pattern matching on a newtype constructor compiles into nothing. For example
 the``extractB`` function does not scrutinize the ``MkB`` constructor like the
 ``extractA`` does, because ``MkB`` does not exist at runtime, it is purely a
-compile-time construct. 
+compile-time construct.
 
 ```haskell
 data A = MkA Int
@@ -1827,9 +1828,9 @@ do x <- lift m  ==  lift $ do x <- m
    lift (f x)                 f x
 ```
 
-Although they are guaranteed to yield the same result the operation of lifting the results between the monad
+Although they are guaranteed to yield the same resulti, the operation of lifting the results between the monad
 levels is not without cost and crops up frequently when working with the monad traversal and looping
-functions. For example all three of the functions on the left below are less efficient than the right hand
+functions. For example, all three of the functions on the left below are less efficient than the right hand
 side which performs the bind in the base monad instead of lifting on each iteration.
 
 ```haskell
@@ -1859,9 +1860,9 @@ See: [mmorph](https://hackage.haskell.org/package/mmorph)
 Language Extensions
 ===================
 
-It's important to distinguish the categories of language extensions fall into:
+It's important to distinguish between different categories of language extensions:
 
-The inherent problem with classifying the extensions into **General** and **Specialized** category is that
+The inherent problem with classifying the extensions into the **General** and **Specialized** categories is that
 it's a subjective classification. Haskellers who do type astronautics will have a very different
 interpretation of Haskell than people who do database programming. As such this is a conservative assessment,
 as an arbitrary baseline let's consider ``FlexibleInstances`` and ``OverloadedStrings`` "everyday" while
