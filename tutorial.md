@@ -874,7 +874,7 @@ Nix
 Nix is a package management system with a larger scope than cabal. It is
 generally not a Haskell specific project although much work has been done to
 integrate it with the existing cabal infrastructure. *Nix is not a replacement
-for a cabal* but can be used to subsume some of cabal's work by building up
+for cabal* but can be used to subsume some of cabal's work by building up
 isolated development environments that can include Haskell libraries (
 installed from binary packages ) and arbitrary system libraries that can be
 linked into compiled Haskell programs.
@@ -957,11 +957,11 @@ There you go, now you can launch the cabal repl for your project with:
 $ nix-shell --command "cabal repl"
 ```
 
-This process has been automated by another library cabal2nix4dev:
+This process has been automated by another library called cabal2nix4dev:
 
 See:
 
-* [cabal2nix4dev](https://github.com/dave4420/cabal2nix4dev/blob/master/cabal2nix4dev)
+* [cabal2nix4dev](https://github.com/dave4420/cabal2nix4dev)
 
 Haddock
 -------
@@ -1002,7 +1002,7 @@ data T a b
 Modules themselves can be referenced by enclosing them in double quotes.
 
 ```haskell
--- | Here we use "Data.Text" library and import
+-- | Here we use the "Data.Text" library and import
 -- the 'Data.Text.pack' function.
 ```
 
@@ -1034,7 +1034,7 @@ module Foo (
 )
 ```
 
-Sections can also be delineated by ``$`` blocks that refer to references in the
+Sections can also be delineated by ``$`` blocks that pertain to references in the
 body of the module:
 
 ```haskell
@@ -1056,13 +1056,13 @@ Links can be added with the syntax:
 ```
 
 Images can can also be included, so long as the path is relative to the haddock
-or an absolute references.
+or an absolute reference.
 
 ```haskell
 <<diagram.png title>>
 ```
 
-Haddock options can also be specified with pragmas in the source, either on a
+Haddock options can also be specified with pragmas in the source, either on
 module or project level.
 
 ```haskell
@@ -1072,7 +1072,7 @@ module or project level.
 Option           Description
 ------           -------------------------------
 ignore-exports   Ignores the export list and includes all signatures in scope.
-not-home         Module will not be considered the root documentation.
+not-home         Module will not be considered in the root documentation.
 show-extensions  Annotates the documentation with the language extensions used.
 hide             Forces the module to be hidden from Haddock.
 prune            Omits definitions with no annotations.
@@ -1473,9 +1473,9 @@ A simple implementation of the Writer monad:
 
 This implementation is lazy so some care must be taken that one actually wants
 to only generate a stream of thunks.  Often times it is desirable to produce a
-computation which requires a stream of thunks that can pulled lazily out of the
-``runWriter``, but often times the requirement is to produce a finite stream of
-values that are forced at the invocation of ``runWriter``. Undesired laziness
+computation which requires a stream of thunks that can be pulled out of the
+``runWriter`` lazily, but often times the requirement is to produce a finite stream
+of values that are forced at the invocation of ``runWriter``. Undesired laziness
 from Writer is a common source of grief, but is very remediable.
 
 State Monad
