@@ -8,7 +8,7 @@ sierpinski n =
      ===
   (s ||| s) # centerX
   where
-    s = sierpinksi (n - 1)
+    s = sierpinski (n - 1)
 
 example :: Diagram SVG R2
 example = sierpinski 5 # fc black
