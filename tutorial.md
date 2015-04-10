@@ -2228,7 +2228,7 @@ evaluated.
 "foo" ++ "bar"
 ```
 
-In Haskell normal evaluation only occurs at outer constructor of case-statements
+In Haskell normal evaluation only occurs at the outer constructor of case-statements
 in Core. If we pattern match on a list we don't implicitly force all values in
 the list. An element in a data structure is only evaluated up to the most outer
 constructor. For example, to evaluate the length of a list we need only
@@ -2248,8 +2248,8 @@ Prelude.undefined
 Prelude.undefined
 ```
 
-For example in a lazy language the following program terminates even though it
-contains diverging terms. 
+For example, in a lazy language the following program terminates even though it
+contains diverging terms.
 
 ~~~~ {.haskell include="src/05-laziness/nodiverge.hs"}
 ~~~~
@@ -2292,7 +2292,7 @@ b = _ : _ : _ : _ : _ : _ : _ : _ : _ : _ : 12 : _
 
 While a thunk is being computed its memory representation is replaced with a
 special form known as *blackhole* which indicates that computation is ongoing
-and allows a short circuit for when a computation might depend on it itself to
+and allows for a short circuit for when a computation might depend on itself to
 complete. The implementation of this is some of the more subtle details of the
 GHC runtime.
 
@@ -2324,7 +2324,7 @@ foldl' _ z [] = z
 foldl' f z (x:xs) = let z' = f z x in z' `seq` foldl' f z' xs
 ```
 
-In practice a combination between the strictness analyzer and the inliner on
+In practice, a combination between the strictness analyzer and the inliner on
 ``-O2`` will ensure that the strict variant of ``foldl`` is used whenever the
 function is inlinable at call site so manually using ``foldl'`` is most often
 not required.
@@ -2422,7 +2422,7 @@ force x = x `deepseq` x
 Irrefutable Patterns
 --------------------
 
-A lazy pattern doesn't require a match on the outer constructor instead it
+A lazy pattern doesn't require a match on the outer constructor, instead it
 lazily calls the accessors of the values failing at each call-site instead at
 the outer pattern match in the presence of a bottom.
 
@@ -2433,12 +2433,12 @@ Moral Correctness
 -----------------
 
 The caveat with lazy evaluation is that it implies inductive reasoning about
-functions must always take into account the fact that a function may contain
+functions, because we must always take into account the fact that a function may contain
 bottoms. And as such claims about inductive proofs of functions have to be couched
 in an implied set of qualifiers "up to the fast and loose reasoning" assuming
 the non-existence of bottoms.
 
-In the "Fast and Loose reasoning is Morally Correct" paper John Hughes et al.
+In the "Fast and Loose Reasoning is Morally Correct" paper John Hughes et al.
 showed that if two terms have the same semantics in the total language, then
 they have related semantics in the partial language and gave a prescription by
 which we can translate our knowledge between the two domains given a specific
