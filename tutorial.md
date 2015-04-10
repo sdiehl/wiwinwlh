@@ -1949,10 +1949,10 @@ size Leaf = 0
 size (Bin _ t) = 1 + 2 * size t
 ```
 
-The problem with this expression is that the inferred type variable ``a``  in
+The problem with this expression is because the inferred type variable ``a``  in
 ``size`` spans two possible types (``a`` and ``(a,a)``), the recursion is
-polymorphic. These two types won't pass the occurs-check of typechecker and
-yields an incorrect inferred type.
+polymorphic. These two types won't pass the occurs-check of the typechecker and
+it yields an incorrect inferred type.
 
 ```haskell
     Occurs check: cannot construct the infinite type: t0 = (t0, t0)
@@ -1982,18 +1982,18 @@ The most common edge case of the inference is known as the dreaded *monomorphic 
 When the toplevel declarations of a module are generalized the monomorphism restricts that toplevel values
 (i.e. expressions not under a lambda ) whose type contains the subclass of the ``Num`` type from the Prelude
 are not generalized and instead are instantiated with a monotype tried sequentially from the list specified by
-the ``default`` which is normally `Integer` then `Double`.
+the ``default`` which is normally `Integer`, then `Double`.
 
 ~~~~ {.haskell include="src/04-extensions/monomorphism.hs"}
 ~~~~
 
-As of GHC 7.8 the monomorphism restriction is switched off by default in GHCi.
+As of GHC 7.8, the monomorphism restriction is switched off by default in GHCi.
 
 ```haskell
 λ: set +t
 
 λ: 3
-3 
+3
 it :: Num a => a
 
 λ: default (Double)
@@ -2006,7 +2006,7 @@ it :: Num a => a
 Safe Haskell
 ------------
 
-As everyone eventually finds out there are several functions within implementation of GHC ( not the Haskell
+As everyone eventually finds out there are several functions within the implementation of GHC ( not the Haskell
 language ) that can be used to subvert the type-system, they are marked with the prefix ``unsafe``.  These
 functions exist only for when one can manually prove the soundness of an expression but can't express this
 property in the type-system. Using these functions without fulfilling the proof obligations will cause all
@@ -2113,7 +2113,7 @@ Pattern Synonyms
 Suppose we were writing a typechecker, it would be very common to include a
 distinct ``TArr`` term to ease the telescoping of function signatures, this is what
 GHC does in its Core language. Even though technically it could be written in
-terms of more basic application of the ``(->)`` constructor. 
+terms of more basic application of the ``(->)`` constructor.
 
 ```haskell
 data Type
@@ -2170,7 +2170,7 @@ The paradox of Haskell is that it explores so many definably unique ideas (
 laziness, purity, typeclasses ) that it becomes difficult to separate out the
 discussion of any one from the gestalt of the whole implementation.
 
-See: 
+See:
 
 * [Oh My Laziness!](http://alpmestan.com/posts/2013-10-02-oh-my-laziness.html)
 * [Reasoning about Laziness](http://www.slideshare.net/tibbe/reasoning-about-laziness)
