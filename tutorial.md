@@ -2576,7 +2576,7 @@ The problem with the boolean type is that there is effectively no difference
 between True and False at the type level. A proposition taking a value to a Bool
 takes any information given and destroys it. To reason about the behavior we
 have to trace the provenance of the proposition we're getting the boolean answer
-from, and this introduces whole slew of possibilities for misinterpretation. In
+from, and this introduces a whole slew of possibilities for misinterpretation. In
 the worst case, the only way to reason about safe and unsafe use of a function
 is by trusting that a predicate's lexical name reflects its provenance!
 
@@ -2685,7 +2685,7 @@ polymorphic function.
 
 ``foldMap`` takes a function of values to a monoidal quantity, a functor over
 the values and collapses the functor into the monoid. For instance for the
-trivial Sum monoid.
+trivial Sum monoid:
 
 ```haskell
 λ: foldMap Sum [1..10]
@@ -2726,7 +2726,7 @@ foldr :: (a -> b -> b) -> b -> t a -> b
 foldr f z t = appEndo (foldMap (Endo . f) t) z
 ```
 
-Most of the operations over lists can be generalized in terms in combinations of
+Most of the operations over lists can be generalized in terms of combinations of
 Foldable and Traversable to derive more general functions that work over all
 data structures implementing Foldable.
 
@@ -2739,7 +2739,7 @@ Data.Traversable.mapM :: (Monad m, Traversable t) => (a -> m b) -> t a -> m (t b
 
 Unfortunately for historical reasons the names exported by foldable quite often conflict with ones defined in
 the Prelude, either import them qualified or just disable the Prelude. The operations in the Foldable all
-specialize to the same behave the same as the ones Prelude for List types.
+specialize to the same and behave the same as the ones in Prelude for List types.
 
 ~~~~ {.haskell include="src/06-prelude/foldable_traversable.hs"}
 ~~~~
@@ -2766,8 +2766,8 @@ unfoldr :: (b -> Maybe (a, b)) -> b -> [a]
 ```
 
 A recursive function consumes data and eventually terminates, a corecursive
-function generates data and **coterminates**. A corecursive function is said to
-*productive* if can always evaluate more of the resulting value in bounded time.
+function generates data and **coterminates**. A corecursive function is said to be
+*productive* if it can always evaluate more of the resulting value in bounded time.
 
 ```haskell
 import Data.List
@@ -2798,7 +2798,6 @@ Monad-loops
 The [monad-loops](http://hackage.haskell.org/package/monad-loops-0.4.2/docs/Control-Monad-Loops.html) package
 provides a variety of missing functions for control logic in monadic contexts.
 
-
 ```haskell
 whileM :: Monad m => m Bool -> m a -> m [a]
 untilM :: Monad m => m a -> m Bool -> m [a]
@@ -2810,7 +2809,7 @@ Text / ByteString
 =================
 
 The default Haskell string type is the rather naive linked list of characters, that while perfectly fine for
-small identifiers is not well-suited for bulk processing. 
+small identifiers is not well-suited for bulk processing.
 
 ```haskell
 type String = [Char]
@@ -2819,7 +2818,7 @@ type String = [Char]
 For more performance sensitive cases there are two libraries for processing textual data: ``text`` and
 ``bytestring``.  With the ``-XOverloadedStrings`` extension string literals can be overloaded without the need
 for explicit packing and can be written as string literals in the Haskell source and overloaded via a
-  typeclass ``IsString``.
+typeclass ``IsString``.
 
 ```haskell
 class IsString a where
@@ -2841,8 +2840,7 @@ For instance:
 Text
 ----
 
-A Text type is a packed blob of Unicode characters.
-
+A ``Text`` type is a packed blob of Unicode characters.
 
 ```haskell
 pack :: String -> Text
@@ -2853,7 +2851,6 @@ unpack :: Text -> String
 ~~~~
 
 See: [Text](http://hackage.haskell.org/package/text-1.1.0.1/docs/Data-Text.html)
-
 
 Text.Builder
 ------------
