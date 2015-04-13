@@ -6716,7 +6716,7 @@ runEval :: Eval a -> a
 ``rpar a`` spins off a separate spark that evolutes a to weak head normal form
 and places the computation in the spark pool. When the runtime determines that
 there is an available CPU to evaluate the computation it will evaluate (
-*convert* ) the spark. If the main thread of the main thread of the program is
+*convert* ) the spark. If the main thread of the program is
 the evaluator for the spark, the spark is said to have *fizzled*. Fizzling is
 generally bad and indicates that the logic or parallelism strategy is not well
 suited to the work that is being evaluated.
