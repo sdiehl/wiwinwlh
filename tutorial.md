@@ -1828,7 +1828,7 @@ do x <- lift m  ==  lift $ do x <- m
    lift (f x)                 f x
 ```
 
-Although they are guaranteed to yield the same resulti, the operation of lifting the results between the monad
+Although they are guaranteed to yield the same result, the operation of lifting the results between the monad
 levels is not without cost and crops up frequently when working with the monad traversal and looping
 functions. For example, all three of the functions on the left below are less efficient than the right hand
 side which performs the bind in the base monad instead of lifting on each iteration.
@@ -1918,7 +1918,7 @@ Inference
 Inference in Haskell is generally quite accurate, although there are several boundary cases that tend to cause
 problems. Consider the two functions
 
-**Mututally Recursive Binding Groups**
+**Mutually Recursive Binding Groups**
 
 ```haskell
 f x = const x g
@@ -3091,7 +3091,7 @@ Category
 --------
 
 A category is an algebraic structure that includes a notion of an identity and a
-composition operation that is associative and preserves dentis.
+composition operation that is associative and preserves identities.
 
 ```haskell
 class Category cat where
@@ -3576,7 +3576,7 @@ instance MonadFix Maybe where
                   unJust Nothing  = error "mfix Maybe: Nothing"
 ```
 
-The regular do-notation can also be extended with ``-XRecursiveDo`` to accomodate recursive monadic bindings.
+The regular do-notation can also be extended with ``-XRecursiveDo`` to accommodate recursive monadic bindings.
 
 ~~~~ {.haskell include="src/10-advanced-monads/monadfix.hs"}
 ~~~~
@@ -3649,7 +3649,7 @@ See:
 Indexed Monads
 --------------
 
-Indexed monads are a generalisation of monads  that adds an additional type parameter to the class that
+Indexed monads are a generalisation of monads that adds an additional type parameter to the class that
 carries information about the computation or structure of the monadic implementation.
 
 ```haskell
@@ -4212,7 +4212,7 @@ PHOAS
 -----
 
 A slightly different form of HOAS called PHOAS uses lambda datatype parameterized over the binder type. In
-this form evaluation requires unpacking into a seperate Value type to wrap the lambda expression.
+this form evaluation requires unpacking into a separate Value type to wrap the lambda expression.
 
 ~~~~ {.haskell include="src/13-lambda-calculus/phoas.hs"}
 ~~~~
@@ -4232,7 +4232,7 @@ constructors. Instances of the typeclass form interpreters over these terms.
 
 For example we can write a small language that includes basic arithmetic, and
 then retroactively extend our expression language with a multiplication operator
-without changing the base. At the same time our interpeter interpreter logic
+without changing the base. At the same time our interpreter logic
 remains invariant under extension with new expressions.
 
 ~~~~ {.haskell include="src/14-interpreters/fext.hs"}
@@ -4314,7 +4314,7 @@ hylo :: Functor f => Algebra f b -> Coalgebra f a -> a -> b
 ```
 
 In Haskell a F-algebra is a functor ``f a`` together with a function ``f a -> a``.
-A colagebra reverses the function. For a functor ``f`` we can form its
+A coagebra reverses the function. For a functor ``f`` we can form its
 recursive unrolling using the recursive ``Fix`` newtype wrapper.
 
 
@@ -4350,7 +4350,7 @@ ana coalg = Fix . fmap (ana coalg) . coalg
 
 We call these functions *catamorphisms* and *anamorphisms*. Notice especially that the types of these two
 functions simply reverse the direction of arrows. Interpreted in another way they transform an
-algebra/colaglebra which defines a flat structure-preserving mapping between ``Fix f`` ``f`` into a function
+algebra/coalgebra which defines a flat structure-preserving mapping between ``Fix f`` ``f`` into a function
 which either rolls or unrolls the fixpoint. What is particularly nice about this approach is that the
 recursion is abstracted away inside the functor definition and we are free to just implement the flat
 transformation logic!
@@ -4791,8 +4791,8 @@ as arguments which can yield either types or values indexed on their arguments
 which are evaluated at compile-time in during typechecking.  Type families come
 in two varieties: **data families** and **type synonym families**.
 
-* **type familes** are named function on types
-* **data familes** are type-indexed data types
+* **type families** are named function on types
+* **data families** are type-indexed data types
 
 First let's look at *type synonym families*, there are two equivalent syntactic
 ways of constructing them.  Either as *associated* type families declared within
@@ -4864,8 +4864,8 @@ to accomplish this:
 Injectivity
 -----------
 
-The type level functions defined by type-families are not neccessarily
-*injective*, the function may map two disctinct input types to the same output
+The type level functions defined by type-families are not necessarily
+*injective*, the function may map two distinct input types to the same output
 type. This differs from the behavior of type constructors ( which are also
 type-level functions ) which are injective.
 
@@ -5319,7 +5319,7 @@ Proxy
 -----
 
 Using kind polymorphism with phantom types allows us to express the Proxy type which is inhabited by a single
-constructor with no arguments but with a polykinded phantom type variable which carries an arbirary type as
+constructor with no arguments but with a polykinded phantom type variable which carries an arbitrary type as
 the value is passed around.
 
 ```haskell
@@ -5354,7 +5354,7 @@ Promoted Syntax
 ---------------
 
 We've seen constructors promoted using DataKinds, but just like at the value-level GHC also allows us some
-syntatic sugar for list and tuples instead of explicit cons'ing and pair'ing. This is enabled with the
+syntactic sugar for list and tuples instead of explicit cons'ing and pair'ing. This is enabled with the
 ``-XTypeOperators`` extension, which introduces list syntax and tuples of arbitrary arity at the type-level.
 
 ```haskell
@@ -6077,7 +6077,7 @@ transform :: Uniplate on => (on -> on) -> on -> on
 rewrite   :: Uniplate on => (on -> Maybe on) -> on -> on
 ```
 
-The ``descend`` function will apply a function to each immediate descendent of
+The ``descend`` function will apply a function to each immediate descendant of
 an expression and then combines them up into the parent expression.
 
 The ``transform`` function will perform a single pass bottom-up transformation
@@ -6111,7 +6111,7 @@ data Expr a
 **Biplate**
 
 Biplates generalize plates where the target type isn't necessarily the same as
-the source, it uses multiparamater typeclasses to indicate the type sub of the
+the source, it uses multiparameter typeclasses to indicate the type sub of the
 sub-target. The Uniplate functions all have an equivalent generalized biplate
 form.
 
@@ -6815,7 +6815,7 @@ sides of the tuple.
 ~~~~ {.haskell include="src/22-concurrency/strategies.hs"}
 ~~~~
 
-This pattern occurs so frequently the combinator ``using``  can be used to write it equivelantly in
+This pattern occurs so frequently the combinator ``using``  can be used to write it equivalently in
 operator-like form that may be more visually appealing to some.
 
 ```haskell
@@ -7472,7 +7472,7 @@ Block Diagram
 
 The flow of code through GHC is a process of translation between several
 intermediate languages and optimizations and transformations thereof. A common
-pattern for many of these AST types is they are parametrised over a binder type
+pattern for many of these AST types is they are parametrized over a binder type
 and at various stages the binders will be transformed, for example the Renamer
 pass effectively translates the ``HsSyn`` datatype from a AST parametrized over
 literal strings as the user enters into a ``HsSyn`` parameterized over qualified
