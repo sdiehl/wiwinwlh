@@ -4314,7 +4314,7 @@ hylo :: Functor f => Algebra f b -> Coalgebra f a -> a -> b
 ```
 
 In Haskell a F-algebra is a functor ``f a`` together with a function ``f a -> a``.
-A coagebra reverses the function. For a functor ``f`` we can form its
+A coalgebra reverses the function. For a functor ``f`` we can form its
 recursive unrolling using the recursive ``Fix`` newtype wrapper.
 
 
