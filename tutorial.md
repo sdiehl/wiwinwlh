@@ -9499,7 +9499,7 @@ in scope:
 
 **<span style="color:red">WARNING</span>: The ``lens`` library is considered by
 many Haskellers to be deeply pathological and introduces a needless amount of
-complexity. Some care should taken when considering its use, it is included
+complexity. Some care should taken when considering its use; it is included
 here for information only and not as endorsement for its use. Consider
 ``lens-family-core`` or ``fclabels`` instead.**
 
@@ -9514,10 +9514,10 @@ Haskell code whose marginal utility is grossly outweighed by the sheer weight of
 the entire edifice and the mental strain that it forces it on other developers
 to deduce the types involved in even the simplest expressions.
 
-lens is effectively a laboratory for a certain set of emerging ideas, it's
+lens is effectively a laboratory for a certain set of emerging ideas. It's
 idiosyncratic with respect to the rest of the ecosystem.
 
-van Laarhoven Lenses
+Van Laarhoven Lenses
 --------------------
 
 At its core a lens is a form of coupled getter and setter functions as a value under an existential functor.
@@ -9529,8 +9529,9 @@ At its core a lens is a form of coupled getter and setter functions as a value u
 type Lens' a b = forall f. Functor f => (b -> f b) -> (a -> f a)
 ```
 
-There are two derivations of van Laarhoven lenses, one that allows polymorphic update and one that is strictly
-monomorphic. Let's just consider the monomorphic variant first:
+There are two derivations of Van Laarhoven lenses: one that allows polymorphic
+update, and one that is strictly monomorphic. Let's just consider the
+monomorphic variant first:
 
 ```haskell
 type Lens' a b = forall f. Functor f => (b -> f b) -> (a -> f a)
@@ -9605,9 +9606,10 @@ x ^. id ≡ x
 id %~ f ≡ f
 ```
 
-While this may look like a somewhat convoluted way of reinventing record update, consider the types of these
-functions align very nicely such Lens themselves compose using the normal ``(.)`` composition, although in the
-reverse direction of function composition.
+While this may look like a somewhat convoluted way of reinventing record
+update, consider that the types of these functions align very nicely. Lenses
+can be composed using the normal ``(.)`` composition, although in the
+"reverse" or "opposite" direction of function composition.
 
 ```haskell
 f     :: a -> b
@@ -9622,8 +9624,9 @@ f . g :: Lens a c  ~  (c -> f c) -> (a -> f a)
 ~~~~ {.haskell include="src/32-lenses/lens_impl.hs"}
 ~~~~
 
-It turns out that these simple ideas lead to a very rich set of composite combinators that be used to perform
-a wide for working with substructure of complex data structures.
+It turns out that these simple ideas lead to a very rich set of composite
+combinators that be used to work with substructures of complex data
+structures.
 
 Combinator      Description
 -------------   -----------------------------
@@ -9636,8 +9639,8 @@ Combinator      Description
 ``toListOf``    Return a list of the targets.
 ``firstOf``     Returns ``Just`` the target of a prism or Nothing.
 
-Certain patterns show up so frequently that they warrant their own operators, although they can be expressed
-textual terms as well.
+Certain patterns show up so frequently that they warrant their own operators,
+although they can be expressed with textual terms as well.
 
 Symbolic Textual Equivalent   Description
 -------- -------------------  -----------
@@ -9657,9 +9660,10 @@ Symbolic Textual Equivalent   Description
 ``^?``   ``firstOf``          Return ``Just`` target or ``Nothing``
 ``^..``  ``toListOf``         View list of targets
 
-Constructing the lens field types from an arbitrary datatype involves a bit of boilerplate code generation.
-But compiles into simple calls which translate the fields of a record into functions involving the ``lens``
-function and logic for the getter and the setter.
+Constructing the lens field types from an arbitrary datatype involves a bit of
+boilerplate code generation, but compiles into simple calls which translate
+the fields of a record into functions involving the ``lens`` function and
+logic for the getter and the setter.
 
 ```haskell
 import Control.Lens
@@ -9706,7 +9710,7 @@ into combinations of the core combinators. Many of the operators do have a
 [consistent naming
 scheme](https://www.fpcomplete.com/school/to-infinity-and-beyond/pick-of-the-week/a-little-lens-starter-tutorial#actually-there-are-a-whole-lot-of-operators-in-lens---over-100).
 
-The sheer number of operators provided by lens is a polarizing for some, but all
+The sheer number of operators provided by lens is staggering for some, but all
 of the operators can be written in terms of the textual functions (``set``,
 ``view``, ``over``, ``at``, ...) and some people prefer to use these instead. 
 
@@ -9796,8 +9800,9 @@ Within the context of the state monad there are a particularly useful set of len
 * ``assign`` - Replace the target within a State monad.
 * ``zoom`` - Modify a target of the state with a function and perform it on the global state of the State monad.
 
-So for example if we wanted to write a little physics simulation of the random motion of particles in a box.
-We can use the ``zoom`` function to modify the state of our particles in each step of the simulation.
+So, for example, if we wanted to write a little physics simulation of the
+random motion of particles in a box, we could use the ``zoom`` function to
+modify the state of our particles in each step of the simulation.
 
 ~~~~ {.haskell include="src/32-lenses/zoom.hs"}
 ~~~~
