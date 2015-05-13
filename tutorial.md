@@ -9755,11 +9755,11 @@ Prisms
 ------
 
 ```haskell
-type Prism a a' b b' = forall f. (Choice p, Applicative f) => p b (f b') -> p a (f a')
+type Prism a a' b b' = forall p f. (Choice p, Applicative f) => p b (f b') -> p a (f a')
 ```
 
 Just as lenses allow us to manipulate product types, prisms allow us to manipulate sum types allowing us to
-traverse and apply functions over branches of a sum type selectively.
+traverse and apply functions over branches of a sum type selectively. Also, we can review a sum type from a branch.
 
 A prism instance in the lens library is constructed via ``prism`` for polymorphic lens ( those which may change a resulting type parameter) and ``prism'`` for those which are strictly monomorphic. Just as with the Lens instance ``makePrisms`` can be used to abstract away this boilerplate via Template Haskell.
 
