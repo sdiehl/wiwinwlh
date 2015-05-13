@@ -9755,17 +9755,13 @@ Prisms
 ------
 
 ```haskell
-type Prism a a' b b' = forall f. Applicative f => (b -> f b') -> (a -> f a')
+type Prism a a' b b' = forall f. (Choice p, Applicative f) => p b (f b') -> p a (f a')
 ```
 
-Just as lenses allow us to manipulate product types, Prisms allow us to manipulate sum types allowing us to
+Just as lenses allow us to manipulate product types, prisms allow us to manipulate sum types allowing us to
 traverse and apply functions over branches of a sum type selectively.
 
-The two libraries ``lens`` and ``lens-family`` disagree on how these structures are defined and which
-constraints they carry but both are defined in terms of at least an Applicative instance. A prism instance in
-the lens library is constructed via ``prism`` for polymorphic lens ( those which may change a resulting type
-parameter) and ``prism'`` for those which are strictly monomorphic. Just as with the Lens instance
-``makePrisms`` can be used to abstract away this boilerplate via Template Haskell.
+A prism instance in the lens library is constructed via ``prism`` for polymorphic lens ( those which may change a resulting type parameter) and ``prism'`` for those which are strictly monomorphic. Just as with the Lens instance ``makePrisms`` can be used to abstract away this boilerplate via Template Haskell.
 
 ~~~~ {.haskell include="src/32-lenses/prism.hs"}
 ~~~~
@@ -9783,13 +9779,6 @@ _left = prism Left $ either Right (Left . Right)
 _right :: Prism (Either c a) (Either c b) a b
 _right = prism Right $ either (Left . Left) Right
 ```
-
-In keeping with the past examples, I'll try to derive Prisms from first principles although this is no easy
-task as they typically are built on top of machinery in other libraries. This a (very) rough approximation of
-how one might do it using ``lens-family-core`` types.
-
-~~~~ {.haskell include="src/32-lenses/prism_impl.hs"}
-~~~~
 
 State and Zoom
 --------------
