@@ -9497,30 +9497,24 @@ in scope:
 * *data-lens-light* 
 * *lens*
 
-**<span style="color:red">WARNING</span>: The ``lens`` library is considered by
-many Haskellers to be deeply pathological and introduces a needless amount of
-complexity. Some care should taken when considering its use; it is included
-here for information only and not as endorsement for its use. Consider
-``lens-family-core`` or ``fclabels`` instead.**
-
 Should I use lens library?
 --------------------------
 
-No. The ``lens`` library is deeply problematic when considered in the context of
-the rest of the Haskell ecosystem and should be avoided. While there are some
-good ideas around the general ideas of lenses, the ``lens`` library's
-implementation contains an enormous amount of unidiomatic and over-engineered
-Haskell code whose marginal utility is grossly outweighed by the sheer weight of
-the entire edifice and the mental strain that it forces it on other developers
-to deduce the types involved in even the simplest expressions.
+The ``lens`` library is considered by some Haskellers to be pathological in the
+sense that it doesn't conform to many of the common conventions present in the
+bulk of the community. Some care should taken when considering its use.  lens is
+effectively a laboratory for a certain set of emerging ideas.
 
-lens is effectively a laboratory for a certain set of emerging ideas. It's
-idiosyncratic with respect to the rest of the ecosystem.
+By analogy, lens is most readily comparable to the "Boost C++" of the Haskell
+world. A library which seemingly offers a solution to an enormous number of
+problems, at the cost of bringing in an enormous edifice of code and different
+way of working that can be polarizing to certain practitioners.
 
 Van Laarhoven Lenses
 --------------------
 
-At its core a lens is a form of coupled getter and setter functions as a value under an existential functor.
+At its core a lens is a form of coupled getter and setter functions as a value
+under an existential functor.
 
 ```haskell
 --         +---- a : Type of structure
@@ -9749,46 +9743,6 @@ type Lens a a' b b' = forall f. Functor f => (b -> f b') -> (a -> f a')
 ```
 
 ~~~~ {.haskell include="src/32-lenses/lenspoly_impl.hs"}
-~~~~
-
-Prisms
-------
-
-```haskell
-type Prism a a' b b' = forall f. Applicative f => (b -> f b') -> (a -> f a')
-```
-
-Just as lenses allow us to manipulate product types, Prisms allow us to manipulate sum types allowing us to
-traverse and apply functions over branches of a sum type selectively.
-
-The two libraries ``lens`` and ``lens-family`` disagree on how these structures are defined and which
-constraints they carry but both are defined in terms of at least an Applicative instance. A prism instance in
-the lens library is constructed via ``prism`` for polymorphic lens ( those which may change a resulting type
-parameter) and ``prism'`` for those which are strictly monomorphic. Just as with the Lens instance
-``makePrisms`` can be used to abstract away this boilerplate via Template Haskell.
-
-~~~~ {.haskell include="src/32-lenses/prism.hs"}
-~~~~
-
-```haskell
-_just :: Prism (Maybe a) (Maybe b) a b
-_just = prism Just $ maybe (Left Nothing) Right
-
-_nothing :: Prism' (Maybe a) ()
-_nothing = prism' (const Nothing) $ maybe (Just ()) (const Nothing)
-
-_left :: Prism (Either a c) (Either b c) a b
-_left = prism Left $ either Right (Left . Right)
-
-_right :: Prism (Either c a) (Either c b) a b
-_right = prism Right $ either (Left . Left) Right
-```
-
-In keeping with the past examples, I'll try to derive Prisms from first principles although this is no easy
-task as they typically are built on top of machinery in other libraries. This a (very) rough approximation of
-how one might do it using ``lens-family-core`` types.
-
-~~~~ {.haskell include="src/32-lenses/prism_impl.hs"}
 ~~~~
 
 State and Zoom
