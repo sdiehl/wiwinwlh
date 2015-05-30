@@ -1874,8 +1874,7 @@ as an arbitrary baseline let's consider ``FlexibleInstances`` and ``OverloadedSt
 * *Historical* implies that one shouldn't use this extension, it's in GHC purely for backwards compatibility.
   Sometimes these are dangerous to enable.
 
-~~~~ {literal="extensions.html"}
-~~~~
+<extensions></extensions>
 
 See: [GHC Extension Reference](http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/flag-reference.html#idp14615552)
 
