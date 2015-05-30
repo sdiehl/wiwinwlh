@@ -12,7 +12,9 @@ includes: includes.hs
 	ghc --make $<
 
 %.html: %.md includes
-	./includes < $< | $(PANDOC) -c $(STYLE) --template $(TEMPLATE) -s -f $(IFORMAT) -t html $(FLAGS) -o $@
+	./includes < $<  \
+	| $(PANDOC) -c $(STYLE) --template $(TEMPLATE) -s -f $(IFORMAT) -t html $(FLAGS) \
+	| sed '/<extensions>/r extensions.html' > $@
 
 %.epub: %.md includes
 	./includes < $< | $(PANDOC) -f $(IFORMAT) -t epub $(FLAGS) -o $@
