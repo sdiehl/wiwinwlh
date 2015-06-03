@@ -6637,7 +6637,7 @@ things to memory!
 ~~~~ {.haskell include="src/21-ffi/ffi.hs"}
 ~~~~
 
-The names of foreign functions from a C specific header file can qualified.
+The names of foreign functions from a C specific header file can be qualified.
 
 ```haskell
 foreign import ccall unsafe "stdlib.h malloc"
