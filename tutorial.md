@@ -7200,7 +7200,7 @@ deterministic actions over files without having to worry about effect order.
 ~~~~ {.haskell include="src/25-streaming/pipes_file.hs"}
 ~~~~
 
-This is simple a sampling of the functionality of lens. The documentation for
+This is simple a sampling of the functionality of pipes. The documentation for
 pipes is extensive and great deal of care has been taken make the library
 extremely thorough. ``pipes`` is a shining example of an accessible yet category
 theoretic driven design.
