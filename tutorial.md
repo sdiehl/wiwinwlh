@@ -4748,7 +4748,7 @@ multiparamater typeclass instances with the same ``a`` but different ``b``.
 
 ```haskell
 λ: convert (42 :: Int)
-'42'
+'*'
 λ: convert '*'
 42
 ```
