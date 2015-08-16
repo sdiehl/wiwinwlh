@@ -10,5 +10,5 @@ ask = Reader id
 asks :: (r -> a) -> Reader r a
 asks f = Reader f
 
-local :: (r -> b) -> Reader b a -> Reader r a
+local :: (r -> r) -> Reader r a -> Reader r a
 local f m = Reader $ runReader m . f
