@@ -2079,10 +2079,10 @@ second = (True,)
 {-# LANGUAGE MultiWayIf #-}
 
 operation x =
-  if | x > 100   = 3
-     | x > 10    = 2
-     | x > 1     = 1
-     | otherwise = 0
+  if | x > 100   -> 3
+     | x > 10    -> 2
+     | x > 1     -> 1
+     | otherwise -> 0
 ```
 
 **Lambda Case**
