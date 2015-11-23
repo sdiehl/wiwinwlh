@@ -397,11 +397,16 @@ and probably should be avoided.
 There are several authors who it is usually safe to assume have uploaded a stable
 and usable library. These include, but are not limited to:
 
-* Bryan O'Sullivan
-* Johan Tibell
-* Simon Marlow
-* Gabriel Gonzalez
-* Roman Leshchinskiy
+* [Bryan O'Sullivan](https://hackage.haskell.org/user/BryanOSullivan)
+* [Johan Tibell](https://hackage.haskell.org/user/JohanTibell)
+* [Simon Marlow](https://hackage.haskell.org/user/SimonMarlow)
+* [Gabriel Gonzalez](https://hackage.haskell.org/user/GabrielGonzalez)
+* [Roman Leshchinskiy](https://hackage.haskell.org/user/RomanLeshchinskiy)
+* [Edward Kmett](https://hackage.haskell.org/user/EdwardKmett)
+* [Herbert Valerio Riedel](https://hackage.haskell.org/user/HerbertValerioRiedel)
+* [Michael Snoyman](https://hackage.haskell.org/user/MichaelSnoyman)
+* [Neil Mitchell](https://hackage.haskell.org/user/NeilMitchell)
+* [Chris Done](https://hackage.haskell.org/user/ChrisDone)
 
 GHCi
 ----
