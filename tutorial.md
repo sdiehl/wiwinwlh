@@ -394,15 +394,6 @@ As a rule of thumb if the Haddock docs for the library does not have a **minimal
 worked example**, it is usually safe to assume that it is a RFC-style library
 and probably should be avoided.
 
-There are several authors who it is usually safe to assume have uploaded a stable
-and usable library. These include, but are not limited to:
-
-* Bryan O'Sullivan
-* Johan Tibell
-* Simon Marlow
-* Gabriel Gonzalez
-* Roman Leshchinskiy
-
 GHCi
 ----
 
