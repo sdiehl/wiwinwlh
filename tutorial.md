@@ -2413,8 +2413,8 @@ Irrefutable Patterns
 --------------------
 
 A lazy pattern doesn't require a match on the outer constructor, instead it
-lazily calls the accessors of the values failing at each call-site instead at
-the outer pattern match in the presence of a bottom.
+lazily calls the accessors of the values as needed. In the presence of a 
+bottom, we fail at the usage site instead of the outer pattern match.
 
 ~~~~ {.haskell include="src/05-laziness/lazy_patterns.hs"}
 ~~~~
