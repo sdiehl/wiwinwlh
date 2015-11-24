@@ -2152,7 +2152,7 @@ structures in memory when such composition would "just work" in a lazy language.
 By virtue of Haskell being the only language to actually explore this point in
 the design space to the point of being industrial strength; knowledge about lazy
 evaluation is not widely absorbed into the collective programmer consciousness
-and can often be non-intuitive to the novice. This does reflect on the model
+and can often be non-intuitive to the novice. This doesn't reflect on the model
 itself, merely on the need for more instruction material and research on
 optimizing lazy compilers.
 
