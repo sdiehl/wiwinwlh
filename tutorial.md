@@ -3000,6 +3000,10 @@ See: [Applicative Programming with Effects](http://www.soi.city.ac.uk/~ross/pape
 Typeclass Hierarchy
 -------------------
 
+As of GHC 7.10, Applicative is a superclass of the Monad typeclass. 
+
+The following only applies to earlier versions of GHC:
+
 In principle every monad arises out of an applicative functor (and by corollary a functor) but due to
 historical reasons Applicative isn't a superclass of the Monad typeclass. A hypothetical fixed Prelude might
 have:
