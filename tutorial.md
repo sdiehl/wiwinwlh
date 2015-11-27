@@ -40,6 +40,7 @@ asking permission.
 * optparse-applicative
 * hastache
 * servant
+* haxl
 * Dependent Haskell
 * Language Comparisons
 * RelaxedPolyRec
@@ -9670,12 +9671,12 @@ Algebraic Relations
 
 Grossly speaking category theory is not terribly important to Haskell
 programming, and although some libraries derive some inspiration from the
-subject most do not. What is more important is a general understanding of
+subject; most do not. What is more important is a general understanding of
 equational reasoning and a familiarity with various algebraic relations.
 
 Certain relations show up so frequently we typically refer to their properties
 by name ( often drawn from an equivalent abstract algebra concept ). Consider a
-binary operation ``a `op` b``.
+binary operation ``a `op` b`` and a unary operation ``f``.
 
 **Associativity**
 
@@ -9739,7 +9740,7 @@ And of course combinations of these properties over multiple functions gives
 rise to higher order systems of relations that occur over and over again
 throughout functional programming, and once we recognize them we can abstract
 over them. For instance a monoid is a combination of a unit and a single
-associative operation.
+associative operation over a set of values.
 
 Categories
 ----------
@@ -9754,6 +9755,10 @@ category of Haskell types with functions between types as morphisms.
 
 ~~~~ {.haskell include="src/33-categories/categories.hs"}
 ~~~~
+
+Categories are interesting since they exhibit various composition properties and
+ways in which various elements in the category can be composed and rewritten
+while preserving several invariants about the program.
 
 Isomorphisms
 ------------
