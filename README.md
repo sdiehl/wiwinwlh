@@ -23,6 +23,17 @@ $ make tutorial.pdf
 $ make tutorial.epub
 ```
 
+Stack
+-----
+
+Alternatively using the stack build system:
+
+```bash
+$ stack ghc includes.hs -- -o includes 
+$ stack exec bash
+$ stack make
+```
+
 License
 -------
 

@@ -10,3 +10,4 @@ includes
 *.html
 *.epub
 *.agdai
+.stack-work

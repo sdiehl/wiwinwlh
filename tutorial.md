@@ -19,6 +19,30 @@ asking permission.
 
 **Changelog**
 
+**2.3**
+
+* Stack
+* Nix (Updated)
+* Aeson (Updated)
+* Langauge Extensions (Updated)
+* Sums of Products
+* Partial Type Signatures
+* integer-gmp
+* Static Pointers
+* Unboxed Types Updated
+* Strict Language Extension
+* postgresql-simple
+* opaleye
+* happy/alex
+* configurator
+* string-conv
+* resource-pool
+* optparse-applicative
+* hastache
+* servant
+* Dependent Haskell
+* Language Comparisons
+
 **2.2**
 
 Sections that have had been added or seen large changes:
@@ -354,6 +378,11 @@ See:
 
 * [An Introduction to Cabal Sandboxes](http://coldwa.st/e/blog/2013-08-20-Cabal-sandbox.html)
 * [Storage and Identification of Cabalized Packages](http://www.vex.net/~trebla/haskell/sicp.xhtml)
+
+Stack
+-----
+
+TODO
 
 Hackage
 -------
@@ -823,8 +852,8 @@ tracePrintfM :: (Monad m, PrintfArg a) => String -> a -> m ()
 tracePrintfM s = traceM . printf s
 ```
 
-Typed Holes
------------
+Type Holes
+----------
 
 Since GHC 7.8 we have a new tool for debugging incomplete programs by means of
 *typed holes*. By placing an underscore on any value on the right hand-side of a
@@ -858,6 +887,9 @@ Failed, modules loaded: none.
 
 GHC has rightly suggested that the expression needed to finish the program is
 ``xs :: [a]``.
+
+Partial Type Signatures
+-----------------------
 
 Nix
 ---
@@ -2997,38 +3029,6 @@ apl a b = C <$> a <*> b
 
 See: [Applicative Programming with Effects](http://www.soi.city.ac.uk/~ross/papers/Applicative.pdf)
 
-Typeclass Hierarchy
--------------------
-
-As of GHC 7.10, Applicative is a superclass of the Monad typeclass. 
-
-The following only applies to earlier versions of GHC:
-
-In principle every monad arises out of an applicative functor (and by corollary a functor) but due to
-historical reasons Applicative isn't a superclass of the Monad typeclass. A hypothetical fixed Prelude might
-have:
-
-```haskell
-class Functor f where
-  fmap :: (a -> b) -> f a -> f b
-
-class Functor f => Applicative f where
-  pure :: a -> f a
-  (<*>) :: f (a -> b) -> f a -> f b
-
-class Applicative m => Monad m where
-  (>>=) :: m a -> (a -> m b) -> m b
-  ma >>= f = join (fmap f ma)
-
-return :: Applicative m => a -> m a
-return = pure
-
-join :: Monad m => m (m a) -> m a
-join x = x >>= id
-```
-
-See: [Functor-Applicative-Monad Proposal](http://wiki.haskell.org/Functor-Applicative-Monad_Proposal)
-
 Alternative
 -----------
 
@@ -4966,6 +4966,9 @@ head ~(a :| _) = a
 ~~~~ {.haskell include="src/16-type-families/noempty.hs"}
 ~~~~
 
+Overloaded Lists
+----------------
+
 In GHC 7.8 ``-XOverloadedLists`` can be used to avoid the extraneous ``fromList`` and ``toList`` conversions.
 
 Manual Proofs
@@ -5686,6 +5689,13 @@ around the lack of dependent types.
 ~~~~ {.haskell include="src/17-promotion/Vector.agda"}
 ~~~~
 
+Dependent Haskell
+-----------------
+
+TODO
+
+* [Adding Dependent Types to Haskell](https://ghc.haskell.org/trac/ghc/wiki/DependentHaskell)
+
 Generics
 ========
 
@@ -6056,6 +6066,11 @@ derive JSON representations for JSON instances.
 
 See: [A Generic Deriving Mechanism for Haskell](http://dreixel.net/research/pdf/gdmh.pdf)
 
+Sums of Products
+----------------
+
+* [generics-sop](https://hackage.haskell.org/package/generics-sop)
+
 Uniplate
 --------
 
@@ -6338,17 +6353,47 @@ Data Structures
 Map
 ---
 
+A map is an associative array mapping any instance of ``Ord`` keys to values of
+any type.
+
+Functionality      Function  Time Complexity
+------------------ --------  ---------------
+Initialization     empty     O(1)
+Size               size      O(1)
+Lookup             lookup    O(log(n))
+Insertion          insert    O(log(n))
+Traversal          traverse  O(n)
+
 ~~~~ {.haskell include="src/20-data-structures/map.hs"}
 ~~~~
 
 Tree
 ----
 
+Functionality      Function  Time Complexity
+------------------ --------  ---------------
+Initialization     empty     O(1)
+Size               size      O(1)
+Lookup             lookup    O(log(n))
+Insertion          insert    O(log(n))
+Traversal          traverse  O(n)
+
 ~~~~ {.haskell include="src/20-data-structures/tree.hs"}
 ~~~~
 
 Set
 ---
+
+Sets are an unordered data structures allow ``Ord`` values of any type and
+guaranteeing uniqueness with in the structure. They are not precisely identical
+to the mathematical notion of a Set even though they share the same namesake.
+
+Functionality      Function  Time Complexity
+------------------ --------  ---------------
+Initialization     empty     O(1)
+Size               size      O(1)
+Insertion          insert    O(log(n))
+Traversal          traverse  O(n)
 
 ~~~~ {.haskell include="src/20-data-structures/set.hs"}
 ~~~~
@@ -6421,6 +6466,14 @@ Hashtables
 ----------
 
 Hashtables provides hashtables with efficient lookup within the ST or IO monad.
+
+Functionality      Function  Time Complexity
+------------------ --------  ---------------
+Initialization     empty     O(1)
+Size               size      O(1)
+Lookup             lookup    O(1)
+Insertion          insert    ???
+Traversal          traverse  O(n)
 
 ~~~~ {.haskell include="src/20-data-structures/hashtables.hs"}
 ~~~~
@@ -9806,3 +9859,50 @@ Resources
 * [Category Theory, Awodey](http://www.amazon.com/Category-Theory-Oxford-Logic-Guides/dp/0199237182)
 * [Category Theory Foundations](https://www.youtube.com/watch?v=ZKmodCApZwk)
 * [The Catsters](http://www.youtube.com/user/TheCatsters)
+
+Other Languages
+===============
+
+Let us attempt to give an objective comparison of Haskell to other langauges
+with regards to which language principles they share and how they differ. This
+is not advisement to use or not use any of these languages simply a statement of
+the similarities and differences between them.
+
+OCaml
+-----
+
+Standard ML
+-----------
+
+Agda
+----
+
+Coq
+---
+
+Idris
+-----
+
+Rust
+-----
+
+Purescript
+---------
+
+Elm
+---
+
+Python
+------
+
+Julia
+------
+
+Go
+--
+
+Swift
+------
+
+Javascript
+----------
