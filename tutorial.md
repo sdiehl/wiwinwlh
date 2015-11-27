@@ -1585,8 +1585,8 @@ A simple implementation of the State monad is only a few lines:
 Monad Tutorials
 ---------------
 
-So many monad tutorials have been written that it begs the question, what makes
-monads so difficult when first learning Haskell. I suggest there are three
+So many monad tutorials have been written that it begs the question: what makes
+monads so difficult when first learning Haskell? I hypothesize there are three
 aspects to why this is so:
 
 1. *There are several levels on indirection with desugaring.*
