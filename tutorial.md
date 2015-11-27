@@ -9,7 +9,7 @@ here](https://github.com/sdiehl/wiwinwlh/tree/master/src). If there are any
 errors or you think of a more illustrative example feel free to submit a pull
 request on Github.
 
-This is the third draft of this document.
+This is the fourth draft of this document.
 
 **License**
 
@@ -42,6 +42,11 @@ asking permission.
 * servant
 * Dependent Haskell
 * Language Comparisons
+* RelaxedPolyRec
+* MonoLocalBinds
+* MonoPatBinds
+* ConstraintClassMethods
+* -fdefer-type-errors
 
 **2.2**
 
@@ -7240,6 +7245,11 @@ network protocol:
 
 See: [Text Parsing Tutorial](https://www.fpcomplete.com/school/starting-with-haskell/libraries-and-frameworks/text-manipulation/attoparsec)
 
+Happy & Alex
+------------
+
+TODO
+
 Streaming
 =========
 
@@ -7369,7 +7379,8 @@ Data Formats
 JSON
 ----
 
-Aeson is library for efficient parsing and generating JSON.
+Aeson is library for efficient parsing and generating JSON. It is the canonical
+JSON library for handling JSON.
 
 ```haskell
 decode :: FromJSON a => ByteString -> Maybe a
@@ -7380,14 +7391,23 @@ fromJSON :: FromJSON a => Value -> Result a
 toJSON :: ToJSON a => a -> Value
 ```
 
-We'll work with this contrived example:
-
-~~~~ {.json include="src/26-data-formats/example.json"}
-~~~~
+A point of some subtlety to beginners is that the return types for Aeson
+functions are **polymorphic in their return types** meaning that the resulting
+type of decode is specified only in the context of your programs use of the
+decode function. So if you use decode in a point your program and bind it to a
+value ``x`` and then use ``x`` as if it were and integer throughout the rest of
+your program, Aeson will select the typeclass instance which parses the given
+input string into a Haskell integer.
 
 Aeson uses several high performance data structures (Vector, Text, HashMap) by default instead of the naive
 versions so typically using Aeson will require that us import them and use ``OverloadedStrings`` when
 indexing into objects.
+
+See: [Aeson Documentation](http://hackage.haskell.org/package/aeson)
+
+The underlying Aeson structure is called ``Value`` and encodes a recursive tree
+structure that models the semantics of untyped JSON objects by mapping them onto
+a large sum type which embodies all possible JSON values.
 
 ```haskell
 type Object = HashMap Text Value
@@ -7403,7 +7423,43 @@ data Value = Object !Object
            | Null
 ```
 
-See: [Aeson Documentation](http://hackage.haskell.org/package/aeson)
+For instance the Value expansion of the following JSON blob:
+
+```javascript
+{
+  "a": [1,2,3],
+  "b": 1
+}
+```
+
+Is represented in Aeson as the ``Value``.
+
+```haskell
+Object
+   (fromList
+      [ ( "a"
+        , Array (fromList [ Number 1.0 , Number 2.0 , Number 3.0 ])
+        )
+      , ( "b" , Number 1.0 )
+      ])
+```
+
+
+Let's consider some larger examples, we'll work with this contrived example
+JSON:
+
+~~~~ {.json include="src/26-data-formats/example.json"}
+~~~~
+
+**Hand Written Instances**
+
+```haskell
+```
+
+**Generics**
+
+```haskell
+```
 
 **Unstructured**
 
@@ -7556,14 +7612,20 @@ apply for monads may break down or fail with error terms.
 
 See: [Making a Website with Haskell](http://adit.io/posts/2013-04-15-making-a-website-with-haskell.html)
 
+Servant
+-------
+
+TODO
+
 Databases
 =========
 
 Acid State
 ----------
 
-Acid-state allows us to build a "database on demand" for arbitrary Haskell datatypes that guarantees atomic
-transactions. For example, we can build a simple key-value store wrapped around the Map type.
+Acid-state allows us to build a "database on demand" for arbitrary Haskell
+datatypes that guarantees atomic transactions. For example, we can build a
+simple key-value store wrapped around the Map type.
 
 ~~~~ {.haskell include="src/28-databases/acid.hs"}
 ~~~~
@@ -8013,7 +8075,8 @@ data DTraversable t = DTraversable
 
 Indeed this is not that far from how GHC actually implements typeclasses. It
 elaborates into projection functions and data constructors nearly identical to
-this, and are implicitly threaded for every overloaded identifier.
+this, and are expanded out to a dictionary argument for each typeclass
+constraint of every polymorphic function.
 
 Specialization
 --------------
