@@ -382,14 +382,65 @@ See:
 Stack
 -----
 
-TODO
+Stack is a new approach to Haskell package structure that emerged in late 2015.
+Instead of using a rolling build like ``cabal-install` stack breaks up sets of
+packages into release blocks that guarantee internal compatability between sets
+of packages.
+
+The package solver for Stack uses a different strategy for resolving
+dependencies than ``cabal-install``.
+
+Install stack:
+
+```bash
+```
+
+stack.yaml
+
+**GHC 7.8.4**
+
+```bash
+resolver: lts-2.22
+packages:
+- '.'
+extra-deps: []
+flags: {}
+extra-package-dbs: []
+```
+
+**GHC 7.10.2**
+
+```bash
+flags: {}
+extra-package-dbs: []
+packages: []
+extra-deps: []
+resolver: lts-3.14
+```
+
+Installing packages
+
+```bash
+$ stack install mtl
+$ stack list-dependencies
+```
+
+Interacting with the project:
+
+```bash
+$ stack build
+$ stack repl
+$ stack ghc
+$ stack ghci
+$ stack exec bash
+```
 
 Hackage
 -------
 
-Hackage is the canonical source of open source Haskell packages. Being a
+Hackage is the upstream source of open source Haskell packages. Being a
 transitional language, Hackage is many things to many people but there seem to
-be two dominant philosophies:
+be two dominant philosophies around the development of packages:
 
 **Reusable Code / Building Blocks**
 
@@ -417,17 +468,18 @@ philosophies and how sustainable the current cultural state of Hackage is.
 
 Needless to say there is a lot of very low-quality Haskell code and
 documentation out there today, and being conservative in library assessment is a
-necessary skill.
+necessary skill. That said, there is also quite a few  phenomenal libraries on
+Hackage that are highly curated by many people.
 
 As a rule of thumb if the Haddock docs for the library does not have a **minimal
 worked example**, it is usually safe to assume that it is a RFC-style library
-and probably should be avoided.
+and probably should be avoided in production-grade code.
 
 GHCi
 ----
 
 GHCi is the interactive shell for the GHC compiler. GHCi is where we will spend
-most of our time.
+most of our time in every day development.
 
 Command    Shortcut   Action
 ---------  ---------  --------------------------
@@ -437,6 +489,9 @@ Command    Shortcut   Action
 `:info`    `:i`       Information
 `:print`   `:p`       Print the expression
 `:edit`    `:e`       Load file in system editor.
+`:load`    `:e`       Set the active Main module in the REPL.
+`:add`     `:ad`      Load a file into the REPL namespace. 
+`:browse`  `:bro`     Browse all available symbols in the REPL namespace.
 
 The introspection commands are an essential part of debugging and interacting
 with Haskell code:
@@ -9897,6 +9952,12 @@ Python
 
 Julia
 ------
+
+Erlang
+------
+
+Clojure
+-------
 
 Go
 --
