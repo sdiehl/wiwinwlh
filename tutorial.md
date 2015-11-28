@@ -191,7 +191,9 @@ downstream consumers.
 
 For an executable the ``main-is`` field indicates the Main module for the
 project that exports the ``main`` function to run for the executable logic of
-the application.
+the application. Every module in the package must be listed in one of
+``other-modules``, ``exposed-modules`` or ``main-is`` fields.
+
 
 ```bash
 name:               mylibrary
