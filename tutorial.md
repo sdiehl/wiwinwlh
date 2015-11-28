@@ -9991,47 +9991,207 @@ with regards to which language principles they share and how they differ. This
 is not advisement to use or not use any of these languages simply a statement of
 the similarities and differences between them.
 
+No notion of "weak" or "strong" typing will be discussed because the terms have
+no universal meaning.
+
+Haskell
+-------
+
+Haskell's main implementation is *GHC*.
+
+Haskell is a *general purpose language*.
+
+Haskell is *garbage collected*.
+
+Haskell is *statically* typed.
+
+Haskell allows polymorphism by means of *parametric polymorphism* and *ad-hoc
+polymorphism*.
+
+Haskell is *pure* and statically tracks effects.
+
 OCaml
 -----
+
+Ocaml's main implementation is *ocamlc*.
+
+OCaml's main package manager is *opam*.
+
+OCaml is a *general purpose language*.
+
+OCaml is a *statically typed* language.
+
+OCaml is *garbage collected*.
+
+OCaml allows polymorphism by means of *parametric polymorphism* and *ad-hoc
+polymorphism*.
+
+OCaml has a module system and functors.
+
+OCaml is not an optimizing compiler.
+
+Ocaml is *impure* by default and does not statically track effects.
 
 Standard ML
 -----------
 
+Standard ML's main implementation is *smlnj*.
+
+Standard ML has no package manager.
+
+Standard ML was traditionally a *general purpose language*, although it's lack
+of a modern compiler largely only makes it useful for work on pure type theory
+and proof assistants.
+
+Standard ML has a module system and functors.
+
+Standard ML is a *statically typed* language.
+
+Standard ML is *impure* by default and does not statically track effects.
+
+SMLNJ is *garbage collected*.
+
 Agda
 ----
+
+Agda's main implementation is *agda*.
+
+Agda is not a general purpose language, it is largely used as a proof
+environment.
+
+Agda has no package manager.
+
+Agda is a *statically typed* language.
 
 Coq
 ---
 
+Coq's main implementation is *coq*.
+
+Coq is not a general purpose language, it is largely used as a proof
+environment.
+
+Coq is a *statically typed* language.
+
+Coq largely lacks a backend that is comparable to a general purpose language. It
+is therefore mostly nonsensical to talk about runtime implementation since most
+Coq programs are not run or compiled.
+
 Idris
 -----
+
+Idris's main implementation is *coq*.
+
+Idris is a *general purpose language*.
+
+Idris is a *statically typed* language.
+
+Idris is *garbage collected* by default.
 
 Rust
 -----
 
+Rusts's main implementation is *rustc*.
+
+Rust is a *statically typed* language.
+
+Rust is a *general purpose language*.
+
+Rust is *not garbage collected* by default, instead uses static semantics to the
+analyze lifetimes. Optionally supports garbage collection.
+
+Rust is *impure* by default and does not statically track effects. It does
+however have sophisticated static tracking of allocations and lifetimes.
+
 Purescript
 ---------
+
+Purescript's main implementation is *purescript*.
+
+Purescript is a *statically typed* language.
+
+Purescript is *pure* and statically tracks effects.
 
 Elm
 ---
 
+Elm's main implementation is *elm*.
+
+Elm is a *statically typed* language.
+
+Elm is *pure* and statically tracks effects.
+
 Python
 ------
+
+Python's main implementation is *cpython*.
+
+Python is a *unityped* language.
+
+Python is *impure* by default and does not statically track effects.
+
+Python internally refers to runtime value tags as *types*, which differs from
+the Haskell notion of types.
+
+Python allows polymorphism by means of unityping, all functions can take any
+type.
 
 Julia
 ------
 
+Julia's main implementation is *juliia*.
+
+Julia is a *unityped* language.
+
+Julia internally refers to runtime value tags as *types*, which differs from
+the Haskell notion of types.
+
 Erlang
 ------
+
+Erlang's main implementation is *erl*.
+
+Erlang is a *unityped* language.
+
+Erlang is interpreted.
+
+Erlang internally refers to runtime value tags as *types*, which differs from
+the Haskell notion of types.
+
+Erlang is *impure* by default and does not statically track effects.
 
 Clojure
 -------
 
+Clojure's main implementation is *clojure*.
+
+Clojure is a *unityped* language.
+
+Clojure internally refers to runtime value tags as *types*, which differs from
+the Haskell notion of types.
+
 Go
 --
+
+Go's main implementation is *go*.
+
+Clojure is a *unityped* language.
 
 Swift
 ------
 
+Swift's main implementation is *swift*.
+
+Swift is a *statically typed* language.
+
 Javascript
 ----------
+
+Javascripts implementations include *NodeJS*, *V8* and *spidermoneky*.
+
+Javascript is a *unityped* language.
+
+Javasccript internally refers to runtime value tags as *types*, which differs
+from the Haskell notion of types.
+
+The majority of Javascript implementations are garbage collected.
