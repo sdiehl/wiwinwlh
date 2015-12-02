@@ -2,6 +2,7 @@
 
 -- includes.hs
 import Text.Pandoc
+import Text.Pandoc.Error
 
 doInclude :: Block -> IO Block
 doInclude cb@(CodeBlock (id, classes, namevals) contents) =
@@ -18,6 +19,11 @@ doHtml cb@(CodeBlock (id, classes, namevals) contents) =
 doHtml x = return x
 
 main :: IO ()
-main = getContents >>= bottomUpM doInclude . readMarkdown def
+main = getContents >>= bottomUpM doInclude . readMd def
                    >>= bottomUpM doHtml
                    >>= putStrLn . writeMarkdown def
+
+readMd :: ReaderOptions -> String -> Pandoc
+readMd ropt str = case readMarkdown ropt str of
+  Right doc -> doc
+  Left err  -> error $ show err
