@@ -184,9 +184,9 @@ can be defined, but only one library. In addition there is a special form of
 executable entry point ``Test-Suite`` which defines an interface for unit tests
 to be invoked from cabal.
 
-For a library the ``exposed-modules`` field in the cabal file indicates which
+For a library, the ``exposed-modules`` field in the cabal file indicates which
 modules within the package structure will be publicly visible when the package
-is installed, these are the user-facing APIs that we wish to expose to
+is installed. These are the user-facing APIs that we wish to expose to
 downstream consumers.
 
 For an executable the ``main-is`` field indicates the Main module for the
