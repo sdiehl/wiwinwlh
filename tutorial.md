@@ -2758,7 +2758,7 @@ structure left-to-right within an applicative context.
 
 ```haskell
 class (Functor f, Foldable f) => Traversable f where
-  traverse :: Applicative g => f (g a) -> g (f a)
+  traverse :: Applicative g => (a -> g b) -> f a -> g (f b)
 
 class Foldable f where
   foldMap :: Monoid m => (a -> m) -> f a -> m
