@@ -1783,7 +1783,7 @@ It's useful to remember that transformers compose outside-in but are unrolled in
 
 ![](img/transformer_unroll.png)
 
-See: [Monad Transformers: Step-By-Step](http://www.cs.virginia.edu/~wh5a/personal/Transformers.pdf)
+See: [Monad Transformers: Step-By-Step](http://catamorph.de/publications/2004-10-01-monad-transformers.html)
 
 ReaderT
 -------
