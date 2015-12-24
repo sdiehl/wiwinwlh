@@ -5561,8 +5561,8 @@ type family Sum (ns :: [Nat]) :: Nat where
 Kind Indexed Type Families
 --------------------------
 
-Just as typeclasses are normally indexed on types, classes can also be indexed on kinds with the kinds given
-as explicit kind signatures on type variables.
+Just as typeclasses are normally indexed on types, type families can also be indexed on kinds with the kinds
+given as explicit kind signatures on type variables.
 
 ```haskell
 type family (a :: k) == (b :: k) :: Bool
@@ -5587,6 +5587,10 @@ type family EqList a b where
   EqList '[]        '[]        = True
   EqList (h1 ': t1) (h2 ': t2) = (h1 == h2) && (t1 == t2)
   EqList a          b          = False
+
+type family a && b where
+  True && True = True
+  a    && a    = False
 ```
 
 Promoted Symbols
