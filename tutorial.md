@@ -6403,10 +6403,40 @@ The SBV library can abstract over different SMT solvers to allow us to express
 the problem in an embedded domain language in Haskell and then offload the
 solving work to the third party library.
 
-TODO: Talk about SBV
+As an example, here's how you can solve a simple
+[cryptarithm](https://en.wikipedia.org/wiki/Verbal_arithmetic)
 
+-----------------------------
+          `M` `O` `N` `A` `D`
++ `B` `U` `R` `R` `I` `T` `O`
+= `B` `A` `N` `D` `A` `I` `D`
+-----------------------------
+
+using SBV library:
+
+~~~~ {.haskell include="src/19-numbers/puzzle.hs"}
+~~~~
+
+Let's look at all possible solutions,
+
+```haskell
+λ: allSat puzzle
+Solution #1:
+  b = 4 :: Integer
+  u = 1 :: Integer
+  r = 5 :: Integer
+  i = 9 :: Integer
+  t = 7 :: Integer
+  o = 0 :: Integer
+  m = 8 :: Integer
+  n = 3 :: Integer
+  a = 2 :: Integer
+  d = 6 :: Integer
+This is the only solution.
+```
 See:
 
+* [sbv](http://leventerkok.github.io/sbv/)
 * [cvc4](http://cvc4.cs.nyu.edu/web/)
 * [z3](http://z3.codeplex.com/)
 
