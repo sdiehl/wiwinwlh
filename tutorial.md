@@ -12,8 +12,8 @@ This code and text are dedicated to the public domain. You can copy, modify,
 distribute and perform the work, even for commercial purposes, all without
 asking permission.
 
-You may copy and paste any code here verbatim into your codebase, wiki, blog, or
-Haskell musical production as you see fit.
+You may copy and paste any code here verbatim into your codebase, wiki, blog,
+book or Haskell musical production as you see fit.
 
 The Markdown and Haskell source is [available on
 Github](https://github.com/sdiehl/wiwinwlh/tree/master/src). Pull requests are
