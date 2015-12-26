@@ -22,10 +22,24 @@ asking permission.
 **2.3 (Work in Progress) **
 
 * Stack
+* Stackage
 * Nix (Updated)
 * Aeson (Updated)
 * Langauge Extensions (Updated)
+* Type Holes (Updated)
+* Pattern Synonyms (Updated)
+* VIM Integration
+* Dependent Types and TypeInType
+* Injective Type Families
+* Applicative Do
+* Strict Haskell
+* Type Signature Sections
+* Cpp
+* Minimal Pragma
+* Rewrite Rules
 * mmorph
+* shake
+* servant
 * generics-sop
 * Partial Type Signatures
 * integer-gmp
@@ -40,12 +54,14 @@ asking permission.
 * resource-pool
 * optparse-applicative
 * hastache
-* servant
 * haxl
 * Dependent Haskell
 * Language Comparisons
 * RelaxedPolyRec
 * ConstraintClassMethods
+* c2hs
+* hsc2hs
+* DWARF debugging
 * -fdefer-type-errors
 
 **2.2**
@@ -482,6 +498,11 @@ As a rule of thumb if the Haddock docs for the library does not have a **minimal
 worked example**, it is usually safe to assume that it is a RFC-style library
 and probably should be avoided in production-grade code.
 
+Stackage
+--------
+
+* [Stackage](https://www.stackage.org/)
+
 GHCi
 ----
 
@@ -648,11 +669,26 @@ linting, type checking, and code completion.
 ![](img/errors.png)
 
 Many prepackaged setups exist to expedite the process of setting up many of the
-programmer editors for Haskell development:
+programmer editors for Haskell development. In particular both ``ghc-mod`` and
+hdevtools can remarkably improve the efficiency and productivity.
+
 
 **Vim**
 
 https://github.com/begriffs/haskell-vim-now
+
+TODO
+
+```vim
+" Type Lookup
+map tt :call GHC_ShowType(0)<CR>
+
+" Type Insertion
+map <silent> tw :GhcModTypeInsert<CR>
+map <silent> ts :GhcModSplitFunCase<CR>
+map <silent> tq :GhcModType<CR>
+map <silent> te :GhcModTypeClear<CR>
+```
 
 **Emacs**
 
@@ -668,9 +704,6 @@ cabal install hlint
 cabal install ghcid
 cabal install ghci-ng
 ```
-
-In particular both ``ghc-mod`` and hdevtools can remarkably improve the
-efficiency and productivity.
 
 See:
 
@@ -952,6 +985,74 @@ GHC has rightly suggested that the expression needed to finish the program is
 
 Partial Type Signatures
 -----------------------
+
+The same hole technique can be applied at the toplevel for signatures:
+
+```haskell
+const' :: _
+const' x y = x
+```
+
+```bash
+[1 of 1] Compiling Main             ( src/typedhole.hs, interpreted )
+
+typedhole.hs:3:11:
+    Found hole ‘_’ with type: t1 -> t -> t1
+    Where: ‘t’ is a rigid type variable bound by
+               the inferred type of const' :: t1 -> t -> t1 at foo.hs:4:1
+           ‘t1’ is a rigid type variable bound by
+                the inferred type of const' :: t1 -> t -> t1 at foo.hs:4:1
+    To use the inferred type, enable PartialTypeSignatures
+    In the type signature for ‘const'’: _
+Failed, modules loaded: none.
+```
+
+Pattern wildcards can also be given explicit names so that GHC will use when
+reporting the inferred type in the resulting message.
+
+```haskell
+foo :: _a -> _a
+foo _ = False
+```
+
+```bash
+typedhole.hs:6:9:
+    Couldn't match expected type ‘_a’ with actual type ‘Bool’
+      ‘_a’ is a rigid type variable bound by
+           the type signature for foo :: _a -> _a at foo.hs:5:8
+    Relevant bindings include foo :: _a -> _a (bound at foo.hs:6:1)
+    In the expression: False
+    In an equation for ‘foo’: foo _ = False
+Failed, modules loaded: none.
+```
+
+The same wildcards can be used in type contexts to dump out inferred type class
+constraints:
+
+```haskell
+succ' :: _ => a -> a
+succ' x = x + 1
+```
+
+```bash
+typedhole.hs:3:10:
+    Found hole ‘_’ with inferred constraints: (Num a)
+    To use the inferred type, enable PartialTypeSignatures
+    In the type signature for ‘succ'’: _ => a -> a
+Failed, modules loaded: none.
+```
+
+When the flag ``-XPartialTypeSignature`` is passed to GHC and the inferred type
+is unambiguous, GHC will let us leave the holes in place and the compilation
+will proceed.
+
+```bash
+typedhole.hs:3:10: Warning:
+    Found hole ‘_’ with type: w_
+    Where: ‘w_’ is a rigid type variable bound by
+                the inferred type of succ' :: w_ -> w_1 -> w_ at foo.hs:4:1
+    In the type signature for ‘succ'’: _ -> _ -> _
+```
 
 Nix
 ---
@@ -3237,7 +3338,8 @@ addA f g = arr (\ x -> (x, x)) >>>
 addA f g = f &&& g >>> arr (\ (y, z) -> y + z)
 ```
 
-In practice this notation is not used often and in the future may become deprecated.
+In practice this notation is not often used and may become deprecated in the
+future.
 
 See: [Arrow Notation](https://downloads.haskell.org/~ghc/7.8.3/docs/html/users_guide/arrow-notation.html)
 
@@ -8040,6 +8142,13 @@ See:
 
 * [Secrets of the Glasgow Haskell Compiler inliner](https://research.microsoft.com/en-us/um/people/simonpj/Papers/inlining/inline.pdf)
 
+Rewrite Rules
+-------------
+
+TODO
+
+* [Rewrite Rules](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/rewrite-rules.html)
+
 Dictionaries
 ------------
 
@@ -9144,7 +9253,8 @@ from the main process.
 RTS Profiling
 -------------
 
-The GHC runtime system can be asked to dump information about
+The GHC runtime system can be asked to dump information about allocations and
+percentage of wall time spent in various portions of the runtime system.
 
 ```haskell
 $ ./program +RTS -s
@@ -9213,7 +9323,7 @@ MAIN        MAIN                     42           0    0.0    0.7   100.0  100.0
 Languages
 =========
 
-Unbound
+unbound
 -------
 
 Several libraries exist to mechanize the process of writing name capture and
@@ -9225,7 +9335,7 @@ to write the name capture and substitution mechanics ourselves.
 ~~~~ {.haskell include="src/30-languages/unbound.hs"}
 ~~~~
 
-Unbound Generics
+unbound-generics
 ----------------
 
 Recently unbound was ported to use GHC.Generics instead of Template Haskell. The
@@ -9239,14 +9349,16 @@ See:
 
 * [unbound-generics](https://github.com/lambdageek/unbound-generics)
 
-LLVM
-----
+llvm-general
+------------
 
-LLVM is a library for generating machine code. The llvm-general bindings provide a way to model, compile and
-execute LLVM bytecode from within the Haskell runtime.
+LLVM is a library for generating machine code. The llvm-general bindings provide
+a way to model, compile and execute LLVM bytecode from within the Haskell
+runtime.
 
 See:
 
+* [Minimal Example of LLVM Haskell JIT](https://github.com/sdiehl/llvm-tutorial-standalone)
 * [Implementing a JIT Compiled Language with Haskell and LLVM](http://www.stephendiehl.com/llvm/)
 
 Printer Combinators
@@ -9707,7 +9819,13 @@ Nevertheless the overall importance of category theory in the context of Haskell
 has been somewhat overstated and unfortunately mystified to some extent. The
 reality is that amount of category theory which is directly applicable to
 Haskell roughly amounts to a subset of the first chapter of any undergraduate
-text.
+text. And even then, *no actual knowledge of category theory is required to use
+Haskell at all*.
+
+Mathphobia
+----------
+
+
 
 Algebraic Relations
 -------------------
