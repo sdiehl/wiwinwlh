@@ -1,15 +1,21 @@
-What I Wish I Knew When Learning Haskell
-----------------------------------------
+<p align="center">
+  <a href="http://dev.stephendiehl.com/hask/">
+    <img src="http://dev.stephendiehl.com/hask/img/title.png"/>
+  </a>
+</p>
 
+[![MIT License](http://img.shields.io/badge/license-mit-blue.svg)](https://github.com/sdiehl/wiwinwlh/blob/master/LICENSE)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sdiehl/wiwinwlh?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[Read Here](http://dev.stephendiehl.com/hask/)
+Real Online:
 
-If you want to submit a fix for a typo or fix for code then just submit a pull request, and I'm happy to
-recompile the resulting document.
+* [**HTML**](http://dev.stephendiehl.com/hask/)
 
-If for some reason you want to compile the HTML page yourself, then you'll need to compile the preprocesor
-against Pandoc and then run make to build the page.
+If you want to submit a fix for a typo or fix for code then just submit a pull
+request, and I'm happy to recompile the resulting document.
+
+If for some reason you want to compile the HTML page yourself, then you'll need
+to compile the preprocessor against Pandoc and then run make to build the page.
 
 ```bash
 $ make
@@ -38,7 +44,7 @@ $ firefox tutorial.html
 License
 -------
 
-Stephen Diehl (2013-2015)
+Stephen Diehl (2013-2016)
 
 No rights reserved. The person who associated a work with this deed has dedicated the work to the public
 domain by waiving all of his or her rights to the work worldwide under copyright law, including all related
