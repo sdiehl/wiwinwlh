@@ -4,11 +4,6 @@
 
 Stephen Diehl (<a class="author" href="https://twitter.com/smdiehl">@smdiehl</a> )
 
-The source for all code is [available
-here](https://github.com/sdiehl/wiwinwlh/tree/master/src). If there are any
-errors or you think of a more illustrative example feel free to submit a pull
-request on Github.
-
 This is the fourth draft of this document.
 
 **License**
@@ -16,6 +11,13 @@ This is the fourth draft of this document.
 This code and text are dedicated to the public domain. You can copy, modify,
 distribute and perform the work, even for commercial purposes, all without
 asking permission.
+
+You may copy and paste any code here verbatim into your codebase, wiki, blog, or
+Haskell musical production as you see fit.
+
+The Markdown and Haskell source is [available on
+Github](https://github.com/sdiehl/wiwinwlh/tree/master/src). Pull requests are
+always accepted for changes and additional content. This is a living document
 
 **Changelog**
 
@@ -31,6 +33,7 @@ asking permission.
 * VIM Integration
 * Dependent Types and TypeInType
 * Injective Type Families
+* Recursive Do
 * Applicative Do
 * Strict Haskell
 * Type Signature Sections
@@ -47,6 +50,7 @@ asking permission.
 * Unboxed Types Updated
 * Strict Language Extension
 * postgresql-simple
+* hedis
 * opaleye
 * happy/alex
 * configurator
@@ -2228,6 +2232,18 @@ The module itself isn't safe.
 
 See: [Safe Haskell](https://ghc.haskell.org/trac/ghc/wiki/SafeHaskell)
 
+Recursive Do
+------------
+
+TODO
+
+See: [Recursive Do Notation](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/syntax-extns.html#recursive-do-notation)
+
+Applicative Do
+--------------
+
+TODO
+
 Pattern Guards
 --------------
 
@@ -2242,16 +2258,14 @@ combine env x y
    | otherwise = Nothing
 ```
 
-View Patterns
+ViewPatterns
 -------------
 
 ~~~~ {.haskell include="src/04-extensions/views.hs"}
 ~~~~
 
-Misc Syntax Extensions
-----------------------
-
-**Tuple Sections**
+TupleSections
+--------------
 
 ```haskell
 {-# LANGUAGE TupleSections #-}
@@ -2263,7 +2277,8 @@ second :: a -> (Bool, a)
 second = (True,)
 ```
 
-**Multi-way if-expressions**
+MultiWayIf
+------------
 
 ```haskell
 {-# LANGUAGE MultiWayIf #-}
@@ -2275,12 +2290,14 @@ operation x =
      | otherwise -> 0
 ```
 
-**Lambda Case**
+LambdaCase
+-------------
 
 ~~~~ {.haskell include="src/04-extensions/lambdacase.hs"}
 ~~~~
 
-**Package Imports**
+PackageImports
+-------------
 
 ```haskell
 import qualified "mtl" Control.Monad.Error as Error
@@ -2288,7 +2305,8 @@ import qualified "mtl" Control.Monad.State as State
 import qualified "mtl" Control.Monad.Reader as Reader
 ```
 
-**Record WildCards**
+RecordWildCards
+---------------
 
 Record wild cards allow us to expand out the names of a record as variables
 scoped as the labels of the record implicitly.
@@ -2296,7 +2314,7 @@ scoped as the labels of the record implicitly.
 ~~~~ {.haskell include="src/04-extensions/wildcards.hs"}
 ~~~~
 
-Pattern Synonyms
+PatternSynonyms
 ----------------
 
 Suppose we were writing a typechecker, it would be very common to include a
@@ -6930,6 +6948,84 @@ Hello from Haskell, here's a number passed between runtimes:
 Back inside of C again.
 ```
 
+Calling Haskell from C
+----------------------
+
+TODO
+
+```cpp
+#include <stdio.h>
+#include "HsFFI.h"
+#include "foo_stub.h"
+
+extern void __stginit_Foo ( void );
+
+int main(int argc, char *argv[])
+{
+  hs_init(&argc, &argv);
+  hs_add_root(__stginit_Foo);
+
+  hs_exit();
+  return 0;
+}
+```
+
+
+```haskell
+{-# LANGUAGE CPP #-}
+{-# LANGUAGE ForeignFunctionInterface #-}
+
+module Example where
+
+foreign export ccall example :: IO ()
+
+example :: IO ()
+example = do
+  print "Hello from Haskell"
+  return ()
+```
+
+```bash
+$ hsc2hs Example.hsc
+```
+
+```cpp
+#include "HsFFI.h"
+#include "Example_stub.h"
+
+int main( int argc, char *argv[] )
+{
+  // init GHC runtime
+  hs_init (&argc, &argv);
+
+  // call Haskell function
+  example();
+}
+```
+
+Allocating on Haskell Heap
+--------------------------
+
+TODO
+
+Static Pointers
+---------------
+
+TODO
+
+See: [Static Pointers](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/static-pointers.html)
+
+libffi
+------
+
+The foreign function interface provides a mechanism by which a function can
+generate a call to another function at runtime without requiring knowledge of
+the called function's interface at compile time.
+
+TODO
+
+See: [libffi](https://hackage.haskell.org/package/libffi)
+
 Concurrency
 ===========
 
@@ -7597,16 +7693,6 @@ JSON:
 ~~~~ {.json include="src/26-data-formats/example.json"}
 ~~~~
 
-**Hand Written Instances**
-
-```haskell
-```
-
-**Generics**
-
-```haskell
-```
-
 **Unstructured**
 
 In dynamic scripting languages it's common to parse amorphous blobs of JSON without any a priori structure and
@@ -7651,6 +7737,21 @@ Success True
 
 λ: fromJSON (Bool True) :: Result Double
 Error "when expecting a Double, encountered Boolean instead"
+```
+
+**Hand Written Instances**
+
+```haskell
+```
+
+**Template Haskell**
+
+```haskell
+```
+
+**Generics**
+
+```haskell
 ```
 
 CSV
@@ -7765,6 +7866,31 @@ TODO
 
 Databases
 =========
+
+postgresql-simple
+-----------------
+
+TODO
+
+persistent 
+----------
+
+TODO
+
+opaleye 
+----------
+
+TODO
+
+opaleye 
+----------
+
+TODO
+
+hedis
+-----
+
+TODO
 
 Acid State
 ----------
