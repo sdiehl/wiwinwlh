@@ -21,7 +21,7 @@ always accepted for changes and additional content. This is a living document
 
 **Changelog**
 
-**2.3 (Work in Progress) **
+**2.3 (Work in Progress)**
 
 * Stack
 * Stackage
@@ -30,8 +30,10 @@ always accepted for changes and additional content. This is a living document
 * Langauge Extensions (Updated)
 * Type Holes (Updated)
 * Pattern Synonyms (Updated)
-* VIM Integration
+* Vim Integration
+* Emacs Integration
 * Dependent Types and TypeInType
+* Strict Language Extension
 * Injective Type Families
 * Recursive Do
 * Applicative Do
@@ -48,10 +50,12 @@ always accepted for changes and additional content. This is a living document
 * integer-gmp
 * Static Pointers
 * Unboxed Types Updated
-* Strict Language Extension
+* spoon
 * postgresql-simple
 * hedis
 * opaleye
+* persistent
+* esqueleto
 * happy/alex
 * configurator
 * string-conv
@@ -670,8 +674,6 @@ Haskell has a variety of editor tools that can be used to provide interactive
 development feedback and functionality such as querying types of subexpressions,
 linting, type checking, and code completion.
 
-![](img/errors.png)
-
 Many prepackaged setups exist to expedite the process of setting up many of the
 programmer editors for Haskell development. In particular both ``ghc-mod`` and
 hdevtools can remarkably improve the efficiency and productivity.
@@ -679,11 +681,23 @@ hdevtools can remarkably improve the efficiency and productivity.
 
 **Vim**
 
-https://github.com/begriffs/haskell-vim-now
+![](img/errors.png)
 
 TODO
 
-```vim
+```haskell
+cabal install ghc-mod
+```
+
+*Syntax*
+
+*Type Inspection*
+
+*Type Insertion*
+
+*Case Split*
+
+```
 " Type Lookup
 map tt :call GHC_ShowType(0)<CR>
 
@@ -694,24 +708,26 @@ map <silent> tq :GhcModType<CR>
 map <silent> te :GhcModTypeClear<CR>
 ```
 
+See:
+
+* [haskell-vim-now](https://github.com/begriffs/haskell-vim-now)
+* [A Vim + Haskell Workflow](http://www.stephendiehl.com/posts/vim_haskell.html)
+
 **Emacs**
 
-https://github.com/chrisdone/emacs-haskell-config
 
 The tools that many of these packages use behind the hood are usually available
 on cabal.
 
 ```haskell
-cabal install hdevtools
 cabal install ghc-mod
-cabal install hlint
-cabal install ghcid
-cabal install ghci-ng
 ```
 
 See:
 
-* [A Vim + Haskell Workflow](http://www.stephendiehl.com/posts/vim_haskell.html)
+* [Chris Done's Emacs Config](https://github.com/chrisdone/emacs-haskell-config)
+* [Structured Haskell Mode](https://github.com/chrisdone/structured-haskell-mode)
+* [Haskell Development From Emacs](http://tim.dysinger.net/posts/2014-02-18-haskell-with-emacs.html)
 
 Bottoms
 -------
@@ -3253,21 +3269,8 @@ Just 5
 These instances show up very frequently in parsers where the alternative operator can model alternative parse
 branches.
 
-Polyvariadic Functions
-----------------------
-
-One surprising application of typeclasses is the ability to construct functions which take an arbitrary number
-of arguments by defining instances over function types. The arguments may be of arbitrary type, but the
-resulting collected arguments must either converted into a single type or unpacked into a sum type.
-
-~~~~ {.haskell include="src/08-applicatives/variadic.hs"}
-~~~~
-
-See: [Polyvariadic functions](http://okmij.org/ftp/Haskell/polyvariadic.html)
-
-
-Category
---------
+Arrows
+------
 
 A category is an algebraic structure that includes a notion of an identity and a
 composition operation that is associative and preserves identities.
@@ -3291,9 +3294,6 @@ instance Category (->) where
 (>>>) :: Category cat => cat a b -> cat b c -> cat a c
 f >>> g = g . f
 ```
-
-Arrows
-------
 
 Arrows are an extension of categories with the notion of products.
 
@@ -3334,7 +3334,8 @@ histogram = map (head &&& length) . group . sort
 
 **Arrow notation**
 
-The following are equivalent:
+GHC has builtin syntax for composing arrows using ``proc`` notation. The
+following are equivalent after desugaring:
 
 ```haskell
 {-# LANGUAGE Arrows #-}
@@ -3404,6 +3405,18 @@ Left 3
 λ: second (+1) (Right 3)
 Right 4
 ```
+
+Polyvariadic Functions
+----------------------
+
+One surprising application of typeclasses is the ability to construct functions which take an arbitrary number
+of arguments by defining instances over function types. The arguments may be of arbitrary type, but the
+resulting collected arguments must either converted into a single type or unpacked into a sum type.
+
+~~~~ {.haskell include="src/08-applicatives/variadic.hs"}
+~~~~
+
+See: [Polyvariadic functions](http://okmij.org/ftp/Haskell/polyvariadic.html)
 
 Error Handling
 ==============
@@ -3589,6 +3602,10 @@ See:
 * [Error Handling Simplified](http://www.haskellforall.com/2012/07/errors-10-simplified-error-handling.html)
 * [Safe](http://hackage.haskell.org/package/safe)
 
+spoon
+-----
+
+See: [Spoon](https://hackage.haskell.org/package/spoon)
 
 Advanced Monads
 ===============
@@ -7872,18 +7889,18 @@ postgresql-simple
 
 TODO
 
-persistent 
-----------
-
-TODO
-
 opaleye 
 ----------
 
 TODO
 
-opaleye 
+esqueleto
 ----------
+
+TODO
+
+relational-record
+-----------------
 
 TODO
 
@@ -7891,6 +7908,10 @@ hedis
 -----
 
 TODO
+
+persistent 
+----------
+
 
 Acid State
 ----------
