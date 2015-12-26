@@ -19,13 +19,14 @@ asking permission.
 
 **Changelog**
 
-**2.3**
+**2.3 (Work in Progress) **
 
 * Stack
 * Nix (Updated)
 * Aeson (Updated)
 * Langauge Extensions (Updated)
-* Sums of Products
+* mmorph
+* generics-sop
 * Partial Type Signatures
 * integer-gmp
 * Static Pointers
@@ -44,8 +45,6 @@ asking permission.
 * Dependent Haskell
 * Language Comparisons
 * RelaxedPolyRec
-* MonoLocalBinds
-* MonoPatBinds
 * ConstraintClassMethods
 * -fdefer-type-errors
 
@@ -1946,19 +1945,23 @@ See: [mmorph](https://hackage.haskell.org/package/mmorph)
 Language Extensions
 ===================
 
-It's important to distinguish between different categories of language extensions:
+It's important to distinguish between different categories of language
+extensions *general* and *specialized*.
 
-The inherent problem with classifying the extensions into the **General** and **Specialized** categories is that
-it's a subjective classification. Haskellers who do type astronautics will have a very different
-interpretation of Haskell than people who do database programming. As such this is a conservative assessment,
-as an arbitrary baseline let's consider ``FlexibleInstances`` and ``OverloadedStrings`` "everyday" while
-``GADTs`` and ``TypeFamilies`` are "specialized".
+The inherent problem with classifying the extensions into the general and
+specialized categories is that it's a subjective classification. Haskellers who
+do type system research will have a very different interpretation of Haskell
+  than people who do web programming. As such this is a conservative assessment,
+  as an arbitrary baseline let's consider ``FlexibleInstances`` and
+  ``OverloadedStrings`` "everyday" while ``GADTs`` and ``TypeFamilies`` are
+  "specialized".
 
 **Key**
 
-* *Benign* implies that importing the extension won't change the semantics of the module if not used.
-* *Historical* implies that one shouldn't use this extension, it's in GHC purely for backwards compatibility.
-  Sometimes these are dangerous to enable.
+* *Benign* implies that importing the extension won't change the semantics of
+  the module if not used.
+* *Historical* implies that one shouldn't use this extension, it's in GHC purely
+  for backwards compatibility.  Sometimes these are dangerous to enable.
 
 <extensions></extensions>
 
@@ -6098,6 +6101,11 @@ class GEq a where
 Now anyone using our library need only derive Generic and create an empty
 instance of our typeclass instance without writing any boilerplate for ``GEq``.
 
+And end to end example for deriving equality generics:
+
+~~~~ {.haskell include="src/18-generics/generic_impl.hs"}
+~~~~
+
 See:
 
 * [Andres Loh: Datatype-generic Programming in Haskell](http://www.andres-loeh.de/DGP-Intro.pdf)
@@ -6129,10 +6137,13 @@ derive JSON representations for JSON instances.
 
 See: [A Generic Deriving Mechanism for Haskell](http://dreixel.net/research/pdf/gdmh.pdf)
 
-Sums of Products
+generics-sop
 ----------------
 
+TODO
+
 * [generics-sop](https://hackage.haskell.org/package/generics-sop)
+* [Applying Type Level and Generic Programming in Haskell](https://github.com/kosmikus/SSGEP/blob/master/Lecture1.pdf)
 
 Uniplate
 --------
@@ -10026,10 +10037,13 @@ the similarities and differences between them.
 No notion of "weak" or "strong" typing will be discussed because the terms have
 no universal meaning.
 
+No notion of "object-oriented" or "functional" paradigms will be discussed
+because the terms have no universal meaning.
+
 Haskell
 -------
 
-Haskell's main implementation is *GHC*.
+Haskell's main implementation is *ghc*.
 
 Haskell is a *general purpose language*.
 
@@ -10044,6 +10058,18 @@ Haskell is *pure* and statically tracks effects.
 
 OCaml
 -----
+
+OCaml originally known as Objective Caml, is the main implementation of the Caml
+programming language. The type system of OCaml is significantly less advanced
+than modern GHC Haskell and does not supported higher-kinded typed or type-level
+programming to the extent that has become prevalent in portions of recent
+Haskell. The OCaml compiler is also significantly less advanced than modern GHC
+runtime and largely does not perform any compiler optimizations or program
+transformations. The language itself does has several advantages over Haskell in
+that is has a module system and a record system supporting first-class records.
+Although it is possible to write pure OCaml there is no language-integrated
+support and the current engineering practice around the language encourages
+ubiquitous impurity in third party libraries.
 
 Ocaml's main implementation is *ocamlc*.
 
@@ -10067,13 +10093,21 @@ Ocaml is *impure* by default and does not statically track effects.
 Standard ML
 -----------
 
+Standard ML was a general-purpose, modular, functional programming language with
+compile-time type checking and type inference. 
+
+Standard ML was traditionally a general purpose language, although it's lack of
+a modern compiler largely only makes it useful for work on pure type theory and
+proof assistants and not in industrial settings. Standard ML has been largely
+abandoned in recent years and is a good example of a promising language that
+withered on the vine from a lack of engineering effort devoted toward the
+backend compiler.
+
 Standard ML's main implementation is *smlnj*.
 
 Standard ML has no package manager.
 
-Standard ML was traditionally a *general purpose language*, although it's lack
-of a modern compiler largely only makes it useful for work on pure type theory
-and proof assistants.
+Standard ML allows polymorphism by means of *parametric polymorphism*.
 
 Standard ML has a module system and functors.
 
@@ -10081,7 +10115,7 @@ Standard ML is a *statically typed* language.
 
 Standard ML is *impure* by default and does not statically track effects.
 
-SMLNJ is *garbage collected*.
+Standard ML implementations are typically *garbage collected*.
 
 Agda
 ----
@@ -10098,30 +10132,54 @@ Agda is a *statically typed* language.
 Coq
 ---
 
+Coq is an interactive theorem prover based on the calculus of inductive
+constructions. It compiles into a Core language called Gallina whose defining
+feature is that it is weakly normalizing (i.e. all programs terminate ).
+Although Coq allows limited extraction of some programs to other languages, it
+is not by itself a programming language in the traditional sense, most Coq
+programs are not run or compiled.
+
 Coq's main implementation is *coq*.
 
-Coq is not a general purpose language, it is largely used as a proof
+Coq is *not a general purpose language*, it is largely used as a proof
 environment.
 
 Coq is a *statically typed* language.
 
-Coq largely lacks a backend that is comparable to a general purpose language. It
-is therefore mostly nonsensical to talk about runtime implementation since most
-Coq programs are not run or compiled.
-
 Idris
 -----
 
-Idris's main implementation is *coq*.
+Idris is a general-purpose purely functional programming language with dependent
+types.
+
+Idris's main implementation is *idris*.
 
 Idris is a *general purpose language*.
 
+Idris allows polymorphism by means of *parametric polymorphism* and *ad-hoc
+polymorphism*.
+
 Idris is a *statically typed* language.
 
-Idris is *garbage collected* by default.
+Idris is *garbage collected* by default, although there is some novel work on
+[uniqueness
+types](http://docs.idris-lang.org/en/latest/reference/uniqueness-types.html)
+which can statically guarantee aliasing properties of references.
+
+Idris is *pure* and statically tracks effects.
 
 Rust
 -----
+
+Rust is a general-purpose, multi-paradigm, compiled programming language
+developed by Mozilla Research. It incorporates many of the foundational ideas of
+Haskell's type system but uses a more traditional imperative evaluation model.
+Rust includes type inference, ad-hoc polymorphism, sum types, and option
+chaining as safe exception handling. Notably Rust lacks higher-kinded types
+which does not allow many modern functional abstractions to be encoded in
+the language. Rust does not enforce purity or track effects, but has a system
+for statically analyzing lifetimes of references informing the efficient
+compilation of many language constructs to occur without heap allocation.
 
 Rusts's main implementation is *rustc*.
 
@@ -10129,32 +10187,54 @@ Rust is a *statically typed* language.
 
 Rust is a *general purpose language*.
 
+Rust allows polymorphism by means of *parametric polymorphism* and *ad-hoc
+polymorphism*.
+
 Rust is *not garbage collected* by default, instead uses static semantics to the
 analyze lifetimes. Optionally supports garbage collection.
 
 Rust is *impure* by default and does not statically track effects. It does
-however have sophisticated static tracking of allocations and lifetimes.
+however have static tracking of memory allocations and lifetimes.
 
 Purescript
 ---------
+
+Purescript is a Haskell-like language that compiles into Javascript for
+evaluation within a web browser. Semantically it is very close to Haskell except
+that is uses a call-by-value model instead of Haksell's call-by-need. The type
+system is a superset of Haskell 2010 and includes ad-hoc polymorphism,
+parametric polymorphism, rank-n polymorphism, row-polymorphism, higher-kinded
+types and full algebraic data types. 
 
 Purescript's main implementation is *purescript*.
 
 Purescript is a *statically typed* language.
 
-Purescript is *pure* and statically tracks effects.
+Purescript is *pure* and statically tracks effects using an extensible record
+system embedded in the Eff monad.
 
 Elm
 ---
+
+Elm is a ML-like language that compiles into Javascript for evaluation within a
+web browser.
 
 Elm's main implementation is *elm*.
 
 Elm is a *statically typed* language.
 
+Elm allows polymorphism by means of *parametric polymorphism* and limited
+*ad-hoc polymorphism*.
+
 Elm is *pure* and statically tracks effects.
 
 Python
 ------
+
+Python is a widely used general-purpose, high-level programming language. It is
+based on object-style of programming constructions and allows first class
+functions and higher order functions. Python is untyped and is notorious for
+it's simplistic runtime and global mutex preventing concurrency.
 
 Python's main implementation is *cpython*.
 
@@ -10171,12 +10251,19 @@ type.
 Julia
 ------
 
+Julia is a high-level dynamic programming language designed to address the
+requirements of high-performance numerical and scientific computing.
+
 Julia's main implementation is *juliia*.
 
 Julia is a *unityped* language.
 
+Julia allows polymorphism by means of *unityping*.
+
 Julia internally refers to runtime value tags as *types*, which differs from
 the Haskell notion of types.
+
+Julia is *compiled* through the LLVM framework.
 
 Erlang
 ------
@@ -10187,6 +10274,8 @@ Erlang is a *unityped* language.
 
 Erlang is interpreted.
 
+Erlang allows polymorphism by means of *unityping*.
+
 Erlang internally refers to runtime value tags as *types*, which differs from
 the Haskell notion of types.
 
@@ -10195,35 +10284,78 @@ Erlang is *impure* by default and does not statically track effects.
 Clojure
 -------
 
+Clojure is a modern LISP dialect that emphasizes immutability. It does not
+enforce safety and idiomatic clojure often includes mutable references and
+destructive updates. There are some efforts toward an optional typing system
+provided by the [core.typed](https://github.com/clojure/core.typed).
+
 Clojure's main implementation is *clojure*.
 
 Clojure is a *unityped* language.
 
+Clojure allows polymorphism by means of *unityping*.
+
 Clojure internally refers to runtime value tags as *types*, which differs from
 the Haskell notion of types.
 
-Go
---
-
-Go's main implementation is *go*.
-
-Clojure is a *unityped* language.
+Clojure is *compiled* to Java Virtual Machine bytecode.
 
 Swift
 ------
 
-Swift's main implementation is *swift*.
+Swift is a multi-paradigm language created for iOS and OS X development by
+Apple. Swift incorporates recent developments in language design and uncommonly
+includes return type polymorphism, type inference, ad-hoc polymorphism, sum
+types, and option chaining as safe exception handling. Swift does not enforce
+purity or track effects, and allows mutable and destructive updates.
+
+Swift's main implementation is *swiftc*.
+
+Swift allows polymorphism by means of *parametric polymorphism* and *ad-hoc
+polymorphism*.
 
 Swift is a *statically typed* language.
 
+Swift is *compiled* through the LLVM framework.
+
+Swift *does not* have an effect system.
+
+Go
+--
+
+Go is a programming language developed at Google by Rob Pike, and Ken Thompson.
+Although Go is statically typed it has failed to integrate most modern advances
+in programming language work since the 1970s and instead chooses a seemingly
+regressive design. Most notably it lacks any notion of generics and polymorphism
+is either achieved by manual code duplication or unsafe coercions.
+
+Go's main implementation is *go*.
+
+Go is a *statically typed* language.
+
+Go has *no safe polymorphism*.
+
+Go is statically *compiled* with a custom toolchain.
+
+Go *does not* have an effect system.
+
 Javascript
 ----------
+
+JavaScript is a high-level, dynamic, untyped, and interpreted programming
+language that was ubiquitous in web development during the 90s and 00s.
+Javascript is most kindly described as a language that "just happened" and an
+enduring testament to human capacity to route around problems.
 
 Javascripts implementations include *NodeJS*, *V8* and *spidermoneky*.
 
 Javascript is a *unityped* language.
 
-Javasccript internally refers to runtime value tags as *types*, which differs
+Javascript is *interpreted*, tracing JIT specialization is common.
+
+Javascript allows polymorphism by means of *unityping*.
+
+Javascript internally refers to runtime value tags as *types*, which differs
 from the Haskell notion of types.
 
 The majority of Javascript implementations are garbage collected.
