@@ -68,8 +68,14 @@ always accepted for changes and additional content. This is a living document
 * RelaxedPolyRec
 * ConstraintClassMethods
 * c2hs
+* Mulitiline Strings
+* git-embed
+* file-embed
 * hsc2hs
 * DWARF debugging
+* Coercible
+* ghc-prim
+* haskell-src-exts
 * -fdefer-type-errors
 
 **2.2**
@@ -2725,6 +2731,9 @@ pragma.
 {-# LANGUAGE NoImplicitPrelude #-}
 ```
 
+Alternate Preludes
+------------------
+
 The Prelude itself is entirely replicable as well presuming that an entire
 project is compiled without the implicit Prelude. Several packages have arisen
 that supply much of the same functionality in a way that appeals to more modern
@@ -2733,6 +2742,7 @@ design principles.
 * [base-prelude](http://hackage.haskell.org/package/base-prelude)
 * [basic-prelude](http://hackage.haskell.org/package/basic-prelude)
 * [classy-prelude](http://hackage.haskell.org/package/classy-prelude)
+* [Other Preludes](https://hackage.haskell.org/packages/#cat:Prelude)
 
 Partial Functions
 -----------------
@@ -3006,7 +3016,7 @@ fibs :: [Int]
 fibs = unfoldr (\(a,b) -> Just (a,(b,a+b))) (0,1)
 ```
 
-Split
+split
 -----
 
 The [split](http://hackage.haskell.org/package/split-0.1.1/docs/Data-List-Split.html) package provides a
@@ -3015,7 +3025,7 @@ variety of missing functions for splitting list and string types.
 ~~~~ {.haskell include="src/06-prelude/split.hs"}
 ~~~~
 
-Monad-loops
+monad-loops
 -----------
 
 The [monad-loops](http://hackage.haskell.org/package/monad-loops-0.4.2/docs/Control-Monad-Loops.html) package
@@ -3028,8 +3038,8 @@ iterateUntilM :: Monad m => (a -> Bool) -> (a -> m a) -> a -> m a
 whileJust :: Monad m => m (Maybe a) -> (a -> m b) -> m [b]
 ```
 
-Text / ByteString
-=================
+Strings
+=======
 
 The default Haskell string type is the rather naive linked list of characters, that while perfectly fine for
 small identifiers is not well-suited for bulk processing.
@@ -5288,12 +5298,14 @@ Constraint :: BOX
 Promotion
 =========
 
-Higher Kinds
-------------
+Higher Kinded Types
+-------------------
 
-The kind system in Haskell is unique by contrast with most other languages in that it allows
-datatypes to be constructed which take types and type constructor to other
-types. Such a system is said to support *higher kinded types*.
+What are higher kinded types?
+
+The kind system in Haskell is unique by contrast with most other languages in
+that it allows datatypes to be constructed which take types and type constructor
+to other types. Such a system is said to support *higher kinded types*.
 
 All kind annotations in Haskell necessarily result in a kind ``*`` although any
 terms to the left may be higher-kinded (``* -> *``).
@@ -5897,6 +5909,8 @@ Dependent Haskell
 
 TODO
 
+``-XTypeInType``
+
 * [Adding Dependent Types to Haskell](https://ghc.haskell.org/trac/ghc/wiki/DependentHaskell)
 
 Generics
@@ -5910,6 +5924,9 @@ variety of tasks that consist largely of boilerplate code generation such as:
 * Serialization
 * Ordering
 * Traversal
+
+These are achieved through several tools and techniques outlined in the next few
+sections.
 
 Typeable
 --------
@@ -6787,6 +6804,11 @@ sc2 = scc' (fromList ex2)
 ```
 
 See: [GraphSCC](http://hackage.haskell.org/package/GraphSCC)
+
+Multiset
+--------
+
+TODO
 
 Graph Theory
 ------------
@@ -9381,6 +9403,20 @@ if (GETTAG(R1)==1) {
 }
 ```
 
+ghc-prim
+--------
+
+TODO
+
+haskell-suite
+-------------
+
+TODO
+
+* haskell-src-exts
+* haskell-names
+* haskell-packages
+
 Profiling
 =========
 
@@ -9956,6 +9992,42 @@ sIsEven :: Sing Nat t0 -> Sing Bool (IsEven t0)
 splus   :: Sing Nat a -> Sing Nat b -> Sing Nat (Plus a b)
 ```
 
+Multiline Strings
+-----------------
+
+TODO
+
+file-embed
+----------
+
+TODO
+
+See: [file-embed](https://hackage.haskell.org/package/file-embed)
+
+git-embed
+----------
+
+TODO
+
+```haskell
+{-# LANGUAGE TemplateHaskell #-}
+
+import Git.Embed
+import Data.Version
+import Paths_myprog
+
+gitRev :: String
+gitRev = $(embedGitShortRevision)
+
+gitBranch :: String
+gitBranch = $(embedGitBranch)
+
+ver :: String
+ver = showVersion Paths_myprog.version
+```
+
+See: [git-embed](https://hackage.haskell.org/package/git-embed)
+
 Categories
 ==========
 
@@ -9972,7 +10044,7 @@ Haskell at all*.
 Mathphobia
 ----------
 
-
+TODO
 
 Algebraic Relations
 -------------------
