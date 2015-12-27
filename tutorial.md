@@ -27,7 +27,7 @@ always accepted for changes and additional content. This is a living document
 * Stackage
 * Nix (Updated)
 * Aeson (Updated)
-* Langauge Extensions (Updated)
+* Language Extensions (Updated)
 * Type Holes (Updated)
 * Pattern Synonyms (Updated)
 * Vim Integration
