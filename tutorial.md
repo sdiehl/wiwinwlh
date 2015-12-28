@@ -39,6 +39,7 @@ always accepted for changes and additional content. This is a living document
 * Applicative Do
 * Strict Haskell
 * Type Signature Sections
+* LiquidHaskell
 * Cpp
 * Minimal Pragma
 * Rewrite Rules
@@ -673,8 +674,8 @@ For reasons of sexiness it is desirable to set your GHC prompt to a ``λ`` or a
 :set prompt "ΠΣ: "
 ```
 
-Editor Integration
-------------------
+Vim Integration
+---------------
 
 Haskell has a variety of editor tools that can be used to provide interactive
 development feedback and functionality such as querying types of subexpressions,
@@ -722,6 +723,9 @@ See:
 **Emacs**
 
 
+Emacs Integration
+-----------------
+
 The tools that many of these packages use behind the hood are usually available
 on cabal.
 
@@ -734,6 +738,7 @@ See:
 * [Chris Done's Emacs Config](https://github.com/chrisdone/emacs-haskell-config)
 * [Structured Haskell Mode](https://github.com/chrisdone/structured-haskell-mode)
 * [Haskell Development From Emacs](http://tim.dysinger.net/posts/2014-02-18-haskell-with-emacs.html)
+
 
 Bottoms
 -------
@@ -887,9 +892,7 @@ GHC can warn about these cases with the ``-fwarn-incomplete-uni-patterns`` flag.
 
 Grossly speaking any non-trivial program will use some measure of partial
 functions, it's simply a fact. This just means there exists obligations for the
-programmer than cannot be manifest in the Haskell type system. Although future
-projects like LiquidHaskell may potentially offer a way to overcome this with
-more sophisticated refinement types, this is an open research problem though.
+programmer than cannot be manifest in the Haskell type system.
 
 Debugger
 --------
@@ -5917,6 +5920,60 @@ TODO
 
 * [Adding Dependent Types to Haskell](https://ghc.haskell.org/trac/ghc/wiki/DependentHaskell)
 
+Liquid Haskell
+--------------
+
+Add the following line to your ``/etc/sources.list``:
+
+```bash
+deb http://ppa.launchpad.net/hvr/z3/ubuntu trusty main 
+```
+
+Install the 
+
+```bash
+$ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F6F88286
+$ sudo apt-get install z3
+```
+
+```bash
+$ git clone --recursive git@github.com:ucsd-progsys/liquidhaskell.git
+$ cd liquidhaskell
+$ stack install
+```
+
+Ensure that ``$HOME/.local/bin`` is on your ``$PATH``.
+
+```haskell
+import Prelude hiding (mod, gcd)
+
+{-@ mod :: a:Nat -> b:{v:Nat| 0 < v} -> {v:Nat | v < b} @-}
+mod :: Int -> Int -> Int
+mod a b
+  | a < b = a
+  | otherwise = mod (a - b) b
+
+{-@ gcd :: a:Nat -> b:{v:Nat | v < a} -> Int @-}
+gcd :: Int -> Int -> Int
+gcd a 0 = a
+gcd a b = gcd b (a `mod` b)
+```
+
+The module can be run through the solver using the ``liquid`` command line tool.
+
+```bash
+$ liquid example.hs
+Done solving.
+
+**** DONE:  solve **************************************************************
+ 
+
+**** DONE:  annotate ***********************************************************
+ 
+
+**** RESULT: SAFE **************************************************************
+```
+
 Generics
 ========
 
@@ -8320,6 +8377,7 @@ Rewrite Rules
 
 TODO
 
+* [Using Rules](https://wiki.haskell.org/GHC/Using_rules)
 * [Rewrite Rules](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/rewrite-rules.html)
 
 Dictionaries
