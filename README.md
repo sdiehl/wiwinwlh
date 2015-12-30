@@ -10,6 +10,7 @@
 Real Online:
 
 * [**HTML**](http://dev.stephendiehl.com/hask/)
+* [**Example Code**](https://github.com/sdiehl/wiwinwlh/tree/master/src)
 
 Contributing
 ------------
