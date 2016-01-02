@@ -9465,6 +9465,53 @@ if (GETTAG(R1)==1) {
 }
 ```
 
+Interface Files
+---------------
+
+During compilation GHC will produce interface files for each module that are the
+binary encoding of specific symbols (functions, typeclasses, etc) exported by
+that modules as well as any package dependencies it itself depends on. The
+internal structure of this file can be dumped using the ``--show-iface`` flag.
+The structure of this file changes between versions of GHC.
+
+```bash
+$ ghc --show-iface let.hi                                                                                               
+Magic: Wanted 33214052,
+       got    33214052
+Version: Wanted [7, 0, 8, 4],
+         got    [7, 0, 8, 4]
+Way: Wanted [],
+     got    []
+interface main:Main 7084
+  interface hash: 1991c3e0edf3e849aeb53783fb616df2
+  ABI hash: 0b7173fb01d2226a2e61df72371034ee
+  export-list hash: 0f26147773230f50ea3b06fe20c9c66c
+  orphan hash: 693e9af84d3dfcc71e640e005bdc5e2e
+  flag hash: 9b3dfba8e3209c5b5c132a214b6b9bd3
+  used TH splices: False
+  where
+exports:
+  Main.main
+module dependencies:
+package dependencies: base* ghc-prim integer-gmp
+orphans: base:GHC.Base base:GHC.Float base:GHC.Real
+family instance modules: base:Data.Either base:Data.Monoid
+                         base:Data.Type.Equality base:GHC.Generics
+import  -/  base:GHC.Num 5e7786970581cacc802bf850d458a30b
+import  -/  base:Prelude 74043f272d60acec1777d3461cfe5ef4
+import  -/  base:System.IO cadd0efb01c47ddd8f52d750739fdbdf
+import  -/  ghc-prim:GHC.Types dcba736fa3dfba12d307ab18354845d2
+4cfa03293a8356d627c0c5fec26936e2
+  main :: GHC.Types.IO ()
+vectorised variables:
+vectorised tycons:
+vectorised reused tycons:
+parallel variables:
+parallel tycons:
+trusted: safe-inferred
+require own pkg trusted: False
+```
+
 ghc-prim
 --------
 
