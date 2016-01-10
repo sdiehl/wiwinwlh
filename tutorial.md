@@ -399,7 +399,7 @@ library-profiling: True
 
 Another common flag to enable is the ``documentation`` which forces the local
 build of Haddock documentation, which can be useful for offline reference. On a
-Linux filesystem these are built to the ``/usr/share/doc/ghc/html/libraries/``
+Linux filesystem these are built to the ``/usr/share/doc/ghc-doc/html/libraries/``
 directory.
 
 ```perl
@@ -409,7 +409,7 @@ documentation: True
 If GHC is currently installed the documentation for the Prelude and Base
 libraries should be available at this local link:
 
-[/usr/share/doc/ghc/html/libraries/index.html](file:///usr/share/doc/ghc/html/libraries/index.html)
+[/usr/share/doc/ghc-doc/html/libraries/index.html](file:///usr/share/doc/ghc-doc/html/libraries/index.html)
 
 
 See:
