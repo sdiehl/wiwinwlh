@@ -532,7 +532,7 @@ Command    Shortcut   Action
 `:info`    `:i`       Information
 `:print`   `:p`       Print the expression
 `:edit`    `:e`       Load file in system editor.
-`:load`    `:e`       Set the active Main module in the REPL.
+`:load`    `:l`       Set the active Main module in the REPL.
 `:add`     `:ad`      Load a file into the REPL namespace. 
 `:browse`  `:bro`     Browse all available symbols in the REPL namespace.
 
