@@ -5480,8 +5480,6 @@ Expected type: List NonEmpty Int
 See:
 
 * [Giving Haskell a Promotion](https://research.microsoft.com/en-us/people/dimitris/fc-kind-poly.pdf)
-* [Faking It: Simulating Dependent Types in Haskell](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.22.2636&rep=rep1&type=pdf)
-
 
 Typelevel Numbers
 -----------------
@@ -6323,9 +6321,8 @@ And end to end example for deriving equality generics:
 
 See:
 
-* [Andres Loh: Datatype-generic Programming in Haskell](http://www.andres-loeh.de/DGP-Intro.pdf)
+* [Datatype-generic Programming in Haskell](http://www.andres-loeh.de/DGP-Intro.pdf)
 * [generic-deriving](http://hackage.haskell.org/package/generic-deriving-1.6.3)
-
 
 Generic Deriving
 ----------------
