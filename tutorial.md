@@ -10624,6 +10624,9 @@ the language. Rust does not enforce purity or track effects, but has a system
 for statically analyzing lifetimes of references informing the efficient
 compilation of many language constructs to occur without heap allocation.
 
+**Main difference**: Rust is a modern imperative typed language, Haskell is a
+modern functional typed language with recent type system.
+
 Rusts's main implementation is *rustc*.
 
 Rust is a *statically typed* language.
@@ -10648,6 +10651,9 @@ that is uses a call-by-value model instead of Haksell's call-by-need. The type
 system is a superset of Haskell 2010 and includes ad-hoc polymorphism,
 parametric polymorphism, rank-n polymorphism, row-polymorphism, higher-kinded
 types and full algebraic data types. 
+
+**Main difference**: Purescript targets Javascript in the browser, while GHC
+Haskell is designed to work on top of the GHC managed runtime.
 
 Purescript's main implementation is *purescript*.
 
@@ -10732,6 +10738,9 @@ enforce safety and idiomatic clojure often includes mutable references and
 destructive updates. There are some efforts toward an optional typing system
 provided by the [core.typed](https://github.com/clojure/core.typed).
 
+**Main difference**: Clojure is a dynamically typed Lisp dialect, while Haskell
+is in the ML family.
+
 Clojure's main implementation is *clojure*.
 
 Clojure is a *unityped* language.
@@ -10751,6 +10760,9 @@ Apple. Swift incorporates recent developments in language design and uncommonly
 includes return type polymorphism, type inference, ad-hoc polymorphism, sum
 types, and option chaining as safe exception handling. Swift does not enforce
 purity or track effects, and allows mutable and destructive updates.
+
+**Main difference**: Swift is reasonably modern imperative typed language,
+Haskell is a modern functional typed language.
 
 Swift's main implementation is *swiftc*.
 
@@ -10772,6 +10784,10 @@ in programming language work since the 1970s and instead chooses a seemingly
 regressive design. Most notably it lacks any notion of generics and polymorphism
 is either achieved by manual code duplication or unsafe coercions.
 
+**Main difference**: Go is a language designed around the idea that language
+design has not advanced since 1970, while Haskell incorporates many ideas from
+modern research.
+
 Go's main implementation is *go*.
 
 Go is a *statically typed* language.
@@ -10789,6 +10805,10 @@ JavaScript is a high-level, dynamic, untyped, and interpreted programming
 language that was ubiquitous in web development during the 90s and 00s.
 Javascript is most kindly described as a language that "just happened" and an
 enduring testament to human capacity to route around problems.
+
+**Main difference**: Like many web technologies Javascript just happened and
+it's design was dominated by economic factors. Haskell was designed by experts
+in the PL domain and avoids success at the cost of going down the wrong path.
 
 Javascripts implementations include *NodeJS*, *V8* and *spidermoneky*.
 
