@@ -10027,40 +10027,6 @@ the spliced class instance.
 ~~~~ {.haskell include="src/31-template-haskell/splice_class.hs"}
 ~~~~
 
-Templated Singletons
---------------------
-
-In the previous discussion about singletons, we introduced quite a bit of boilerplate code to work with the
-singletons. This can be partially abated by using Template Haskell to mechanically generate the instances and
-classes.
-
-~~~~ {.haskell include="src/31-template-haskell/Singleton.hs"}
-~~~~
-
-Trying it out by splicing code at the expression level, type level and as patterns.
-
-~~~~ {.haskell include="src/31-template-haskell/splice_singleton.hs"}
-~~~~
-
-The [singletons](https://hackage.haskell.org/package/singletons) package takes this idea to its logical
-conclusion allow us to toplevel declarations of seemingly regular Haskell syntax with singletons spliced in,
-the end result resembles the constructions in a dependently typed language if one squints hard enough.
-
-~~~~ {.haskell include="src/31-template-haskell/singleton_lib.hs"}
-~~~~
-
-After template splicing we see that we now that several new constructs in scope:
-
-```haskell
-type SNat a = Sing Nat a
-
-type family IsEven a :: Bool
-type family Plus a b :: Nat
-
-sIsEven :: Sing Nat t0 -> Sing Bool (IsEven t0)
-splus   :: Sing Nat a -> Sing Nat b -> Sing Nat (Plus a b)
-```
-
 Multiline Strings
 -----------------
 
