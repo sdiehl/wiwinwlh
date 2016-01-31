@@ -2543,7 +2543,7 @@ creating a giant chain of thunks.
 sum :: Num a => [a] -> a
 sum = go 0
   where
-    go !acc (x:xs) = go (acc + x) (go xs)
+    go !acc (x:xs) = go (acc + x) xs
     go  acc []     = acc
 ```
 
@@ -2554,7 +2554,7 @@ sum :: Num a => [a] -> a
 sum = go 0
   where
     go acc _ | acc `seq` False = undefined
-    go acc (x:xs)              = go (acc + x) (go xs)
+    go acc (x:xs)              = go (acc + x) xs
     go acc []                  = acc
 ```
 
