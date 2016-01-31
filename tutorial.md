@@ -6889,43 +6889,6 @@ optimized for append/prepend operations and traversal.
 ~~~~ {.haskell include="src/20-data-structures/sequence.hs"}
 ~~~~
 
-Matrices and HBlas
-------------------
-
-Just as in C when working with n-dimensional matrices we'll typically overlay
-the high-level matrix structure onto an unboxed contiguous block of memory with
-index functions which perform the coordinate translations to calculate offsets.
-The two most common layouts are:
-
-* Row-major order
-* Column-major order
-
-Which are best illustrated.
-
-![](img/matrix.png)
-
-The calculations have a particularly nice implementation in Haskell in terms of
-scans over indices.
-
-~~~~ {.haskell include="src/20-data-structures/matrix_index.hs"}
-~~~~
-
-Unboxed matrices of this type can also be passed to C or Fortran libraries such
-BLAS or LAPACK linear algebra libraries. The ``hblas`` package wraps many of
-these routines and forms the low-level wrappers for higher level-libraries that
-need access to these foreign routines.
-
-For example the
-[dgemm](https://software.intel.com/sites/products/documentation/doclib/mkl_sa/11/tutorials/mkl_mmx_c/GUID-36BFBCE9-EB0A-43B0-ADAF-2B65275726EA.htm)
-routine takes two pointers to a sequence of ``double`` values of two matrices of size ``(m × k)`` and ``(k ×
-n)`` and performs efficient matrix multiplication writing the resulting data through a pointer to a ``(m ×
-n)`` matrix.
-
-~~~~ {.haskell include="src/20-data-structures/hblas.hs"}
-~~~~
-
-See: [hblas](https://github.com/wellposed/hblas)
-
 FFI
 ===
 
