@@ -1689,7 +1689,7 @@ aspects to why this is so:
 A lot of Haskell that we write is radically rearranged and transformed into
 an entirely new form under the hood.
 
-Most monad tutorials will not manually expand out the do-sugar. This leaves the
+Most monad tutorials will not manually expand out the de-sugar. This leaves the
 beginner thinking that monads are a way of dropping into a pseudo-imperative
 language inside of code and further fuels that misconception that specific
 instances like IO are monads in their full generality.
