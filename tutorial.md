@@ -682,43 +682,16 @@ development feedback and functionality such as querying types of subexpressions,
 linting, type checking, and code completion.
 
 Many prepackaged setups exist to expedite the process of setting up many of the
-programmer editors for Haskell development. In particular both ``ghc-mod`` and
-hdevtools can remarkably improve the efficiency and productivity.
+programmer editors for Haskell development. In particular ``ghc-mod`` can
+remarkably improve the efficiency and productivity.
 
 
 **Vim**
 
-![](img/errors.png)
-
 TODO
 
-```haskell
-cabal install ghc-mod
-```
-
-*Syntax*
-
-*Type Inspection*
-
-*Type Insertion*
-
-*Case Split*
-
-```
-" Type Lookup
-map tt :call GHC_ShowType(0)<CR>
-
-" Type Insertion
-map <silent> tw :GhcModTypeInsert<CR>
-map <silent> ts :GhcModSplitFunCase<CR>
-map <silent> tq :GhcModType<CR>
-map <silent> te :GhcModTypeClear<CR>
-```
-
-See:
-
 * [haskell-vim-now](https://github.com/begriffs/haskell-vim-now)
-* [A Vim + Haskell Workflow](http://www.stephendiehl.com/posts/vim_haskell.html)
+* [Vim and Haskell in 2016](http://www.stephendiehl.com/posts/vim_2016.html)
 
 **Emacs**
 
@@ -727,7 +700,7 @@ Emacs Integration
 -----------------
 
 The tools that many of these packages use behind the hood are usually available
-on cabal.
+with cabal.
 
 ```haskell
 cabal install ghc-mod
@@ -736,8 +709,8 @@ cabal install ghc-mod
 See:
 
 * [Chris Done's Emacs Config](https://github.com/chrisdone/emacs-haskell-config)
-* [Structured Haskell Mode](https://github.com/chrisdone/structured-haskell-mode)
 * [Haskell Development From Emacs](http://tim.dysinger.net/posts/2014-02-18-haskell-with-emacs.html)
+* [Structured Haskell Mode](https://github.com/chrisdone/structured-haskell-mode)
 
 
 Bottoms
