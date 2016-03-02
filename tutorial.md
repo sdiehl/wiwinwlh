@@ -30,8 +30,9 @@ always accepted for changes and additional content. This is a living document
 * Language Extensions (Updated)
 * Type Holes (Updated)
 * Pattern Synonyms (Updated)
-* Vim Integration
-* Emacs Integration
+* Unboxed Types ( Updated )
+* Vim Integration ( Updated )
+* Emacs Integration ( Updated )
 * Dependent Types and TypeInType
 * Strict Language Extension
 * Injective Type Families
@@ -43,20 +44,21 @@ always accepted for changes and additional content. This is a living document
 * Cpp
 * Minimal Pragma
 * Rewrite Rules
+* ExtendedDefaultRules
 * mmorph
 * shake
 * servant
 * generics-sop
+* generics-eot
 * Partial Type Signatures
 * integer-gmp
 * Static Pointers
-* Unboxed Types Updated
 * spoon
+* Functorized ASTs
+* monad-control
+* monad-base
 * postgresql-simple
 * hedis
-* opaleye
-* persistent
-* esqueleto
 * happy/alex
 * configurator
 * string-conv
