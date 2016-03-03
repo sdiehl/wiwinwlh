@@ -1365,19 +1365,19 @@ In the do-notation the monad laws from above are equivalently written:
 **Law 1**
 
 ```haskell
-  do x <- m
-     return x
+  do y <- return x
+     f y
 
-= do m
+= do f x
 ```
 
 **Law 2**
 
 ```haskell
-  do y <- return x
-     f y
+  do x <- m
+     return x
 
-= do f x
+= do m
 ```
 
 **Law 3**
