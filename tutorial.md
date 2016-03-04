@@ -2308,6 +2308,39 @@ So now we can write an eliminator and constructor for arrow type very naturally.
 ~~~~ {.haskell include="src/04-extensions/patterns.hs"}
 ~~~~
 
+ApplicativeDo
+-------------
+
+DeriveTraversable
+-------------
+
+DeriveFoldable
+-------------
+
+DeriveFunctor
+-------------
+
+DeriveGeneric
+-------------
+
+DeriveDataTypeable
+-------------
+
+DeriveAnyClass
+-------------
+
+DefaultSignatures
+-----------------
+
+StaticPointers
+-----------------
+
+TypeInType
+-----------------
+
+TypeApplication
+-----------------
+
 Laziness
 ========
 
@@ -5501,7 +5534,17 @@ e :: Proxy (Maybe ())
 e = Proxy
 ```
 
-This is provided by the Prelude in 7.8.
+In cases where we'd normally pass around a undefined as a witness of a typeclass
+dictionary, we can instead pass a Proxy object which carries the phantom type
+without the need for the bottom.
+
+```hasekll
+t1 :: a
+t1 = (undefined :: a)
+
+t2 :: Proxy a
+t2 Proxy :: Proxy a
+```
 
 Promoted Syntax
 ---------------
@@ -9414,6 +9457,9 @@ ghc-prim
 --------
 
 TODO
+
+Outputable
+----------
 
 haskell-suite
 -------------

@@ -1,15 +1,15 @@
-/* stephendiehl.com stylesheet */
-
 @import url(http://fonts.googleapis.com/css?family=Signika);
 
 html {
-    overflow-y: scroll;
 }
 
 body {
   font-size: 14px;
   font-family: HelveticaNeue, 'Helvetica Neue', Helvetica, Arial, sans-serif;
   color: #332;
+
+  margin: 0px;
+  padding: 0px;
 }
 
 h1, h2, h3, h4, h5 {
@@ -249,14 +249,22 @@ ul.sections > li > div {
 
 @media only screen and (min-width: 1025px) {
   body {
-      padding: 10px;
   }
 
   .side {
       position: fixed;
       width: 270px !important;
       margin-left: 0px;
-      z-index: 1000;
+      height: 100vh;
+      /*border-right: 1px solid black;*/
+      overflow-y: auto;
+
+      border-right: 1px solid #bbb;
+      box-shadow: 0 0 20px #ccc;
+      -webkit-box-shadow: 0 0 20px #ccc;
+      -moz-box-shadow: 0 0 20px #ccc;
+
+      padding-top: 20px;
   }
 
   .side ul ul {
@@ -272,6 +280,7 @@ ul.sections > li > div {
   }
 
   .body {
+      padding-left: 20px;
       margin-left: 270px !important;
   }
 

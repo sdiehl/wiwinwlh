@@ -26,7 +26,7 @@ Sections.prototype = {
         var scroll = this.page.window.scrollTop(),
             articleID = this.names[this.names.length - 1].id;
 
-        $('a').removeClass('active');
+        //$('a').removeClass('active');
 
         var $el;
 
@@ -35,7 +35,7 @@ Sections.prototype = {
                 $el = $("[href='#" + this.names[i].id + "']");
                 var s = $el.parents('ul')[0];
 
-                // $el.addClass('active');
+                //$el.addClass('active');
 
                 if (s !== window.section) {
                     //$(window.section).slideUp();
