@@ -1,26 +1,38 @@
 @import url(http://fonts.googleapis.com/css?family=Signika);
+@import url(http://fonts.googleapis.com/css?family=Fira+Sans);
+@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro);
 
 html {
 }
 
 body {
-  font-size: 14px;
-  font-family: HelveticaNeue, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  /*font-family: HelveticaNeue, 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
+
+  font-family: 'Fira Sans';
+  font-style: normal;
+  font-weight: 400;
+
   color: #332;
 
   margin: 0px;
   padding: 0px;
+  line-height: 1.4;
+
+  -webkit-font-feature-settings: "kern", "liga";
+  -moz-font-feature-settings: "kern", "liga";
+  font-feature-settings: "kern", "liga";
 }
 
 h1, h2, h3, h4, h5 {
   color: #332;
-  font-family: "Signika";
+  font-family: 'Fira Sans';
   font-weight: 400;
   line-height: 1.1;
 }
 
 pre code {
-  font: 15px/19px Inconsolata, Monaco,"Lucida Console",Terminal,"Courier New",Courier;
+  /*font: 15px/19px Inconsolata, Monaco,"Lucida Console",Terminal,"Courier New",Courier;*/
+  font: 12pt "Source Code Pro";
 }
 
 img {
@@ -38,6 +50,11 @@ hr {
 .author {
   color: #006;
   font-weight: bold;
+  text-align: center;
+}
+
+img {
+  margin: 0 auto;
 }
 
 /* TOC Links */
@@ -248,9 +265,6 @@ ul.sections > li > div {
 */
 
 @media only screen and (min-width: 1025px) {
-  body {
-  }
-
   .side {
       position: fixed;
       width: 270px !important;

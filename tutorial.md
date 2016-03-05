@@ -5538,12 +5538,19 @@ In cases where we'd normally pass around a undefined as a witness of a typeclass
 dictionary, we can instead pass a Proxy object which carries the phantom type
 without the need for the bottom.
 
-```hasekll
+```haskell
 t1 :: a
 t1 = (undefined :: a)
 
 t2 :: Proxy a
 t2 Proxy :: Proxy a
+```
+
+Unboxed Proxy
+-------------
+
+```haskell
+Proxy#
 ```
 
 Promoted Syntax
@@ -5966,7 +5973,12 @@ variety of tasks that consist largely of boilerplate code generation such as:
 * Traversal
 
 These are achieved through several tools and techniques outlined in the next few
-sections.
+sections:
+
+* Typeable / Dynamic
+* Scrap Your Boilerplate
+* GHC.Generics
+* generics-sop
 
 Typeable
 --------
@@ -5997,7 +6009,8 @@ cast x
 Of historical note is that writing our own Typeable classes is currently
 possible of GHC 7.6 but allows us to introduce dangerous behavior that can cause
 crashes, and shouldn't be done except by GHC itself. As of 7.8 GHC forbids
-hand-written Typeable instances.
+hand-written Typeable instances. As of 7.10 ``-XAutoDeriveDataTypeable``  is
+enabled by default.
 
 See: [Typeable and Data in Haskell](http://chrisdone.com/posts/data-typeable)
 
@@ -6020,7 +6033,10 @@ cast :: (Typeable a, Typeable b) => a -> Maybe b
 ~~~~
 
 In GHC 7.8 the Typeable class is poly-kinded so polymorphic functions can be
-applied over dynamic objects.
+applied over functions and higher kinded types. 
+
+Use of Dynamic is somewhat rare except in odd cases that have to deal with
+foreign memory. Using it for business logic is considered a code smell.
 
 Data
 ----
@@ -7961,7 +7977,9 @@ pass effectively translates the ``HsSyn`` datatype from a AST parametrized over
 literal strings as the user enters into a ``HsSyn`` parameterized over qualified
 names that includes modules and package names into a higher level Name type.
 
+<div class="center">
 ![](img/ghc.png)
+</div>
 
 * **Parser/Frontend**: An enormous AST translated from human syntax that makes
   explicit possible all expressible syntax ( declarations, do-notation, where
@@ -10709,11 +10727,11 @@ Swift *does not* have an effect system.
 Go
 --
 
-Go is a programming language developed at Google by Rob Pike, and Ken Thompson.
-Although Go is statically typed it has failed to integrate most modern advances
-in programming language work since the 1970s and instead chooses a seemingly
-regressive design. Most notably it lacks any notion of generics and polymorphism
-is either achieved by manual code duplication or unsafe coercions.
+Go is a programming language developed at Google.  Although Go is statically
+typed it has failed to integrate most modern advances in programming language
+work since the 1970s and instead chooses a seemingly regressive design. Most
+notably it lacks any notion of generics and polymorphism is either achieved by
+manual code duplication or unsafe coercions.
 
 **Main difference**: Go is a language designed around the idea that language
 design has not advanced since 1970, while Haskell incorporates many ideas from
@@ -10728,6 +10746,9 @@ Go has *no safe polymorphism*.
 Go is statically *compiled* with a custom toolchain.
 
 Go *does not* have an effect system.
+
+Scala
+----------
 
 Javascript
 ----------
@@ -10753,3 +10774,39 @@ Javascript internally refers to runtime value tags as *types*, which differs
 from the Haskell notion of types.
 
 The majority of Javascript implementations are garbage collected.
+
+Code
+====
+
+* [01-basics/            ](https://github.com/sdiehl/wiwinwlh/tree/master/src/01-basics/)
+* [02-monads/            ](https://github.com/sdiehl/wiwinwlh/tree/master/src/02-monads/)
+* [03-monad-transformers/](https://github.com/sdiehl/wiwinwlh/tree/master/src/03-monad-transformers/)
+* [04-extensions/        ](https://github.com/sdiehl/wiwinwlh/tree/master/src/04-extensions/)
+* [05-laziness/          ](https://github.com/sdiehl/wiwinwlh/tree/master/src/05-laziness/)
+* [06-prelude/           ](https://github.com/sdiehl/wiwinwlh/tree/master/src/06-prelude/)
+* [07-text-bytestring/   ](https://github.com/sdiehl/wiwinwlh/tree/master/src/07-text-bytestring/)
+* [08-applicatives/      ](https://github.com/sdiehl/wiwinwlh/tree/master/src/08-applicatives/)
+* [09-errors/            ](https://github.com/sdiehl/wiwinwlh/tree/master/src/09-errors/)
+* [10-advanced-monads/   ](https://github.com/sdiehl/wiwinwlh/tree/master/src/10-advanced-monads/)
+* [11-quantification/    ](https://github.com/sdiehl/wiwinwlh/tree/master/src/11-quantification/)
+* [12-gadts/             ](https://github.com/sdiehl/wiwinwlh/tree/master/src/12-gadts/)
+* [13-lambda-calculus/   ](https://github.com/sdiehl/wiwinwlh/tree/master/src/13-lambda-calculus/)
+* [14-interpreters/      ](https://github.com/sdiehl/wiwinwlh/tree/master/src/14-interpreters/)
+* [15-testing/           ](https://github.com/sdiehl/wiwinwlh/tree/master/src/15-testing/)
+* [16-type-families/     ](https://github.com/sdiehl/wiwinwlh/tree/master/src/16-type-families/)
+* [17-promotion/         ](https://github.com/sdiehl/wiwinwlh/tree/master/src/17-promotion/)
+* [18-generics/          ](https://github.com/sdiehl/wiwinwlh/tree/master/src/18-generics/)
+* [19-numbers/           ](https://github.com/sdiehl/wiwinwlh/tree/master/src/19-numbers/)
+* [20-data-structures/   ](https://github.com/sdiehl/wiwinwlh/tree/master/src/20-data-structures/)
+* [21-ffi/               ](https://github.com/sdiehl/wiwinwlh/tree/master/src/21-ffi/)
+* [22-concurrency/       ](https://github.com/sdiehl/wiwinwlh/tree/master/src/22-concurrency/)
+* [23-graphics/          ](https://github.com/sdiehl/wiwinwlh/tree/master/src/23-graphics/)
+* [24-parsing/           ](https://github.com/sdiehl/wiwinwlh/tree/master/src/24-parsing/)
+* [25-streaming/         ](https://github.com/sdiehl/wiwinwlh/tree/master/src/25-streaming/)
+* [26-data-formats/      ](https://github.com/sdiehl/wiwinwlh/tree/master/src/26-data-formats/)
+* [27-web/               ](https://github.com/sdiehl/wiwinwlh/tree/master/src/27-web/)
+* [28-databases/         ](https://github.com/sdiehl/wiwinwlh/tree/master/src/28-databases/)
+* [29-ghc/               ](https://github.com/sdiehl/wiwinwlh/tree/master/src/29-ghc/)
+* [30-languages/         ](https://github.com/sdiehl/wiwinwlh/tree/master/src/30-languages/)
+* [31-template-haskell/  ](https://github.com/sdiehl/wiwinwlh/tree/master/src/31-template-haskell/)
+* [33-categories/        ](https://github.com/sdiehl/wiwinwlh/tree/master/src/33-categories/)
