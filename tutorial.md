@@ -13,11 +13,10 @@ distribute and perform the work, even for commercial purposes, all without
 asking permission.
 
 You may copy and paste any code here verbatim into your codebase, wiki, blog,
-book or Haskell musical production as you see fit.
-
-The Markdown and Haskell source is [available on
+book or Haskell musical production as you see fit. The Markdown and Haskell
+source is [available on
 Github](https://github.com/sdiehl/wiwinwlh/tree/master/src). Pull requests are
-always accepted for changes and additional content. This is a living document
+always accepted for changes and additional content. This is a living document.
 
 **Changelog**
 
@@ -25,6 +24,7 @@ always accepted for changes and additional content. This is a living document
 
 * Stack
 * Stackage
+* ghcid
 * Nix (Updated)
 * Aeson (Updated)
 * Language Extensions (Updated)
@@ -63,8 +63,10 @@ always accepted for changes and additional content. This is a living document
 * configurator
 * string-conv
 * resource-pool
+* resourcet
 * optparse-applicative
 * hastache
+* silently
 * haxl
 * Dependent Haskell
 * Language Comparisons
@@ -473,7 +475,24 @@ $ stack repl
 $ stack ghc
 $ stack ghci
 $ stack exec bash
+$ stack build --file-watch
 ```
+
+To visualize the dependency graph:
+
+```bash
+stack dot --external | dot -Tpng | feh -
+```
+
+Flags
+-----
+
+Flag                                 Description
+----                                 ------------
+-fwarn-tabs
+-fwarn-incomplete-uni-patterns
+-fwarn-incomplete-record-updates
+-fno-code
 
 Hackage
 -------
@@ -675,6 +694,14 @@ For reasons of sexiness it is desirable to set your GHC prompt to a ``λ`` or a
 :set prompt "λ: "
 :set prompt "ΠΣ: "
 ```
+
+**GHCi Performance**
+
+TODO
+
+-fno-code
+
+-fobject-code
 
 Vim Integration
 ---------------
@@ -987,76 +1014,10 @@ Failed, modules loaded: none.
 GHC has rightly suggested that the expression needed to finish the program is
 ``xs :: [a]``.
 
-Partial Type Signatures
------------------------
+ghcid
+-----
 
-The same hole technique can be applied at the toplevel for signatures:
-
-```haskell
-const' :: _
-const' x y = x
-```
-
-```bash
-[1 of 1] Compiling Main             ( src/typedhole.hs, interpreted )
-
-typedhole.hs:3:11:
-    Found hole ‘_’ with type: t1 -> t -> t1
-    Where: ‘t’ is a rigid type variable bound by
-               the inferred type of const' :: t1 -> t -> t1 at foo.hs:4:1
-           ‘t1’ is a rigid type variable bound by
-                the inferred type of const' :: t1 -> t -> t1 at foo.hs:4:1
-    To use the inferred type, enable PartialTypeSignatures
-    In the type signature for ‘const'’: _
-Failed, modules loaded: none.
-```
-
-Pattern wildcards can also be given explicit names so that GHC will use when
-reporting the inferred type in the resulting message.
-
-```haskell
-foo :: _a -> _a
-foo _ = False
-```
-
-```bash
-typedhole.hs:6:9:
-    Couldn't match expected type ‘_a’ with actual type ‘Bool’
-      ‘_a’ is a rigid type variable bound by
-           the type signature for foo :: _a -> _a at foo.hs:5:8
-    Relevant bindings include foo :: _a -> _a (bound at foo.hs:6:1)
-    In the expression: False
-    In an equation for ‘foo’: foo _ = False
-Failed, modules loaded: none.
-```
-
-The same wildcards can be used in type contexts to dump out inferred type class
-constraints:
-
-```haskell
-succ' :: _ => a -> a
-succ' x = x + 1
-```
-
-```bash
-typedhole.hs:3:10:
-    Found hole ‘_’ with inferred constraints: (Num a)
-    To use the inferred type, enable PartialTypeSignatures
-    In the type signature for ‘succ'’: _ => a -> a
-Failed, modules loaded: none.
-```
-
-When the flag ``-XPartialTypeSignature`` is passed to GHC and the inferred type
-is unambiguous, GHC will let us leave the holes in place and the compilation
-will proceed.
-
-```bash
-typedhole.hs:3:10: Warning:
-    Found hole ‘_’ with type: w_
-    Where: ‘w_’ is a rigid type variable bound by
-                the inferred type of succ' :: w_ -> w_1 -> w_ at foo.hs:4:1
-    In the type signature for ‘succ'’: _ -> _ -> _
-```
+TODO
 
 Nix
 ---
@@ -2195,6 +2156,78 @@ The module itself isn't safe.
 
 See: [Safe Haskell](https://ghc.haskell.org/trac/ghc/wiki/SafeHaskell)
 
+Partial Type Signatures
+-----------------------
+
+The same hole technique can be applied at the toplevel for signatures:
+
+```haskell
+const' :: _
+const' x y = x
+```
+
+```bash
+[1 of 1] Compiling Main             ( src/typedhole.hs, interpreted )
+
+typedhole.hs:3:11:
+    Found hole ‘_’ with type: t1 -> t -> t1
+    Where: ‘t’ is a rigid type variable bound by
+               the inferred type of const' :: t1 -> t -> t1 at foo.hs:4:1
+           ‘t1’ is a rigid type variable bound by
+                the inferred type of const' :: t1 -> t -> t1 at foo.hs:4:1
+    To use the inferred type, enable PartialTypeSignatures
+    In the type signature for ‘const'’: _
+Failed, modules loaded: none.
+```
+
+Pattern wildcards can also be given explicit names so that GHC will use when
+reporting the inferred type in the resulting message.
+
+```haskell
+foo :: _a -> _a
+foo _ = False
+```
+
+```bash
+typedhole.hs:6:9:
+    Couldn't match expected type ‘_a’ with actual type ‘Bool’
+      ‘_a’ is a rigid type variable bound by
+           the type signature for foo :: _a -> _a at foo.hs:5:8
+    Relevant bindings include foo :: _a -> _a (bound at foo.hs:6:1)
+    In the expression: False
+    In an equation for ‘foo’: foo _ = False
+Failed, modules loaded: none.
+```
+
+The same wildcards can be used in type contexts to dump out inferred type class
+constraints:
+
+```haskell
+succ' :: _ => a -> a
+succ' x = x + 1
+```
+
+```bash
+typedhole.hs:3:10:
+    Found hole ‘_’ with inferred constraints: (Num a)
+    To use the inferred type, enable PartialTypeSignatures
+    In the type signature for ‘succ'’: _ => a -> a
+Failed, modules loaded: none.
+```
+
+When the flag ``-XPartialTypeSignature`` is passed to GHC and the inferred type
+is unambiguous, GHC will let us leave the holes in place and the compilation
+will proceed.
+
+```bash
+typedhole.hs:3:10: Warning:
+    Found hole ‘_’ with type: w_
+    Where: ‘w_’ is a rigid type variable bound by
+                the inferred type of succ' :: w_ -> w_1 -> w_ at foo.hs:4:1
+    In the type signature for ‘succ'’: _ -> _ -> _
+```
+
+
 Recursive Do
 ------------
 
@@ -3044,6 +3077,18 @@ For instance:
 "foo" :: IsString a => a
 ```
 
+We can also derive IsString for newtypes using GeneralizedNewtypeDeriving,
+although much of the safety of the newtype is then lost if it is interchangeable
+with other strings.
+
+```haskell
+newtype Cat = Cat Text
+  deriving (IsString)
+
+fluffy :: Cat
+fluffy = "Fluffy"
+```
+
 Text
 ----
 
@@ -3126,6 +3171,13 @@ instance IsList [a] where
 
 ~~~~ {.haskell include="src/07-text-bytestring/overloadedlist.hs"}
 ~~~~
+
+String Conversions
+------------------
+
+TODO
+
+string-conv
 
 Applicatives
 ============
@@ -3855,6 +3907,12 @@ do-notation and if-then-else syntax by providing alternative definitions local t
 ~~~~
 
 See: [Fun with Indexed monads](http://www.cl.cam.ac.uk/~dao29/ixmonad/ixmonad-fita14.pdf)
+
+monad-control
+-------------
+
+Haxl
+----
 
 Quantification
 ==============
@@ -4884,6 +4942,12 @@ Unit tests
       11 tests completed
 ```
 
+silently
+--------
+
+tasty-golden
+------------
+
 Type Families
 =============
 
@@ -5268,6 +5332,9 @@ AnyK :: BOX
 λ: :kind Constraint
 Constraint :: BOX
 ```
+
+TypeFamilyDependencies
+----------------------
 
 Promotion
 =========
@@ -7811,6 +7878,11 @@ Error "when expecting a Double, encountered Boolean instead"
 ```haskell
 ```
 
+Yaml
+---
+
+TODO
+
 CSV
 ---
 
@@ -7916,6 +7988,9 @@ apply for monads may break down or fail with error terms.
 
 See: [Making a Website with Haskell](http://adit.io/posts/2013-04-15-making-a-website-with-haskell.html)
 
+Hastache
+--------
+
 Servant
 -------
 
@@ -7929,17 +8004,12 @@ postgresql-simple
 
 TODO
 
-opaleye 
-----------
+msyql-simple
+-----------------
 
 TODO
 
-esqueleto
-----------
-
-TODO
-
-relational-record
+sqlite-simple
 -----------------
 
 TODO
@@ -7949,14 +8019,10 @@ hedis
 
 TODO
 
-persistent 
-----------
-
-
 Acid State
 ----------
 
-Acid-state allows us to build a "database on demand" for arbitrary Haskell
+Acid-state allows us to build a "database" for around our existing Haskell
 datatypes that guarantees atomic transactions. For example, we can build a
 simple key-value store wrapped around the Map type.
 
@@ -9615,7 +9681,7 @@ See:
 * [Minimal Example of LLVM Haskell JIT](https://github.com/sdiehl/llvm-tutorial-standalone)
 * [Implementing a JIT Compiled Language with Haskell and LLVM](http://www.stephendiehl.com/llvm/)
 
-Printer Combinators
+pretty
 -------------------
 
 Pretty printer combinators compose logic to print strings.
@@ -9656,6 +9722,16 @@ let pprint x = putStrLn $ ppShow x
 
 See: [The Design of a Pretty-printing Library](http://belle.sourceforge.net/doc/hughes95design.pdf)
 
+wl-pprint-text
+-------------------
+
+TODO
+
+ansi-terminal
+---------
+
+TODO
+
 Haskeline
 ---------
 
@@ -9669,8 +9745,14 @@ getInputLine :: String -> InputT IO (Maybe String)
 ~~~~ {.haskell include="src/30-languages/haskelline.hs"}
 ~~~~
 
+Repline
+---------
+
 Template Haskell
 ================
+
+Perils of Metaprogramming
+-------------------------
 
 Quasiquotation
 -------------
@@ -10687,8 +10769,8 @@ enforce safety and idiomatic clojure often includes mutable references and
 destructive updates. There are some efforts toward an optional typing system
 provided by the [core.typed](https://github.com/clojure/core.typed).
 
-**Main difference**: Clojure is a dynamically typed Lisp dialect, while Haskell
-is in the ML family.
+**Main difference**: Clojure is a unityped typed Lisp dialect, while Haskell is
+in the ML family.
 
 Clojure's main implementation is *clojure*.
 
