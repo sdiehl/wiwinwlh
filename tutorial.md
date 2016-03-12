@@ -433,7 +433,12 @@ dependencies than ``cabal-install``.
 Install stack:
 
 ```bash
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 575159689BEFB442                             # get fp complete key
+echo 'deb http://download.fpcomplete.com/ubuntu trusty main'|sudo tee /etc/apt/sources.list.d/fpco.list    # add appropriate source repo
+sudo apt-get update && sudo apt-get install stack -y
 ```
+
+for other OSes, go [here](http://docs.haskellstack.org/en/stable/install_and_upgrade/) 
 
 stack.yaml
 
