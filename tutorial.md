@@ -838,8 +838,8 @@ Exhaustiveness
 --------------
 
 Pattern matching in Haskell allows for the possibility of non-exhaustive
-patterns, or cases which are not exhaustive and instead of yielding a value
-diverge.
+patterns, or cases which are not exhaustive and instead of yielding a value halt
+from an incomplete match.
 
 Partial functions from non-exhaustivity are controversial subject, and large use
 of non-exhaustive patterns is considered a dangerous code smell. Although the
@@ -1017,65 +1017,23 @@ GHC has rightly suggested that the expression needed to finish the program is
 ghcid
 -----
 
-TODO
+ghcid is a lightweight IDE hook that allows continuous feedback whenever code is
+updated.
 
-Nix
----
+It is run from the command line in the root of the cabal project directory  by
+specifying a commnad to run, for example ``cabal repl`` or ``stack repl``.
 
-Nix is a package management system with a larger scope than cabal. It is
-generally not a Haskell specific project although much work has been done to
-integrate it with the existing cabal infrastructure. *Nix is not a replacement
-for cabal* but can be used to subsume some of cabal's work by building up
-isolated development environments that can include Haskell libraries (
-installed from binary packages ) and arbitrary system libraries that can be
-linked into compiled Haskell programs.
-
-Use of Nix is somewhat controversial in some aspects since it requires us to buy
-into a much larger system and write an additional set of configuration files in
-an entirely different Nix specification language. It is unclear what the future
-of Haskell and Nix will be and whether it is a workaround around some current
-cabal pain points or a deeper unifying model.
-
-Once the NixOS package manager is installed you can start a nix shell on the fly
-with a bunch of packages installed in the nixos repos.
-
-```bash
-$ nix-shell -p haskellPackages.parsec -p haskellPackages.mtl --command ghci
+```haskell
+ghcid --command="cabal repl" 
 ```
 
-This is of course not limited to haskell packages, and there is a wide variety
-of binary packages and libraries available. If your library depends on a
-specific version of GNU readline, Nix can for example manage this dependency
-while system libraries are outside the scope of ``cabal-install``.
+A common technique is to pass to ``-fno-code`` option to skip the code
+generation phase and just doing typechecking. This makes feedback almost
+incitations for syntax and type errors.
 
-```bash
-$ nix-shell -p llvm -p julia -p emacs
+```haskell
+ghcid --command="cabal repl --ghc-options=\"-fno-code\"" 
 ```
-
-The Nix workflow for Haskell consists of a sequence like the following:
-
-```bash
-$ cabal init
-... usual setup ...
-$ cabal2nix mylibrary.cabal --sha256=0 > shell.nix
-```
-
-This will generate a file like the following:
-
-```ocaml
-```
-
-There you go, now you can launch the cabal repl for your project with:
-
-```bash
-$ nix-shell --command "cabal repl"
-```
-
-This process has been automated by another library called cabal2nix4dev:
-
-See:
-
-* [cabal2nix4dev](https://github.com/dave4420/cabal2nix4dev)
 
 Haddock
 -------
@@ -1191,6 +1149,7 @@ show-extensions  Annotates the documentation with the language extensions used.
 hide             Forces the module to be hidden from Haddock.
 prune            Omits definitions with no annotations.
 
+<hr/>
 
 Monads
 ======
@@ -1807,18 +1766,40 @@ Or equivalently:
             f x
 ```
 
-It's useful to remember that transformers compose outside-in but are unrolled inside out.
-
-![](img/transformer_unroll.png)
+It's useful to remember that transformers compose *outside-in* but are *unrolled
+inside out*.
 
 See: [Monad Transformers: Step-By-Step](http://catamorph.de/publications/2004-10-01-monad-transformers.html)
+
+Basics
+------
+
+The most basic use requires us to use the T-variants of each of the monad transformers for the outer
+layers and to explicit ``lift`` and ``return`` values between each the layers. Monads have kind ``(* -> *)``
+so monad transformers which take monads to monads have ``((* -> *) -> * -> *)``:
+
+```haskell
+Monad (m :: * -> *)
+MonadTrans (t :: (* -> *) -> * -> *)
+```
+
+So for example if we wanted to form a composite computation using both the Reader and Maybe monads we can now
+put the Maybe inside of a ``ReaderT`` to form ``ReaderT t Maybe a``.
+
+~~~~ {.haskell include="src/03-monad-transformers/transformer.hs"}
+~~~~
+
+The fundamental limitation of this approach is that we find ourselves ``lift.lift.lift``ing and
+``return.return.return``ing a lot.
+
 
 ReaderT
 -------
 
 For example, there exist three possible forms of th Reader monad. The first is
-the Haskell 98 version that no longer exists but is useful for pedagogy. The other two
-are the *transformers* variant and the *mtl* variants.
+the Haskell 98 version that no longer exists but is useful for understanding the
+underlying ideas. The other two are the *transformers* variant and the *mtl*
+variants.
 
 *Reader*
 
@@ -1827,7 +1808,7 @@ newtype Reader r a = Reader { runReader :: r -> a }
 
 instance MonadReader r (Reader r) where
   ask       = Reader id
-  local f m = Reader $ runReader m . f
+  local f m = Reader (runReader m . f)
 ```
 
 *ReaderT*
@@ -1867,34 +1848,31 @@ ask :: MonadReader r m => m r
 
 In practice only the last one is used in modern Haskell.
 
-Basics
-------
-
-The most basic use requires us to use the T-variants of each of the monad transformers for the outer
-layers and to explicit ``lift`` and ``return`` values between each the layers. Monads have kind ``(* -> *)``
-so monad transformers which take monads to monads have ``((* -> *) -> * -> *)``:
-
-```haskell
-Monad (m :: * -> *)
-MonadTrans (t :: (* -> *) -> * -> *)
-```
-
-So for example if we wanted to form a composite computation using both the Reader and Maybe monads we can now
-put the Maybe inside of a ``ReaderT`` to form ``ReaderT t Maybe a``.
-
-~~~~ {.haskell include="src/03-monad-transformers/transformer.hs"}
-~~~~
-
-The fundamental limitation of this approach is that we find ourselves ``lift.lift.lift``ing and
-``return.return.return``ing a lot.
-
 Newtype Deriving
 ----------------
 
-Newtypes let us reference a data type with a single constructor as a new distinct type, with no runtime
-overhead from boxing, unlike an algebraic datatype with single constructor.  Newtype wrappers around strings
-and numeric types can often drastically reduce accidental errors.  Using ``-XGeneralizedNewtypeDeriving`` we
-can recover the functionality of instances of the underlying type.
+Newtypes let us reference a data type with a single constructor as a new
+distinct type, with no runtime overhead from boxing, unlike an algebraic
+datatype with single constructor.  Newtype wrappers around strings and numeric
+types can often drastically reduce accidental errors.  
+
+Consider the case of using a newtype to distinguish between two different text
+blobs with different semantics. Both have the same runtime representation as
+text object but are distinguished Statically so that plaintext can not be
+accidentally interchanged with encrypted text.
+
+```haskell
+newtype Plaintext = Plaintext Text
+newtype Crytpotext = Cryptotext Text
+
+encrypt :: Key -> Plaintext -> Cryptotext
+decrypt :: Key -> Cryptotext -> Plaintext
+```
+
+The other common use case is using newtypes to derive logic for deriving custom
+monad transformers in our business logic.  Using
+``-XGeneralizedNewtypeDeriving`` we can recover the functionality of instances
+of the underlying types composed in our transformer stack.
 
 
 ~~~~ {.haskell include="src/03-monad-transformers/newtype.hs"}
@@ -2341,6 +2319,17 @@ So now we can write an eliminator and constructor for arrow type very naturally.
 ~~~~ {.haskell include="src/04-extensions/patterns.hs"}
 ~~~~
 
+Pattern synonyms can be exported from a module like any other definition by
+prefixing them with the prefix ``pattern``.
+
+```haskell
+module MyModule (
+  pattern Elt
+) where
+
+pattern Elt = [a]
+```
+
 ApplicativeDo
 -------------
 
@@ -2665,37 +2654,20 @@ bottom, we fail at the usage site instead of the outer pattern match.
 ~~~~ {.haskell include="src/05-laziness/lazy_patterns.hs"}
 ~~~~
 
-Moral Correctness
------------------
-
-The caveat with lazy evaluation is that it implies inductive reasoning about
-functions, because we must always take into account the fact that a function may contain
-bottoms. And as such claims about inductive proofs of functions have to be couched
-in an implied set of qualifiers "up to the fast and loose reasoning" assuming
-the non-existence of bottoms.
-
-In the "Fast and Loose Reasoning is Morally Correct" paper John Hughes et al.
-showed that if two terms have the same semantics in the total language, then
-they have related semantics in the partial language and gave a prescription by
-which we can translate our knowledge between the two domains given a specific
-set of finely stated conditions under which proofs about lazy languages are
-indeed rigorous and sound.
-
-* [Fast and Loose Reasoning is Morally Correct](http://www.cse.chalmers.se/~nad/publications/danielsson-et-al-popl2006.html)
-
 Prelude
 =======
 
 What to Avoid?
 --------------
 
-Haskell being a 25 year old language has witnessed several revolutions in the way we structure and compose
-functional programs. Yet as a result several portions of the Prelude still reflect old schools of thought that
-simply can't be removed without breaking significant parts of the ecosystem.
+Haskell being a 25 year old language has witnessed several revolutions in the
+way we structure and compose functional programs. Yet as a result several
+portions of the Prelude still reflect old schools of thought that simply can't
+be removed without breaking significant parts of the ecosystem.
 
-Currently it really only exists in folklore which parts to use and which not to use, although this is a topic
-that almost all introductory books don't mention and instead make extensive use of the Prelude for simplicity's
-sake.
+Currently it really only exists in folklore which parts to use and which not to
+use, although this is a topic that almost all introductory books don't mention
+and instead make extensive use of the Prelude for simplicity's sake.
 
 The short version of the advice on the Prelude is:
 
@@ -2705,20 +2677,10 @@ The short version of the advice on the Prelude is:
 * Avoid asynchronous exceptions.
 * Avoid boolean blind functions.
 
-The instances of Foldable for the list type often conflict with the monomorphic versions in the Prelude which
-are left in for historical reasons. So often times it is desirable to explicitly mask these functions from
-implicit import and force the use of Foldable and Traversable instead:
-
-```haskell
-import  Data.List hiding (
-    all , and , any , concat , concatMap find , foldl ,
-    foldl' , foldl1 , foldr , foldr1 , mapAccumL ,
-    mapAccumR , maximum , maximumBy , minimum ,
-    minimumBy , notElem , or , product , sum )
-
-import Control.Monad hiding (
-    forM , forM_ , mapM , mapM_ , msum , sequence , sequence_ )
-```
+The instances of Foldable for the list type often conflict with the monomorphic
+versions in the Prelude which are left in for historical reasons. So often times
+it is desirable to explicitly mask these functions from implicit import and
+force the use of Foldable and Traversable instead.
 
 Of course often times one wishes only to use the Prelude explicitly and one can
 explicitly import it qualified and use the pieces as desired without the
@@ -2728,18 +2690,38 @@ implicit import of the whole namespace.
 import qualified Prelude as P
 ```
 
-This does however bring in several typeclass instances and classes regardless of
-whether it is explicitly or implicitly imported. If one really desires to use
-nothing from the Prelude then the option exists to exclude the entire prelude (
-except for the wired-in class instances ) with the ``-XNoImplicitPrelude``
-pragma.
+Custom Prelude
+--------------
+
+The default Prelude can be disabled in it's entirety by twiddling the
+``-XNoImplicitPrelude`` flag.
 
 ```haskell
 {-# LANGUAGE NoImplicitPrelude #-}
 ```
 
-Alternate Preludes
-------------------
+We are then free to build an equivalent Prelude that is more to our liking.
+Using module reexporting we can pluck the good parts of the prelude and
+libraries like ``safe`` to build up a more industrial focused set of default
+functions. For example:
+
+```haskell
+module Custom ( 
+  module Exports,
+) where
+
+import Data.Int as Exports
+import Data.Tuple as Exports
+import Data.Maybe as Exports
+import Data.String as Exports
+import Data.Foldable as Exports
+import Data.Traversable as Exports
+
+import Control.Monad.Trans.Except
+  as Exports
+  (ExceptT(ExceptT), Except, except, runExcept, runExceptT, 
+   mapExcept, mapExceptT, withExcept, withExceptT)
+```
 
 The Prelude itself is entirely replicable as well presuming that an entire
 project is compiled without the implicit Prelude. Several packages have arisen
@@ -2754,16 +2736,19 @@ design principles.
 Partial Functions
 -----------------
 
-A *partial function* is a function which doesn't terminate and yield a value for all given inputs. Conversely a
-*total function* terminates and is always defined for all inputs. As mentioned previously, certain historical
-parts of the Prelude are full of partial functions.
+A *partial function* is a function which doesn't terminate and yield a value for
+all given inputs. Conversely a *total function* terminates and is always defined
+for all inputs. As mentioned previously, certain historical parts of the Prelude
+are full of partial functions.
 
-The difference between partial and total functions is the compiler can't reason about the runtime safety of
-partial functions purely from the information specified in the language and as such the proof of safety is
-left to the user to guarantee. They are safe to use in the case where the user can guarantee that invalid
-inputs cannot occur, but like any unchecked property its safety or not-safety is going to depend on the
-diligence of the programmer. This very much goes against the overall philosophy of Haskell and as such they
-are discouraged when not necessary.
+The difference between partial and total functions is the compiler can't reason
+about the runtime safety of partial functions purely from the information
+specified in the language and as such the proof of safety is left to the user to
+guarantee. They are safe to use in the case where the user can guarantee that
+invalid inputs cannot occur, but like any unchecked property its safety or
+not-safety is going to depend on the diligence of the programmer. This very much
+goes against the overall philosophy of Haskell and as such they are discouraged
+when not necessary.
 
 ```haskell
 head :: [a] -> a
@@ -4373,16 +4358,34 @@ The only inhabitant of both of these types is a diverging term like
 Phantom Types
 -------------
 
-Phantom types are parameters that appear on the left hand side of a type declaration but which are not
-constrained by the values of the types inhabitants. They are effectively slots for us to encode additional
-information at the type-level.
+Phantom types are parameters that appear on the left hand side of a type
+declaration but which are not constrained by the values of the types
+inhabitants. They are effectively slots for us to encode additional information
+at the type-level.
 
 ~~~~ {.haskell include="src/12-gadts/phantom.hs"}
 ~~~~
 
-Notice the type variable ``tag`` does not appear in the right hand side of the declaration. Using this allows us
-to express invariants at the type-level that need not manifest at the value-level. We're effectively
-programming by adding extra information at the type-level.
+Notice the type variable ``tag`` does not appear in the right hand side of the
+declaration. Using this allows us to express invariants at the type-level that
+need not manifest at the value-level. We're effectively programming by adding
+extra information at the type-level.
+
+Consider the case of using newtypes to statically distinguish between plaintext
+and cryptotext.
+
+```haskell
+newtype Plaintext = Plaintext Text
+newtype Crytpotext = Cryptotext Text
+
+encrypt :: Key -> Plaintext -> Cryptotext
+decrypt :: Key -> Cryptotext -> Plaintext
+```
+
+Using phantom types we use an extra parameter.
+
+~~~~ {.haskell include="src/12-gadts/phantom_example.hs"}
+~~~~
 
 See: [Fun with Phantom Types](http://www.researchgate.net/publication/228707929_Fun_with_phantom_types/file/9c960525654760c169.pdf)
 
@@ -4407,8 +4410,8 @@ As of GHC 7.8 these constructors and functions are included in the Prelude in th
 Interpreters
 ============
 
-The lambda calculus forms the theoretical and practical foundation for many languages. At the heart of every
-calculus is three components:
+The lambda calculus forms the theoretical and practical foundation for many
+languages. At the heart of every calculus is three components:
 
 - **Var** - A variable
 - **Lam** - A lambda abstraction
@@ -4416,9 +4419,10 @@ calculus is three components:
 
 ![](img/lambda.png)
 
-There are many different ways of modeling these constructions and data structure representations, but they all
-more or less contain these three elements. For example, a lambda calculus that uses String names on lambda binders
-and variables might be written like the following:
+There are many different ways of modeling these constructions and data structure
+representations, but they all more or less contain these three elements. For
+example, a lambda calculus that uses String names on lambda binders and
+variables might be written like the following:
 
 ```haskell
 type Name = String
@@ -4429,8 +4433,9 @@ data Exp
   | App Exp Exp
 ```
 
-A lambda expression in which all variables that appear in the body of the expression are referenced in an
-outer lambda binder is said to be *closed* while an expression with unbound free variables is *open*.
+A lambda expression in which all variables that appear in the body of the
+expression are referenced in an outer lambda binder is said to be *closed* while
+an expression with unbound free variables is *open*.
 
 See: [Mogensen–Scott encoding](http://en.wikipedia.org/wiki/Mogensen-Scott_encoding)
 
@@ -9754,6 +9759,19 @@ Template Haskell
 Perils of Metaprogramming
 -------------------------
 
+Template Haskell is a very powerful set of abstractions, some might say **too**
+powerful. It effectively allows us to run arbitrary code at compile-time to
+generate other Haskell code. You can some absolutely crazy things, like going
+off and reading from the filesystem or doing network calls that informs how your
+code compiles leading to non-deterministic builds.
+
+While in some extreme cases TH is useful, some discretion is required when using
+this in production setting. TemplateHaskell can cause your build times to grow
+without bound, force you to manually sort all definitions your modules, and
+generally produce unmaintainable code. If you find yourself falling back on
+metaprogramming ask yourself, what in my abstractions has failed me such that my
+only option is to *write code that writes code*.
+
 Quasiquotation
 -------------
 
@@ -10505,10 +10523,12 @@ Haskell is a *general purpose language*.
 
 Haskell is *garbage collected*.
 
+Haskell is *compiled* through a custom native code generator.
+
 Haskell is *statically* typed.
 
 Haskell allows polymorphism by means of *parametric polymorphism* and *ad-hoc
-polymorphism*.
+polymorphism* through typeclasses.
 
 Haskell is *pure* and statically tracks effects.
 
@@ -10522,10 +10542,9 @@ programming to the extent that has become prevalent in portions of recent
 Haskell. The OCaml compiler is also significantly less advanced than modern GHC
 runtime and largely does not perform any compiler optimizations or program
 transformations. The language itself does has several advantages over Haskell in
-that is has a module system and a record system supporting first-class records.
-Although it is possible to write pure OCaml there is no language-integrated
-support and the current engineering practice around the language encourages
-ubiquitous impurity in third party libraries.
+that is has a module system Although it is possible to write pure OCaml there is
+no language-integrated support and the current engineering practice around the
+language encourages ubiquitous impurity in third party libraries.
 
 **Main difference**: Both have fairly modern type type systems, but OCaml does
 not enforce purity and uses call-by-value.
@@ -10541,7 +10560,7 @@ OCaml is a *statically typed* language.
 OCaml is *garbage collected*.
 
 OCaml allows polymorphism by means of *parametric polymorphism* and *ad-hoc
-polymorphism*.
+polymorphism* through modular implicits.
 
 OCaml has a module system and functors.
 
@@ -10725,6 +10744,9 @@ the Haskell notion of types.
 Python allows polymorphism by means of unityping, all functions can take any
 type.
 
+R
+------
+
 Julia
 ------
 
@@ -10805,6 +10827,12 @@ Swift is a *statically typed* language.
 Swift is *compiled* through the LLVM framework.
 
 Swift *does not* have an effect system.
+
+C#
+------
+
+C++
+------
 
 Go
 --
