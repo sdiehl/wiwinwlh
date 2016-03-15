@@ -2650,7 +2650,7 @@ implicit import and force the use of Foldable and Traversable instead:
 
 ```haskell
 import  Data.List hiding (
-    all , and , any , concat , concatMap find , foldl ,
+    all , and , any , concat , concatMap , find , foldl ,
     foldl' , foldl1 , foldr , foldr1 , mapAccumL ,
     mapAccumR , maximum , maximumBy , minimum ,
     minimumBy , notElem , or , product , sum )
