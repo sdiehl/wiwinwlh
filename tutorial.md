@@ -435,7 +435,12 @@ dependencies than ``cabal-install``.
 Install stack:
 
 ```bash
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 575159689BEFB442                             # get fp complete key
+echo 'deb http://download.fpcomplete.com/ubuntu trusty main'|sudo tee /etc/apt/sources.list.d/fpco.list    # add appropriate source repo
+sudo apt-get update && sudo apt-get install stack -y
 ```
+
+for other OSes, go [here](http://docs.haskellstack.org/en/stable/install_and_upgrade/) 
 
 stack.yaml
 
@@ -1285,19 +1290,19 @@ In the do-notation the monad laws from above are equivalently written:
 **Law 1**
 
 ```haskell
-  do x <- m
-     return x
+  do y <- return x
+     f y
 
-= do m
+= do f x
 ```
 
 **Law 2**
 
 ```haskell
-  do y <- return x
-     f y
+  do x <- m
+     return x
 
-= do f x
+= do m
 ```
 
 **Law 3**
@@ -2671,10 +2676,11 @@ and instead make extensive use of the Prelude for simplicity's sake.
 
 The short version of the advice on the Prelude is:
 
+* Avoid String.
 * Use ``fmap`` instead of ``map``.
 * Use Foldable and Traversable instead of the Control.Monad, and Data.List versions of traversals.
 * Avoid partial functions like ``head`` and ``read`` or use their total variants.
-* Avoid asynchronous exceptions.
+* Avoid exceptions, use Either or EitherT instead.
 * Avoid boolean blind functions.
 
 The instances of Foldable for the list type often conflict with the monomorphic
