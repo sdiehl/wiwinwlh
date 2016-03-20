@@ -7503,19 +7503,13 @@ Parsec provides us with a set of functions for defining lexers and integrating t
 combinators. The simplest example builds on top of the builtin Parsec language definitions which define a set
 of most common lexical schemes.
 
-```haskell
-haskellDef   :: LanguageDef st
-emptyDef     :: LanguageDef st
-haskellStyle :: LanguageDef st
-javaStyle    :: LanguageDef st
-```
+For instance we'll build on top of the empty language grammar on top of the
+haskellDef grammer that uses the Text token instead of string.
 
-For instance we'll build on top of the empty language grammar.
-
-~~~~ {.haskell include="src/24-parsing/lexer.hs"}
+~~~~ {.haskell include="src/24-parsing/lexer_text.hs"}
 ~~~~
 
-See: [Text.ParserCombinators.Parsec.Language](http://hackage.haskell.org/package/parsec-3.1.5/docs/Text-ParserCombinators-Parsec-Language.html)
+See: [Text.Parsec.Language]( https://hackage.haskell.org/package/parsec-3.1.9/docs/Text-Parsec-Language.html)
 
 Simple Parsing
 --------------
@@ -7538,30 +7532,6 @@ Lam "i" (Lam "x" (Var "x"))
 
 \s -> \f -> \g -> \x -> f x (g x)
 Lam "s" (Lam "f" (Lam "g" (Lam "x" (App (App (Var "f") (Var "x")) (App (Var "g") (Var "x"))))))
-```
-
-Stateful Parsing
-----------------
-
-For a more complex use, consider parser that are internally stateful, for example adding operators that can
-defined at parse-time and are dynamically added to the ``expressionParser`` table upon definition.
-
-~~~~ {.haskell include="src/24-parsing/parsec_operators.hs"}
-~~~~
-
-For example input try:
-
-```haskell
-infixl 3 ($);
-infixr 4 (#);
-
-infix 4 (.);
-
-prefix 10 (-);
-postfix 10 (!);
-
-let z = y in a $ a $ (-a)!;
-let z = y in a # a # a $ b; let z = y in a # a # a # b;
 ```
 
 Generic Parsing
