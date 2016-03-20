@@ -254,15 +254,23 @@ ul.sections > li > div {
 
 /*----------------------  (> 481px) ---------------------*/
 @media only screen and (min-width: 481px) {
+
 }
 
-/*
 @media only screen and (max-width: 1025px) {
-  .toc {
+  .side .logo {
     display: none;
   }
+
+  .side {
+    display: none;
+  }
+
+  .body {
+    padding-left: 30px;
+  }
+
 }
-*/
 
 @media only screen and (min-width: 1025px) {
   .side {
@@ -280,6 +288,12 @@ ul.sections > li > div {
 
       padding-top: 20px;
   }
+
+  .side .logo {
+    margin-left: 80px;
+    margin-bottom: 10px;
+  }
+
 
   .side ul ul {
     display: none;
