@@ -4203,9 +4203,12 @@ available about the values and they can't be accessed or unpacked in any other
 way.
 
 Passing around existential types allows us to hide information from consumers of
-data types and restrict the behavior that functions can use.
+data types and restrict the behavior that functions can use. Passing records
+around with existential variables allows a type to be "bundled" with a fixed set
+of functions that operate over its hidden internals.
 
-See: [Haskell Antipattern: Existential Typeclass](http://lukepalmer.wordpress.com/2010/01/24/haskell-antipattern-existential-typeclass/)
+~~~~ {.haskell include="src/11-quantification/existential_records.hs"}
+~~~~
 
 Impredicative Types
 -------------------
