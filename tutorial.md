@@ -29,6 +29,7 @@ always accepted for changes and additional content. This is a living document.
 * Aeson (Updated)
 * Language Extensions (Updated)
 * Type Holes (Updated)
+* Partial Type Signatures
 * Pattern Synonyms (Updated)
 * Unboxed Types ( Updated )
 * Vim Integration ( Updated )
@@ -36,21 +37,21 @@ always accepted for changes and additional content. This is a living document.
 * Dependent Types and TypeInType
 * Strict Language Extension
 * Injective Type Families
+* Language Comparisons
 * Recursive Do
 * Applicative Do
 * Strict Haskell
-* Type Signature Sections
 * LiquidHaskell
 * Cpp
 * Minimal Pragma
 * Rewrite Rules
+* Fusion
 * ExtendedDefaultRules
 * mmorph
 * shake
 * servant
 * generics-sop
 * generics-eot
-* Partial Type Signatures
 * integer-gmp
 * Static Pointers
 * spoon
@@ -68,15 +69,11 @@ always accepted for changes and additional content. This is a living document.
 * hastache
 * silently
 * haxl
-* Dependent Haskell
-* Language Comparisons
-* RelaxedPolyRec
-* ConstraintClassMethods
 * c2hs
+* hsc2hs
 * Mulitiline Strings
 * git-embed
 * file-embed
-* hsc2hs
 * DWARF debugging
 * Coercible
 * ghc-prim
@@ -134,6 +131,8 @@ Sections that have had been added or seen large changes:
 * Runtime Optimizations
 * RTS Profiling
 * Algebraic Relations
+
+<hr/>
 
 Basics
 ======
@@ -722,25 +721,10 @@ remarkably improve the efficiency and productivity.
 
 **Vim**
 
-TODO
-
 * [haskell-vim-now](https://github.com/begriffs/haskell-vim-now)
 * [Vim and Haskell in 2016](http://www.stephendiehl.com/posts/vim_2016.html)
 
 **Emacs**
-
-
-Emacs Integration
------------------
-
-The tools that many of these packages use behind the hood are usually available
-with cabal.
-
-```haskell
-cabal install ghc-mod
-```
-
-See:
 
 * [Chris Done's Emacs Config](https://github.com/chrisdone/emacs-haskell-config)
 * [Haskell Development From Emacs](http://tim.dysinger.net/posts/2014-02-18-haskell-with-emacs.html)
@@ -964,8 +948,11 @@ statements outside of the IO monad.
 ~~~~ {.haskell include="src/01-basics/trace.hs"}
 ~~~~
 
-The function itself is impure ( it uses ``unsafePerformIO`` under the hood ) and shouldn't be used in stable
+
+<div class="alert alert-danger">
+Trace uses ``unsafePerformIO`` under the hood and shouldn't be used in stable
 code.
+</div>
 
 In addition to just the trace function, several common monadic patterns are quite common.
 
@@ -1030,15 +1017,11 @@ specifying a commnad to run, for example ``cabal repl`` or ``stack repl``.
 
 ```haskell
 ghcid --command="cabal repl" 
+ghcid --command="stack repl" 
 ```
 
-A common technique is to pass to ``-fno-code`` option to skip the code
-generation phase and just doing typechecking. This makes feedback almost
-incitations for syntax and type errors.
-
-```haskell
-ghcid --command="cabal repl --ghc-options=\"-fno-code\"" 
-```
+Any subsequent change to your project's filesystem will trigger and automatic
+reload.
 
 Haddock
 -------
@@ -1681,6 +1664,8 @@ all three.
 
 See: [Monad Tutorial Fallacy](http://byorgey.wordpress.com/2009/01/12/abstraction-intuition-and-the-monad-tutorial-fallacy/)
 
+<hr/>
+
 Monad Transformers
 ==================
 
@@ -1954,6 +1939,8 @@ TODO
 
 See: [mmorph](https://hackage.haskell.org/package/mmorph)
 
+<hr/>
+
 Language Extensions
 ===================
 
@@ -2004,6 +1991,7 @@ The Dangerous
 GHC's typechecker sometimes just casually tells us to enable language extensions when it can't solve certain
 problems. These include:
 
+* TemplateHaskell
 * DatatypeContexts
 * OverlappingInstances
 * IncoherentInstances
@@ -2106,23 +2094,30 @@ it :: Num a => a
 Safe Haskell
 ------------
 
-As everyone eventually finds out there are several functions within the implementation of GHC ( not the Haskell
-language ) that can be used to subvert the type-system, they are marked with the prefix ``unsafe``.  These
-functions exist only for when one can manually prove the soundness of an expression but can't express this
-property in the type-system. Using these functions without fulfilling the proof obligations will cause all
-measure of undefined behavior with unimaginable pain and suffering, and are <span style="font-weight:
-bold">strongly discouraged</span>. When initially starting out with Haskell there are no legitimate reason to
-use these functions at all, period.
+As everyone eventually finds out there are several functions within the
+implementation of GHC ( not the Haskell language ) that can be used to subvert
+the type-system, they are marked with the prefix ``unsafe``.  These functions
+exist only for when one can manually prove the soundness of an expression but
+can't express this property in the type-system or externalities to Haskell.
 
 ```haskell
 unsafeCoerce :: a -> b
 unsafePerformIO :: IO a -> a
 ```
 
-The Safe Haskell language extensions allow us to restrict the use of unsafe language features using ``-XSafe``
-which restricts the import of modules which are themselves marked as Safe. It also forbids the use of certain
-language extensions (``-XTemplateHaskell``) which can be used to produce unsafe code. The primary use case of
-these extensions is security auditing.
+<div class="alert alert-danger">
+Using these functions to subvert the Haskell typesystem will cause all measure
+of undefined behavior with unimaginable pain and suffering, and are <span
+style="font-weight: bold">strongly discouraged</span>. When initially starting
+out with Haskell there are no legitimate reason to use these functions at all,
+period.
+</div>
+
+The Safe Haskell language extensions allow us to restrict the use of unsafe
+language features using ``-XSafe`` which restricts the import of modules which
+are themselves marked as Safe. It also forbids the use of certain language
+extensions (``-XTemplateHaskell``) which can be used to produce unsafe code. The
+primary use case of these extensions is security auditing.
 
 ```haskell
 {-# LANGUAGE Safe #-}
@@ -2367,6 +2362,8 @@ TypeInType
 
 TypeApplication
 -----------------
+
+<hr/>
 
 Laziness
 ========
@@ -2659,6 +2656,8 @@ bottom, we fail at the usage site instead of the outer pattern match.
 ~~~~ {.haskell include="src/05-laziness/lazy_patterns.hs"}
 ~~~~
 
+<hr/>
+
 Prelude
 =======
 
@@ -2676,12 +2675,14 @@ and instead make extensive use of the Prelude for simplicity's sake.
 
 The short version of the advice on the Prelude is:
 
+<div class="alert alert-success">
 * Avoid String.
 * Use ``fmap`` instead of ``map``.
 * Use Foldable and Traversable instead of the Control.Monad, and Data.List versions of traversals.
 * Avoid partial functions like ``head`` and ``read`` or use their total variants.
-* Avoid exceptions, use Either or EitherT instead.
+* Avoid exceptions, use ExceptT or Either instead.
 * Avoid boolean blind functions.
+</div>
 
 The instances of Foldable for the list type often conflict with the monomorphic
 versions in the Prelude which are left in for historical reasons. So often times
@@ -2695,6 +2696,31 @@ implicit import of the whole namespace.
 ```haskell
 import qualified Prelude as P
 ```
+
+What Should be in the Prelude
+--------------
+
+To get work done you probably need.
+
+<div class="alert alert-success">
+* async
+* bytestring
+* containers
+* exceptions
+* mtl
+* stm
+* text
+* transformers
+* unordered-containers
+* vector
+* filepath
+* directory
+* containers
+* process
+* unix
+* deepseq
+* optparse-applicative
+</div>
 
 Custom Prelude
 --------------
@@ -3036,18 +3062,59 @@ iterateUntilM :: Monad m => (a -> Bool) -> (a -> m a) -> a -> m a
 whileJust :: Monad m => m (Maybe a) -> (a -> m b) -> m [b]
 ```
 
+<hr/>
+
 Strings
 =======
 
-The default Haskell string type is the rather naive linked list of characters, that while perfectly fine for
-small identifiers is not well-suited for bulk processing.
+<div class="alert alert-danger">
+<b>The default String type is broken and should be avoided whenever
+possible.</b> Unfortunately for historical reasons large portions of the GHC and
+Base depend on String.
+</div>
+
+The default Haskell string type is implemented as a naive linked list of
+characters, this is terrible for most purposes but no one knows how to fix it
+without rewriting large portions of all code that exists and nobody can commit
+the time to fix it. So it remains broken, likely forever.
 
 ```haskell
 type String = [Char]
 ```
 
 For more performance sensitive cases there are two libraries for processing textual data: ``text`` and
-``bytestring``.  With the ``-XOverloadedStrings`` extension string literals can be overloaded without the need
+``bytestring``.
+
+* <b>text</b> - Used for handling unicode data.
+* <b>bytestring</b> - Used for handling ASCII data that needs to interchanged
+  with C code or network protocols.
+
+For each of these there are two variants for both text and bytestring.
+
+* <b>lazy</b> Lazy text objects are encoded as lazy lists of strict chunks of bytes.
+* <b>strict</b> Byte vectors are encoded as strict Word8 arrays of bytes or code
+  points
+
+Giving rise to the four types.
+
+Variant                   Module
+-------------             ----------
+<b>strict text</b>        Data.Text
+<b>lazy text</b>          Data.Text.Lazy
+<b>strict bytestring</b>  Data.ByteString
+<b>lazy bytestring</b>    Data.ByteString.Lazy
+
+
+**Conversions:**
+
+                      Data.Text  Data.Text.Lazy  Data.ByteString  Data.ByteString.Lazy
+--------------------- ---------  --------------  ---------------  ------------------
+Data.Text             id         fromStrict
+Data.Text.Lazy        toStrict   id
+Data.ByteString                                   id
+Data.ByteString.Lazy                                              id
+
+With the ``-XOverloadedStrings`` extension string literals can be overloaded without the need
 for explicit packing and can be written as string literals in the Haskell source and overloaded via a
 typeclass ``IsString``.
 
@@ -3068,7 +3135,7 @@ For instance:
 "foo" :: IsString a => a
 ```
 
-We can also derive IsString for newtypes using GeneralizedNewtypeDeriving,
+We can also derive IsString for newtypes using ``GeneralizedNewtypeDeriving``,
 although much of the safety of the newtype is then lost if it is interchangeable
 with other strings.
 
@@ -3078,6 +3145,28 @@ newtype Cat = Cat Text
 
 fluffy :: Cat
 fluffy = "Fluffy"
+```
+
+Import Conventions
+------------------
+
+```haskell
+import qualified Data.Text as T
+import qualified Data.Text.Lazy as TL
+import qualified Data.ByteString as BS
+import qualified Data.ByteString.Lazy as BL
+import qualified Data.ByteString.Char8 as C
+import qualified Data.ByteString.Lazy.Char8 as CL
+```
+
+```haskell
+import qualified Data.Text.IO as TIO
+import qualified Data.Text.Lazy.IO as TLIO
+```
+
+```haskell
+import qualified Data.Text.Encoding as TE
+import qualified Data.Text.Lazy.Encoding as TLE
 ```
 
 Text
@@ -3169,6 +3258,8 @@ String Conversions
 TODO
 
 string-conv
+
+<hr/>
 
 Applicatives
 ============
@@ -3902,8 +3993,24 @@ See: [Fun with Indexed monads](http://www.cl.cam.ac.uk/~dao29/ixmonad/ixmonad-fi
 monad-control
 -------------
 
+TODO
+
+monad-base
+-------------
+
+TODO
+
+lifted-prelude
+-------------
+
+TODO
+
 Haxl
 ----
+
+TODO
+
+<hr/>
 
 Quantification
 ==============
@@ -4173,6 +4280,8 @@ and all signatures contained therein.
 
 ~~~~ {.haskell include="src/11-quantification/scopedtvars.hs"}
 ~~~~
+
+<hr/>
 
 GADTs
 =====
@@ -4478,6 +4587,8 @@ See:
 Final Interpreters
 ------------------
 
+TODO
+
 Using typeclasses we can implement a *final interpreter* which models a set of
 extensible terms using functions bound to typeclasses rather than data
 constructors. Instances of the typeclass form interpreters over these terms.
@@ -4493,8 +4604,10 @@ remains invariant under extension with new expressions.
 Finally Tagless
 ---------------
 
-Writing an evaluator for the lambda calculus can likewise also be modeled with a final interpreter and a
-Identity functor.
+TODO
+
+Writing an evaluator for the lambda calculus can likewise also be modeled with a
+final interpreter and a Identity functor.
 
 ~~~~ {.haskell include="src/14-interpreters/final.hs"}
 ~~~~
@@ -5236,6 +5349,10 @@ In GHC 7.8 ``-XOverloadedLists`` can be used to avoid the extraneous ``fromList`
 Manual Proofs
 -------------
 
+<div class="alert alert-danger">
+This is advanced section, and is not typically necessary to write Haskell.
+</div>
+
 One of most deep results in computer science, the [Curry–Howard
 correspondence](https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence),
 is the relation that logical propositions can be modeled by types and
@@ -5302,6 +5419,10 @@ plus_suc (Succ n) m = cong (plus_suc n m)
 
 Constraint Kinds
 ----------------
+
+<div class="alert alert-danger">
+This is advanced section, and is not typically necessary to write Haskell.
+</div>
 
 GHC's implementation also exposes the predicates that bound quantifiers in
 Haskell as types themselves, with the ``-XConstraintKinds`` extension enabled.
@@ -5391,6 +5512,12 @@ testCofree = (Cofree 1 (Just (Cofree 2 Nothing)))
 Kind Polymorphism
 -----------------
 
+<div class="alert alert-danger">
+This is advanced section, knowledge of kind polymorphism is not typically
+necessary to write Haskell.
+</div>
+
+
 The regular value level function which takes a function and applies it to an argument is universally
 generalized over in the usual Hindley-Milner way.
 
@@ -5452,6 +5579,11 @@ unFlip (Flip x) = x
 
 Data Kinds
 ----------
+
+<div class="alert alert-danger">
+This is advanced section, knowledge of kind data kinds is not typically
+necessary to write Haskell.
+</div>
 
 The ``-XDataKinds`` extension allows us to use refer to constructors at the value level and the type level.
 Consider a simple sum type:
@@ -5545,6 +5677,11 @@ typelevel constraints involving natural numbers but sometimes still needs a litt
 ~~~~
 
 See: [Type-Level Literals](http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-level-literals.html)
+
+Typelevel Strings
+-----------------
+
+TODO
 
 Type Equality
 -------------
@@ -5675,8 +5812,13 @@ Just [Int, Bool, Char] :: Maybe [*]
 Singleton Types
 ---------------
 
-A singleton type is a type with a single value inhabitant. Singleton types can be constructed in a variety of ways
-using GADTs or with data families.
+<div class="alert alert-danger">
+This is advanced section, knowledge of singletons is not typically necessary to
+write Haskell.
+</div>
+
+A singleton type is a type with a single value inhabitant. Singleton types can
+be constructed in a variety of ways using GADTs or with data families.
 
 ```haskell
 data instance Sing (a :: Nat) where
@@ -5780,6 +5922,10 @@ type family Sum (ns :: [Nat]) :: Nat where
 Kind Indexed Type Families
 --------------------------
 
+<div class="alert alert-danger">
+This is advanced section, and is not typically necessary to write Haskell.
+</div>
+
 Just as typeclasses are normally indexed on types, type families can also be indexed on kinds with the kinds
 given as explicit kind signatures on type variables.
 
@@ -5830,6 +5976,10 @@ TemplateHaskell or a Generic deriving.
 HLists
 ------
 
+<div class="alert alert-danger">
+This is advanced section, and is not typically necessary to write Haskell.
+</div>
+
 A heterogeneous list is a cons list whose type statically encodes the ordered types of its values.
 
 ~~~~ {.haskell include="src/17-promotion/hlist.hs"}
@@ -5843,7 +5993,7 @@ then derive the Show instance.
 ~~~~ {.haskell include="src/17-promotion/constraint_list.hs"}
 ~~~~
 
-Typelevel Maps
+Typelevel Dictionaries
 --------------
 
 Much of this discussion of promotion begs the question whether we can create data structures at the type-level
@@ -5875,6 +6025,10 @@ lookup function.
 
 Advanced Proofs
 ---------------
+
+<div class="alert alert-danger">
+This is advanced section, and is not typically necessary to write Haskell.
+</div>
 
 Now that we have the length-indexed vector let's go write the reverse function, how hard could it be?
 
@@ -5975,17 +6129,12 @@ around the lack of dependent types.
 ~~~~ {.haskell include="src/17-promotion/Vector.agda"}
 ~~~~
 
-Dependent Haskell
------------------
-
-TODO
-
-``-XTypeInType``
-
-* [Adding Dependent Types to Haskell](https://ghc.haskell.org/trac/ghc/wiki/DependentHaskell)
-
 Liquid Haskell
 --------------
+
+<div class="alert alert-danger"> This is an advanced section, knowledge of
+LiquidHaskell is not typically necessary to write Haskell.
+</div>
 
 Add the following line to your ``/etc/sources.list``:
 
@@ -6092,6 +6241,29 @@ enabled by default.
 
 See: [Typeable and Data in Haskell](http://chrisdone.com/posts/data-typeable)
 
+Syb
+---
+
+```haskell
+everywhere :: (forall a. Data a => a -> a) -> forall a. Data a => a -> a
+everywhereM :: Monad m => GenericM m -> GenericM m
+somewhere :: MonadPlus m => GenericM m -> GenericM m
+listify :: Typeable r => (r -> Bool) -> GenericQ [r]
+everything :: (r -> r -> r) -> GenericQ r -> GenericQ r
+```
+
+```haskell
+gsize :: Data a => a -> Int
+glength :: GenericQ Int
+gdepth :: GenericQ Int
+gcount :: GenericQ Bool -> GenericQ Int
+gnodecount :: GenericQ Int
+gtypecount :: Typeable a => a -> GenericQ Int
+gfindtype :: (Data x, Typeable y) => x -> Maybe y
+```
+
+* [Data.Generics.Schemes](https://hackage.haskell.org/package/syb-0.6/docs/Data-Generics-Schemes.html)
+
 Dynamic
 -------
 
@@ -6113,8 +6285,12 @@ cast :: (Typeable a, Typeable b) => a -> Maybe b
 In GHC 7.8 the Typeable class is poly-kinded so polymorphic functions can be
 applied over functions and higher kinded types. 
 
-Use of Dynamic is somewhat rare except in odd cases that have to deal with
-foreign memory. Using it for business logic is considered a code smell.
+
+<div class="alert alert-danger">
+Use of Dynamic is somewhat rare, except in odd cases that have to deal with
+foreign memory and FFI interfaces. Using it for business logic is considered a
+code smell. Consider a more idiomatic solution.
+</div>
 
 Data
 ----
@@ -6396,6 +6572,7 @@ And end to end example for deriving equality generics:
 
 See:
 
+* [Cooking Classes with Datatype Generic Programming](http://www.stephendiehl.com/posts/generics.html)
 * [Datatype-generic Programming in Haskell](http://www.andres-loeh.de/DGP-Intro.pdf)
 * [generic-deriving](http://hackage.haskell.org/package/generic-deriving-1.6.3)
 
@@ -7003,6 +7180,11 @@ optimized for append/prepend operations and traversal.
 
 FFI
 ===
+
+<div class="alert alert-danger">
+This is an advanced section, knowledge of FFI is not typically necessary to write
+Haskell.
+</div>
 
 Pure Functions
 --------------
@@ -8012,6 +8194,124 @@ simple key-value store wrapped around the Map type.
 
 GHC
 ===
+
+<div class="alert alert-danger">
+This is advanced section, knowledge of GHC internals is not typically
+necessary.
+</div>
+
+Located
+-------
+
+```haskell
+data GenLocated l e = L l e
+type Located e = GenLocated SrcSpan e
+```
+
+```haskell
+unLoc :: GenLocated l e -> e
+unLoc (L _ e) = e
+
+getLoc :: GenLocated l e -> l
+getLoc (L l _) = l
+
+noLoc :: e -> Located e
+noLoc e = L noSrcSpan e
+```
+
+```haskell
+instance Functor (GenLocated l) where
+  fmap f (L l e) = L l (f e)
+```
+
+```haskell
+srcSpanStart :: SrcSpan -> SrcLoc
+srcSpanEnd :: SrcSpan -> SrcLoc
+```
+
+Types
+-----
+
+**Monads**
+
+* GHC
+* P
+* Hsc
+* TcRn
+* DsM
+* SimplM
+* MonadUnique
+
+**Session**
+
+* HscEnv
+* DynFlags
+* Settings
+* UniqEnv
+* Target
+* TargetId
+* HscTarget
+* GhcMode
+* ModSummary
+* InteractiveContext
+* TypeEnv
+* GlobalRdrEnv
+* TcGblEnv
+* FixityEnv
+* Module
+* ModuleName
+* ModGuts
+* ModuleInfo
+* ModDetails
+* AvailInfo
+* Class
+* ClsInt
+* FamInst
+* InstEnv
+* TyCon
+* DataCon
+* TyThing
+* RdrName
+* Name
+* Var
+* Type
+* DataConRep
+* SrcLoc
+* SrcSpan
+* Located
+* GhcException
+* Token
+
+**HsSyn**
+
+- HsModule
+- HsBind
+- HsDecl
+- HsExpr
+- HsGroup
+- HsLit
+- Pat
+- HsType
+
+**CoreSyn**
+
+- Expr
+- Arg
+- Alt
+- AltCon
+- Bind
+
+**StgSyn**
+
+TODO
+
+Artifacts
+----------
+
+* ParsedModule
+* TypecheckedModule
+* DesugaredModule
+* CoreModule
 
 Block Diagram
 -------------
@@ -9526,6 +9826,8 @@ TODO
 Outputable
 ----------
 
+TODO
+
 haskell-suite
 -------------
 
@@ -9534,6 +9836,11 @@ TODO
 * haskell-src-exts
 * haskell-names
 * haskell-packages
+
+ghc-exact-print
+-------------
+
+TODO
 
 Profiling
 =========
@@ -9663,7 +9970,7 @@ See:
 * [Implementing a JIT Compiled Language with Haskell and LLVM](http://www.stephendiehl.com/llvm/)
 
 pretty
--------------------
+------------
 
 Pretty printer combinators compose logic to print strings.
 
@@ -9732,6 +10039,11 @@ Repline
 Template Haskell
 ================
 
+<div class="alert alert-danger">
+This is advanced section, knowledge of TemplateHaskell is not typically
+necessary to write Haskell.
+</div>
+
 Perils of Metaprogramming
 -------------------------
 
@@ -9747,6 +10059,11 @@ without bound, force you to manually sort all definitions your modules, and
 generally produce unmaintainable code. If you find yourself falling back on
 metaprogramming ask yourself, what in my abstractions has failed me such that my
 only option is to *write code that writes code*.
+
+<div class="alert alert-danger">
+Consideration should be used before enabling TemplateHaskell. Consider an
+idiomatic solution first.
+</div>
 
 Quasiquotation
 -------------
@@ -10051,6 +10368,11 @@ templated expressions.
 Templated Type Families
 ----------------------
 
+<div class="alert alert-danger">
+This is an advanced section, knowledge of TemplateHaskell is not typically necessary to write
+Haskell.
+</div>
+
 Just like at the value-level we can construct type-level constructions by piecing together their AST.
 
 ```haskell
@@ -10090,6 +10412,11 @@ boilerplate, now it can stated very concisely.
 
 Templated Type Classes
 ----------------------
+
+<div class="alert alert-danger">
+This is an advanced section, knowledge of TemplateHaskell is not typically necessary to write
+Haskell.
+</div>
 
 Probably the most common use of Template Haskell is the automatic generation of type-class instances. Consider
 if we wanted to write a simple Pretty printing class for a flat data structure that derived the ppr method in
@@ -10143,6 +10470,11 @@ See: [git-embed](https://hackage.haskell.org/package/git-embed)
 
 Categories
 ==========
+
+<div class="alert alert-danger">
+This is advanced section, knowledge of category theory is not typically
+necessary to write Haskell.
+</div>
 
 Alas we come to the topic of category theory. Some might say all discussion of
 Haskell eventually leads here at one point or another.
