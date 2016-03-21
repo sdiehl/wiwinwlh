@@ -4015,6 +4015,10 @@ TODO
 Quantification
 ==============
 
+<div class="alert alert-danger">
+This is advanced section, and is not typically necessary to write Haskell.
+</div>
+
 Universal Quantification
 ------------------------
 
@@ -4210,6 +4214,10 @@ See: [Haskell Antipattern: Existential Typeclass](http://lukepalmer.wordpress.co
 
 Impredicative Types
 -------------------
+
+<div class="alert alert-danger">
+This is advanced section, and is not typically necessary to write Haskell.
+</div>
 
 Although extremely brittle, GHC also has limited support for impredicative
 polymorphism which allows instantiating type variable with a polymorphic type.
@@ -4508,6 +4516,10 @@ See: [Fun with Phantom Types](http://www.researchgate.net/publication/228707929_
 Type Equality
 -------------
 
+<div class="alert alert-danger">
+This is advanced section, and is not typically necessary to write Haskell.
+</div>
+
 With a richer language for datatypes we can express terms that witness the
 relationship between terms in the constructors, for example we can now express a
 term which expresses propositional equality between two types.
@@ -4664,6 +4676,10 @@ See: [Species and Functors and Types, Oh My!](http://www.cis.upenn.edu/~byorgey/
 F-Algebras
 -----------
 
+<div class="alert alert-danger">
+This is advanced section, and is not typically necessary to write Haskell.
+</div>
+
 The *initial algebra* approach differs from the final interpreter approach in
 that we now represent our terms as algebraic datatypes and the interpreter
 implements recursion and evaluation occurs through pattern matching.
@@ -4743,6 +4759,10 @@ compose f g = f . unFix . g
 
 recursion-schemes
 -----------------
+
+<div class="alert alert-danger">
+This is advanced section, and is not typically necessary to write Haskell.
+</div>
 
 The code from the F-algebra examples above is implemented in an off-the-shelf
 library called ``recursion-schemes``.
@@ -5256,6 +5276,10 @@ type instance F Char = Bool
 Roles
 -----
 
+<div class="alert alert-danger">
+This is advanced section, and is not typically necessary to write Haskell.
+</div>
+
 Roles are a further level of specification for type variables parameters of
 datatypes.
 
@@ -5281,6 +5305,10 @@ on under the hood.
 
 ~~~~ {.haskell include="src/16-type-families/role_infer.hs"}
 ~~~~
+
+**unsafe Coerce with Roles**
+
+TODO
 
 See:
 
@@ -6600,6 +6628,18 @@ derive JSON representations for JSON instances.
 ~~~~
 
 See: [A Generic Deriving Mechanism for Haskell](http://dreixel.net/research/pdf/gdmh.pdf)
+
+Higher Kinded Generics
+----------------------
+
+TODO
+
+```haskell
+class Generic1 f where
+  type Rep1 f :: * -> *
+  from1  :: f a -> (Rep1 f) a
+  to1    :: (Rep1 f) a -> f a
+```
 
 generics-sop
 ----------------

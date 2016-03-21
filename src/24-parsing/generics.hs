@@ -23,10 +23,6 @@ instance (GParse f, Constructor c) => GParse (C1 c f) where
 instance GParse f => GParse (D1 c f) where
   gParse = fmap M1 gParse
 
--- XXX
-{-instance GParse f => GParse (S1 c f) where-}
-  {-gParse = fmap M1 gParse-}
-
 -- Sum types
 instance (GParse a, GParse b) => GParse (a :+: b) where
   gParse = try (fmap L1 gParse <|> fmap R1 gParse)
