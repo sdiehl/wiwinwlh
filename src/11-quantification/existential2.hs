@@ -1,6 +1,5 @@
 {-# LANGUAGE RankNTypes #-}
 
--- The functor is a fixed implementation of the library internals.
 type Exists a b = forall f. Functor f => (b -> f b) -> (a -> f a)
 
 type Get a b = a -> b

@@ -4190,25 +4190,20 @@ transparency.
 Existential Quantification
 --------------------------
 
-The essence of universal quantification is that we can express functions which operate the same way for *any*
-type, while for existential quantification we can express functions that operate over an *some* unknown type.
-Using an existential we can group heterogeneous values together with functions under the existential, that
-manipulate the data types but whose type signature hides this information.
+An existential type is a pair of a type and a term with a special set of packing
+and unpacking semantics. The type of the value encoded in the existential is
+known by the producer but not by the consumer of the existential value.
 
 ~~~~ {.haskell include="src/11-quantification/existential.hs"}
 ~~~~
 
-The existential over ``SBox`` gathers a collection of values defined purely in terms of their Show
-interface, no other information is available about the values and they can't be accessed or unpacked in any
-other way.
+The existential over ``SBox`` gathers a collection of values defined purely in
+terms of their Show interface and an opaque pointer, no other information is
+available about the values and they can't be accessed or unpacked in any other
+way.
 
-~~~~ {.haskell include="src/11-quantification/existential2.hs"}
-~~~~
-
-Use of existentials can be used to recreate certain concepts from the so-called "Object Oriented Paradigm", a
-school of thought popularized in the late 80s that attempted to decompose programming logic into
-anthropomorphic entities and actions instead of the modern equational treatment. Recreating this model in
-Haskell is widely considered to be an antipattern.
+Passing around existential types allows us to hide information from consumers of
+data types and restrict the behavior that functions can use.
 
 See: [Haskell Antipattern: Existential Typeclass](http://lukepalmer.wordpress.com/2010/01/24/haskell-antipattern-existential-typeclass/)
 
@@ -8353,6 +8348,11 @@ Artifacts
 * DesugaredModule
 * CoreModule
 
+Wired-in Types
+----------
+
+TODO
+
 Block Diagram
 -------------
 
@@ -8909,6 +8909,9 @@ unneeded symbols.
 $ strip Example
 ```
 
+[upx](http://upx.sourceforge.net/) can additionally be used to compress the size
+of the executable down further.
+
 Unboxed Types
 --------------
 
@@ -9084,6 +9087,11 @@ print (unpackCString# "Hello World"#)
 See:
 
 * [Unboxed Values as First-Class Citizens](http://www.haskell.org/ghc/docs/papers/unboxed-values.ps.gz)
+
+Vector and SIMD
+---------------
+
+TODO
 
 IO/ST
 -----
