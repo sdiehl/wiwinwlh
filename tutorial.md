@@ -4016,7 +4016,7 @@ Quantification
 ==============
 
 <div class="alert alert-danger">
-This is advanced section, and is not typically necessary to write Haskell.
+This is an advanced section, and is not typically necessary to write Haskell.
 </div>
 
 Universal Quantification
@@ -4216,7 +4216,7 @@ Impredicative Types
 -------------------
 
 <div class="alert alert-danger">
-This is advanced section, and is not typically necessary to write Haskell.
+This is an advanced section, and is not typically necessary to write Haskell.
 </div>
 
 Although extremely brittle, GHC also has limited support for impredicative
@@ -4517,7 +4517,7 @@ Type Equality
 -------------
 
 <div class="alert alert-danger">
-This is advanced section, and is not typically necessary to write Haskell.
+This is an advanced section, and is not typically necessary to write Haskell.
 </div>
 
 With a richer language for datatypes we can express terms that witness the
@@ -4677,7 +4677,7 @@ F-Algebras
 -----------
 
 <div class="alert alert-danger">
-This is advanced section, and is not typically necessary to write Haskell.
+This is an advanced section, and is not typically necessary to write Haskell.
 </div>
 
 The *initial algebra* approach differs from the final interpreter approach in
@@ -4761,7 +4761,7 @@ recursion-schemes
 -----------------
 
 <div class="alert alert-danger">
-This is advanced section, and is not typically necessary to write Haskell.
+This is an advanced section, and is not typically necessary to write Haskell.
 </div>
 
 The code from the F-algebra examples above is implemented in an off-the-shelf
@@ -5277,7 +5277,7 @@ Roles
 -----
 
 <div class="alert alert-danger">
-This is advanced section, and is not typically necessary to write Haskell.
+This is an advanced section, and is not typically necessary to write Haskell.
 </div>
 
 Roles are a further level of specification for type variables parameters of
@@ -5378,7 +5378,7 @@ Manual Proofs
 -------------
 
 <div class="alert alert-danger">
-This is advanced section, and is not typically necessary to write Haskell.
+This is an advanced section, and is not typically necessary to write Haskell.
 </div>
 
 One of most deep results in computer science, the [Curry–Howard
@@ -5449,7 +5449,7 @@ Constraint Kinds
 ----------------
 
 <div class="alert alert-danger">
-This is advanced section, and is not typically necessary to write Haskell.
+This is an advanced section, and is not typically necessary to write Haskell.
 </div>
 
 GHC's implementation also exposes the predicates that bound quantifiers in
@@ -5541,7 +5541,7 @@ Kind Polymorphism
 -----------------
 
 <div class="alert alert-danger">
-This is advanced section, knowledge of kind polymorphism is not typically
+This is an advanced section, knowledge of kind polymorphism is not typically
 necessary to write Haskell.
 </div>
 
@@ -5609,7 +5609,7 @@ Data Kinds
 ----------
 
 <div class="alert alert-danger">
-This is advanced section, knowledge of kind data kinds is not typically
+This is an advanced section, knowledge of kind data kinds is not typically
 necessary to write Haskell.
 </div>
 
@@ -5841,7 +5841,7 @@ Singleton Types
 ---------------
 
 <div class="alert alert-danger">
-This is advanced section, knowledge of singletons is not typically necessary to
+This is an advanced section, knowledge of singletons is not typically necessary to
 write Haskell.
 </div>
 
@@ -5951,7 +5951,7 @@ Kind Indexed Type Families
 --------------------------
 
 <div class="alert alert-danger">
-This is advanced section, and is not typically necessary to write Haskell.
+This is an advanced section, and is not typically necessary to write Haskell.
 </div>
 
 Just as typeclasses are normally indexed on types, type families can also be indexed on kinds with the kinds
@@ -6005,7 +6005,7 @@ HLists
 ------
 
 <div class="alert alert-danger">
-This is advanced section, and is not typically necessary to write Haskell.
+This is an advanced section, and is not typically necessary to write Haskell.
 </div>
 
 A heterogeneous list is a cons list whose type statically encodes the ordered types of its values.
@@ -6055,7 +6055,7 @@ Advanced Proofs
 ---------------
 
 <div class="alert alert-danger">
-This is advanced section, and is not typically necessary to write Haskell.
+This is an advanced section, and is not typically necessary to write Haskell.
 </div>
 
 Now that we have the length-indexed vector let's go write the reverse function, how hard could it be?
@@ -8236,7 +8236,7 @@ GHC
 ===
 
 <div class="alert alert-danger">
-This is advanced section, knowledge of GHC internals is not typically
+This is an advanced section, knowledge of GHC internals is not typically
 necessary.
 </div>
 
@@ -10004,6 +10004,9 @@ LLVM is a library for generating machine code. The llvm-general bindings provide
 a way to model, compile and execute LLVM bytecode from within the Haskell
 runtime.
 
+~~~~ {.haskell include="src/30-languages/llvm-general.hs"}
+~~~~
+
 See:
 
 * [Minimal Example of LLVM Haskell JIT](https://github.com/sdiehl/llvm-tutorial-standalone)
@@ -10080,7 +10083,7 @@ Template Haskell
 ================
 
 <div class="alert alert-danger">
-This is advanced section, knowledge of TemplateHaskell is not typically
+This is an advanced section, knowledge of TemplateHaskell is not typically
 necessary to write Haskell.
 </div>
 
@@ -10512,7 +10515,7 @@ Categories
 ==========
 
 <div class="alert alert-danger">
-This is advanced section, knowledge of category theory is not typically
+This is an advanced section, knowledge of category theory is not typically
 necessary to write Haskell.
 </div>
 
