@@ -150,6 +150,34 @@ li code, p code, table code {
   background-color: #eeeeee;
 }
 
+/* Tables */
+
+table{
+    background:#fff;
+    border:1px solid #ccc;
+    border-width:2px;
+    border-collapse:collapse;
+    margin:5px 0 10px;
+
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+th, td{
+    border:1px solid #ccc;
+    padding:3px 10px;
+    text-align:left;
+    vertical-align:top;
+}
+
+tr.even td{
+    background:#f7f7f7;
+}
+
+th{
+    background:#edeff0;
+}
+
 /*  */
 
 .center {
