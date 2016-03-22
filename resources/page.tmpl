@@ -11,8 +11,9 @@
     <style type="text/css">
       $header-includes$
     </style>
-    <!--<link href="css/bootstrap-responsive.min.css" rel="stylesheet">-->
+
     <link href="css/bootstrap-min.css" rel="stylesheet">
+    <link href="css/sidebar.css" rel="stylesheet">
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -22,7 +23,6 @@
 
       ga('create', 'UA-49839533-1', 'stephendiehl.com');
       ga('send', 'pageview');
-
     </script>
 
     $if(highlighting-css)$
@@ -51,15 +51,15 @@
 
     <div>
 
-        <div class="row">
+            <div id="sidebar-wrapper">
+             <li class="sidebar-brand">
+                  <!--<img style="width: 100px" class="" src="img/haskell_logo.svg">-->
+              </li>
 
-          <div class="span3 side">
-              <img style="width: 100px" class="logo" src="img/haskell_logo.svg">
-
-              <div class="toc">
+              <ul class="sidebar-nav">
                 $toc$
-              </div>
-          </div>
+              </ul>
+            </div>
 
           <div class="span9 body">
 $body$
@@ -68,6 +68,6 @@ $body$
 
     </div>
     <script src="https://code.jquery.com/jquery.js"></script>
-    <script src="js/nav.js"></script>
+    <!--<script src="js/nav.js"></script>-->
   </body>
 </html>

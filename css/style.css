@@ -65,6 +65,17 @@ img {
 }
 
 /* TOC Links */
+.sidebar-nav ul {
+  list-style-type: none; 
+
+  margin-before: 0.5em;
+  margin-after: 0.5em;
+  margin-start: 0;
+  margin-end: 0;
+  padding-start: 0px;
+  padding: 10px;
+}
+
 a { 
   color: #111111;
   text-decoration: none;
