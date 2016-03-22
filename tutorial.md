@@ -1137,6 +1137,13 @@ show-extensions  Annotates the documentation with the language extensions used.
 hide             Forces the module to be hidden from Haddock.
 prune            Omits definitions with no annotations.
 
+Shake
+-----
+
+<div class="alert alert-danger">
+This is an advanced section, and is not typically necessary to write Haskell.
+</div>
+
 <hr/>
 
 Monads
@@ -7644,6 +7651,8 @@ race :: IO a -> IO b -> IO (Either a b)
 ~~~~ {.haskell include="src/22-concurrency/async.hs"}
 ~~~~
 
+<hr/>
+
 Graphics
 ========
 
@@ -7665,6 +7674,15 @@ See: [Diagrams Quick Start Tutorial](http://projects.haskell.org/diagrams/doc/qu
 
 Gloss
 -----
+
+TODO
+
+OpenGL
+------
+
+TODO
+
+<hr/>
 
 Parsing
 =======
@@ -7719,6 +7737,11 @@ of these combinators which yield the string parser when evaluated under with the
 
 ~~~~ {.haskell include="src/24-parsing/simple_parser.hs"}
 ~~~~
+
+Expression Parsing
+------------------
+
+TODO
 
 Custom Lexer
 ------------
@@ -7831,6 +7854,10 @@ TODO
 ~~~~
 
 ~~~~ {.haskell include="src/24-parsing/happy/Lexer.x"}
+~~~~
+
+
+~~~~ {.haskell include="src/24-parsing/happy/input.test"}
 ~~~~
 
 Streaming
