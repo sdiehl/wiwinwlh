@@ -7784,9 +7784,10 @@ Feynman
 Attoparsec
 ----------
 
-Attoparsec is a parser combinator like Parsec but more suited for bulk parsing of large text and binary files
-instead of parsing language syntax to ASTs. When written properly Attoparsec parsers can be [extremely
-efficient](http://www.serpentine.com/blog/2014/05/31/attoparsec/).
+Attoparsec is a parser combinator like Parsec but more suited for bulk parsing
+of large text and binary files instead of parsing language syntax to ASTs. When
+written properly Attoparsec parsers can be
+[efficient](http://www.serpentine.com/blog/2014/05/31/attoparsec/).
 
 One notable distinction between Parsec and Attoparsec is that backtracking
 operator (``try``) is not present and reflects on attoparsec's different
@@ -7812,10 +7813,25 @@ network protocol:
 
 See: [Text Parsing Tutorial](https://www.fpcomplete.com/school/starting-with-haskell/libraries-and-frameworks/text-manipulation/attoparsec)
 
+
+Optparse Applicative
+--------------------
+
+TODO
+
+~~~~ {.haskell include="src/24-parsing/optparse_applicative.hs"}
+~~~~
+
 Happy & Alex
 ------------
 
 TODO
+
+~~~~ {.haskell include="src/24-parsing/happy/Parser.y"}
+~~~~
+
+~~~~ {.haskell include="src/24-parsing/happy/Lexer.x"}
+~~~~
 
 Streaming
 =========
