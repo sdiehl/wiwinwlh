@@ -30,6 +30,13 @@ h1, h2, h3, h4, h5 {
   line-height: 1.1;
 }
 
+pre {
+  /* Override bootstrap */
+  border: none;
+  border-radius: 0px;
+  background-color: inherit;
+}
+
 pre code {
   /*font: 15px/19px Inconsolata, Monaco,"Lucida Console",Terminal,"Courier New",Courier;*/
   font: 12pt "Source Code Pro";

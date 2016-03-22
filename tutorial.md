@@ -1144,6 +1144,8 @@ Shake
 This is an advanced section, and is not typically necessary to write Haskell.
 </div>
 
+* [Shake Manual](https://github.com/ndmitchell/shake/blob/master/docs/Manual.md)
+
 <hr/>
 
 Monads
@@ -6169,18 +6171,30 @@ Liquid Haskell
 LiquidHaskell is not typically necessary to write Haskell.
 </div>
 
-Add the following line to your ``/etc/sources.list``:
+LiquidHaskell is an extension to GHC's typesystem that adds the capactity for
+refinement types using the annotation syntax. The type signatures of functions
+can be checked by the external for richer type semantics than default GHC
+provides, including non-exhaustive patterns and complex arithemtic properties
+that require external SMT solvers to verify. For instance LiquidHaskell can
+statically verify that a function that operates over a ``Maybe a`` is always
+given a ``Just`` or that an arithmetic functions always yields an Int that is
+even positive number.
+
+To Install LiquidHaskell in Ubuntu add the following line to your
+``/etc/sources.list``:
 
 ```bash
 deb http://ppa.launchpad.net/hvr/z3/ubuntu trusty main 
 ```
 
-Install the 
+And then install the external SMT solver.
 
 ```bash
 $ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F6F88286
 $ sudo apt-get install z3
 ```
+
+Then clone the repo and build it using stack.
 
 ```bash
 $ git clone --recursive git@github.com:ucsd-progsys/liquidhaskell.git
@@ -6219,6 +6233,13 @@ Done solving.
 
 **** RESULT: SAFE **************************************************************
 ```
+
+For more extensive documentation and further use cases see the official
+documentation: 
+
+* [Liquid Haskell Documentation](https://ucsd-progsys.github.io/liquidhaskell-tutorial/01-intro.html)
+
+</hr>
 
 Generics
 ========
@@ -7859,6 +7880,11 @@ TODO
 
 ~~~~ {.haskell include="src/24-parsing/happy/input.test"}
 ~~~~
+
+Configurator 
+------------
+
+TODO
 
 Streaming
 =========
