@@ -2631,6 +2631,10 @@ main = do
   print (#foo (MkT True False))
 ```
 
+See: 
+
+* [OverloadedRecordFields revived](http://www.well-typed.com/blog/2015/03/overloadedrecordfields-revived/)
+
 Minimal Annotations
 -------------------
 
@@ -8622,6 +8626,27 @@ See: [Making a Website with Haskell](http://adit.io/posts/2013-04-15-making-a-we
 
 Hastache
 --------
+
+Hastache is string templating based on the "Mustache" style of encoding
+metavariables with double braces ``{{ x }}``. Hastache supports automatically
+converting many Haskell types into strings and uses the efficient Text functions
+for formatting.
+
+The variables loaded into the template are specified in either a function
+mapping variable names to printable MuType values. For instance using a
+function.
+
+~~~~ {.haskell include="src/27-web/hastache.hs"}
+~~~~
+
+Or using Data-Typeable record and ``mkGenericContext``, the Haskell field names
+are converted into variable names.
+
+~~~~ {.haskell include="src/27-web/hastache_generic.hs"}
+~~~~
+
+The MuType and MuContext types can be parameterized by any monad or transformer
+that implements ``MonadIO``, not just IO.
 
 Servant
 -------
