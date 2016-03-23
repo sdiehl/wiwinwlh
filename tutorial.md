@@ -4046,7 +4046,16 @@ See:
 spoon
 -----
 
-TODO
+Sometimes you'll be forced to deal with seemingly pure functions that can throw
+up at any point. There are many functions in the standard library like this, and
+many more on Hackage. You'd like to be handle this logic purely as if it were
+returning a proper ``Maybe a`` but to catch the logic you'd need to install a IO
+handler inside IO to catch it. Spoon allows us to safely (and "purely", although
+it uses a referentially transparent invocation of unsafePerformIO) to catch
+these exceptions and put them in Maybe where they belong.
+
+~~~~ {.haskell include="src/09-errors/spoon.hs"}
+~~~~
 
 See: [Spoon](https://hackage.haskell.org/package/spoon)
 
