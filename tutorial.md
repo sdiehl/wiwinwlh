@@ -2289,21 +2289,42 @@ second :: a -> (Bool, a)
 second = (True,)
 ```
 
+```haskell
+f :: t -> t1 -> t2 -> t3 -> (t, (), t1, (), (), t2, t3)
+f = (,(),,(),(),,)
+```
+
 MultiWayIf
 ------------
 
 ```haskell
 {-# LANGUAGE MultiWayIf #-}
 
-operation x =
-  if | x > 100   -> 3
-     | x > 10    -> 2
-     | x > 1     -> 1
-     | otherwise -> 0
+bmiTell :: Float -> String  
+bmiTell bmi = if 
+  | bmi <= 18.5 -> "You're underweight."  
+  | bmi <= 25.0 -> "You're average weight."
+  | bmi <= 30.0 -> "You're overewight." 
+  | otherwise   -> "You're a whale." 
 ```
 
 LambdaCase
 -------------
+
+For case statements, LambdaCase allows the elimination of redundant free
+variables introduced purely for the case of pattern matching on.
+
+```haskell
+\case 
+  p1 -> 32
+  p2 -> 32
+```
+
+```haskell
+\temp -> case temp of
+  p1 -> 32
+  p2 -> 32
+```
 
 ~~~~ {.haskell include="src/04-extensions/lambdacase.hs"}
 ~~~~
@@ -2337,6 +2358,18 @@ assignment. The syntax introduced is the ``{..}`` pattern selector.
 
 ~~~~ {.haskell include="src/04-extensions/wildcards_update.hs"}
 ~~~~
+
+NamedFieldPuns
+---------------
+
+Provides alternative syntax for accessing record fields in a pattern match.
+
+```haskell
+data D = D {a :: Int, b :: Int}
+
+f :: D -> Int
+f (D {a, b}) = a + b
+```
 
 PatternSynonyms
 ----------------
@@ -4600,6 +4633,15 @@ Using phantom types we use an extra parameter.
 
 ~~~~ {.haskell include="src/12-gadts/phantom_example.hs"}
 ~~~~
+
+Using ``-XEmptyDataDecls`` can be a powerful combination with phantom types that
+contain no value inhabitants and are "anonymous types".
+
+```haskell
+{-# LANGUAGE EmptyDataDecls #-}
+
+data Token a
+```
 
 See: [Fun with Phantom Types](http://www.researchgate.net/publication/228707929_Fun_with_phantom_types/file/9c960525654760c169.pdf)
 

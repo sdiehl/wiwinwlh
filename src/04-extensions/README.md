@@ -1,15 +1,12 @@
-Monads
-======
+Language Extensions
+===================
 
 ```bash
-$ stach exec list.hs
-$ stach exec list_impl.hs
-$ stach exec maybe.hs
-$ stach exec maybe_impl.hs
-$ stach exec reader.hs
-$ stach exec reader_impl.hs
-$ stach exec state.hs
-$ stach exec state_impl.hs
-$ stach exec writer.hs
-$ stach exec writer_impl.hs
+$ stack exec ghci lambdacase.hs
+$ stack exec ghci monomorphism.hs
+$ stack exec ghci patterns.hs
+$ stack exec ghci safe.hs
+$ stack exec ghci views.hs
+$ stack exec ghci wildcards.hs
+$ stack exec ghci wildcards_update.hs
 ```
