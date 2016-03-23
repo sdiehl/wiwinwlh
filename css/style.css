@@ -59,7 +59,7 @@ hr {
   border: 0px;
   height: 0;
   border-bottom: 1px solid #ccc;
-  margin-bottom: 500px;
+  /*margin-bottom: 500px;*/
 }
 
 .author {
@@ -76,6 +76,10 @@ img {
   padding-top: 20px;
 }
 
+#sidebar-wrapper {
+  overflow-x: hidden;
+}
+
 /* TOC Links */
 .sidebar-nav ul {
   list-style-type: none; 
@@ -86,6 +90,11 @@ img {
   margin-end: 0;
   padding-start: 0px;
   padding: 10px;
+}
+
+.sidebar-nav > ul > li > a {
+  font-weight: 600;
+  border-bottom: 3px solid #ccc;
 }
 
 a { 

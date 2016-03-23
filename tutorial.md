@@ -140,7 +140,13 @@ Basics
 Cabal
 -----
 
-Cabal is the build system for Haskell, it also doubles as a package manager.
+<div class="alert alert-success">
+Historically Cabal had a component known as cabal-install that has largely been
+replaced by [Stack](#stack). The following use of Cabal sandboxes is left for
+historical reasons and can often be replaced by modern tools.
+</div>
+
+Cabal is the build system for Haskell. 
 
 For example to install the [parsec](http://hackage.haskell.org/package/parsec)
 package from Hackage to our system invoke the install command:
@@ -423,55 +429,61 @@ See:
 Stack
 -----
 
-Stack is a new approach to Haskell package structure that emerged in late 2015.
-Instead of using a rolling build like ``cabal-install` stack breaks up sets of
-packages into release blocks that guarantee internal compatability between sets
-of packages.
+Stack is a new approach to Haskell package structure that emerged in 2015.
+Instead of using a rolling build like ``cabal-install`` stack breaks up sets of
+packages into release blocks that guarantee internal compatibility between sets
+of packages. The package solver for Stack uses a different strategy for
+resolving dependencies than ``cabal-install`` has used historically and is
+generally more robust. 
 
-The package solver for Stack uses a different strategy for resolving
-dependencies than ``cabal-install``.
+<div class="alert alert-success">
+Contrary to much misinformation, **Stack does not replace Cabal as the build
+system** and uses it under the hood. It just makes the process of integrating
+with third party packages and resolving their dependencies much more
+streamlined.
+</div>
 
-Install stack:
+</hr>
+
+#### Install
+
+To install stack on Ubuntu Linux:
 
 ```bash
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 575159689BEFB442                             # get fp complete key
 echo 'deb http://download.fpcomplete.com/ubuntu trusty main'|sudo tee /etc/apt/sources.list.d/fpco.list    # add appropriate source repo
 sudo apt-get update && sudo apt-get install stack -y
 ```
+For other operating systems see the offocial install directions [here](http://docs.haskellstack.org/en/stable/install_and_upgrade/) 
 
-for other OSes, go [here](http://docs.haskellstack.org/en/stable/install_and_upgrade/) 
+**Usage**
 
-stack.yaml
-
-**GHC 7.8.4**
+Once Stack installed it can be used to setup a build environment on top of your
+existing project's cabal file by running:
 
 ```bash
-resolver: lts-2.22
-packages:
-- '.'
-extra-deps: []
-flags: {}
-extra-package-dbs: []
+stack init
 ```
 
-**GHC 7.10.2**
+An example ``stack.yaml`` file for GHC 7.10.2 would look like the following.
 
 ```bash
+resolver: lts-3.14
 flags: {}
 extra-package-dbs: []
 packages: []
 extra-deps: []
-resolver: lts-3.14
 ```
 
-Installing packages
+Stack can be used to install packages and executables into the either current
+build environment or the global environemnt. For example the following installs
+the ``hint`` linter executable and places it in on the PATH. 
 
 ```bash
-$ stack install mtl
-$ stack list-dependencies
+$ stack install hint
 ```
 
-Interacting with the project:
+Just as w ith Cabal project:
 
 ```bash
 $ stack build
@@ -538,9 +550,10 @@ As a rule of thumb if the Haddock docs for the library does not have a **minimal
 worked example**, it is usually safe to assume that it is a RFC-style library
 and probably should be avoided in production-grade code.
 
-Stackage
---------
+See:
 
+
+* [The Haskell Tool Stack](http://docs.haskellstack.org/en/stable/README/)
 * [Stackage](https://www.stackage.org/)
 
 GHCi
@@ -2399,8 +2412,20 @@ StaticPointers
 TypeInType
 -----------------
 
+TODO
+
 TypeApplication
 -----------------
+
+TODO
+
+OverloadedLabels
+----------------
+
+TODO
+
+```haskell
+```
 
 Minimal Annotations
 -------------------
@@ -2744,8 +2769,8 @@ implicit import of the whole namespace.
 import qualified Prelude as P
 ```
 
-What Should be in the Prelude
---------------
+What Should be in Base
+----------------------
 
 To get work done you probably need.
 
@@ -3114,9 +3139,12 @@ whileJust :: Monad m => m (Maybe a) -> (a -> m b) -> m [b]
 Strings
 =======
 
+String
+------
+
 <div class="alert alert-danger">
 <b>The default String type is broken and should be avoided whenever
-possible.</b> Unfortunately for historical reasons large portions of the GHC and
+possible.</b> Unfortunately for historical reasons large portions of GHC and
 Base depend on String.
 </div>
 
@@ -4437,7 +4465,9 @@ f :: (a ~ b) => a -> b -> (a,b)
 This is effectively the implementation detail of what GHC is doing behind the
 scenes to implement GADTs ( implicitly passing and threading equality terms
 around ). If we wanted we could do the same setup that GHC does just using
-equality constraints and existential quantification.
+equality constraints and existential quantification. Indeed, the internal
+representation of GADTs is as regular algebraic datatypes that carry coercion
+evidence as arguments.
 
 ```haskell
 {-# LANGUAGE GADTs #-}
@@ -4574,7 +4604,7 @@ Using phantom types we use an extra parameter.
 See: [Fun with Phantom Types](http://www.researchgate.net/publication/228707929_Fun_with_phantom_types/file/9c960525654760c169.pdf)
 
 
-Type Equality
+Typelevel Operations
 -------------
 
 <div class="alert alert-danger">
@@ -4626,8 +4656,6 @@ data Exp
 A lambda expression in which all variables that appear in the body of the
 expression are referenced in an outer lambda binder is said to be *closed* while
 an expression with unbound free variables is *open*.
-
-See: [Mogensen–Scott encoding](http://en.wikipedia.org/wiki/Mogensen-Scott_encoding)
 
 HOAS
 ----
@@ -5365,7 +5393,10 @@ datatypes.
 They were added to the language to address a rather nasty and long-standing bug
 around the correspondence between a newtype and its runtime representation. The
 fundamental distinction that roles introduce is there are two notions of type
-equality:
+equality. Two types are *nominally equal* when they have the same name. This is
+the usual equality in Haskell or Core. Two types are *representationally equal*
+when they have the same representation. (If a type is higher-kinded, all
+nominally equal instantiations lead to representationally equal types.)
 
 * ``nominal`` - Two types are the same.
 * ``representational`` - Two types have the same runtime representation.
@@ -5821,12 +5852,12 @@ a mechanism that will later allow us to write more advanced proofs.
 ~~~~ {.haskell include="src/17-promotion/type_equality.hs"}
 ~~~~
 
-Proxy
------
+Proxies
+--------
 
-Using kind polymorphism with phantom types allows us to express the Proxy type which is inhabited by a single
-constructor with no arguments but with a polykinded phantom type variable which carries an arbitrary type as
-the value is passed around.
+Using kind polymorphism with phantom types allows us to express the Proxy type
+which is inhabited by a single constructor with no arguments but with a
+polykinded phantom type variable which carries an arbitrary type.
 
 ```haskell
 {-# LANGUAGE PolyKinds #-}
@@ -5854,9 +5885,10 @@ e :: Proxy (Maybe ())
 e = Proxy
 ```
 
-In cases where we'd normally pass around a undefined as a witness of a typeclass
-dictionary, we can instead pass a Proxy object which carries the phantom type
-without the need for the bottom.
+In cases where we'd normally pass around a ``undefined`` as a witness of a
+typeclass dictionary, we can instead pass a Proxy object which carries the
+phantom type without the need for the bottom. Using scoped type variables we can
+then operate with the phantom paramater and manipulate wherever is needed.
 
 ```haskell
 t1 :: a
@@ -5864,13 +5896,6 @@ t1 = (undefined :: a)
 
 t2 :: Proxy a
 t2 Proxy :: Proxy a
-```
-
-Unboxed Proxy
--------------
-
-```haskell
-Proxy#
 ```
 
 Promoted Syntax
