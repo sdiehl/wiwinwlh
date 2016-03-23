@@ -1,6 +1,7 @@
-@import url(http://fonts.googleapis.com/css?family=Signika);
-@import url(http://fonts.googleapis.com/css?family=Fira+Sans);
-@import url(http://fonts.googleapis.com/css?family=Source+Code+Pro);
+@font-face {
+    font-family: 'Fira Sans';
+    src: url(../fonts/FiraSans-Regular.ttf);
+}
 
 html {
 }
@@ -15,7 +16,9 @@ body {
   color: #332;
 
   margin: 0px;
-  padding: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+
   line-height: 1.4;
 
   -webkit-font-feature-settings: "kern", "liga";
@@ -34,6 +37,11 @@ pre {
   /* Override bootstrap */
   border: none;
   border-radius: 0px;
+  background-color: inherit;
+}
+
+code {
+  color: inherit;
   background-color: inherit;
 }
 
@@ -62,6 +70,10 @@ hr {
 
 img {
   margin: 0 auto;
+}
+
+.body {
+  padding-top: 20px;
 }
 
 /* TOC Links */

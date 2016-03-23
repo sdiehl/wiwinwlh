@@ -2100,6 +2100,22 @@ it :: Num a => a
 it :: Num a => a
 ```
 
+Extended Defaulting
+-------------------
+
+```haskell
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE ExtendedDefaultRules #-}
+
+import qualified Data.Text as T
+
+default (T.Text)
+
+example = "foo"
+```
+
+TODO
+
 Safe Haskell
 ------------
 
@@ -2282,6 +2298,15 @@ LambdaCase
 PackageImports
 -------------
 
+Package imports allows us to disambiguate hierarchical package names by their
+respective package key. This is useful in the case where you have to imported
+packages that expose the same module. In practice most of the common libraries
+have taken care to avoid conflicts in the namespace and this is not usually a
+problem in most modern Haskell.
+
+For example we could explicitly ask GHC to resolve that ``Control.Monad.Error``
+package be drawn from the ``mtl`` library. 
+
 ```haskell
 import qualified "mtl" Control.Monad.Error as Error
 import qualified "mtl" Control.Monad.State as State
@@ -2292,9 +2317,12 @@ RecordWildCards
 ---------------
 
 Record wild cards allow us to expand out the names of a record as variables
-scoped as the labels of the record implicitly.
+scoped as the labels of the record implicitly. The extension can be used to
+extract variables names into a scope or to assign to variables in a record
+drawing, aligning the record's labels with the variables in scope for the
+assignment. The syntax introduced is the ``{..}`` pattern selector.
 
-~~~~ {.haskell include="src/04-extensions/wildcards.hs"}
+~~~~ {.haskell include="src/04-extensions/wildcards_update.hs"}
 ~~~~
 
 PatternSynonyms
@@ -2339,6 +2367,8 @@ module MyModule (
 pattern Elt = [a]
 ```
 
+* [Pattern Synonyms in GHC 8](http://mpickering.github.io/posts/2015-12-12-pattern-synonyms-8.html)
+
 ApplicativeDo
 -------------
 
@@ -2371,6 +2401,11 @@ TypeInType
 
 TypeApplication
 -----------------
+
+Minimal Annotations
+-------------------
+
+TODO
 
 <hr/>
 
@@ -2606,6 +2641,9 @@ operator.
 ($!) :: (a -> b) -> a -> b
 f $! x  = let !vx = x in f vx
 ```
+
+Strict Haskell
+--------------
 
 Deepseq
 -------
@@ -3732,6 +3770,8 @@ See:
 spoon
 -----
 
+TODO
+
 See: [Spoon](https://hackage.haskell.org/package/spoon)
 
 Advanced Monads
@@ -4016,6 +4056,16 @@ TODO
 
 Haxl
 ----
+
+TODO
+
+resource-pool
+-------------
+
+TODO
+
+resourcet
+-------------
 
 TODO
 
@@ -5096,8 +5146,12 @@ Unit tests
 silently
 --------
 
+TODO
+
 tasty-golden
 ------------
+
+TODO
 
 Type Families
 =============
@@ -6674,6 +6728,9 @@ TODO
 
 * [generics-sop](https://hackage.haskell.org/package/generics-sop)
 * [Applying Type Level and Generic Programming in Haskell](https://github.com/kosmikus/SSGEP/blob/master/Lecture1.pdf)
+
+generics-eot
+----------------
 
 Uniplate
 --------
@@ -8274,7 +8331,7 @@ postgresql-simple
 
 TODO
 
-msyql-simple
+mysql-simple
 -----------------
 
 TODO
@@ -8307,6 +8364,60 @@ This is an advanced section, knowledge of GHC internals is not typically
 necessary.
 </div>
 
+GHC Api
+-------
+
+GHC is effectively just a very large (and quirky) Haskell library that
+transforms Haskell source code into executable code.
+
+```haskell
+import GHC
+import GHC.Paths (libdir)
+import DynFlags
+
+targetFile :: FilePath
+targetFile = "B.hs"
+ 
+example :: IO ()
+example = 
+  defaultErrorHandler defaultFatalMessager defaultFlushOut $ do
+    runGhc (Just libdir) $ do
+      dflags <- getSessionDynFlags
+      setSessionDynFlags dflags
+
+      target <- guessTarget targetFile Nothing
+      setTargets [target]
+      load LoadAllTargets
+      modSum <- getModSummary $ mkModuleName "B"
+
+      p <- parseModule modSum      -- ModuleSummary
+      t <- typecheckModule p       -- TypecheckedSource
+      d <- desugarModule t         -- DesugaredModule
+      l <- loadModule d            -- CoreModule
+      c <- return $ coreModule d   -- CoreModule
+ 
+      g <- getModuleGraph
+      mapM showModule g     
+      return $ (parsedSource d,"/n-----/n",  typecheckedSource d)
+
+main :: IO ()
+main = do
+   res <- example
+   putStrLn $ showSDoc ( ppr res )
+```
+
+TODO
+
+Artifacts
+----------
+
+* ParsedModule
+* TypecheckedModule
+* DesugaredModule
+* CoreModule
+
+TODO
+
 Located
 -------
 
@@ -8335,6 +8446,11 @@ instance Functor (GenLocated l) where
 srcSpanStart :: SrcSpan -> SrcLoc
 srcSpanEnd :: SrcSpan -> SrcLoc
 ```
+
+Outputable
+----------
+
+TODO
 
 Types
 -----
@@ -8411,14 +8527,6 @@ Types
 **StgSyn**
 
 TODO
-
-Artifacts
-----------
-
-* ParsedModule
-* TypecheckedModule
-* DesugaredModule
-* CoreModule
 
 Wired-in Types
 ----------
@@ -8793,10 +8901,25 @@ See:
 Rewrite Rules
 -------------
 
+<div class="alert alert-danger">
+This is an advanced section, and is not typically necessary to write Haskell.
+</div>
+
 TODO
 
 * [Using Rules](https://wiki.haskell.org/GHC/Using_rules)
 * [Rewrite Rules](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/rewrite-rules.html)
+
+Fusion
+------
+
+<div class="alert alert-danger">
+This is an advanced section, and is not typically necessary to write Haskell.
+</div>
+
+TODO
+
+* [List Fusion](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/rewrite-rules.html)
 
 Dictionaries
 ------------
@@ -9938,29 +10061,19 @@ trusted: safe-inferred
 require own pkg trusted: False
 ```
 
-ghc-prim
---------
-
-TODO
-
-Outputable
-----------
-
-TODO
-
-haskell-suite
+* haskell-src-exts
 -------------
 
 TODO
-
-* haskell-src-exts
-* haskell-names
-* haskell-packages
 
 ghc-exact-print
 -------------
 
 TODO
+
+See:
+
+* [A New Foundation For Refactoring Tools](http://mpickering.github.io/posts/2015-07-23-ghc-exactprint.html)
 
 Profiling
 =========
@@ -10158,6 +10271,44 @@ getInputLine :: String -> InputT IO (Maybe String)
 
 Repline
 ---------
+
+Certain sets of tasks in building command line REPL interfaces are so common
+that is becomes useful to abstract them out into a library. While haskeline
+provides a sensible lower-level API for interfacing with GNU readline, it is
+somewhat tedious to implement tab completion logic and common command logic over
+and over. To that end Repline assists in building interactive shells that that
+resemble GHCi's default behavior. 
+
+~~~~ {.haskell include="src/30-languages/repline.hs"}
+~~~~
+
+Trying it out. (``<TAB>`` indicates a user keypress )
+
+```bash
+$ runhaskell Simple.hs
+# Or if in a sandbox: cabal exec runhaskell Simple.hs
+Welcome!
+>>> <TAB>
+kirk spock mccoy
+
+>>> k<TAB>
+kirk
+
+>>> spam
+"spam"
+
+>>> :say Hello Haskell
+ _______________ 
+< Hello Haskell >
+ --------------- 
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+```
+
+* [repline](https://github.com/sdiehl/repline)
 
 Template Haskell
 ================
@@ -10570,7 +10721,12 @@ See: [file-embed](https://hackage.haskell.org/package/file-embed)
 git-embed
 ----------
 
-TODO
+Often times it is neccessary to embed the specific Git version hash of a build
+inside the exectuable. Using git-embed the compiler will effectivelly shell out
+to the command line to retrieve the version information of the CWD Git repostory
+and use Template Haskell to define embed this information at compile-time. This
+is often useful for embedding in ``--version`` information in the command line
+interface to your program or service.
 
 ```haskell
 {-# LANGUAGE TemplateHaskell #-}
