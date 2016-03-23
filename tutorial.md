@@ -3576,9 +3576,15 @@ instance IsList [a] where
 String Conversions
 ------------------
 
-TODO
+Playing "type-tetris" to convert between Strings explicitly can be frustrating,
+fortunately there are several packages that automate the conversion using
+typeclasses to automatically convert between any two common string
+representations automatically. We can then write generic comparison and
+concatenation operators that automatically convert types of operands to a like
+form.
 
-string-conv
+~~~~ {.haskell include="src/07-text-bytestring/convert.hs"}
+~~~~
 
 <hr/>
 

@@ -3,11 +3,11 @@ import Control.Spoon
 goBoom :: Int -> Int -> Int
 goBoom x y = x `div` y
 
--- Convert possible ArithException to Maybe a
+-- evaluate to normal form
 test1 :: Maybe [Int]
 test1 = spoon [1, 2, undefined]
 
--- Convert possible ArithException to Maybe a
+-- evaluate to weak head normal form
 test2 :: Maybe [Int]
 test2 = teaspoon [1, 2, undefined]
 
