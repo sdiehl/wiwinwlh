@@ -707,7 +707,7 @@ TODO
 
 -fobject-code
 
-Vim Integration
+Editor Integration
 ---------------
 
 Haskell has a variety of editor tools that can be used to provide interactive
@@ -3583,6 +3583,8 @@ resulting collected arguments must either converted into a single type or unpack
 
 See: [Polyvariadic functions](http://okmij.org/ftp/Haskell/polyvariadic.html)
 
+</hr>
+
 Error Handling
 ==============
 
@@ -3773,6 +3775,8 @@ spoon
 TODO
 
 See: [Spoon](https://hackage.haskell.org/package/spoon)
+
+</hr>
 
 Advanced Monads
 ===============
@@ -4591,6 +4595,8 @@ into the body of the pattern match.
 As of GHC 7.8 these constructors and functions are included in the Prelude in the
 [Data.Type.Equality](http://hackage.haskell.org/package/base-4.7.0.0/docs/Data-Type-Equality.html) module.
 
+</hr>
+
 Interpreters
 ============
 
@@ -4839,6 +4845,10 @@ See:
 Hint and Mueval
 ---------------
 
+<div class="alert alert-danger">
+This is an advanced section, and is not typically necessary to write Haskell.
+</div>
+
 GHC itself can actually interpret arbitrary Haskell source on the fly by
 hooking into the GHC's bytecode interpreter ( the same used for GHCi ). The hint
 package allows us to parse, typecheck, and evaluate arbitrary strings into
@@ -4865,6 +4875,8 @@ See:
 
 * [hint](http://hackage.haskell.org/package/mueval)
 * [mueval](http://hackage.haskell.org/package/mueval)
+
+</hr>
 
 Testing
 =======
@@ -5152,6 +5164,8 @@ tasty-golden
 ------------
 
 TODO
+
+</hr>
 
 Type Families
 =============
@@ -5556,6 +5570,8 @@ Constraint :: BOX
 
 TypeFamilyDependencies
 ----------------------
+
+</hr>
 
 Promotion
 =========
@@ -6800,6 +6816,8 @@ rewriteBiM   :: (Monad m, Biplate from to) => (to -> m (Maybe to)) -> from -> m 
 ~~~~ {.haskell include="src/18-generics/biplate.hs"}
 ~~~~
 
+</hr>
+
 Mathematics
 ===========
 
@@ -7037,6 +7055,8 @@ See:
 * [sbv](http://leventerkok.github.io/sbv/)
 * [cvc4](http://cvc4.cs.nyu.edu/web/)
 * [z3](http://z3.codeplex.com/)
+
+</hr>
 
 Data Structures
 ===============
@@ -7465,6 +7485,8 @@ the called function's interface at compile time.
 TODO
 
 See: [libffi](https://hackage.haskell.org/package/libffi)
+
+</hr>
 
 Concurrency
 ===========
@@ -7943,6 +7965,8 @@ Configurator
 
 TODO
 
+</hr>
+
 Streaming
 =========
 
@@ -8065,6 +8089,8 @@ operator (``=$``) for combining Sources and Sink and a Conduit and a Sink respec
 ~~~~
 
 See: [Conduit Overview](https://www.fpcomplete.com/user/snoyberg/library-documentation/conduit-overview)
+
+</hr>
 
 Data Formats
 =============
@@ -8276,6 +8302,8 @@ And again we get a nice typed ADT as a result.
 ]
 ```
 
+</hr>
+
 Network & Web Programming
 =========================
 
@@ -8322,6 +8350,8 @@ Servant
 -------
 
 TODO
+
+</hr>
 
 Databases
 =========
@@ -8451,6 +8481,20 @@ Outputable
 ----------
 
 TODO
+
+```haskell
+showSDoc :: DynFlags -> SDoc -> String
+```
+
+```haskell
+showGhc :: Outputable a => a -> Ghc ()
+showGhc thing = do
+    dflags <- getSessionDynFlags
+    liftIO $ putStrLn (showSDoc (ppr thing))
+```
+
+* [Outputable](https://downloads.haskell.org/~ghc/7.10.3/docs/html/libraries/ghc-7.10.3/Outputable.html)
+
 
 Types
 -----
@@ -10075,6 +10119,8 @@ See:
 
 * [A New Foundation For Refactoring Tools](http://mpickering.github.io/posts/2015-07-23-ghc-exactprint.html)
 
+</hr>
+
 Profiling
 =========
 
@@ -10160,6 +10206,8 @@ MAIN        MAIN                     42           0    0.0    0.7   100.0  100.0
  CAF        GHC.IO.Encoding.Iconv    69           0    0.0    0.0     0.0    0.0
  CAF        GHC.Show                 60           0    0.0    0.0     0.0    0.0
 ```
+
+</hr>
 
 Languages
 =========
@@ -10251,6 +10299,20 @@ wl-pprint-text
 
 TODO
 
+
+```haskell
+renderPretty :: Float -> Int -> Doc -> SimpleDoc
+renderCompact :: Doc -> SimpleDoc
+renderOneLine :: Doc -> SimpleDoc
+```
+
+See:
+
+**Monadic API**
+
+* [wl-pprint-text](https://hackage.haskell.org/package/wl-pprint-text)
+
+
 ansi-terminal
 ---------
 
@@ -10308,7 +10370,11 @@ kirk
                 ||     ||
 ```
 
+See:
+
 * [repline](https://github.com/sdiehl/repline)
+
+</hr>
 
 Template Haskell
 ================
@@ -10747,6 +10813,8 @@ ver = showVersion Paths_myprog.version
 
 See: [git-embed](https://hackage.haskell.org/package/git-embed)
 
+</hr>
+
 Categories
 ==========
 
@@ -11086,6 +11154,8 @@ Resources
 * [Category Theory, Awodey](http://www.amazon.com/Category-Theory-Oxford-Logic-Guides/dp/0199237182)
 * [Category Theory Foundations](https://www.youtube.com/watch?v=ZKmodCApZwk)
 * [The Catsters](http://www.youtube.com/user/TheCatsters)
+
+</hr>
 
 Other Languages
 ===============
@@ -11471,6 +11541,8 @@ Javascript internally refers to runtime value tags as *types*, which differs
 from the Haskell notion of types.
 
 The majority of Javascript implementations are garbage collected.
+
+<hr/>
 
 Code
 ====
