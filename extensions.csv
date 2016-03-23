@@ -1,92 +1,92 @@
-,Benign,Historical,Extends Syntax,Use,Use,GHC Reference
-AllowAmbiguousTypes,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#ambiguity
-Arrows,,,✓,Specialized,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/arrow-notation.html
-AutoDeriveTypeable,,,,Specialized,Metaprogramming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/deriving.html#auto-derive-typeable
-BangPatterns,✓,,✓,General,Strictness Annotation,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/bang-patterns.html
-CApiFFI,,,,Specialized,FFI,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/ffi.html#ffi-capi
-ConstrainedClassMethods,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#class-method-types
-ConstraintKinds,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/constraint-kind.html
-CPP,✓,,✓,General,Preprocessor,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/options-phases.html#c-pre-processor
-DataKinds,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/promotion.html
-DatatypeContexts,,✓,✓,Deprecated,Deprecated,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/data-type-extensions.html#datatype-contexts
-DefaultSignatures,✓,,,Specialized,Generic Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#class-default-signatures
-DeriveDataTypeable,✓,,,General,Generic Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/deriving.html#deriving-typeable
-DeriveFoldable,✓,,,General,Generic Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/deriving.html#deriving-typeable
-DeriveFunctor,✓,,,General,Generic Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/deriving.html#deriving-typeable
-DeriveGeneric,✓,,,General,Generic Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/deriving.html#deriving-typeable
-DeriveTraversable,✓,,,General,Generic Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/deriving.html#deriving-typeable
-DisambiguateRecordFields,✓,,✓,Specialized,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#disambiguate-fields
-DoRec,,✓,✓,Specialized,Syntax Extension,http://www.haskell.org/ghc/docs/7.6.3/html/users_guide/syntax-extns.html#recursive-do-notation
-EmptyCase,,,,Specialized,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#empty-case
-EmptyDataDecls,✓,,,General,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/data-type-extensions.html#nullary-types
-ExistentialQuantification,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/data-type-extensions.html#existential-quantification
-ExplicitForAll,,,✓,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#explicit-foralls
-ExplicitNamespaces,✓,,✓,Specialized,Syntax Disambiguation,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#explicit-namespaces
-ExtendedDefaultRules,✓,,,Specialized,Generic Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/interactive-evaluation.html#extended-default-rules
-FlexibleContexts,,,,General,Typeclass Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#flexible-contexts
-FlexibleInstances,,,,General,Typeclass Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#instance-rules
-ForeignFunctionInterface,,,✓,General,FFI,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/ffi.html
-FunctionalDependencies,,,,General,Typeclass Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#functional-dependencies
-GADTs,,,,General,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/data-type-extensions.html#gadt
-GADTSyntax,,,✓,General,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/data-type-extensions.html#gadt-style
-GeneralizedNewtypeDeriving,,,,General,Typeclass Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/deriving.html#newtype-deriving
-GHCForeignImportPrim,,,,Specialized,FFI,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/ffi.html#ffi-prim
-ImplicitParams,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#implicit-parameters
-ImpredicativeTypes,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#impredicative-polymorphism
-IncoherentInstances,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#instance-overlap
-InstanceSigs,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#instance-sigs
-InterruptibleFFI,,,,Specialized,FFI,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/ffi.html#ffi-interruptible
-KindSignatures,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#kinding
-LambdaCase,✓,,✓,General,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#lambda-case
-LiberalTypeSynonyms,,,,Specialized,Typeclass Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/data-type-extensions.html#type-synonyms
-MagicHash,,,,Specialized,GHC Internals,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#magic-hash
-MonadComprehensions,,,✓,Specialized,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#monad-comprehensions
-MonoPatBinds,,,,Specialized,Type Disambiguation,http://www.haskell.org/ghc/docs/7.6.3/html/users_guide/monomorphism.html
-MultiParamTypeClasses,✓,,,General,Typeclass Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#multi-param-type-classes
-MultiWayIf,,,✓,Specialized,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#multi-way-if
-NamedFieldPuns,,,✓,Specialized,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#record-puns
-NegativeLiterals,,,,General,Type Disambiguation,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#negative-literals
-NoImplicitPrelude,,,,Specialized,Import Disambiguation,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#rebindable-syntax
-NoMonoLocalBinds,,,,General,Type Disambiguation,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#mono-local-binds
-NoMonomorphismRestriction,,,,General,Type Disambiguation,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#monomorphism
-NPlusKPatterns,,✓,✓,Deprecated,Deprecated,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#n-k-patterns
-NullaryTypeClasses,,,,Specialized,Typeclass Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#nullary-type-classes
-NumDecimals,,,,General,Type Disambiguation,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#num-decimals
-OverlappingInstances,,,,Specialized,Typeclass Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#instance-overlap
-OverloadedLists,,,✓,General,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#overloaded-lists
-OverloadedStrings,,,,General,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#overloaded-strings
-PackageImports,,,✓,General,Import Disambiguation,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#package-imports
-ParallelArrays,,,,Specialized,Data Parallel Haskell,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/lang-parallel.html
-ParallelListComp,,,✓,General,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#parallel-list-comprehensions
-PatternGuards,,,✓,General,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#pattern-guards
-PatternSynonyms,✓,,✓,General,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#pattern-synonyms
-PolyKinds,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/kind-polymorphism.html
-PolymorphicComponents,,✓,,Specialized,Deprecated,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#universal-quantification
-PostfixOperators,✓,,✓,Specialized,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#postfix-operators
-QuasiQuotes,,,,Specialized,Metaprogramming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/template-haskell.html#th-quasiquotation
-Rank2Types,,✓,,Specialized,Historical Artificat,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#universal-quantification
-RankNTypes,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#universal-quantification
-RebindableSyntax,,,✓,Specialized,Metaprogramming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#rebindable-syntax
-RecordWildCards,✓,,✓,General,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#record-wildcards
-RecursiveDo,,,,Specialized,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#recursive-do-notation
-RelaxedPolyRec,,,,Specialized,Type Disambiguation,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#typing-binds
-Role Annotations,,,,Specialized,Type Disambiguation,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/roles.html
-Safe,,,,Specialized,Security Auditing,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/safe-haskell.html
-Safe Imports,,,,Specialized,Security Auditing,
-ScopedTypeVariables,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#scoped-type-variables
-StandaloneDeriving,✓,,✓,General,Typeclass Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/deriving.html#stand-alone-deriving
-TemplateHaskell,✓,,✓,Specialized,Metaprogramming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/template-haskell.html
-TraditionalRecordSyntax,,✓,✓,Specialized,Historical Artificat,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#traditional-record-syntax
-TransformListComp,,,✓,Specialized,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#generalised-list-comprehensions
-Trustworthy,,,,Specialized,Security Auditing,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/safe-haskell.html
-TupleSections,✓,,,General,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#tuple-sections
-TypeFamilies,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-families.html
-TypeHoles,✓,,,General,Interactive Typing,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/typed-holes.html
-TypeOperators,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/data-type-extensions.html#type-operators
-TypeSynonymInstances,✓,,,General,Typeclass Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#flexible-instance-head
-UnboxedTuples,,,,Specialized,FFI,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/primitives.html#unboxed-tuples
-UndecidableInstances,,,,Specialized,Typelevel Programming,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#undecidable-instances
-UnicodeSyntax,,,✓,Specialized,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#unicode-syntax
-UnliftedFFITypes,,,,Specialized,FFI,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/primitives.html
-Unsafe,,,,Specialized,Security Auditing,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/safe-haskell.html
-ViewPatterns,✓,,✓,General,Syntax Extension,http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#view-patterns
+                           , Benign , Historical , Extends Syntax , Use         , Use                   , GHC Reference
+AllowAmbiguousTypes        ,        ,            ,                , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#ambiguity
+Arrows                     ,        ,            , ✓              , Specialized , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/arrow-notation.html
+AutoDeriveTypeable         ,        ,            ,                , Specialized , Metaprogramming       , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/deriving.html#auto-derive-typeable
+BangPatterns               , ✓      ,            , ✓              , General     , Strictness Annotation , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/bang-patterns.html
+CApiFFI                    ,        ,            ,                , Specialized , FFI                   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/ffi.html#ffi-capi
+ConstrainedClassMethods    ,        ,            ,                , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#class-method-types
+ConstraintKinds            ,        ,            ,                , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/constraint-kind.html
+CPP                        , ✓      ,            , ✓              , General     , Preprocessor          , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/options-phases.html#c-pre-processor
+DataKinds                  ,        ,            ,                , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/promotion.html
+DatatypeContexts           ,        , ✓          , ✓              , Deprecated  , Deprecated            , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/data-type-extensions.html#datatype-contexts
+DefaultSignatures          , ✓      ,            ,                , Specialized , Generic Programming   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#class-default-signatures
+DeriveDataTypeable         , ✓      ,            ,                , General     , Generic Programming   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/deriving.html#deriving-typeable
+DeriveFoldable             , ✓      ,            ,                , General     , Generic Programming   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/deriving.html#deriving-typeable
+DeriveFunctor              , ✓      ,            ,                , General     , Generic Programming   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/deriving.html#deriving-typeable
+DeriveGeneric              , ✓      ,            ,                , General     , Generic Programming   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/deriving.html#deriving-typeable
+DeriveTraversable          , ✓      ,            ,                , General     , Generic Programming   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/deriving.html#deriving-typeable
+DisambiguateRecordFields   , ✓      ,            , ✓              , Specialized , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#disambiguate-fields
+DoRec                      ,        , ✓          , ✓              , Specialized , Syntax Extension      , http://www.haskell.org/ghc/docs/7.6.3/html/users_guide/syntax-extns.html#recursive-do-notation
+EmptyCase                  ,        ,            ,                , Specialized , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#empty-case
+EmptyDataDecls             , ✓      ,            ,                , General     , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/data-type-extensions.html#nullary-types
+ExistentialQuantification  ,        ,            ,                , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/data-type-extensions.html#existential-quantification
+ExplicitForAll             ,        ,            , ✓              , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#explicit-foralls
+ExplicitNamespaces         , ✓      ,            , ✓              , Specialized , Syntax Disambiguation , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#explicit-namespaces
+ExtendedDefaultRules       , ✓      ,            ,                , Specialized , Generic Programming   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/interactive-evaluation.html#extended-default-rules
+FlexibleContexts           ,        ,            ,                , General     , Typeclass Extension   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#flexible-contexts
+FlexibleInstances          ,        ,            ,                , General     , Typeclass Extension   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#instance-rules
+ForeignFunctionInterface   ,        ,            , ✓              , General     , FFI                   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/ffi.html
+FunctionalDependencies     ,        ,            ,                , General     , Typeclass Extension   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#functional-dependencies
+GADTs                      ,        ,            ,                , General     , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/data-type-extensions.html#gadt
+GADTSyntax                 ,        ,            , ✓              , General     , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/data-type-extensions.html#gadt-style
+GeneralizedNewtypeDeriving ,        ,            ,                , General     , Typeclass Extension   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/deriving.html#newtype-deriving
+GHCForeignImportPrim       ,        ,            ,                , Specialized , FFI                   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/ffi.html#ffi-prim
+ImplicitParams             ,        ,            ,                , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#implicit-parameters
+ImpredicativeTypes         ,        ,            ,                , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#impredicative-polymorphism
+IncoherentInstances        ,        ,            ,                , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#instance-overlap
+InstanceSigs               ,        ,            ,                , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#instance-sigs
+InterruptibleFFI           ,        ,            ,                , Specialized , FFI                   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/ffi.html#ffi-interruptible
+KindSignatures             ,        ,            ,                , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#kinding
+LambdaCase                 , ✓      ,            , ✓              , General     , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#lambda-case
+LiberalTypeSynonyms        ,        ,            ,                , Specialized , Typeclass Extension   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/data-type-extensions.html#type-synonyms
+MagicHash                  ,        ,            ,                , Specialized , GHC Internals         , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#magic-hash
+MonadComprehensions        ,        ,            , ✓              , Specialized , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#monad-comprehensions
+MonoPatBinds               ,        ,            ,                , Specialized , Type Disambiguation   , http://www.haskell.org/ghc/docs/7.6.3/html/users_guide/monomorphism.html
+MultiParamTypeClasses      , ✓      ,            ,                , General     , Typeclass Extension   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#multi-param-type-classes
+MultiWayIf                 ,        ,            , ✓              , Specialized , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#multi-way-if
+NamedFieldPuns             ,        ,            , ✓              , Specialized , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#record-puns
+NegativeLiterals           ,        ,            ,                , General     , Type Disambiguation   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#negative-literals
+NoImplicitPrelude          ,        ,            ,                , Specialized , Import Disambiguation , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#rebindable-syntax
+NoMonoLocalBinds           ,        ,            ,                , General     , Type Disambiguation   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#mono-local-binds
+NoMonomorphismRestriction  ,        ,            ,                , General     , Type Disambiguation   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#monomorphism
+NPlusKPatterns             ,        , ✓          , ✓              , Deprecated  , Deprecated            , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#n-k-patterns
+NullaryTypeClasses         ,        ,            ,                , Specialized , Typeclass Extension   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#nullary-type-classes
+NumDecimals                ,        ,            ,                , General     , Type Disambiguation   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#num-decimals
+OverlappingInstances       ,        ,            ,                , Specialized , Typeclass Extension   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#instance-overlap
+OverloadedLists            ,        ,            , ✓              , General     , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#overloaded-lists
+OverloadedStrings          ,        ,            ,                , General     , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#overloaded-strings
+PackageImports             ,        ,            , ✓              , General     , Import Disambiguation , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#package-imports
+ParallelArrays             ,        ,            ,                , Specialized , Data Parallel Haskell , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/lang-parallel.html
+ParallelListComp           ,        ,            , ✓              , General     , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#parallel-list-comprehensions
+PatternGuards              ,        ,            , ✓              , General     , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#pattern-guards
+PatternSynonyms            , ✓      ,            , ✓              , General     , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#pattern-synonyms
+PolyKinds                  ,        ,            ,                , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/kind-polymorphism.html
+PolymorphicComponents      ,        , ✓          ,                , Specialized , Deprecated            , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#universal-quantification
+PostfixOperators           , ✓      ,            , ✓              , Specialized , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#postfix-operators
+QuasiQuotes                ,        ,            ,                , Specialized , Metaprogramming       , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/template-haskell.html#th-quasiquotation
+Rank2Types                 ,        , ✓          ,                , Specialized , Historical Artificat  , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#universal-quantification
+RankNTypes                 ,        ,            ,                , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#universal-quantification
+RebindableSyntax           ,        ,            , ✓              , Specialized , Metaprogramming       , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#rebindable-syntax
+RecordWildCards            , ✓      ,            , ✓              , General     , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#record-wildcards
+RecursiveDo                ,        ,            ,                , Specialized , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#recursive-do-notation
+RelaxedPolyRec             ,        ,            ,                , Specialized , Type Disambiguation   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#typing-binds
+Role Annotations           ,        ,            ,                , Specialized , Type Disambiguation   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/roles.html
+Safe                       ,        ,            ,                , Specialized , Security Auditing     , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/safe-haskell.html
+Safe Imports               ,        ,            ,                , Specialized , Security Auditing     ,
+ScopedTypeVariables        ,        ,            ,                , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/other-type-extensions.html#scoped-type-variables
+StandaloneDeriving         , ✓      ,            , ✓              , General     , Typeclass Extension   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/deriving.html#stand-alone-deriving
+TemplateHaskell            , ✓      ,            , ✓              , Specialized , Metaprogramming       , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/template-haskell.html
+TraditionalRecordSyntax    ,        , ✓          , ✓              , Specialized , Historical Artificat  , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#traditional-record-syntax
+TransformListComp          ,        ,            , ✓              , Specialized , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#generalised-list-comprehensions
+Trustworthy                ,        ,            ,                , Specialized , Security Auditing     , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/safe-haskell.html
+TupleSections              , ✓      ,            ,                , General     , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#tuple-sections
+TypeFamilies               ,        ,            ,                , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-families.html
+TypeHoles                  , ✓      ,            ,                , General     , Interactive Typing    , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/typed-holes.html
+TypeOperators              ,        ,            ,                , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/data-type-extensions.html#type-operators
+TypeSynonymInstances       , ✓      ,            ,                , General     , Typeclass Extension   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#flexible-instance-head
+UnboxedTuples              ,        ,            ,                , Specialized , FFI                   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/primitives.html#unboxed-tuples
+UndecidableInstances       ,        ,            ,                , Specialized , Typelevel Programming , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/type-class-extensions.html#undecidable-instances
+UnicodeSyntax              ,        ,            , ✓              , Specialized , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#unicode-syntax
+UnliftedFFITypes           ,        ,            ,                , Specialized , FFI                   , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/primitives.html
+Unsafe                     ,        ,            ,                , Specialized , Security Auditing     , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/safe-haskell.html
+ViewPatterns               , ✓      ,            , ✓              , General     , Syntax Extension      , http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/syntax-extns.html#view-patterns

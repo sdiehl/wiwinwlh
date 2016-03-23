@@ -456,7 +456,7 @@ sudo apt-get update && sudo apt-get install stack -y
 ```
 For other operating systems see the offocial install directions [here](http://docs.haskellstack.org/en/stable/install_and_upgrade/) 
 
-**Usage**
+#### Usage
 
 Once Stack installed it can be used to setup a build environment on top of your
 existing project's cabal file by running:
@@ -475,6 +475,16 @@ packages: []
 extra-deps: []
 ```
 
+Most of the common libraries used in everyday development 
+The ``extra-deps`` package can be used to add Hackage dependencies that are not
+in the Stackage repository. They are specified by the package and the version
+key. For instance the ``zenc`` package could be added to the stack build
+
+```
+extra-deps:
+- zenc-0.1.1
+```
+
 Stack can be used to install packages and executables into the either current
 build environment or the global environemnt. For example the following installs
 the ``hint`` linter executable and places it in on the PATH. 
@@ -483,39 +493,86 @@ the ``hint`` linter executable and places it in on the PATH.
 $ stack install hint
 ```
 
-Just as w ith Cabal project:
+To check the set of dependencies
 
 ```bash
-$ stack build
-$ stack repl
-$ stack ghc
-$ stack ghci
-$ stack exec bash
-$ stack build --file-watch
+$ stack list-dependencies
 ```
 
-To visualize the dependency graph:
+Just as with Cabal project the build and debug process can be orchestrated using
+stack commands.
 
 ```bash
-stack dot --external | dot -Tpng | feh -
+$ stack build                 # Build a cabal target
+$ stack repl                  # Launch ghci
+$ stack ghc                   # Invoke the standalone compiler in stack environment
+$ stack exec bash             # Execute a shell command with the stack GHC environment variables
+$ stack build --file-watch    # Build on every filesystem change
+```
+
+To visualize the dependency graph use the dot command pipe the output into
+graphviz and your favorite image viewer:
+
+```bash
+$ stack dot --external | dot -Tpng | feh -
 ```
 
 Flags
 -----
 
+The most commonly used GHC compiler flags for detecting common code errors are
+the following:
+
 Flag                                 Description
 ----                                 ------------
--fwarn-tabs
--fwarn-incomplete-uni-patterns
--fwarn-incomplete-record-updates
--fno-code
+-fwarn-tabs                          Emit warnings of tabs instead of spaces in the source code.
+-fwarn-unused-imports                Warn about libraries imported without being used
+-fwarn-name-shadowing                Warn on duplicate names in nested bindings
+-fwarn-incomplete-uni-patterns       Emit warnings for incomplete patterns in lambdas or pattern bindings
+-fwarn-incomplete-patterns           Warn on non-exhaustive patterns
+-fwarn-overlapping-patterns          Warn on pattern matching branches that overlap
+-fwarn-incomplete-record-updates     Warn when records are not instantiated with all fields
+-fdefer-type-errors                  Turn type errors into warnings
+-fwarn-missing-signatures            Warn about toplevel missing type signatures
+-fwarn-monomorphism-restriction      Warn when the monomorphism restriction is applied implicitly
+-fwarn-orphans                       Warn on orphan typeclass instances.
+-fforce-recomp                       Force recompilation regardless of timestamp
+
+
+-fno-code                            Don't doing code generation, just parse and typecheck.
+-fobject-code                        Don't doing code generation, just parse and typecheck.
+
+Like most compilers ``-Wall`` can be used to enable all warnings. Although some
+of the enabled warnings are somewhat overzealous like ``-fwarn-unused-do-bind``
+and ``-fwarn-unused-matches`` which typically wouldn't correspond to errors or
+failures.
+
+Any of these can be added to the cabal file using the ``ghc-options`` section of
+a Cabal target. For example
+
+```perl
+library mylib
+
+  ghc-options:
+    -fwarn-tabs
+    -fwarn-unused-imports
+    -fwarn-missing-signatures
+    -fwarn-name-shadowing
+    -fwarn-incomplete-patterns
+```
+
+For debugging GHC internals, see the [commentary](#block-diagram) on GHC
+internals.
+
+These are simply the most useful, for all flags see the [official
+reference](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/flag-reference.html).
 
 Hackage
 -------
 
-Hackage is the upstream source of open source Haskell packages. Being a
-transitional language, Hackage is many things to many people but there seem to
-be two dominant philosophies around the development of packages:
+Hackage is the upstream source of open source Haskell packages. Being a evolving
+language, Hackage is many things to many people but there seem to be two
+dominant philosophies of uploaded libraries.
 
 **Reusable Code / Building Blocks**
 
@@ -533,9 +590,11 @@ available.  The library author(s) often rationalize putting these kind of
 libraries up undocumented, often not indicating what the library even does, by
 simply stating that they intend to tear it all down and rewrite it later. This
 unfortunately means a lot of Hackage namespace has become polluted with dead-end
-bit-rotting code.
+bit-rotting code. Sometimes packages are also uploaded purely for internal use
+or to accompany a paper, or just to integrate with the cabal build system. These
+are often left undocumented as well.
 
-Many other language ecosystems (Python, NodeJS, Ruby) favor the former
+Many other language ecosystems (Python, Javascript, Ruby) favor the former
 philosophy, and coming to Haskell can be kind of unnerving to see *thousands of
 libraries without the slightest hint of documentation or description of
 purpose*. It is an open question about the cultural differences between the two
@@ -550,11 +609,9 @@ As a rule of thumb if the Haddock docs for the library does not have a **minimal
 worked example**, it is usually safe to assume that it is a RFC-style library
 and probably should be avoided in production-grade code.
 
-See:
-
-
-* [The Haskell Tool Stack](http://docs.haskellstack.org/en/stable/README/)
-* [Stackage](https://www.stackage.org/)
+As another rule of thumb if the library **predates the text library** circa
+2007 it probably should be avoided in production code. The way we write Haskell
+has changed drastically since the early days.
 
 GHCi
 ----
@@ -642,15 +699,9 @@ with the following modifiers:
 ```
 
 Language extensions and compiler pragmas can be set at the prompt. See the [Flag
-Reference](http://www.haskell.org/ghc/docs/latest/html/users_guide/flag-reference.html)
-for the vast set of compiler flag options. For example several common ones are:
+Reference](#flags) for the vast set of compiler flag options.
 
-```haskell
-:set -XNoMonomorphismRestriction
-:set -fno-warn-unused-do-bind
-```
-
-Several commands for interactive options have shortcuts:
+Several commands for interactive shell have shortcuts:
 
         Function
 ------  ---------
@@ -2022,11 +2073,12 @@ problems. These include:
 These almost always indicate a design flaw and shouldn't be turned on to remedy the error at hand, as
 much as GHC might suggest otherwise!
 
-Inference
----------
+Type Inference
+--------------
 
-Inference in Haskell is generally quite accurate, although there are several boundary cases that tend to cause
-problems. Consider the two functions
+Inference in Haskell is usually precise, although there are several boundary
+cases where inference is difficult or impossible to infer a principal type of an
+expression. There a two common cases:
 
 **Mutually Recursive Binding Groups**
 
@@ -2247,17 +2299,64 @@ typedhole.hs:3:10: Warning:
 Recursive Do
 ------------
 
-TODO
+Recursive do notation allows to use to self-reference expressions on both sides
+of a monadic bind. For instance the following uses lazy evaluation to generate a
+infinite list. This is sometimes used for instantiating cyclic datatypes inside
+of a monadic context that need to hold a reference to themselves.
+
+```haskell
+{-# LANGUAGE DoRec #-}
+
+justOnes :: [Int]
+justOnes = do 
+  rec xs <- Just (1:xs)
+  return (map negate xs)
+```
 
 See: [Recursive Do Notation](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/syntax-extns.html#recursive-do-notation)
 
 Applicative Do
 --------------
 
-TODO
+By default GHC desugars do-notation to use implicit invocations of bind and
+return.
+
+```haskell
+test :: Monad m => m (a, b, c)
+test = do
+  a <- f
+  b <- g
+  c <- h
+  return (a, b, c)
+```
+
+Desugars into:
+
+```haskell
+test :: Monad m => m (a, b, c)
+test = 
+f >>= \a ->
+  g >>= \b ->
+    h >>= \c ->
+      return (a, b, c)
+```
+
+With ``ApplicativeDo`` this instead desugars into use of applicative combinators
+and a laxer Applicative constraint.
+
+```haskell
+test :: Applicative m => m (a, b, c)
+test = (,,) <$> f <*> g <*> h
+```
 
 Pattern Guards
 --------------
+
+Pattern guards are an extension to the pattern matching syntax.  Given a ``<-``
+pattern qualifier, the right hand side is evaluated and matched against the
+pattern on the left.  If the match fails then the whole guard fails and the next
+equation is tried.  If it succeeds, then the appropriate binding takes place,
+and the next qualifier is matched, in the augmented environment. 
 
 ```haskell
 {-# LANGUAGE PatternGuards #-}
@@ -2272,6 +2371,10 @@ combine env x y
 
 ViewPatterns
 -------------
+
+View patterns are like pattern guards that can be nested inside of other
+patterns. They are a convenient way of pattern-matching against values of
+algebraic data types.
 
 ~~~~ {.haskell include="src/04-extensions/views.hs"}
 ~~~~
@@ -2329,6 +2432,21 @@ variables introduced purely for the case of pattern matching on.
 ~~~~ {.haskell include="src/04-extensions/lambdacase.hs"}
 ~~~~
 
+NumDecimals
+-----------
+
+NumDecimals allows the use of exponential notation for integral literals that
+are not necessarily floats. Without it enable any use of expontial notation
+induces a Fractional class constraint.
+
+```haskell
+1e100 :: Num a => a
+```
+
+```haskell
+1e100 :: Fractional a => a
+```
+
 PackageImports
 -------------
 
@@ -2368,7 +2486,11 @@ Provides alternative syntax for accessing record fields in a pattern match.
 data D = D {a :: Int, b :: Int}
 
 f :: D -> Int
-f (D {a, b}) = a + b
+f D {a, b} = a - b
+
+-- Order doesn't matter
+g :: D -> Int
+g D {b, a} = a - b
 ```
 
 PatternSynonyms
@@ -2415,9 +2537,6 @@ pattern Elt = [a]
 
 * [Pattern Synonyms in GHC 8](http://mpickering.github.io/posts/2015-12-12-pattern-synonyms-8.html)
 
-ApplicativeDo
--------------
-
 DeriveTraversable
 -------------
 
@@ -2428,9 +2547,6 @@ DeriveFunctor
 -------------
 
 DeriveGeneric
--------------
-
-DeriveDataTypeable
 -------------
 
 DeriveAnyClass
@@ -2452,12 +2568,67 @@ TypeApplication
 
 TODO
 
+DuplicateRecordFields
+----------------------
+
+GHC 8.0 introduced the DuplicateRecordFields extensions which loosens GHC's
+restriction on records in the same module with identical accessors. The precise
+type that is being projected into is now deferred to the callsite.
+
+```haskell
+{-# LANGUAGE DuplicateRecordFields #-}
+
+data Person = Person { id :: Int }
+data Animal = Animal { id :: Int }
+data Vegetable = Vegetable { id :: Int }
+
+test :: (Person, Animal, Vegetable)
+test = (Person {id = 1}, Animal {id = 2}, Vegetable {id = 3})
+```
+
+Using just DuplicateRecordFields, projection is still not supported so the
+following will not work. OverloadedLabels fixes this to some extent.
+
+```haskell
+test :: (Person, Animal, Vegetable)
+test = (id (Person 1), id (Animal 2), id (Animal 3))
+```
+
 OverloadedLabels
 ----------------
 
-TODO
+GHC 8.0 also introduced the OverloadedLabels extension which allows a limited
+form of polymorphism over labels that share the same
+
+To work with overloaded labels types we need to enable several language
+extensions to work with promoted strings and multiparam typeclasses that underly
+it's implementation.
 
 ```haskell
+extract :: IsLabel "id" t => t
+extract = #id
+```
+
+```haskell
+{-# LANGUAGE OverloadedLabels #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE DuplicateRecordFields #-}
+{-# LANGUAGE ExistentialQuantification #-}
+
+import GHC.Records (HasField(..))
+import GHC.OverloadedLabels (IsLabel(..))
+
+data S = MkS { foo :: Int }
+data T x y z = forall b . MkT { foo :: y, bar :: b }
+
+instance HasField x r a => IsLabel x (r -> a) where
+  fromLabel = getField
+
+main :: IO ()
+main = do 
+  print (#foo (MkS 42))
+  print (#foo (MkT True False))
 ```
 
 Minimal Annotations
@@ -2465,7 +2636,43 @@ Minimal Annotations
 
 TODO
 
+Cpp
+---
+
+The C++ preprocessor is the fallback whenever we really need to seperate out
+logic that has to span multiple versions of GHC and language changes while
+maintaining backwards compatability.
+
+It can also be used to do terrible things like metaprogrammming with strings,
+but please don't do this.
+
+TODO
+
 <hr/>
+
+Type Classes
+============
+
+Instance Search
+----------------
+
+FlexibleInstances
+-------------------
+
+FlexibleContexts
+-------------------
+
+IncoherentInstances
+-------------------
+
+OverlappingInstances
+--------------------
+
+Overlapping Annotations
+-----------------------
+
+NullaryTypeClasses
+--------------------
 
 Laziness
 ========
@@ -2702,6 +2909,8 @@ f $! x  = let !vx = x in f vx
 
 Strict Haskell
 --------------
+
+TODO
 
 Deepseq
 -------
@@ -4210,7 +4419,8 @@ within the type into polymorphic type variables yielding a type scheme. The
 function ``instantiate`` maps a scheme to a type, but with any polymorphic
 variables converted into unbound type variables.
 
-**Rank-N Types**
+Rank-N Types
+------------
 
 System-F is the type system that underlies Haskell. System-F subsumes the HM
 type system in the sense that every type expressible in HM can be expressed
@@ -8457,15 +8667,110 @@ GHC
 ===
 
 <div class="alert alert-danger">
-This is an advanced section, knowledge of GHC internals is not typically
+This is a **very advanced** section, knowledge of GHC internals is rarely
 necessary.
 </div>
+
+Block Diagram
+-------------
+
+The flow of code through GHC is a process of translation between several
+intermediate languages and optimizations and transformations thereof. A common
+pattern for many of these AST types is they are parametrized over a binder type
+and at various stages the binders will be transformed, for example the Renamer
+pass effectively translates the ``HsSyn`` datatype from a AST parametrized over
+literal strings as the user enters into a ``HsSyn`` parameterized over qualified
+names that includes modules and package names into a higher level Name type.
+
+<div class="center">
+![](img/ghc.png)
+</div>
+
+* **Parser/Frontend**: An enormous AST translated from human syntax that makes
+  explicit possible all expressible syntax ( declarations, do-notation, where
+  clauses, syntax extensions, template haskell, ... ). This is unfiltered
+  Haskell and it is *enormous*.
+* **Renamer** takes syntax from the frontend and transforms all names to be
+  qualified (``base:Prelude.map`` instead of ``map``) and any shadowed names in
+  lambda binders transformed into unique names.
+* **Typechecker** is a large pass that serves two purposes, first is the core type
+  bidirectional inference engine where most of the work happens and the
+  translation between the frontend ``Core`` syntax.
+* **Desugarer** translates several higher level syntactic constructors
+    - ``where`` statements are turned into (possibly recursive) nested ``let``
+      statements.
+    - Nested pattern matches are expanded out into splitting trees of case
+      statements.
+    - do-notation is expanded into explicit bind statements.
+    - Lots of others.
+* **Simplifier** transforms many Core constructs into forms that are more
+  adaptable to compilation. For example let statements will be floated or
+  raised, pattern matches will simplified, inner loops will be pulled out and
+  transformed into more optimal forms. Non-intuitively the resulting may
+  actually be much more complex (for humans) after going through the simplifier!
+* **Stg** pass translates the resulting Core into STG (Spineless Tagless
+   G-Machine) which effectively makes all laziness explicit and encodes the
+   thunks and update frames that will be handled during evaluation.
+* **Codegen/Cmm** pass will then translate STG into Cmm (flavoured C--) a simple
+  imperative language that manifests the low-level implementation details of
+  runtime types. The runtime closure types and stack frames are made explicit
+  and low-level information about the data and code (arity, updatability, free
+  variables, pointer layout) made manifest in the info tables present on most
+  constructs.
+* **Native Code** The final pass will than translate the resulting code into
+  either LLVM or Assembly via either through GHC's home built native code
+  generator (NCG) or the LLVM backend.
+
+
+Information for about each pass can dumped out via a rather large collection of
+flags. The GHC internals are very accessible although some passes are somewhat
+easier to understand than others. Most of the time ``-ddump-simpl`` and
+``-ddump-stg`` are sufficient to get an understanding of how the code will
+compile, unless of course you're dealing with very specialized optimizations or
+hacking on GHC itself.
+
+Flag                   Action
+--------------         ------------
+``-ddump-parsed``      Frontend AST.
+``-ddump-rn``          Output of the rename pass.
+``-ddump-tc``          Output of the typechecker.
+``-ddump-splices``     Output of TemplateHaskell splices.
+``-ddump-types``       Typed AST representation.
+``-ddump-deriv``       Output of deriving instances.
+``-ddump-ds``          Output of the desugar pass.
+``-ddump-spec``        Output of specialisation pass.
+``-ddump-rules``       Output of applying rewrite rules.
+``-ddump-vect``        Output results of vectorize pass.
+``-ddump-simpl``       Ouptut of the SimplCore pass.
+``-ddump-inlinings``   Output of the inliner.
+``-ddump-cse``         Output of the common subexpression elimination pass.
+``-ddump-prep``        The CorePrep pass.
+``-ddump-stg``         The resulting STG.
+``-ddump-cmm``         The resulting Cmm.
+``-ddump-opt-cmm``     The resulting Cmm optimization pass.
+``-ddump-asm``         The final assembly generated.
+``-ddump-llvm``        The final LLVM IR generated.
+
 
 GHC Api
 -------
 
 GHC is effectively just a very large (and quirky) Haskell library that
 transforms Haskell source code into executable code.
+
+```haskell
+-- Parse a module.
+parseModule :: GhcMonad m => ModSummary -> m ParsedModule
+
+-- Typecheck and rename a parsed module.
+typecheckModule :: GhcMonad m => ParsedModule -> m TypecheckedModule
+
+-- Desugar a typechecked module.
+desugarModule :: GhcMonad m => TypecheckedModule -> m DesugaredModule
+
+-- Generated ModIface and Generated Code
+loadModule :: (TypecheckedMod mod, GhcMonad m) => mod -> m mod
+```
 
 ```haskell
 import GHC
@@ -8490,12 +8795,13 @@ example =
       p <- parseModule modSum      -- ModuleSummary
       t <- typecheckModule p       -- TypecheckedSource
       d <- desugarModule t         -- DesugaredModule
-      l <- loadModule d            -- CoreModule
-      c <- return $ coreModule d   -- CoreModule
+      l <- loadModule d            
+      let c = coreModule d         -- CoreModule
  
       g <- getModuleGraph
       mapM showModule g     
-      return $ (parsedSource d,"/n-----/n",  typecheckedSource d)
+
+      return $ c
 
 main :: IO ()
 main = do
@@ -8643,86 +8949,6 @@ Wired-in Types
 ----------
 
 TODO
-
-Block Diagram
--------------
-
-The flow of code through GHC is a process of translation between several
-intermediate languages and optimizations and transformations thereof. A common
-pattern for many of these AST types is they are parametrized over a binder type
-and at various stages the binders will be transformed, for example the Renamer
-pass effectively translates the ``HsSyn`` datatype from a AST parametrized over
-literal strings as the user enters into a ``HsSyn`` parameterized over qualified
-names that includes modules and package names into a higher level Name type.
-
-<div class="center">
-![](img/ghc.png)
-</div>
-
-* **Parser/Frontend**: An enormous AST translated from human syntax that makes
-  explicit possible all expressible syntax ( declarations, do-notation, where
-  clauses, syntax extensions, template haskell, ... ). This is unfiltered
-  Haskell and it is *enormous*.
-* **Renamer** takes syntax from the frontend and transforms all names to be
-  qualified (``base:Prelude.map`` instead of ``map``) and any shadowed names in
-  lambda binders transformed into unique names.
-* **Typechecker** is a large pass that serves two purposes, first is the core type
-  bidirectional inference engine where most of the work happens and the
-  translation between the frontend ``Core`` syntax.
-* **Desugarer** translates several higher level syntactic constructors
-    - ``where`` statements are turned into (possibly recursive) nested ``let``
-      statements.
-    - Nested pattern matches are expanded out into splitting trees of case
-      statements.
-    - do-notation is expanded into explicit bind statements.
-    - Lots of others.
-* **Simplifier** transforms many Core constructs into forms that are more
-  adaptable to compilation. For example let statements will be floated or
-  raised, pattern matches will simplified, inner loops will be pulled out and
-  transformed into more optimal forms. Non-intuitively the resulting may
-  actually be much more complex (for humans) after going through the simplifier!
-* **Stg** pass translates the resulting Core into STG (Spineless Tagless
-   G-Machine) which effectively makes all laziness explicit and encodes the
-   thunks and update frames that will be handled during evaluation.
-* **Codegen/Cmm** pass will then translate STG into Cmm (flavoured C--) a simple
-  imperative language that manifests the low-level implementation details of
-  runtime types. The runtime closure types and stack frames are made explicit
-  and low-level information about the data and code (arity, updatability, free
-  variables, pointer layout) made manifest in the info tables present on most
-  constructs.
-* **Native Code** The final pass will than translate the resulting code into
-  either LLVM or Assembly via either through GHC's home built native code
-  generator (NCG) or the LLVM backend.
-
-
-Information for about each pass can dumped out via a rather large collection of
-flags. The GHC internals are very accessible although some passes are somewhat
-easier to understand than others. Most of the time ``-ddump-simpl`` and
-``-ddump-stg`` are sufficient to get an understanding of how the code will
-compile, unless of course you're dealing with very specialized optimizations or
-hacking on GHC itself.
-
-Flag                   Action
---------------         ------------
-``-ddump-parsed``      Frontend AST.
-``-ddump-rn``          Output of the rename pass.
-``-ddump-tc``          Output of the typechecker.
-``-ddump-splices``     Output of TemplateHaskell splices.
-``-ddump-types``       Typed AST representation.
-``-ddump-deriv``       Output of deriving instances.
-``-ddump-ds``          Output of the desugar pass.
-``-ddump-spec``        Output of specialisation pass.
-``-ddump-rules``       Output of applying rewrite rules.
-``-ddump-vect``        Output results of vectorize pass.
-``-ddump-simpl``       Ouptut of the SimplCore pass.
-``-ddump-inlinings``   Output of the inliner.
-``-ddump-cse``         Output of the common subexpression elimination pass.
-``-ddump-prep``        The CorePrep pass.
-``-ddump-stg``         The resulting STG.
-``-ddump-cmm``         The resulting Cmm.
-``-ddump-opt-cmm``     The resulting Cmm optimization pass.
-``-ddump-asm``         The final assembly generated.
-``-ddump-llvm``        The final LLVM IR generated.
 
 Core
 ----
