@@ -1,5 +1,5 @@
-{-# LANGUAGE RebindableSyntax #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE RebindableSyntax #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 
 import Data.IORef
@@ -67,25 +67,28 @@ release = put Unlocked
 
 -- Statically forbids improper handling of resources.
 lockExample :: Stateful a
-lockExample = do ptr <- get  :: IState a a a
-                 acquire     :: IState a Locked ()
-                 -- ...
-                 release     :: IState Locked Unlocked ()
-                 return ptr
+lockExample = do
+  ptr <- get  :: IState a a a
+  acquire     :: IState a Locked ()
+  -- ...
+  release     :: IState Locked Unlocked ()
+  return ptr
 
 -- Couldn't match type `Locked' with `Unlocked'
 -- In a stmt of a 'do' block: return ptr
 failure1 :: Stateful a
-failure1 = do ptr <- get
-              acquire
-              return ptr -- didn't release
+failure1 = do
+  ptr <- get
+  acquire
+  return ptr -- didn't release
 
 -- Couldn't match type `a' with `Locked'
 -- In a stmt of a 'do' block: release
 failure2 :: Stateful a
-failure2 = do ptr <- get
-              release -- didn't acquire
-              return ptr
+failure2 = do
+  ptr <- get
+  release -- didn't acquire
+  return ptr
 
 -- Evaluate the resulting state, statically ensuring that the
 -- lock is released when finished.

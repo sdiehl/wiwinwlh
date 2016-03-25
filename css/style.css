@@ -57,9 +57,12 @@ img {
 
 hr {
   border: 0px;
-  height: 0;
   border-bottom: 1px solid #ccc;
   margin-bottom: 500px;
+}
+
+h2 {
+  margin-top: 30px;
 }
 
 h4 {
@@ -67,6 +70,7 @@ h4 {
   margin-top: 40px;
   margin-bottom: 20px;
   font-weight: bold;
+  width: 400px;
 }
 
 .author {

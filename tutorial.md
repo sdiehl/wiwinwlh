@@ -73,7 +73,6 @@ always accepted for changes and additional content. This is a living document.
 * hsc2hs
 * Mulitiline Strings
 * git-embed
-* file-embed
 * DWARF debugging
 * Coercible
 * ghc-prim
@@ -100,8 +99,6 @@ Sections that have had been added or seen large changes:
 * EKG
 * Nix
 * Haddock
-* Monad Tutorials Commentary
-* Monad Morphisms
 * Corecursion
 * Category
 * Arrows
@@ -2082,7 +2079,7 @@ Inference in Haskell is usually precise, although there are several boundary
 cases where inference is difficult or impossible to infer a principal type of an
 expression. There a two common cases:
 
-**Mutually Recursive Binding Groups**
+#### Mutually Recursive Binding Groups
 
 ```haskell
 f x = const x g
@@ -2104,7 +2101,7 @@ f :: a -> a
 g :: a -> Char
 ```
 
-**Polymorphic recursion**
+#### Polymorphic recursion
 
 ```haskell
 data Tree a = Leaf | Bin a (Tree (a, a))
@@ -2648,11 +2645,6 @@ See:
 
 * [OverloadedRecordFields revived](http://www.well-typed.com/blog/2015/03/overloadedrecordfields-revived/)
 
-Minimal Annotations
--------------------
-
-TODO
-
 Cpp
 ---
 
@@ -2665,18 +2657,59 @@ but please don't do this.
 
 TODO
 
-<hr/>
-
 Historical Extensions
 ---------------------
 
 TODO
+
+<hr/>
 
 Type Classes
 ============
 
 Instance Search
 ----------------
+
+Minimal Annotations
+-------------------
+
+In the presence of default implementations of typeclasses methods, there may be
+several ways to implement a typeclass. For instance Eq is entirely defined by
+either defining when two values are equal or not equal by implying taking the
+negation of the other. We can define equality in terms of non-equality and
+vice-versa.
+
+```haskell
+class Eq a where
+  (==), (/=) :: a -> a -> Bool
+  x == y = not (x /= y)
+  x /= y = not (x == y)
+```
+
+Before 7.6.1 there was no way to specify what was the "minimal" definition
+required to implement a typeclass
+
+```haskell
+class Eq a where
+  (==), (/=) :: a -> a -> Bool
+  x == y = not (x /= y)
+  x /= y = not (x == y)
+  {-# MINIMAL (==) #-}
+  {-# MINIMAL (/=) #-}
+```
+
+Minimal pragmas are boolean expressions, with ``|`` as logical ``OR``, *either*
+definition must be defined). Comma indicates logical ``AND`` where both sides
+*both* definitions must be defined.
+
+```haskell
+{-# MINIMAL (==) | (/=) #-} -- Either (==) or (/=)
+{-# MINIMAL (==) , (/=) #-} -- Both (==) and (/=)
+```
+
+Compiling the ``-Wmissing-methods`` will warn when a instance is defined that
+does not meet the minimal criterion.
+
 
 FlexibleInstances
 -------------------
@@ -2688,6 +2721,9 @@ IncoherentInstances
 -------------------
 
 TypeSynonymInstances
+-------------------
+
+UndecidableInstances
 -------------------
 
 OverlappingInstances
@@ -3467,7 +3503,12 @@ Variant                   Module
 <b>lazy bytestring</b>    Data.ByteString.Lazy
 
 
-**Conversions:**
+#### Conversions
+
+Conversions between strings types ( from : left column, to : top row ) are done
+with several functions across the bytestring and text libraries. The mapping
+between text and bytestring is inherently lossy so there is some degree of
+freedom in choosing the encoding. We'll just consider utf-8 for simplicity.
 
                       Data.Text  Data.Text.Lazy  Data.ByteString  Data.ByteString.Lazy
 --------------------- ---------  --------------  ---------------  ------------------
@@ -3475,6 +3516,8 @@ Data.Text             id         fromStrict      encodeUtf8       encodeUtf8
 Data.Text.Lazy        toStrict   id              encodeUtf8       encodeUtf8
 Data.ByteString       decodeUtf8 decodeUtf8      id               fromStrict
 Data.ByteString.Lazy  decodeUtf8 decodeUtf8      toStrict         id
+
+#### Overloaded Strings
 
 With the ``-XOverloadedStrings`` extension string literals can be overloaded
 without the need for explicit packing and can be written as string literals in
@@ -3969,24 +4012,11 @@ value in Right otherwise.
 This is admittedly pretty stupid but captures the essence of why Either/EitherT
 is a suitable monad for exception handling.
 
-ErrorT
-------
-
-In the monad transformer style, we can use the ``ErrorT`` transformer composed
-with an Identity monad and unrolling into an ``Either Exception a``. This method
-is simple but requires manual instantiation of an Exception ( or Typeable )
-typeclass if a custom Exception type is desired.
-
-~~~~ {.haskell include="src/09-errors/errors.hs"}
-~~~~
-
 ExceptT
 -------
 
-As of mtl 2.2 or higher, the ``ErrorT`` class has been replaced by the ``ExceptT`` which fixes many of the
-problems with the old class.
-
-At transformers level.
+As of mtl 2.2 or higher, the ``ErrorT`` class has been replaced by the
+``ExceptT``.  At transformers level.
 
 ```haskell
 newtype ExceptT e m a = ExceptT (m (Either e a))
@@ -4041,55 +4071,6 @@ instance MonadError e (Either e) where
 See:
 
 * [Control.Monad.Except](https://hackage.haskell.org/package/mtl-2.2.1/docs/Control-Monad-Except.html)
-
-
-EitherT
--------
-
-```haskell
-newtype EitherT e m a = EitherT {runEitherT :: m (Either e a)}
-        -- Defined in `Control.Monad.Trans.Either'
-```
-
-```haskell
-runEitherT :: EitherT e m a -> m (Either e a)
-tryIO :: MonadIO m => IO a -> EitherT IOException m a
-
-throwT  :: Monad m => e -> EitherT e m r
-catchT  :: Monad m => EitherT a m r -> (a -> EitherT b m r) -> EitherT b m r
-handleT :: Monad m => (a -> EitherT b m r) -> EitherT a m r -> EitherT b m
-```
-
-The ideal monad to use is simply the ``EitherT`` monad which we'd like to be able to use with an API
-similar to ``ErrorT``. For example suppose we wanted to use ``read`` to attempt to read a positive integer
-from stdin. There are two failure modes and two failure cases here, one for a parse error which fails with an
-error from ``Prelude.readIO``  and one for a non-positive integer which fails with a custom exception after a
-check. We'd like to unify both cases in the same transformer.
-
-Combined, the ``safe`` and ``errors``  make life with ``EitherT`` more pleasant. The safe library provides a
-variety of safer variants of the standard prelude functions that handle failures as Maybe values, explicitly
-passed default values, or more informative exception "notes".  While the errors library reexports the safe
-Maybe functions and hoists them up into the ``EitherT`` monad providing a family of ``try`` prefixed functions
-that perform actions and can fail with an exception.
-
-```haskell
--- Exception handling equivalent of `read`
-tryRead :: (Monad m, Read a) => e -> String -> EitherT e m a
-
--- Exception handling equivelent of `head`
-tryHead :: Monad m => e -> [a] -> EitherT e m a
-
--- Exception handling equivelent of `(!!)`
-tryAt :: Monad m => e -> [a] -> Int -> EitherT e m a
-```
-
-~~~~ {.haskell include="src/09-errors/eithert.hs"}
-~~~~
-
-See:
-
-* [Error Handling Simplified](http://www.haskellforall.com/2012/07/errors-10-simplified-error-handling.html)
-* [Safe](http://hackage.haskell.org/package/safe)
 
 spoon
 -----
@@ -4959,7 +4940,9 @@ languages. At the heart of every calculus is three components:
 - **Lam** - A lambda abstraction
 - **App** - An application
 
+<div class="center">
 ![](img/lambda.png)
+</div>
 
 There are many different ways of modeling these constructions and data structure
 representations, but they all more or less contain these three elements. For
@@ -5924,6 +5907,10 @@ Constraint :: BOX
 TypeFamilyDependencies
 ----------------------
 
+See:
+
+* [Injective type families for Haskell](http://ics.p.lodz.pl/~stolarek/_media/pl:research:stolarek_peyton-jones_eisenberg_injectivity_extended.pdf)
+
 </hr>
 
 Promotion
@@ -6043,8 +6030,8 @@ This is an advanced section, knowledge of kind data kinds is not typically
 necessary to write Haskell.
 </div>
 
-The ``-XDataKinds`` extension allows us to use refer to constructors at the value level and the type level.
-Consider a simple sum type:
+The ``-XDataKinds`` extension allows us to use refer to constructors at the
+value level and the type level.  Consider a simple sum type:
 
 ```haskell
 data S a b = L a | R b
@@ -6054,8 +6041,9 @@ data S a b = L a | R b
 -- R :: b -> S a b
 ```
 
-With the extension enabled we see that our type constructors are now automatically promoted so that ``L``
-or ``R`` can be viewed as both a data constructor of the type ``S`` or as the type ``L`` with kind ``S``.
+With the extension enabled we see that our type constructors are now
+automatically promoted so that ``L`` or ``R`` can be viewed as both a data
+constructor of the type ``S`` or as the type ``L`` with kind ``S``.
 
 ```haskell
 {-# LANGUAGE DataKinds #-}
@@ -6067,9 +6055,10 @@ data S a b = L a | R b
 -- R :: * -> S * *
 ```
 
-Promoted data constructors can referred to in type signatures by prefixing them with a single quote.  Also of
-importance is that these promoted constructors are not exported with a module by default, but type synonym
-instances can be created using this notation.
+Promoted data constructors can referred to in type signatures by prefixing them
+with a single quote.  Also of importance is that these promoted constructors are
+not exported with a module by default, but type synonym instances can be created
+for the ticked promoted types and exported directly.
 
 ```haskell
 data Foo = Bar | Baz
@@ -6077,8 +6066,8 @@ type Bar = 'Bar
 type Baz = 'Baz
 ```
 
-Combining this with type families we see we can write meaningful, meaningful type-level functions by
-lifting types to the kind level.
+Combining this with type families we see we can write meaningful, meaningful
+type-level functions by lifting types to the kind level.
 
 ~~~~ {.haskell include="src/17-promotion/typefamily.hs"}
 ~~~~
@@ -7230,8 +7219,11 @@ See: [GHC, primops and exorcising GMP](http://www.well-typed.com/blog/32/)
 Complex
 -------
 
-Haskell supports arithmetic with complex numbers via a Complex datatype. The
-first argument is the real part, while the second is the imaginary.
+Haskell supports arithmetic with complex numbers via a Complex datatype from the
+``Data.Complex`` module. The first argument is the real part, while the second
+is the imaginary part. The type has a single parameter and inherits it's
+numerical typeclass components (Num, Fractional, Floating) from the type of this
+paramater.
 
 ```haskell
 -- 1 + 2i
@@ -7266,15 +7258,15 @@ is an instance of ``RealFloat``.
 Scientific
 ----------
 
-```haskell
-scientific :: Integer -> Int -> Scientific
-fromFloatDigits :: RealFloat a => a -> Scientific
-```
-
 Scientific provides arbitrary-precision numbers represented using scientific
 notation. The constructor takes an arbitrarily sized Integer argument for the
 digits and an Int for the exponent. Alternatively the value can be parsed from
 a String or coerced from either Double/Float.
+
+```haskell
+scientific :: Integer -> Int -> Scientific
+fromFloatDigits :: RealFloat a => a -> Scientific
+```
 
 ~~~~ {.haskell include="src/19-numbers/scientific.hs"}
 ~~~~
@@ -7289,13 +7281,12 @@ Constructive Reals
 ------------------
 
 Instead of modeling the real numbers on finite precision floating point numbers
-we alternatively work with ``Num`` which internally manipulate the power
-series expansions for the expressions when performing operations like arithmetic
-or transcendental functions without losing precision when performing
-intermediate computations. Then we simply slice off a fixed number of terms and
-approximate the resulting number to a desired precision. This approach is not
-without its limitations and caveats ( notably that it may diverge ) but works
-quite well in practice.
+we alternatively work with ``Num`` which internally manipulate the power series
+expansions for the expressions when performing operations like arithmetic or
+transcendental functions without losing precision when performing intermediate
+computations. Then we simply slice off a fixed number of terms and approximate
+the resulting number to a desired precision. This approach is not without its
+limitations and caveats ( notably that it may diverge ).
 
 ```haskell
 exp(x)    = 1 + x + 1/2*x^2 + 1/6*x^3 + 1/24*x^4 + 1/120*x^5 ...
@@ -7312,9 +7303,9 @@ SAT Solvers
 
 A collection of constraint problems known as satisfiability problems show up in
 a number of different disciplines from type checking to package management.
-Simply put a satisfiability problem attempts to find solutions to a statement
-of conjoined conjunctions and disjunctions in terms of a series of variables.
-For example:
+Simply put a satisfiability problem attempts to find solutions to a statement of
+conjoined conjunctions and disjunctions in terms of a series of variables.  For
+example:
 
 ```text
 (A v ¬B v C) ∧ (B v D v E) ∧ (D v F)
@@ -8483,11 +8474,11 @@ value ``x`` and then use ``x`` as if it were and integer throughout the rest of
 your program, Aeson will select the typeclass instance which parses the given
 input string into a Haskell integer.
 
-Aeson uses several high performance data structures (Vector, Text, HashMap) by default instead of the naive
-versions so typically using Aeson will require that us import them and use ``OverloadedStrings`` when
-indexing into objects.
+#### Value
 
-See: [Aeson Documentation](http://hackage.haskell.org/package/aeson)
+Aeson uses several high performance data structures (Vector, Text, HashMap) by
+default instead of the naive versions so typically using Aeson will require that
+us import them and use ``OverloadedStrings`` when indexing into objects.
 
 The underlying Aeson structure is called ``Value`` and encodes a recursive tree
 structure that models the semantics of untyped JSON objects by mapping them onto
@@ -8499,12 +8490,13 @@ type Object = HashMap Text Value
 type Array = Vector Value
 
 -- | A JSON value represented as a Haskell value.
-data Value = Object !Object
-           | Array !Array
-           | String !Text
-           | Number !Scientific
-           | Bool !Bool
-           | Null
+data Value 
+  = Object !Object
+  | Array !Array
+  | String !Text
+  | Number !Scientific
+  | Bool !Bool
+  | Null
 ```
 
 For instance the Value expansion of the following JSON blob:
@@ -8516,7 +8508,7 @@ For instance the Value expansion of the following JSON blob:
 }
 ```
 
-Is represented in Aeson as the ``Value``.
+Is represented in Aeson as the ``Value``:
 
 ```haskell
 Object
@@ -8535,7 +8527,7 @@ JSON:
 ~~~~ {.json include="src/26-data-formats/example.json"}
 ~~~~
 
-**Unstructured**
+#### Unstructured JSON
 
 In dynamic scripting languages it's common to parse amorphous blobs of JSON without any a priori structure and
 then handle validation problems by throwing exceptions while traversing it. We can do the same using Aeson and
@@ -8544,7 +8536,7 @@ the Maybe monad.
 ~~~~ {.haskell include="src/26-data-formats/aeson_unstructured.hs"}
 ~~~~
 
-**Structured**
+#### Structured JSON
 
 This isn't ideal since we've just smeared all the validation logic across our traversal logic instead of
 separating concerns and handling validation in separate logic. We'd like to describe the structure before-hand
@@ -8581,17 +8573,14 @@ Success True
 Error "when expecting a Double, encountered Boolean instead"
 ```
 
-**Hand Written Instances**
+See: [Aeson Documentation](http://hackage.haskell.org/package/aeson)
+
+#### Hand Written Instances
 
 ```haskell
 ```
 
-**Template Haskell**
-
-```haskell
-```
-
-**Generics**
+#### Generics
 
 ```haskell
 ```
@@ -8609,7 +8598,7 @@ Cassava is an efficient CSV parser library. We'll work with this tiny snippet fr
 ~~~~ {.perl include="src/26-data-formats/iris.csv"}
 ~~~~
 
-**Unstructured**
+#### Unstructured CSV
 
 Just like with Aeson if we really want to work with unstructured data the library accommodates this.
 
@@ -8632,7 +8621,7 @@ We see we get the nested set of stringy vectors:
 ]
 ```
 
-**Structured**
+#### Structured CSV
 
 Just like with Aeson we can use Generic to automatically write the deserializer between our CSV data and our
 custom datatype.
@@ -8689,6 +8678,9 @@ composable bits of HTML programmatically. It doesn't string templating libraries
 like [Hastache](#hastache) but instead provides an API for building up HTML
 documents from logic where the format out of the output is generated
 procedurally.
+
+For sequencing HTML elements the elements can either be sequenced in a monad or
+with monoid operations.
 
 ~~~~ {.haskell include="src/27-web/blaze.hs"}
 ~~~~
@@ -8774,7 +8766,20 @@ TODO
 Redis
 -----
 
-TODO
+Redis is an in-memory key-value store with support for a variety of
+datastructures. The Haskell exposure is exposed in a ``Redis`` monad which
+sequences a set of [redis commands](http://redis.io/commands) taking ByteString
+arguments and then executes them against a connection object.
+
+~~~~ {.haskell include="src/28-databases/hedis.hs"}
+~~~~
+
+Redis is quite often used as a lightweight pubsub server, and the bindings
+integrate with the Haskell concurrency primitives so that listeners can be
+sparked and shared across threads off without blocking the main thread.
+
+~~~~ {.haskell include="src/28-databases/hedis_pubsub.hs"}
+~~~~
 
 Acid State
 ----------
@@ -8983,10 +8988,9 @@ showSDoc :: DynFlags -> SDoc -> String
 ```
 
 ```haskell
-showGhc :: Outputable a => a -> Ghc ()
-showGhc thing = do
-    dflags <- getSessionDynFlags
-    liftIO $ putStrLn (showSDoc (ppr thing))
+-- | Show a GHC.Outputable structure
+showGhc :: (GHC.Outputable a) => a -> String
+showGhc = GHC.showPpr GHC.unsafeGlobalDynFlags
 ```
 
 * [Outputable](https://downloads.haskell.org/~ghc/7.10.3/docs/html/libraries/ghc-7.10.3/Outputable.html)
@@ -10427,7 +10431,7 @@ Cmm Runtime:
 Optimization Hacks
 ------------------
 
-**Tables Next to Code**
+#### Tables Next to Code
 
 GHC will place the info table for a toplevel closure directly next to the
 entry-code for the objects in memory such that the fields from the info table
@@ -10436,7 +10440,7 @@ itself. Not performing this optimization would involve chasing through one more
 pointer to get to the info table. Given how often info-tables are accessed using
 the tables-next-to-code optimization results in a tractable speedup.
 
-**Pointer Tagging**
+#### Pointer Tagging
 
 Depending on the type of the closure involved, GHC will utilize the last few
 bits in a pointer to the closure to store information that can be read off from
@@ -10479,9 +10483,10 @@ Interface Files
 
 During compilation GHC will produce interface files for each module that are the
 binary encoding of specific symbols (functions, typeclasses, etc) exported by
-that modules as well as any package dependencies it itself depends on. The
-internal structure of this file can be dumped using the ``--show-iface`` flag.
-The structure of this file changes between versions of GHC.
+that modules as well as any package dependencies it itself depends on. This is
+effectively the serialized form of the ModGuts structure used internally in the
+compiler. The internal structure of this file can be dumped using the
+``--show-iface`` flag.  The precise structure changes between versions of GHC.
 
 ```bash
 $ ghc --show-iface let.hi                                                                                               
@@ -10521,7 +10526,7 @@ trusted: safe-inferred
 require own pkg trusted: False
 ```
 
-* haskell-src-exts
+haskell-src-exts
 -------------
 
 TODO
@@ -11195,13 +11200,6 @@ Multiline Strings
 
 TODO
 
-file-embed
-----------
-
-TODO
-
-See: [file-embed](https://hackage.haskell.org/package/file-embed)
-
 git-embed
 ----------
 
@@ -11578,10 +11576,10 @@ Resources
 Other Languages
 ===============
 
-Let us attempt to give an objective comparison of Haskell to other langauges
+Let us attempt to give an objective comparison of Haskell to other languages
 with regards to which language principles they share and how they differ. This
 is not advisement to use or not use any of these languages simply a statement of
-the similarities and differences between them.
+the similarities and differences between them at the language level.
 
 No notion of "weak" or "strong" typing will be discussed because the terms have
 no universal meaning.
@@ -11658,7 +11656,8 @@ backend compiler.
 
 **Main difference**: Standard ML is no longer actively developed, Haskell is.
 
-Standard ML's main implementation is *smlnj*.
+Standard ML's main implementation is *smlnj*. Other implementations existed in
+*mlton* and *polyml*.
 
 Standard ML has no package manager.
 
@@ -11711,7 +11710,7 @@ Idris
 Idris is a general-purpose purely functional programming language with dependent
 types.
 
-**Main difference**: Idris has dependent types and call-by-value evaluation,
+**Main difference**: Idris has dependent types and call-by-value semantics,
 Haskell does not have dependent types and uses call-by-need.
 
 Idris's main implementation is *idris*.
@@ -11744,9 +11743,10 @@ for statically analyzing lifetimes of references informing the efficient
 compilation of many language constructs to occur without heap allocation.
 
 **Main difference**: Rust is a modern imperative typed language, Haskell is a
-modern functional typed language with recent type system.
+modern functional typed language with recent type system. Rust does not have the
+capacity to distinguish between pure and impure functions at the language level.
 
-Rusts's main implementation is *rustc*.
+Rust's main implementation is *rustc*.
 
 Rust is a *statically typed* language.
 
@@ -11787,12 +11787,16 @@ Elm
 Elm is a ML-like language that compiles into Javascript for evaluation within a
 web browser.
 
+**Main difference**: Elm targets Javascript in the browser, while GHC Haskell is
+designed to work on top of the GHC managed runtime.  Elm lacks any semblance of
+a modern ML type system features, and has no coherent story for overloading,
+modules or higher polymorphism.
+
 Elm's main implementation is *elm*.
 
 Elm is a *statically typed* language.
 
-Elm allows polymorphism by means of *parametric polymorphism* and limited
-*ad-hoc polymorphism*.
+Elm allows polymorphism by means of *parametric polymorphism*.
 
 Elm is *pure* and statically tracks effects.
 
@@ -11801,8 +11805,8 @@ Python
 
 Python is a widely used general-purpose, high-level programming language. It is
 based on object-style of programming constructions and allows first class
-functions and higher order functions. Python is untyped and is notorious for
-it's simplistic runtime and global mutex preventing concurrency.
+functions and higher order functions. Python is unityped and is notable for it's
+simplistic runtime and global mutex preventing concurrency.
 
 **Main difference**: Python is unityped and imperative, Haskell is statically
 typed.
@@ -11820,7 +11824,18 @@ Python allows polymorphism by means of unityping, all functions can take any
 type.
 
 R
-------
+-
+
+R's main implementation is *r*.
+
+R is a *unityped* language.
+
+R allows polymorphism by means of *unityping*.
+
+R internally refers to runtime value tags as *types*, which differs from
+the Haskell notion of types.
+
+R is *interpreted*.
 
 Julia
 ------
