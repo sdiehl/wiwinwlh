@@ -534,8 +534,6 @@ Flag                                 Description
 -fwarn-monomorphism-restriction      Warn when the monomorphism restriction is applied implicitly
 -fwarn-orphans                       Warn on orphan typeclass instances.
 -fforce-recomp                       Force recompilation regardless of timestamp
-
-
 -fno-code                            Don't doing code generation, just parse and typecheck.
 -fobject-code                        Don't doing code generation, just parse and typecheck.
 
@@ -760,13 +758,33 @@ For reasons of sexiness it is desirable to set your GHC prompt to a ``λ`` or a
 :set prompt "ΠΣ: "
 ```
 
-**GHCi Performance**
+#### GHCi Performance
 
-TODO
+For large projects GHCi with the default flags can use quite a bit of memory and
+take a long time to compile. To speed compilation by keeping artificats for
+compiled modules around we can enable object code compilation instead of
+bytecode.
 
--fno-code
+```haskell
+:set -fobject-code
+```
 
--fobject-code
+This has some drawbacks in that type information provided to the shell can
+sometimes be less informative and break with some langauge extensions. In that
+case you can temporally reenable bytecode on a per module basis with the
+opposite flag.
+
+```haskell
+:set -fbyte-code
+:load MyModule.hs
+```
+
+If you all you need is just to typecheck your code in the interactive shell then
+disabling code generation entirely makes reloads almost instantaneous.
+
+```haskell
+:set -fbyte-code
+```
 
 Editor Integration
 ---------------
@@ -2566,9 +2584,6 @@ With ``-XDeriveAnyClass`` we can derive any class. The deriving logic s
 generates an instance declaration for the type with no explicitly-defined
 methods.  If the typeclass implements a default for each method then this will
 be well-defined and give rise to an automatic instances.
-
-DefaultSignatures
------------------
 
 StaticPointers
 -----------------
@@ -6072,8 +6087,8 @@ type-level functions by lifting types to the kind level.
 ~~~~ {.haskell include="src/17-promotion/typefamily.hs"}
 ~~~~
 
-Vectors
--------
+Size-Indexed Vectors
+--------------------
 
 Using this new structure we can create a ``Vec`` type which is parameterized by its length as well as its
 element type now that we have a kind language rich enough to encode the successor type in the kind signature
@@ -8313,14 +8328,54 @@ TODO
 Happy & Alex
 ------------
 
-TODO
+Happy is a parser generator system for Haskell, similar to the tool `yacc' for
+C. It works as a preprocessor with it's own syntax that generates a parse table
+from two specifications,  a lexer file and parser file. Happy does not have the
+ssame underlying parser implementation as parser combinators and can effectively
+work with left-recursive grammars without explicit factorization. It can also
+easily be modified to track position information for tokens and handle offside
+parsing rules for indentation-sensitive grammars. Happy is used in GHC itself
+for Haskell's grammar.
 
-~~~~ {.haskell include="src/24-parsing/happy/Parser.y"}
-~~~~
+1. Lexer.x
+1. Parser.y
+
+Running the standalone commands will generate the Haskell source for the
+modules.
+
+```bash
+$ alex Lexer.x -o Lexer.hs
+$ happy Parser.y -o Parser.hs
+```
+
+The generated modules are not human readable generally and unfortunatly error
+messages are given in the Haskell source, not the Happy source.
+
+#### Lexer
+
+For instance we could define a little toy lexer with a custom set of tokens.
 
 ~~~~ {.haskell include="src/24-parsing/happy/Lexer.x"}
 ~~~~
 
+#### Parser
+
+The associated parser is list of a production rules and a monad to running the
+parser in. Production rules consist of a set of options on the left and
+generating Haskell expressions on the right with indexed metavariables (``$1``,
+``$2``, ...) mapping to the ordered terms on the left (i.e. in the second term
+``term`` ~ ``$1``, ``term`` ~ ``$2``).
+
+```perl
+terms 
+    : term                   { [$1] }
+    | term terms             { $1 : $2 }
+```
+
+~~~~ {.haskell include="src/24-parsing/happy/Parser.y"}
+~~~~
+
+As a simple input consider the following simple program.
 
 ~~~~ {.haskell include="src/24-parsing/happy/input.test"}
 ~~~~
@@ -8597,15 +8652,58 @@ See: [Aeson Documentation](http://hackage.haskell.org/package/aeson)
 ```haskell
 ```
 
-#### Generics
-
-```haskell
-```
-
 Yaml
 ---
 
-TODO
+~~~~ {.haskell include="src/26-data-formats/example.yaml"}
+~~~~
+
+```haskell
+Object
+  (fromList
+     [ ( "invoice" , Number 34843.0 )
+     , ( "date" , String "2001-01-23" )
+     , ( "bill-to"
+       , Object
+           (fromList
+              [ ( "address"
+                , Object
+                    (fromList
+                       [ ( "state" , String "MI" )
+                       , ( "lines" , String "458 Walkman Dr.\nSuite #292\n" )
+                       , ( "city" , String "Royal Oak" )
+                       , ( "postal" , Number 48046.0 )
+                       ])
+                )
+              , ( "family" , String "Dumars" )
+              , ( "given" , String "Chris" )
+              ])
+       )
+     ])
+```
+
+~~~~ {.haskell include="src/26-data-formats/yaml.hs"}
+~~~~
+
+
+```haskell
+Invoice
+  { invoice = 34843
+  , date = "2001-01-23"
+  , bill =
+      Billing
+        { address =
+            Address
+              { lines = "458 Walkman Dr.\nSuite #292\n"
+              , city = "Royal Oak"
+              , state = "MI"
+              , postal = 48046
+              }
+        , family = "Dumars"
+        , given = "Chris"
+        }
+  }
+```
 
 CSV
 ---
@@ -9300,9 +9398,8 @@ map =
 Machine generated names are created for a lot of transformation of Core.
 Generally they consist of a prefix and unique identifier. The prefix is often
 pass specific ( i.e. ``ds`` for desugar generated name s) and sometimes specific
-names are generated for specific automatically generated code. A non exhaustive
-cheat sheet is given below for deciphering what a name is and what it might
-stand for:
+names are generated for specific automatically generated code. A list of the
+common prefixes and their meaning is show below.
 
 Prefix       Description
 ----------   ---------------------------------
@@ -12088,8 +12185,8 @@ Javascript is most kindly described as a language that "just happened" and an
 enduring testament to human capacity to route around problems.
 
 **Main difference**: Like many web technologies Javascript "just happened" and
-it's design was dominated by economic factors. Haskell was designed by experts
-in the PL domain and avoids success at the cost of going down the wrong path.
+it's design was dominated by economic factors. Haskell was designed with some
+insight into the end result.
 
 Javascripts implementations include *NodeJS*, *V8* and *spidermoneky*.
 
