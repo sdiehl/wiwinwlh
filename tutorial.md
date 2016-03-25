@@ -2562,6 +2562,11 @@ DeriveGeneric
 DeriveAnyClass
 -------------
 
+With ``-XDeriveAnyClass`` we can derive any class. The deriving logic s
+generates an instance declaration for the type with no explicitly-defined
+methods.  If the typeclass implements a default for each method then this will
+be well-defined and give rise to an automatic instances.
+
 DefaultSignatures
 -----------------
 
@@ -4376,11 +4381,6 @@ lifted-prelude
 * MonadIO
 * MonadThrow
 * MonadBaseControl
-
-TODO
-
-Haxl
-----
 
 TODO
 
@@ -7513,6 +7513,14 @@ library level by compiling with ``boundschecks`` cabal flag.
 Unordered-Containers
 --------------------
 
+Functionality      Function  Time Complexity
+------------------ --------  ---------------
+Initialization     empty     O(1)
+Size               size      O(1)
+Lookup             lookup    O(log(n))
+Insertion          insert    O(log(n))
+Traversal          traverse  O(n)
+
 ```haskell
 fromList :: (Eq k, Hashable k) => [(k, v)] -> HashMap k v
 lookup :: (Eq k, Hashable k) => k -> HashMap k v -> Maybe v
@@ -7527,12 +7535,10 @@ a ``Hashable`` instance.
 ~~~~ {.haskell include="src/20-data-structures/unordered.hs"}
 ~~~~
 
-See: [Johan Tibell: Announcing Unordered Containers](http://blog.johantibell.com/2012/03/announcing-unordered-containers-02.html)
+See: [Announcing Unordered Containers](http://blog.johantibell.com/2012/03/announcing-unordered-containers-02.html)
 
 Hashtables
 ----------
-
-Hashtables provides hashtables with efficient lookup within the ST or IO monad.
 
 Functionality      Function  Time Complexity
 ------------------ --------  ---------------
@@ -7541,6 +7547,9 @@ Size               size      O(1)
 Lookup             lookup    O(1)
 Insertion          insert    ???
 Traversal          traverse  O(n)
+
+
+Hashtables provides hashtables with efficient lookup within the ST or IO monad.
 
 ~~~~ {.haskell include="src/20-data-structures/hashtables.hs"}
 ~~~~
@@ -8573,6 +8582,14 @@ Success True
 Error "when expecting a Double, encountered Boolean instead"
 ```
 
+As of 7.10.2 we can use the new -XDeriveAnyClass to automatically derive
+instances of FromJSON and TOJSON without the need for standalone instance
+declarations. These are implemented entirely in terms of the default methods
+which use Generics under the hood.
+
+~~~~ {.haskell include="src/26-data-formats/aeson_derive.hs"}
+~~~~
+
 See: [Aeson Documentation](http://hackage.haskell.org/package/aeson)
 
 #### Hand Written Instances
@@ -8756,7 +8773,119 @@ Databases
 Postgres
 --------
 
-TODO
+```sql
+CREATE TABLE "books" (
+	"id" integer NOT NULL,
+	"title" text NOT NULL,
+	"author_id" integer,
+	"subject_id" integer,
+	Constraint "books_id_pkey" Primary Key ("id")
+);
+
+CREATE TABLE "authors" (
+	"id" integer NOT NULL,
+	"last_name" text,
+	"first_name" text,
+	Constraint "authors_pkey" Primary Key ("id")
+);
+```
+
+```haskell
+query_ :: FromRow r => Connection -> Query -> IO [r]
+query :: (ToRow q, FromRow r) => Connection -> Query -> q -> IO [r]
+execute :: ToRow q => Connection -> Query -> q -> IO Int64
+execute_ :: Connection -> Query -> IO Int64
+```
+
+The result of the ``query`` function is a list of elements which implement the
+FromRow typeclass. This can be many things including a single elemment (Only), a
+list of tuples where each element implements ``FromField`` or a custom datatype
+that itself implements ``FromRow``. Under the hood the database bindings
+inspects the Postgres ``oid`` objects and then attempts to convert them into the
+Haskell datatype of the field being scrutinised. This can fail at runtime if the
+types in the database don't align with the expected types in the logic executing
+the SQL query.
+
+#### Tuples
+
+~~~~ {.haskell include="src/28-databases/postgres.hs"}
+~~~~
+
+This yields the result set:
+
+```haskell
+[ ( 7808 , "The Shining" , 4156 )
+, ( 4513 , "Dune" , 1866 )
+, ( 4267 , "2001: A Space Odyssey" , 2001 )
+, ( 1608 , "The Cat in the Hat" , 1809 )
+, ( 1590 , "Bartholomew and the Oobleck" , 1809 )
+, ( 25908 , "Franklin in the Dark" , 15990 )
+, ( 1501 , "Goodnight Moon" , 2031 )
+, ( 190 , "Little Women" , 16 )
+, ( 1234 , "The Velveteen Rabbit" , 25041 )
+, ( 2038 , "Dynamic Anatomy" , 1644 )
+, ( 156 , "The Tell-Tale Heart" , 115 )
+, ( 41473 , "Programming Python" , 7805 )
+, ( 41477 , "Learning Python" , 7805 )
+, ( 41478 , "Perl Cookbook" , 7806 )
+, ( 41472 , "Practical PostgreSQL" , 1212 )
+]
+```
+
+#### Custom Types
+
+~~~~ {.haskell include="src/28-databases/postgres_custom.hs"}
+~~~~
+
+This yields the result set:
+
+```haskell
+[ Book { id_ = 7808 , title = "The Shining" , author_id = 4156 }
+, Book { id_ = 4513 , title = "Dune" , author_id = 1866 }
+, Book { id_ = 4267 , title = "2001: A Space Odyssey" , author_id = 2001 }
+, Book { id_ = 1608 , title = "The Cat in the Hat" , author_id = 1809 }
+]
+```
+
+#### Quasiquoter
+
+As SQL expressions grow in complexity they often span multiple lines and
+sometimes its useful to just drop down to a quasiquoter to embed the whole
+query. The quoter here is pure, and just generates the ``Query`` object behind
+as a ByteString.
+
+~~~~ {.haskell include="src/28-databases/postgres_qq.hs"}
+~~~~
+
+This yields the result set:
+
+```haskell
+[ Book
+    { id_ = 41472
+    , title = "Practical PostgreSQL"
+    , first_name = "John"
+    , last_name = "Worsley"
+    }
+, Book
+    { id_ = 25908
+    , title = "Franklin in the Dark"
+    , first_name = "Paulette"
+    , last_name = "Bourgeois"
+    }
+, Book
+    { id_ = 1234
+    , title = "The Velveteen Rabbit"
+    , first_name = "Margery Williams"
+    , last_name = "Bianco"
+    }
+, Book
+    { id_ = 190
+    , title = "Little Women"
+    , first_name = "Louisa May"
+    , last_name = "Alcott"
+    }
+]
+```
 
 Sqlite
 ------
