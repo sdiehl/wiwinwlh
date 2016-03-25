@@ -1318,11 +1318,11 @@ do
   return (a, b, c)
 
 do {
-  a <- f ;
-  b <- g ;
-  c <- h ;
+  a <- f;
+  b <- g;
+  c <- h;
   return (a, b, c)
-}
+  }
 
 f >>= \a ->
   g >>= \b ->
@@ -1606,11 +1606,13 @@ A simple implementation of the Writer monad:
 ~~~~
 
 This implementation is lazy so some care must be taken that one actually wants
-to only generate a stream of thunks.  Often times it is desirable to produce a
-computation which requires a stream of thunks that can be pulled out of the
-``runWriter`` lazily, but often times the requirement is to produce a finite stream
-of values that are forced at the invocation of ``runWriter``. Undesired laziness
-from Writer is a common source of grief, but is very remediable.
+to only generate a stream of thunks. Most often the lazy writer is not suitable
+for use, instead implement the equivalent structure by embedding some monomial
+object inside a StateT monad, or using the strict version.
+
+```haskell
+import Control.Monad.Writer.Strict
+```
 
 State Monad
 -----------
@@ -2045,17 +2047,17 @@ The Benign
 It's not obvious which extensions are the most common but it's fairly safe to
 say that these extensions are benign and are safely used extensively:
 
-* NoMonomorphismRestriction
+* OverloadedStrings
 * FlexibleContexts
 * FlexibleInstances
 * GeneralizedNewtypeDeriving
-* GADTs
-* FunctionalDependencies
-* OverloadedStrings
 * TypeSynonymInstances
+* MultiParamTypeClasses
+* FunctionalDependencies
+* NoMonomorphismRestriction
+* GADTs
 * BangPatterns
 * DeriveGeneric
-* DeriveDataTypeable
 * ScopedTypeVariables
 
 The Dangerous
@@ -2064,11 +2066,11 @@ The Dangerous
 GHC's typechecker sometimes just casually tells us to enable language extensions when it can't solve certain
 problems. These include:
 
-* TemplateHaskell
 * DatatypeContexts
 * OverlappingInstances
 * IncoherentInstances
 * ImpredicativeTypes
+* AllowAmbigiousTypes
 
 These almost always indicate a design flaw and shouldn't be turned on to remedy the error at hand, as
 much as GHC might suggest otherwise!
@@ -2411,6 +2413,17 @@ bmiTell bmi = if
   | otherwise   -> "You're a whale." 
 ```
 
+EmptyCase
+-------------
+
+GHC normally requires at least one pattern branch in case statement this
+restriction can be relaxed with -XEmptyCase. The case statement then immediately
+yields a ``Non-exhaustive patterns in case`` if evaluated.
+
+```
+test = case of
+```
+
 LambdaCase
 -------------
 
@@ -2654,6 +2667,11 @@ TODO
 
 <hr/>
 
+Historical Extensions
+---------------------
+
+TODO
+
 Type Classes
 ============
 
@@ -2667,6 +2685,9 @@ FlexibleContexts
 -------------------
 
 IncoherentInstances
+-------------------
+
+TypeSynonymInstances
 -------------------
 
 OverlappingInstances
@@ -3267,6 +3288,24 @@ trivial Sum monoid:
 Sum {getSum = 55}
 ```
 
+For instance if we wanted to map a list of some abstract element types into a
+hashtable of elements based on pattern matching we could use it.
+
+```haskell
+import Data.Foldable
+import qualified Data.Map as Map
+
+data Elt
+  = Elt Int Double
+  | Nil
+
+foo :: [Elt] -> Map.Map Int Double
+foo = foldMap go
+  where
+    go (Elt x y) = Map.singleton x y
+    go Nil = Map.empty
+```
+
 The full Foldable class (with all default implementations) contains a variety of
 derived functions which themselves can be written in terms of ``foldMap`` and
 ``Endo``.
@@ -3275,8 +3314,8 @@ derived functions which themselves can be written in terms of ``foldMap`` and
 newtype Endo a = Endo {appEndo :: a -> a}
 
 instance Monoid (Endo a) where
-        mempty = Endo id
-        Endo f `mappend` Endo g = Endo (f . g)
+  mempty = Endo id
+  Endo f `mappend` Endo g = Endo (f . g)
 ```
 
 ```haskell
@@ -3312,15 +3351,17 @@ Data.Foldable.minimum :: (Ord a, Foldable t) => t a -> a
 Data.Traversable.mapM :: (Monad m, Traversable t) => (a -> m b) -> t a -> m (t b)
 ```
 
-Unfortunately for historical reasons the names exported by foldable quite often conflict with ones defined in
-the Prelude, either import them qualified or just disable the Prelude. The operations in the Foldable all
-specialize to the same and behave the same as the ones in Prelude for List types.
+Unfortunately for historical reasons the names exported by foldable quite often
+conflict with ones defined in the Prelude, either import them qualified or just
+disable the Prelude. The operations in the Foldable all specialize to the same
+and behave the same as the ones in Prelude for List types.
 
 ~~~~ {.haskell include="src/06-prelude/foldable_traversable.hs"}
 ~~~~
 
-The instances we defined above can also be automatically derived by GHC using several language extensions. The
-automatic instances are identical to the hand-written versions above.
+The instances we defined above can also be automatically derived by GHC using
+several language extensions. The automatic instances are identical to the
+hand-written versions above.
 
 ```haskell
 {-# LANGUAGE DeriveFunctor #-}
@@ -3430,14 +3471,15 @@ Variant                   Module
 
                       Data.Text  Data.Text.Lazy  Data.ByteString  Data.ByteString.Lazy
 --------------------- ---------  --------------  ---------------  ------------------
-Data.Text             id         fromStrict
-Data.Text.Lazy        toStrict   id
-Data.ByteString                                   id
-Data.ByteString.Lazy                                              id
+Data.Text             id         fromStrict      encodeUtf8       encodeUtf8
+Data.Text.Lazy        toStrict   id              encodeUtf8       encodeUtf8
+Data.ByteString       decodeUtf8 decodeUtf8      id               fromStrict
+Data.ByteString.Lazy  decodeUtf8 decodeUtf8      toStrict         id
 
-With the ``-XOverloadedStrings`` extension string literals can be overloaded without the need
-for explicit packing and can be written as string literals in the Haskell source and overloaded via a
-typeclass ``IsString``.
+With the ``-XOverloadedStrings`` extension string literals can be overloaded
+without the need for explicit packing and can be written as string literals in
+the Haskell source and overloaded via a typeclass ``IsString``. Sometimes this
+is desirable.
 
 ```haskell
 class IsString a where
@@ -4060,10 +4102,15 @@ handler inside IO to catch it. Spoon allows us to safely (and "purely", although
 it uses a referentially transparent invocation of unsafePerformIO) to catch
 these exceptions and put them in Maybe where they belong.
 
+The ``spoon`` function evaluates its argument to head normal form, while
+``teaspoon`` evaluates to [weak head normal form](#seq-and-whnf).
+
 ~~~~ {.haskell include="src/09-errors/spoon.hs"}
 ~~~~
 
-See: [Spoon](https://hackage.haskell.org/package/spoon)
+See: 
+
+* [Spoon](https://hackage.haskell.org/package/spoon)
 
 </hr>
 
@@ -4344,6 +4391,10 @@ TODO
 
 lifted-prelude
 -------------
+
+* MonadIO
+* MonadThrow
+* MonadBaseControl
 
 TODO
 
@@ -6237,31 +6288,25 @@ data instance Sing (a :: Bool) where
 
 **Promoted Naturals**
 
-```haskell
 Value-level  Type-level         Models
 -----------  ------------       -------
 SZ           Sing 'Z            0
 SS SZ        Sing ('S 'Z)       1
 SS (SS SZ)   Sing ('S ('S 'Z))  2
-```
 
 **Promoted Booleans**
 
-```haskell
 Value-level  Type-level         Models
 -----------  ---------------    -------
 STrue        Sing 'False        False
 SFalse       Sing 'True         True
-```
 
 **Promoted Maybe**
 
-```haskell
 Value-level  Type-level         Models
 -----------  ---------------    -------
 SJust a      Sing (SJust 'a)    Just a
 SNothing     Sing Nothing       Nothing
-```
 
 Singleton types are an integral part of the small cottage industry of faking
 dependent types in Haskell, i.e.  constructing types with terms predicated upon
@@ -6601,7 +6646,7 @@ Done solving.
 ```
 
 For more extensive documentation and further use cases see the official
-documentation: 
+documentation:
 
 * [Liquid Haskell Documentation](https://ucsd-progsys.github.io/liquidhaskell-tutorial/01-intro.html)
 
@@ -7360,9 +7405,6 @@ Data Structures
 Map
 ---
 
-A map is an associative array mapping any instance of ``Ord`` keys to values of
-any type.
-
 Functionality      Function  Time Complexity
 ------------------ --------  ---------------
 Initialization     empty     O(1)
@@ -7370,6 +7412,9 @@ Size               size      O(1)
 Lookup             lookup    O(log(n))
 Insertion          insert    O(log(n))
 Traversal          traverse  O(n)
+
+A map is an associative array mapping any instance of ``Ord`` keys to values of
+any type.
 
 ~~~~ {.haskell include="src/20-data-structures/map.hs"}
 ~~~~
@@ -7391,22 +7436,32 @@ Traversal          traverse  O(n)
 Set
 ---
 
-Sets are an unordered data structures allow ``Ord`` values of any type and
-guaranteeing uniqueness with in the structure. They are not precisely identical
-to the mathematical notion of a Set even though they share the same namesake.
-
 Functionality      Function  Time Complexity
 ------------------ --------  ---------------
 Initialization     empty     O(1)
 Size               size      O(1)
 Insertion          insert    O(log(n))
+Deletion           delete    O(log(n))
 Traversal          traverse  O(n)
+Membership Test    member    O(log(n))
+
+Sets are an unordered data structures allow ``Ord`` values of any type and
+guaranteeing uniqueness with in the structure. They are not identical to the
+mathematical notion of a Set even though they share the same namesake.
 
 ~~~~ {.haskell include="src/20-data-structures/set.hs"}
 ~~~~
 
 Vector
 ------
+
+Functionality      Function  Time Complexity
+------------------ --------  ---------------
+Initialization     empty     O(1)
+Size               length    O(1)
+Indexing           (!)       O(1)
+Append             append    O(n)
+Traversal          traverse  O(n)
 
 Vectors are high performance single dimensional arrays that come come in six variants, two for each of the
 following types of a mutable and an immutable variant.
@@ -7437,6 +7492,17 @@ See: [Numerical Haskell: A Vector Tutorial](http://wiki.haskell.org/Numeric_Hask
 Mutable Vectors
 ---------------
 
+Functionality      Function  Time Complexity
+------------------ --------  ---------------
+Initialization     empty     O(1)
+Size               length    O(1)
+Indexing           (!)       O(1)
+Append             append    O(n)
+Traversal          traverse  O(n)
+Update             modify    O(1)
+Read               read      O(1)
+Write              write     O(1)
+
 ```haskell
 freeze :: MVector (PrimState m) a -> m (Vector a)
 thaw :: Vector a -> MVector (PrimState m) a
@@ -7446,9 +7512,12 @@ Within the IO monad we can perform arbitrary read and writes on the mutable
 vector with constant time reads and writes. When needed a static Vector can be
 created to/from the ``MVector`` using the freeze/thaw functions.
 
-
 ~~~~ {.haskell include="src/20-data-structures/vector_mutable.hs"}
 ~~~~
+
+The vector library itself normally does bounds checks on index operations to
+protect against memory corruption. This can be enabled or disabled on the
+library level by compiling with ``boundschecks`` cabal flag.
 
 Unordered-Containers
 --------------------
@@ -8611,6 +8680,11 @@ Haskell has a variety of HTTP request and processing libraries.
 ~~~~ {.haskell include="src/27-web/http.hs"}
 ~~~~
 
+Blaze
+-----
+
+
+
 Warp
 ----
 
@@ -8673,22 +8747,17 @@ TODO
 Databases
 =========
 
-postgresql-simple
------------------
+Postgres
+--------
 
 TODO
 
-mysql-simple
------------------
+Sqlite
+------
 
 TODO
 
-sqlite-simple
------------------
-
-TODO
-
-hedis
+Redis
 -----
 
 TODO
@@ -10625,7 +10694,9 @@ import Text.Show.Pretty (ppShow)
 let pprint x = putStrLn $ ppShow x
 ```
 
-See: [The Design of a Pretty-printing Library](http://belle.sourceforge.net/doc/hughes95design.pdf)
+See: 
+
+* [The Design of a Pretty-printing Library](http://belle.sourceforge.net/doc/hughes95design.pdf)
 
 wl-pprint-text
 -------------------
