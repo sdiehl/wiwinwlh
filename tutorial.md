@@ -8675,7 +8675,8 @@ Network & Web Programming
 HTTP
 ----
 
-Haskell has a variety of HTTP request and processing libraries.
+Haskell has a variety of HTTP request and processing libraries. The simplest and
+most flexible is the [HTTP library](https://hackage.haskell.org/package/HTTP).
 
 ~~~~ {.haskell include="src/27-web/http.hs"}
 ~~~~
@@ -8683,7 +8684,20 @@ Haskell has a variety of HTTP request and processing libraries.
 Blaze
 -----
 
+Blaze is an HTML combinator library that provides that capacity to build
+composable bits of HTML programmatically. It doesn't string templating libraries
+like [Hastache](#hastache) but instead provides an API for building up HTML
+documents from logic where the format out of the output is generated
+procedurally.
 
+~~~~ {.haskell include="src/27-web/blaze.hs"}
+~~~~
+
+For custom datatypes we can implement the ``ToMarkup``class to convert between
+Haskell data structures and HTML representation.
+
+~~~~ {.haskell include="src/27-web/blaze_instance.hs"}
+~~~~
 
 Warp
 ----
