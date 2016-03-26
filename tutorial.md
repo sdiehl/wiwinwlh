@@ -3008,7 +3008,7 @@ class NFData a where
   rnf :: a -> ()
   rnf a = a `seq` ()
 
-deepseq :: NFData a => a -> b -> a
+deepseq :: NFData a => a -> b -> b
 ($!!) :: (NFData a) => (a -> b) -> a -> b
 ```
 
