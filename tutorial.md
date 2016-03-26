@@ -6189,9 +6189,10 @@ GHC.
 Type Equality
 -------------
 
-Continuing with the theme of building more elaborate proofs in Haskell, GHC 7.8 recently shipped with the
-``Data.Type.Equality`` module which provides us with an extended set of type-level operations for expressing
-the equality of types as values, constraints, and promoted booleans.
+Continuing with the theme of building more elaborate proofs in Haskell, GHC 7.8
+recently shipped with the ``Data.Type.Equality`` module which provides us with
+an extended set of type-level operations for expressing the equality of types as
+values, constraints, and promoted booleans.
 
 ```haskell
 (~)   :: k -> k -> Constraint
@@ -8686,12 +8687,26 @@ which use Generics under the hood.
 ~~~~ {.haskell include="src/26-data-formats/aeson_derive.hs"}
 ~~~~
 
-See: [Aeson Documentation](http://hackage.haskell.org/package/aeson)
-
 #### Hand Written Instances
 
-```haskell
-```
+While it's useful to use generics to derive instances, sometimes you actually
+want more fine grained control over serialization and de serialization. So we
+fall back on writing ToJSON and FromJSON instances manually. Using FromJSON we
+can project into hashmap using the ``(.:)`` operator to extract keys. If the key
+fails to exist the parser will abort with a key failure message. The ToJSON
+instances can never fail and simply require us to pattern match on our custom
+datatype and generate an appropriate value.
+
+The law that the FromJSON and ToJSON classes should maintain is that ``encode .
+deocde`` and ``decode . encode`` should map to the same object. Although in
+practice there many times when we break this rule and especially if the
+serialize or de serialize is one way.
+
+~~~~ {.haskell include="src/26-data-formats/aeson_custom.hs"}
+~~~~
+
+See: [Aeson Documentation](http://hackage.haskell.org/package/aeson)
+
 
 Yaml
 ---
@@ -8854,10 +8869,10 @@ Haskell data structures and HTML representation.
 Warp
 ----
 
-Warp is a particularly efficient web server, it's the backed request engine
-behind several of popular Haskell web frameworks. The internals have been finely
-tuned to utilize Haskell's concurrent runtime and is capable of handling a great
-deal of concurrent requests.
+Warp is a efficient web server, it's the backed request engine behind several of
+popular Haskell web frameworks. The internals have been finely tuned to utilize
+Haskell's concurrent runtime and is capable of handling a great deal of
+concurrent requests.
 
 ~~~~ {.haskell include="src/27-web/warp.hs"}
 ~~~~
