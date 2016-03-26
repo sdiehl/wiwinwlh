@@ -6143,7 +6143,48 @@ See: [Type-Level Literals](http://www.haskell.org/ghc/docs/7.8.2/html/users_guid
 Typelevel Strings
 -----------------
 
-TODO
+Custom Errors
+-------------
+
+As of GHC 8.0 we have the capacity to provide custom type error using type
+families. The messages themselves hook into GHC and expressed using the small
+datatype found in ``GHC.TypeLits``
+
+```haskell
+data ErrorMessage where
+  Text :: Symbol -> ErrorMessage
+  ShowType :: t -> ErrorMessage
+
+  -- Put two messages next to each other
+  (:<>:) :: ErrorMessage -> ErrorMessage -> ErrorMessage
+
+  -- Put two messages on top of each other
+  (:$$:) :: ErrorMessage -> ErrorMessage -> ErrorMessage
+```
+
+If one of these expressions is found in the signature of an expression GHC
+reports an error message of the form:
+
+```haskell
+example.hs:1:1: error:
+    • My custom error message line 1.
+    • My custom error message line 2.
+    • In the expression: example
+      In an equation for ‘foo’: foo = ECoerce (EFloat 3) (EInt 4)
+```
+
+~~~~ {.haskell include="src/17-promotion/errors.hs"}
+~~~~
+
+A less contrived example would be creating a type-safe embedded DSL that
+enforces invariants about the semantics at the type-level. We've been able to do
+this sort of thing using GADTs and type-families for a while but the error
+reporting has been horrible. With 8.0 we can have type-families that emit useful
+type errors that reflect what actually goes wrong and integrate this inside oF
+GHC.
+
+~~~~ {.haskell include="src/17-promotion/errors_dsl.hs"}
+~~~~
 
 Type Equality
 -------------
@@ -8654,6 +8695,10 @@ See: [Aeson Documentation](http://hackage.haskell.org/package/aeson)
 
 Yaml
 ---
+
+Yaml is a textual serialization format similar to JSON. It uses an indentation
+sensitive structure to encode nested maps of keys and values. The Yaml interface
+for Haskell is a precise copy of ``Data.Aeson``
 
 ~~~~ {.haskell include="src/26-data-formats/example.yaml"}
 ~~~~
