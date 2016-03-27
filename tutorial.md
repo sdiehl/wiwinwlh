@@ -8430,7 +8430,11 @@ As a simple input consider the following simple program.
 Configurator 
 ------------
 
-TODO
+~~~~ {.haskell include="src/24-parsing/configurator.hs"}
+~~~~
+
+~~~~ {.haskell include="src/24-parsing/example.config"}
+~~~~
 
 </hr>
 
