@@ -1103,6 +1103,18 @@ ghcid --command="stack repl"
 Any subsequent change to your project's filesystem will trigger and automatic
 reload.
 
+Deferred Type Errors
+--------------------
+
+As of 7.8 GHC support the option of pushing type errors to runtime errors
+allowing us to run the program and let it simply fail only when a mistyped
+expression is evaluated, letting the rest of the program proceed to run. This is
+enabled with the ``-fdefer-type-errors`` which can be enabled at the module
+level, when compiled or inside of a GHCi interactive session.
+
+~~~~ {.haskell include="src/01-basics/defer.hs"}
+~~~~
+
 Haddock
 -------
 
