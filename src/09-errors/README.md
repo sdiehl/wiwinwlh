@@ -2,11 +2,11 @@ Language Extensions
 ===================
 
 ```bash
-$ stack exec ghci lambdacase.hs
-$ stack exec ghci monomorphism.hs
-$ stack exec ghci patterns.hs
-$ stack exec ghci safe.hs
-$ stack exec ghci views.hs
-$ stack exec ghci wildcards.hs
-$ stack exec ghci wildcards_update.hs
+$ stack exec ghci either.hs
+$ stack exec ghci either_impl.hs
+$ stack exec ghci eithert.hs
+$ stack exec ghci errors.hs
+$ stack exec ghci exceptions.hs
+$ stack exec ghci ioexception.hs
+$ stack exec ghci spoon.hs
 ```

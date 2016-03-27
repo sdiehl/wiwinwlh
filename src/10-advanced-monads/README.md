@@ -1,5 +1,5 @@
-Monads
-======
+Advanced Monads
+===============
 
 ```bash
 $ stack exec ghci cont.hs

@@ -820,8 +820,8 @@ undefined :: a
 ```
 
 The bottom is a singular value that inhabits every type. When evaluated the
-semantics of Haskell no longer yields a meaningful value. It's usually written as
-the symbol ⊥ (i.e. the compiler flipping you off ).
+semantics of Haskell no longer yields a meaningful value. It's usually written
+as the symbol ⊥ (i.e. the compiler flipping you off ).
 
 An example of an infinite looping term:
 
@@ -1007,10 +1007,10 @@ And indeed the runtime tells us that the exception occurred in the function
   called from Main.CAF
 ```
 
-It is best to run this without
-optimizations applied ``-O0`` so as to preserve the original call stack as
-represented in the source.  With optimizations applied this may often entirely
-different since GHC will rearrange the program in rather drastic ways.
+It is best to run this without optimizations applied ``-O0`` so as to preserve
+the original call stack as represented in the source.  With optimizations
+applied this may often entirely different since GHC will rearrange the program
+in rather drastic ways.
 
 See:
 
@@ -1056,8 +1056,8 @@ Type Holes
 Since GHC 7.8 we have a new tool for debugging incomplete programs by means of
 *typed holes*. By placing an underscore on any value on the right hand-side of a
 declaration GHC will throw an error during type-checker that reflects the
-possible values that could placed at this point in the program to make
-the program type-check.
+possible values that could placed at this point in the program to make the
+program type-check.
 
 ```haskell
 instance Functor [] where
@@ -1086,6 +1086,29 @@ Failed, modules loaded: none.
 GHC has rightly suggested that the expression needed to finish the program is
 ``xs :: [a]``.
 
+Deferred Type Errors
+--------------------
+
+As of 7.8 GHC support the option of pushing type errors to runtime errors
+allowing us to run the program and let it simply fail only when a mistyped
+expression is evaluated, letting the rest of the program proceed to run. This is
+enabled with the ``-fdefer-type-errors`` which can be enabled at the module
+level, when compiled or inside of a GHCi interactive session.
+
+~~~~ {.haskell include="src/01-basics/defer.hs"}
+~~~~
+
+The resulting program will compile but at runtime we'll see a message like the
+following when a pathological term is evaluated.
+
+```bash
+defer: defer.hs:4:5:
+    Couldn't match expected type ‘()’ with actual type ‘IO ()’
+    In the expression: print 3
+    In an equation for ‘x’: x = print 3
+(deferred type error)
+```
+
 ghcid
 -----
 
@@ -1103,17 +1126,6 @@ ghcid --command="stack repl"
 Any subsequent change to your project's filesystem will trigger and automatic
 reload.
 
-Deferred Type Errors
---------------------
-
-As of 7.8 GHC support the option of pushing type errors to runtime errors
-allowing us to run the program and let it simply fail only when a mistyped
-expression is evaluated, letting the rest of the program proceed to run. This is
-enabled with the ``-fdefer-type-errors`` which can be enabled at the module
-level, when compiled or inside of a GHCi interactive session.
-
-~~~~ {.haskell include="src/01-basics/defer.hs"}
-~~~~
 
 Haddock
 -------
@@ -1776,10 +1788,10 @@ mtl / transformers
 ------------------
 
 So the descriptions of Monads in the previous chapter are a bit of a white lie.
-Modern Haskell monad libraries typically use a more general form of these written
-in terms of monad transformers which allow us to compose monads together to form
-composite monads. The monads mentioned previously are subsumed by the special
-case of the transformer form composed with the Identity monad.
+Modern Haskell monad libraries typically use a more general form of these
+written in terms of monad transformers which allow us to compose monads together
+to form composite monads. The monads mentioned previously are subsumed by the
+special case of the transformer form composed with the Identity monad.
 
 Monad   Transformer  Type            Transformed Type
 ------  -----------  --------------- -------------------
@@ -5923,21 +5935,10 @@ function and reify it as a value.
 ~~~~ {.haskell include="src/16-type-families/dict.hs"}
 ~~~~
 
-Both Constraints and AnyK types are somewhat unique in the Haskell
-implementation, in that they have the ``BOX`` kind.
-
-```haskell
-λ: import GHC.Prim
-
-λ: :kind AnyK
-AnyK :: BOX
-
-λ: :kind Constraint
-Constraint :: BOX
-```
-
 TypeFamilyDependencies
 ----------------------
+
+TODO
 
 See:
 
@@ -5995,16 +5996,16 @@ necessary to write Haskell.
 </div>
 
 
-The regular value level function which takes a function and applies it to an argument is universally
-generalized over in the usual Hindley-Milner way.
+The regular value level function which takes a function and applies it to an
+argument is universally generalized over in the usual Hindley-Milner way.
 
 ```haskell
 app :: forall a b. (a -> b) -> a -> b
 app f a = f a
 ```
 
-But when we do the same thing at the type-level we see we lose information about the polymorphism of the
-constructor applied.
+But when we do the same thing at the type-level we see we lose information about
+the polymorphism of the constructor applied.
 
 ```haskell
 -- TApp :: (* -> *) -> * -> *
@@ -6027,8 +6028,8 @@ data Mu f a = Roll (f (Mu f) a)
 data Proxy a = Proxy
 ```
 
-Using the polykinded ``Proxy`` type allows us to write down type class functions over constructors of
-arbitrary kind arity.
+Using the polykinded ``Proxy`` type allows us to write down type class functions
+over constructors of arbitrary kind arity.
 
 ~~~~ {.haskell include="src/17-promotion/kindpoly.hs"}
 ~~~~
@@ -6107,9 +6108,10 @@ type-level functions by lifting types to the kind level.
 Size-Indexed Vectors
 --------------------
 
-Using this new structure we can create a ``Vec`` type which is parameterized by its length as well as its
-element type now that we have a kind language rich enough to encode the successor type in the kind signature
-of the generalized algebraic datatype.
+Using this new structure we can create a ``Vec`` type which is parameterized by
+its length as well as its element type now that we have a kind language rich
+enough to encode the successor type in the kind signature of the generalized
+algebraic datatype.
 
 ~~~~ {.haskell include="src/17-promotion/datakinds.hs"}
 ~~~~
@@ -6124,9 +6126,11 @@ example2 = zipVec vec4 vec5
 --   Actual type: Vec Five Int
 ```
 
-The same technique we can use to create a container which is statically indexed by an empty or non-empty flag,
-such that if we try to take the head of an empty list we'll get a compile-time error, or stated equivalently we
-have an obligation to prove to the compiler that the argument we hand to the head function is non-empty.
+The same technique we can use to create a container which is statically indexed
+by an empty or non-empty flag, such that if we try to take the head of an empty
+list we'll get a compile-time error, or stated equivalently we have an
+obligation to prove to the compiler that the argument we hand to the head
+function is non-empty.
 
 ~~~~ {.haskell include="src/17-promotion/nonempty.hs"}
 ~~~~
@@ -6146,8 +6150,9 @@ Typelevel Numbers
 
 GHC's type literals can also be used in place of explicit Peano arithmetic.
 
-GHC 7.6 is very conservative about performing reduction, GHC 7.8 is much less so and will can solve many
-typelevel constraints involving natural numbers but sometimes still needs a little coaxing.
+GHC 7.6 is very conservative about performing reduction, GHC 7.8 is much less so
+and will can solve many typelevel constraints involving natural numbers but
+sometimes still needs a little coaxing.
 
 ~~~~ {.haskell include="src/17-promotion/typenat.hs"}
 ~~~~
@@ -6231,8 +6236,9 @@ castWith  :: (a :~: b) -> a -> b
 gcastWith :: (a :~: b) -> (a ~ b => r) -> r
 ```
 
-With this we have a much stronger language for writing restrictions that can be checked at a compile-time, and
-a mechanism that will later allow us to write more advanced proofs.
+With this we have a much stronger language for writing restrictions that can be
+checked at a compile-time, and a mechanism that will later allow us to write
+more advanced proofs.
 
 ~~~~ {.haskell include="src/17-promotion/type_equality.hs"}
 ~~~~
@@ -6564,17 +6570,20 @@ Could not deduce ((n1 :+ 'S m) ~ 'S (n1 :+ m))
       Actual type: Vec a1 (n1 :+ 'S m)
 ```
 
-As we unfold elements out of the vector we'll end up a doing a lot of type-level arithmetic over indices as we
-combine the subparts of the vector backwards, but as a consequence we find that GHC will run into some
-unification errors because it doesn't know about basic arithmetic properties of the natural numbers. Namely
-that ``forall n. n + 0 = 0`` and   ``forall n m. n + (1 + m) = 1 + (n + m) ``.  Which of course it really
-shouldn't be given that we've constructed a system at the type-level which intuitively *models* arithmetic but
-GHC is just a dumb compiler, it can't automatically deduce the isomorphism between natural numbers and Peano
-numbers.
+As we unfold elements out of the vector we'll end up a doing a lot of type-level
+arithmetic over indices as we combine the subparts of the vector backwards, but
+as a consequence we find that GHC will run into some unification errors because
+it doesn't know about basic arithmetic properties of the natural numbers. Namely
+that ``forall n. n + 0 = 0`` and   ``forall n m. n + (1 + m) = 1 + (n + m) ``.
+Which of course it really shouldn't be given that we've constructed a system at
+the type-level which intuitively *models* arithmetic but GHC is just a dumb
+compiler, it can't automatically deduce the isomorphism between natural numbers
+and Peano numbers.
 
-So at each of these call sites we now have a proof obligation to construct proof terms which rearrange the
-type signatures of the terms in question such that actual types in the error messages GHC gave us align with
-the expected values to complete the program.
+So at each of these call sites we now have a proof obligation to construct proof
+terms which rearrange the type signatures of the terms in question such that
+actual types in the error messages GHC gave us align with the expected values to
+complete the program.
 
 Recall from our discussion of propositional equality from GADTs that we actually have such machinery to do
 this!
@@ -6582,10 +6591,11 @@ this!
 ~~~~ {.haskell include="src/17-promotion/reverse.hs"}
 ~~~~
 
-One might consider whether we could avoid using the singleton trick and just use type-level natural numbers,
-and technically this approach should be feasible although it seems that the natural number solver in GHC 7.8
-can decide some properties but not the ones needed to complete the natural number proofs for the reverse
-functions.
+One might consider whether we could avoid using the singleton trick and just use
+type-level natural numbers, and technically this approach should be feasible
+although it seems that the natural number solver in GHC 7.8 can decide some
+properties but not the ones needed to complete the natural number proofs for the
+reverse functions.
 
 ```haskell
 {-# LANGUAGE DataKinds #-}
