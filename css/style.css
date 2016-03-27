@@ -55,6 +55,14 @@ img {
   height: auto;
 }
 
+.sidebar-nav li {
+  line-height: inherit;
+}
+
+#sidebar-wrapper {
+  -webkit-overflow-scrolling: touch;
+}
+
 hr {
   border: 0px;
   border-bottom: 1px solid #ccc;

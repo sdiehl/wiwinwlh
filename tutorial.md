@@ -6,7 +6,9 @@ Stephen Diehl (<a class="author" href="https://twitter.com/smdiehl">@smdiehl</a>
 
 This is the fourth draft of this document.
 
-**License**
+**[PDF Version](tutorial.pdf)**
+
+#### License
 
 This code and text are dedicated to the public domain. You can copy, modify,
 distribute and perform the work, even for commercial purposes, all without
@@ -18,7 +20,8 @@ source is [available on
 Github](https://github.com/sdiehl/wiwinwlh/tree/master/src). Pull requests are
 always accepted for changes and additional content. This is a living document.
 
-**Changelog**
+
+#### Changelog
 
 **2.3 (Work in Progress)**
 
@@ -2156,12 +2159,14 @@ See: [Static Semantics of Function and Pattern Bindings](https://www.haskell.org
 Monomorphism Restriction
 ------------------------
 
-The most common edge case of the inference is known as the dreaded *monomorphic restriction*.
+The most common edge case of the inference is known as the dreaded *monomorphism
+restriction*.
 
-When the toplevel declarations of a module are generalized the monomorphism restricts that toplevel values
-(i.e. expressions not under a lambda ) whose type contains the subclass of the ``Num`` type from the Prelude
-are not generalized and instead are instantiated with a monotype tried sequentially from the list specified by
-the ``default`` which is normally `Integer`, then `Double`.
+When the toplevel declarations of a module are generalized the monomorphism
+restricts that toplevel values (i.e. expressions not under a lambda ) whose type
+contains the subclass of the ``Num`` type from the Prelude are not generalized
+and instead are instantiated with a monotype tried sequentially from the list
+specified by the ``default`` which is normally `Integer`, then `Double`.
 
 ~~~~ {.haskell include="src/04-extensions/monomorphism.hs"}
 ~~~~
@@ -2991,7 +2996,9 @@ f $! x  = let !vx = x in f vx
 Strict Haskell
 --------------
 
-TODO
+#### Strict
+
+#### StrictData
 
 Deepseq
 -------
@@ -6180,7 +6187,7 @@ A less contrived example would be creating a type-safe embedded DSL that
 enforces invariants about the semantics at the type-level. We've been able to do
 this sort of thing using GADTs and type-families for a while but the error
 reporting has been horrible. With 8.0 we can have type-families that emit useful
-type errors that reflect what actually goes wrong and integrate this inside oF
+type errors that reflect what actually goes wrong and integrate this inside of
 GHC.
 
 ~~~~ {.haskell include="src/17-promotion/errors_dsl.hs"}
@@ -9077,6 +9084,8 @@ simple key-value store wrapped around the Map type.
 
 ~~~~ {.haskell include="src/28-databases/acid.hs"}
 ~~~~
+
+<hr/>
 
 GHC
 ===
