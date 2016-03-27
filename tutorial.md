@@ -560,9 +560,7 @@ library mylib
 ```
 
 For debugging GHC internals, see the [commentary](#block-diagram) on GHC
-internals.
-
-These are simply the most useful, for all flags see the [official
+internals. These are simply the most useful, for all flags see the [official
 reference](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/flag-reference.html).
 
 Hackage
@@ -7609,7 +7607,7 @@ Functionality      Function  Time Complexity
 Initialization     empty     O(1)
 Size               size      O(1)
 Lookup             lookup    O(1)
-Insertion          insert    ???
+Insertion          insert    O(1) amortized
 Traversal          traverse  O(n)
 
 
@@ -9323,9 +9321,9 @@ Types
 * FixityEnv
 * Module
 * ModuleName
-* ModGuts
-* ModuleInfo
-* ModDetails
+* [ModGuts](https://downloads.haskell.org/~ghc/7.10.2/docs/html/libraries/ghc-7.10.2/HscTypes.html#t:ModGuts)
+* [ModuleInfo](https://downloads.haskell.org/~ghc/7.10.2/docs/html/libraries/ghc-7.10.2/GHC.html#t:ModuleInfo)
+* [ModDetails](https://downloads.haskell.org/~ghc/7.10.2/docs/html/libraries/ghc-7.10.2/HscTypes.html#t:ModDetails)
 * AvailInfo
 * Class
 * ClsInt
@@ -10964,6 +10962,19 @@ runtime.
 ~~~~ {.haskell include="src/30-languages/llvm-general.hs"}
 ~~~~
 
+Generates the following textual LLVM IR which can them be executed using the JIT
+in the ``llvm-general`` package or passed to the various llvm commandline
+utilities.
+
+```llvm
+; ModuleID = 'example-llvm-module'
+
+define i8 @f(i8 %x){
+entry:
+  ret i8 %x
+}
+```
+
 See:
 
 * [Minimal Example of LLVM Haskell JIT](https://github.com/sdiehl/llvm-tutorial-standalone)
@@ -11015,8 +11026,7 @@ See:
 wl-pprint-text
 -------------------
 
-TODO
-
+##### Combinators
 
 ```haskell
 renderPretty :: Float -> Int -> Doc -> SimpleDoc
@@ -11026,7 +11036,7 @@ renderOneLine :: Doc -> SimpleDoc
 
 See:
 
-**Monadic API**
+#### Monadic API
 
 * [wl-pprint-text](https://hackage.haskell.org/package/wl-pprint-text)
 
@@ -11493,7 +11503,17 @@ the spliced class instance.
 Multiline Strings
 -----------------
 
-TODO
+Haskell no language support for multiline strings literals, although we can
+emulate this by using a quasiquoter. The resulting String literal is then
+converted using toString into whatever result type is desired.
+
+~~~~ {.haskell include="src/31-template-haskell/Multiline.hs"}
+~~~~
+
+In a separate module we can then enable Quasiquotes and embed the string.
+
+~~~~ {.haskell include="src/31-template-haskell/multiline.hs"}
+~~~~
 
 git-embed
 ----------
