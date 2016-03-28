@@ -11,4 +11,5 @@ Parsing
  $ stack exec ghci parsec_operators.hs
  $ stack exec ghci parser.hs
  $ stack exec ghci simple_parser.hs
+ $ stack exec ghci configurator.hs
 ```

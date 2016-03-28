@@ -11,8 +11,10 @@ tested-with:         GHC == 7.6.3
 library 
 
   build-depends:       
-    mmorph          >= 1.0 && <1.1,
-    mtl             >= 2.2 && <2.3,
-    base            >= 4.6 && <4.10
+    safe              >= 0.3 && <0.4,
+    mmorph            >= 1.0 && <1.1,
+    mtl               >= 2.2 && <2.3,
+    transformers-base >= 0.4 && <0.5,
+    base              >= 4.6 && <4.10
 
   default-language:    Haskell2010

@@ -2,6 +2,7 @@ PANDOC = pandoc
 IFORMAT = markdown
 FLAGS = --standalone --toc --toc-depth=2 --highlight-style pygments
 TEMPLATE = resources/page.tmpl
+LTEMPLATE = resources/page.latex
 STYLE = css/style.css
 
 HTML = tutorial.html
@@ -27,7 +28,7 @@ includes: includes.hs
 	./includes < $< | $(PANDOC) -f $(IFORMAT) -t epub $(FLAGS) -o $@
 
 %.pdf: %.md includes
-	./includes < $< | $(PANDOC) -c -s -f $(IFORMAT) --latex-engine=xelatex $(FLAGS) -o $@
+	./includes < $< | $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --latex-engine=xelatex $(FLAGS) -o $@
 
 clean:
 	-rm $(CHAPTERS) $(HTML)

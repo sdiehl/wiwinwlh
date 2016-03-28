@@ -12,7 +12,7 @@ Real Online:
 * [**HTML**](http://dev.stephendiehl.com/hask/)
 * [**Example Code**](https://github.com/sdiehl/wiwinwlh/tree/master/src)
 
-Examples:
+Chapter Code Examples:
 
 * [01-basics/            ](https://github.com/sdiehl/wiwinwlh/tree/master/src/01-basics/)
 * [02-monads/            ](https://github.com/sdiehl/wiwinwlh/tree/master/src/02-monads/)

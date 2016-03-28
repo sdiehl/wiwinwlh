@@ -1,6 +1,6 @@
-<p class="center logo">
-![](img/title.png)
-</p>
+% What I Wish I Knew When Learning Haskell
+% Stephen Diehl
+% March 2016
 
 Stephen Diehl (<a class="author" href="https://twitter.com/smdiehl">@smdiehl</a> )
 
@@ -2040,17 +2040,47 @@ forM_ xs (lift . f) == lift (forM_ xs f)
 Monad Morphisms
 ---------------
 
+The base monad transformer package provides a ``MonadTrans`` class for lifting
+between layer:
+
 ```haskell
 lift :: Monad m => m a -> t m a
 ```
 
+But often times we need to work with and manipulate our monad transformer stack
+to either produce new transformers, modify existing ones, or extend an upstream
+library with new layers. The ``mmorph`` library provides the capacity to compose
+monad morphism transformation directly on transformer stacks. The equivalent of
+type transformer type-level map is the ``hoist`` function.
+
 ```haskell
 hoist :: Monad m => (forall a. m a -> n a) -> t m b -> t n b
-embed :: Monad n => (forall a. m a -> t n a) -> t m b -> t n b
-squash :: (Monad m, MMonad t) => t (t m) a -> t m a
 ```
 
-TODO
+Hoist takes a *monad morphism* (a mapping a ``m a`` to a ``n a``) and applies in
+on the inner value monad of a transformer stack, transforming the value under
+the outer layer.
+
+For example the monad morphism ``generalize`` takes an Identity into another
+monad ``m`` of the same index. For example this generalizes ``State s Identity``
+into ``StateT s m a``.
+
+```haskell
+generalize :: Monad m => Identity a -> m a
+```
+
+So we could generalize an existing transformer to lift a IO layer into it. 
+
+~~~~ {.haskell include="src/10-advanced-monads/mmorph.hs"}
+~~~~
+
+```haskell
+embed :: Monad n => (forall a. m a -> t n a) -> t m b -> t n b
+```
+
+```haskell
+squash :: (Monad m, MMonad t) => t (t m) a -> t m a
+```
 
 See: [mmorph](https://hackage.haskell.org/package/mmorph)
 
@@ -3018,9 +3048,30 @@ f $! x  = let !vx = x in f vx
 Strict Haskell
 --------------
 
-#### Strict
+As of GHC 8.0
 
 #### StrictData
+
+Enabling StrictData makes constructor fields strict by default on any module it
+is enabled on.
+
+```haskell
+data Employee = Employee
+  { name :: T.Text
+  , age :: Int
+  }
+```
+
+```
+data Employee = Employee
+  { name :: !T.Text
+  , age :: !Int
+  }
+```
+
+#### Strict
+
+Strict implies ``-XStrictData``
 
 Deepseq
 -------
@@ -3130,7 +3181,6 @@ To get work done you probably need.
 * async
 * bytestring
 * containers
-* exceptions
 * mtl
 * stm
 * text
@@ -5039,16 +5089,14 @@ See:
 Final Interpreters
 ------------------
 
-TODO
-
 Using typeclasses we can implement a *final interpreter* which models a set of
 extensible terms using functions bound to typeclasses rather than data
 constructors. Instances of the typeclass form interpreters over these terms.
 
 For example we can write a small language that includes basic arithmetic, and
 then retroactively extend our expression language with a multiplication operator
-without changing the base. At the same time our interpreter logic
-remains invariant under extension with new expressions.
+without changing the base. At the same time our interpreter logic remains
+invariant under extension with new expressions.
 
 ~~~~ {.haskell include="src/14-interpreters/fext.hs"}
 ~~~~
@@ -6581,12 +6629,8 @@ compiler, it can't automatically deduce the isomorphism between natural numbers
 and Peano numbers.
 
 So at each of these call sites we now have a proof obligation to construct proof
-terms which rearrange the type signatures of the terms in question such that
-actual types in the error messages GHC gave us align with the expected values to
-complete the program.
-
-Recall from our discussion of propositional equality from GADTs that we actually have such machinery to do
-this!
+terms. Recall from our discussion of propositional equality from GADTs that we
+actually have such machinery to construct this now.
 
 ~~~~ {.haskell include="src/17-promotion/reverse.hs"}
 ~~~~
@@ -7117,10 +7161,11 @@ See:
 Generic Deriving
 ----------------
 
-Using Generics, we can ask GHC to do lots of non-trivial code generation which
-works spectacularly well in practice. Some real world examples:
+Using Generics many common libraries provide a mechanisms to derive common
+typeclass instances. Some real world examples:
 
-The [hashable](http://hackage.haskell.org/package/hashable) library allows us to derive hashing functions.
+The [hashable](http://hackage.haskell.org/package/hashable) library allows us to
+derive hashing functions.
 
 ~~~~ {.haskell include="src/18-generics/hashable.hs"}
 ~~~~
@@ -11570,7 +11615,7 @@ ver = showVersion Paths_myprog.version
 
 See: [git-embed](https://hackage.haskell.org/package/git-embed)
 
-</hr>
+<hr/>
 
 Categories
 ==========
