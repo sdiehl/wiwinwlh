@@ -8466,10 +8466,32 @@ See: [Text Parsing Tutorial](https://www.fpcomplete.com/school/starting-with-has
 Optparse Applicative
 --------------------
 
-TODO
+Optparse-applicative is a combinator library for building command line
+interfaces that take in various user flags, commmands and switches and map them
+into Haskell data structures that can handle the input. The main interface is
+through the applicative functor ``Parser`` and various combinators such as
+``strArgument`` and ``flag`` which populate the option parsing table which some
+monadic action which returns a Haskell value. The resulting sequence of values
+can be combined applicatively into a larger Config data structure that holds all
+the given options. The ``--help`` header is also automatically generated from
+the combinators.
+
+```bash
+./optparse
+Usage: optparse.hs [filename...] [--quiet] [--cheetah]
+
+Available options:
+  -h,--help                Show this help text
+  filename...              Input files
+  --quiet                  Whether to shut up.
+  --cheetah                Perform task quickly.
+```
 
 ~~~~ {.haskell include="src/24-parsing/optparse_applicative.hs"}
 ~~~~
+
+
+See: [Optparse Applicative Tutorial](https://github.com/pcapriotti/optparse-applicative)
 
 Happy & Alex
 ------------
