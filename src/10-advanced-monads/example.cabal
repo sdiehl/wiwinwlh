@@ -15,6 +15,8 @@ library
     mmorph            >= 1.0 && <1.1,
     mtl               >= 2.2 && <2.3,
     transformers-base >= 0.4 && <0.5,
+    monad-control     >= 1.0 && <1.1,
+    lifted-base       >= 0.2 && <0.3,
     base              >= 4.6 && <4.10
 
   default-language:    Haskell2010

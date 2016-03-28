@@ -37,7 +37,6 @@ always accepted for changes and additional content. This is a living document.
 * Unboxed Types ( Updated )
 * Vim Integration ( Updated )
 * Emacs Integration ( Updated )
-* Dependent Types and TypeInType
 * Strict Language Extension
 * Injective Type Families
 * Language Comparisons
@@ -76,7 +75,6 @@ always accepted for changes and additional content. This is a living document.
 * hsc2hs
 * Mulitiline Strings
 * git-embed
-* DWARF debugging
 * Coercible
 * ghc-prim
 * haskell-src-exts
@@ -2078,9 +2076,13 @@ So we could generalize an existing transformer to lift a IO layer into it.
 embed :: Monad n => (forall a. m a -> t n a) -> t m b -> t n b
 ```
 
+TODO
+
 ```haskell
 squash :: (Monad m, MMonad t) => t (t m) a -> t m a
 ```
+
+TODO
 
 See: [mmorph](https://hackage.haskell.org/package/mmorph)
 
@@ -2242,6 +2244,35 @@ it :: Num a => a
 Extended Defaulting
 -------------------
 
+Haskell normally applies several defaulting rules for ambigious literals in the
+absence of an explicit type signature. When an ambiguous literal is typechecked
+if at least one of its typeclass constraints is numeric and all of its classes
+are standard library classes, the module's default list is consulted, and the
+first type from the list that will satisfy the context of the type variable is
+instantiated. So for instance given the following default rules.
+
+```haskell
+default (C1 a,...,Cn a) 
+```
+
+The following set of heuristics is used to determine what to instnatiate the
+ambiguous type variable to.
+
+1. The type variable a appears in no other constraints
+1. All the classes Ci are standard.
+1. At least one of the classes Ci is numeric.
+
+The default default is (Integer, Double)
+
+This is normally fine, but sometimes we'd like more granular control over
+defaulting. The ``-XExtendedDefaultRules`` loosens the restriction that we're
+constrained with working on Numerical typeclasses and the constraint that we can
+only work with standard library classes. If we'd like to have our string
+literals (using -XOverlodaedStrings) automatically default to the more
+efficient ``Text`` implementation instead of ``String`` we can twiddle the flag
+and GHC will perform the right substitution without the need for an explicit
+annotation on every string literal.
+
 ```haskell
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ExtendedDefaultRules #-}
@@ -2253,7 +2284,10 @@ default (T.Text)
 example = "foo"
 ```
 
-TODO
+For code typed at the GHCi prompt, the `-XExtendedDefaultRules` flag is always
+on, and cannot be switched off.
+
+See: [Monomorphism Restriction](#monomorphism-restriction)
 
 Safe Haskell
 ------------
@@ -2644,11 +2678,6 @@ be well-defined and give rise to an automatic instances.
 
 StaticPointers
 -----------------
-
-TypeInType
------------------
-
-TODO
 
 TypeApplication
 -----------------
@@ -3196,8 +3225,8 @@ To get work done you probably need.
 * optparse-applicative
 </div>
 
-Custom Prelude
---------------
+Custom Preludes
+---------------
 
 The default Prelude can be disabled in it's entirety by twiddling the
 ``-XNoImplicitPrelude`` flag.
@@ -4459,22 +4488,25 @@ do-notation and if-then-else syntax by providing alternative definitions local t
 
 See: [Fun with Indexed monads](http://www.cl.cam.ac.uk/~dao29/ixmonad/ixmonad-fita14.pdf)
 
-monad-control
+
+lifted-base
 -------------
 
-TODO
+The default prelude predates a lot of the work on monad transformers and as such
 
-monad-base
--------------
+which generic control operations such as catch can be lifted from IO or any
+other base monad.
 
-TODO
+#### monad-base
 
-lifted-prelude
--------------
+#### monad-control
+
+#### monad-base
 
 * MonadIO
 * MonadThrow
 * MonadBaseControl
+
 
 TODO
 
