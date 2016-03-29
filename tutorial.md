@@ -51,9 +51,6 @@ always accepted for changes and additional content. This is a living document.
 * ExtendedDefaultRules
 * mmorph
 * shake
-* servant
-* generics-sop
-* generics-eot
 * integer-gmp
 * Static Pointers
 * spoon
@@ -2072,18 +2069,6 @@ So we could generalize an existing transformer to lift a IO layer into it.
 ~~~~ {.haskell include="src/10-advanced-monads/mmorph.hs"}
 ~~~~
 
-```haskell
-embed :: Monad n => (forall a. m a -> t n a) -> t m b -> t n b
-```
-
-TODO
-
-```haskell
-squash :: (Monad m, MMonad t) => t (t m) a -> t m a
-```
-
-TODO
-
 See: [mmorph](https://hackage.haskell.org/package/mmorph)
 
 <hr/>
@@ -2679,11 +2664,6 @@ be well-defined and give rise to an automatic instances.
 StaticPointers
 -----------------
 
-TypeApplication
------------------
-
-TODO
-
 DuplicateRecordFields
 ----------------------
 
@@ -2756,17 +2736,63 @@ Cpp
 
 The C++ preprocessor is the fallback whenever we really need to seperate out
 logic that has to span multiple versions of GHC and language changes while
-maintaining backwards compatability.
+maintaining backwards compatibility. To dispatch on the version of GHC being
+used to compile a module.
 
-It can also be used to do terrible things like metaprogrammming with strings,
+```haskell
+{-# LANGUAGE CPP #-}
+
+#if (__GLASGOW_HASKELL__ > 710)
+-- Imports for GHC 7.10.x
+#else
+-- Imports for other GHC
+#endif
+```
+
+To demarcate code based on the operating system compiled on.
+
+```haskell
+{-# LANGUAGE CPP #-}
+
+#ifdef OS_Linux
+  -- Linux specific logic
+#else
+# ifdef OS_Win32
+  -- Windows specific logic
+# else
+# ifdef OS_Mac
+  -- Macintosh specific logic
+# else
+  -- Other operating systems
+# endif
+# endif
+#endif
+```
+
+Or on the version of the base library used.
+
+```haskell
+#if !MIN_VERSION_base(4,6,0)
+  -- Base specific logic
+#endif
+```
+
+It can also be abused to do terrible things like metaprogrammming with strings,
 but please don't do this.
-
-TODO
 
 Historical Extensions
 ---------------------
 
-TODO
+Several language extensions have either been absorbed into the core language or
+become deprecated in favor of others. Others are just considered misfeatures.
+
+* Rank2Types - Rank2Types has been subsumed by RankNTypes
+* XPolymorphicComponents - Was an implementation detail of higher-rank
+  polymorphism that no longer exists.
+* NPlusKPatterns - These were largely considered an ugly edge-case of pattern
+  matching language that was best removed.
+* TraditionalRecordSyntax - Traditional record syntax was an extension to the
+  Haskell 98 specification for what we now consider standard record syntax.
 
 <hr/>
 
@@ -4121,25 +4147,6 @@ dependency on IO.
 
 See: [exceptions](http://hackage.haskell.org/package/exceptions)
 
-Either
-------
-
-The instance of the Either monad is simple, note the bias toward Left when
-binding.
-
-~~~~ {.haskell include="src/09-errors/either_impl.hs"}
-~~~~
-
-The silly example one always sees is writing safe division function that fails
-out with a Left value when a division by zero happens and holds the resulting
-value in Right otherwise.
-
-~~~~ {.haskell include="src/09-errors/either.hs"}
-~~~~
-
-This is admittedly pretty stupid but captures the essence of why Either/EitherT
-is a suitable monad for exception handling.
-
 ExceptT
 -------
 
@@ -4176,7 +4183,7 @@ m `catchE` h = ExceptT $ do
         Right r -> return (Right r)
 ```
 
-At MTL level.
+Using mtl:
 
 ```haskell
 instance MonadTrans (ExceptT e) where
@@ -4511,11 +4518,6 @@ other base monad.
 TODO
 
 resource-pool
--------------
-
-TODO
-
-resourcet
 -------------
 
 TODO
@@ -7989,11 +7991,6 @@ int main( int argc, char *argv[] )
 }
 ```
 
-Allocating on Haskell Heap
---------------------------
-
-TODO
-
 Static Pointers
 ---------------
 
@@ -8297,16 +8294,6 @@ $ runhaskell diagram1.hs -w 256 -h 256 -o diagram1.svg
 ![](img/diagram1.png)
 
 See: [Diagrams Quick Start Tutorial](http://projects.haskell.org/diagrams/doc/quickstart.html)
-
-Gloss
------
-
-TODO
-
-OpenGL
-------
-
-TODO
 
 <hr/>
 
@@ -9048,11 +9035,6 @@ are converted into variable names.
 The MuType and MuContext types can be parameterized by any monad or transformer
 that implements ``MonadIO``, not just IO.
 
-Servant
--------
-
-TODO
-
 </hr>
 
 Databases
@@ -9060,6 +9042,9 @@ Databases
 
 Postgres
 --------
+
+Postgres is an object-relational database management system with a rich
+extension of the SQL standard. Consider the following tables specified in DDL.
 
 ```sql
 CREATE TABLE "books" (
@@ -9077,6 +9062,12 @@ CREATE TABLE "authors" (
 	Constraint "authors_pkey" Primary Key ("id")
 );
 ```
+
+The postgresql-simple bindings provide a thin wrapper to various libpq commands
+to interact a Postgres server. These functions all take a ``Connection`` object
+to the database instance and allow various bytestring queries to be sent and
+result sets mapped into Haskell datatypes. There are four primary functions for
+these interactions:
 
 ```haskell
 query_ :: FromRow r => Connection -> Query -> IO [r]
@@ -9229,9 +9220,13 @@ pass effectively translates the ``HsSyn`` datatype from a AST parametrized over
 literal strings as the user enters into a ``HsSyn`` parameterized over qualified
 names that includes modules and package names into a higher level Name type.
 
+##### GHC Compiler
+
 <div class="center">
 ![](img/ghc.png)
 </div>
+
+##### GHC Compiler Passes
 
 * **Parser/Frontend**: An enormous AST translated from human syntax that makes
   explicit possible all expressible syntax ( declarations, do-notation, where
@@ -9269,12 +9264,12 @@ names that includes modules and package names into a higher level Name type.
   generator (NCG) or the LLVM backend.
 
 
-Information for about each pass can dumped out via a rather large collection of
-flags. The GHC internals are very accessible although some passes are somewhat
-easier to understand than others. Most of the time ``-ddump-simpl`` and
-``-ddump-stg`` are sufficient to get an understanding of how the code will
-compile, unless of course you're dealing with very specialized optimizations or
-hacking on GHC itself.
+Information for each pass can dumped out via a rather large collection of flags.
+The GHC internals are very accessible although some passes are somewhat easier
+to understand than others. Most of the time ``-ddump-simpl`` and ``-ddump-stg``
+are sufficient to get an understanding of how the code will compile, unless of
+course you're dealing with very specialized optimizations or hacking on GHC
+itself.
 
 Flag                   Action
 --------------         ------------
@@ -9370,6 +9365,9 @@ TODO
 
 Located
 -------
+
+Frontend syntax in GHC carries position information along with it that can be
+used
 
 ```haskell
 data GenLocated l e = L l e
@@ -9488,11 +9486,6 @@ Types
 - Bind
 
 **StgSyn**
-
-TODO
-
-Wired-in Types
-----------
 
 TODO
 
@@ -9995,10 +9988,7 @@ Unboxed Types
 The usual numerics types in Haskell can be considered to be a regular algebraic
 datatype with special constructor arguments for their underlying unboxed values.
 Normally unboxed types and explicit unboxing are not used in normal code, they
-are an implementation detail of the compiler and many optimizations exist to do
-the unboxing in a way that is guaranteed to be safe and preserve the high level
-semantics of Haskell. Nevertheless it is somewhat enlightening to understand how
-the types are implemented.
+are wired-in to the compiler.
 
 ```haskell
 data Int = I# Int#
@@ -10010,35 +10000,14 @@ data Integer
 data Float = F# Float#
 ```
 
-```haskell
-λ: :set -XMagicHash
-λ: :m +GHC.Types
-λ: :m +GHC.Prim
-
-λ: :type 3#
-3# :: GHC.Prim.Int#
-
-λ: :type 3##
-3## :: GHC.Prim.Word#
-
-λ: :type 3.14#
-3.14# :: GHC.Prim.Float#
-
-λ: :type 3.14##
-3.14## :: GHC.Prim.Double#
-
-λ: :type 'c'#
-'c'# :: GHC.Prim.Char#
-
-λ: :type "Haskell"#
-"Haskell"# :: Addr#
-
-λ: :i Int
-data Int = I# Int#      -- Defined in GHC.Types
-
-λ: :k Int#
-Int# :: #
-```
+Syntax            Primitive Type
+----------        --------------
+``3#``            GHC.Prim.Int#
+``3##``           GHC.Prim.Word#
+``3.14#``         GHC.Prim.Float#
+``3.14##``        GHC.Prim.Double#
+``'c'#``          GHC.Prim.Char#
+``"Haskell"##``   GHC.Prim.Addr#
 
 An unboxed type with kind ``#`` and will never unify a type variable of kind
 ``*``. Intuitively a type with kind ``*`` indicates a type with a uniform
@@ -10164,11 +10133,6 @@ print (unpackCString# "Hello World"#)
 See:
 
 * [Unboxed Values as First-Class Citizens](http://www.haskell.org/ghc/docs/papers/unboxed-values.ps.gz)
-
-Vector and SIMD
----------------
-
-TODO
 
 IO/ST
 -----
@@ -10944,20 +10908,6 @@ trusted: safe-inferred
 require own pkg trusted: False
 ```
 
-haskell-src-exts
--------------
-
-TODO
-
-ghc-exact-print
--------------
-
-TODO
-
-See:
-
-* [A New Foundation For Refactoring Tools](http://mpickering.github.io/posts/2015-07-23-ghc-exactprint.html)
-
 </hr>
 
 Profiling
@@ -11689,11 +11639,6 @@ Haskell roughly amounts to a subset of the first chapter of any undergraduate
 text. And even then, *no actual knowledge of category theory is required to use
 Haskell at all*.
 
-Mathphobia
-----------
-
-TODO
-
 Algebraic Relations
 -------------------
 
@@ -12011,7 +11956,7 @@ Resources
 * [Category Theory Foundations](https://www.youtube.com/watch?v=ZKmodCApZwk)
 * [The Catsters](http://www.youtube.com/user/TheCatsters)
 
-</hr>
+<hr/>
 
 Other Languages
 ===============
@@ -12063,8 +12008,6 @@ language encourages ubiquitous impurity in third party libraries.
 not enforce purity and uses call-by-value.
 
 Ocaml's main implementation is *ocamlc*.
-
-OCaml's main package manager is *opam*.
 
 OCaml is a *general purpose language*.
 
