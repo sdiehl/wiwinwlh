@@ -11629,7 +11629,7 @@ converted using toString into whatever result type is desired.
 
 In a separate module we can then enable Quasiquotes and embed the string.
 
-~~~~ {.haskell include="src/31-template-haskell/multiline.hs"}
+~~~~ {.haskell include="src/31-template-haskell/multiline_example.hs"}
 ~~~~
 
 git-embed

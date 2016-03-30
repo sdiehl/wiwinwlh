@@ -9,7 +9,7 @@ $ stack exec ghci derive.hs
 $ stack exec ghci enum_family_splice.hs
 $ stack exec ghci EnumFamily.hs
 $ stack exec ghci Insert.hs
-$ stack exec ghci multiline.hs
+$ stack exec ghci multiline_example.hs
 $ stack exec ghci Multiline.hs
 $ stack exec ghci Quasiquote.hs
 $ stack exec ghci quasiquote_use.hs
