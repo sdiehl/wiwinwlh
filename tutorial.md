@@ -1,4 +1,5 @@
 % What I Wish I Knew When Learning Haskell
+% Version 2.3
 % Stephen Diehl
 % March 2016
 
@@ -28,7 +29,7 @@ always accepted for changes and additional content. This is a living document.
 * Stack
 * Stackage
 * ghcid
-* Nix (Updated)
+* Nix (Removed)
 * Aeson (Updated)
 * Language Extensions (Updated)
 * Type Holes (Updated)
@@ -39,10 +40,10 @@ always accepted for changes and additional content. This is a living document.
 * Emacs Integration ( Updated )
 * Strict Language Extension
 * Injective Type Families
+* Custom Type Errors
 * Language Comparisons
 * Recursive Do
 * Applicative Do
-* Strict Haskell
 * LiquidHaskell
 * Cpp
 * Minimal Pragma
@@ -2793,14 +2794,15 @@ become deprecated in favor of others. Others are just considered misfeatures.
   matching language that was best removed.
 * TraditionalRecordSyntax - Traditional record syntax was an extension to the
   Haskell 98 specification for what we now consider standard record syntax.
+* OverlappingInstances - Subsumed by explicit OVERLAPPING pragmas.
+* IncoherentInstances - Subsumed by explicit INCOHERENT pragmas.
+* NullaryTypeClasses - Subsumed by explicit Multiparameter Typeclasses with no
+  parameters.
 
 <hr/>
 
 Type Classes
 ============
-
-Instance Search
-----------------
 
 Minimal Annotations
 -------------------
@@ -2846,26 +2848,61 @@ does not meet the minimal criterion.
 FlexibleInstances
 -------------------
 
+~~~~ {.haskell include="src/04-extensions/flexinstances.hs"}
+~~~~
+
 FlexibleContexts
 -------------------
 
-IncoherentInstances
--------------------
-
-TypeSynonymInstances
--------------------
-
-UndecidableInstances
--------------------
+~~~~ {.haskell include="src/04-extensions/flexcontexts.hs"}
+~~~~
 
 OverlappingInstances
 --------------------
 
-Overlapping Annotations
------------------------
+Typeclasses are normally globally coherent, there is only ever one instance that
+can be resolved for a type unambiguously for a type at any call site in the
+program. There are however extensions to loosen this restriction and perform
+more manual direction of the instance search.
 
-NullaryTypeClasses
---------------------
+Overlapping instances loosens the coherent condition (there can be multiple
+instances) but introduces a criterion that it will resolve to the most specific
+one.
+
+~~~~ {.haskell include="src/04-extensions/overlapping.hs"}
+~~~~
+
+Historically enabling this on module-level was not the best idea, since
+generally we define multiple classes in a module only a subset of which may be
+incoherent. So as of 7.10 we now have the capacity to just annotate instances
+with the OVERLAPPING and INCOHERENT pragmas.
+
+~~~~ {.haskell include="src/04-extensions/overlapping_anno.hs"}
+~~~~
+
+IncoherentInstances
+-------------------
+
+Incoherent instance loosens the restriction that there be only one specific
+instance, will choose one arbitrarily (based on the arbitrary sorting of it's
+internal representation ) and the resulting program will typecheck. This is
+generally pretty crazy and usually a sign of poor design.
+
+~~~~ {.haskell include="src/04-extensions/incoherent.hs"}
+~~~~
+
+There is also an incoherent instance.
+
+~~~~ {.haskell include="src/04-extensions/incoherent_anno.hs"}
+~~~~
+
+TypeSynonymInstances
+-------------------
+
+~~~~ {.haskell include="src/04-extensions/synonym.hs"}
+~~~~
+
+<hr/>
 
 Laziness
 ========
@@ -3103,7 +3140,9 @@ f $! x  = let !vx = x in f vx
 Strict Haskell
 --------------
 
-As of GHC 8.0
+As of GHC 8.0 strictness annotations can be applied to all definitions in a
+module automatically. In previous versions it was necessary to definitions via
+explicit syntactic annotations at all sites.
 
 #### StrictData
 
@@ -3111,13 +3150,17 @@ Enabling StrictData makes constructor fields strict by default on any module it
 is enabled on.
 
 ```haskell
+{-# LANGUAGE StrictData #-}
+
 data Employee = Employee
   { name :: T.Text
   , age :: Int
   }
 ```
 
-```
+Is equivalent to:
+
+```haskell
 data Employee = Employee
   { name :: !T.Text
   , age :: !Int
@@ -3126,7 +3169,26 @@ data Employee = Employee
 
 #### Strict
 
-Strict implies ``-XStrictData``
+Strict implies ``-XStrictData`` and extends strictness annotations to all
+arguments of functions. 
+
+```haskell
+f x y = x + y
+```
+
+Is equivalent to the following function declaration with explicit bang patterns:
+
+```haskell
+f !x !y = x + y
+```
+
+On a module-level this effectively makes Haskell a call-by-value language with
+some caveats. All arguments to functions are now explicitly evaluated and all
+data in constructors within this module are in head normal form by construction.
+However there are some subtle points to this that are better explained in the
+language guide.
+
+* [Strict Extensions](https://downloads.haskell.org/~ghc/master/users-guide//glasgow_exts.html?highlight=typefamilydependencies#strict-by-default-pattern-bindings)
 
 Deepseq
 -------
@@ -4500,27 +4562,58 @@ lifted-base
 -------------
 
 The default prelude predates a lot of the work on monad transformers and as such
-
-which generic control operations such as catch can be lifted from IO or any
-other base monad.
+many of the common functions for handling  errors and interacting with IO are
+bound strictly to the IO monad and not to functions implementing stacks on top
+of IO or ST.  The lifted-base provides generic control operations such as
+``catch`` can be lifted from IO or any other base monad.
 
 #### monad-base
+
+Monad base provides an abstraction over ``liftIO`` and other functions to
+explicitly lift into a "privileged" layer of the transformer stack. It's
+implemented a multiparamater typeclass with the "base" monad as the parameter b.
+
+```haskell
+-- | Lift a computation from the base monad
+class (Applicative b, Applicative m, Monad b, Monad m)
+      => MonadBase b m | m -> b where
+  liftBase ∷ b a -> m a
+```
 
 #### monad-control
 
-#### monad-base
+Monad control builds on top of monad-base to extended lifting operation to
+control operations like ``catch`` and ``bracket`` can be written generically in
+terms of any transformer with a base layer supporting these operations. Generic
+operations can then be expressed in terms of a ``MonadBaseControl`` and written
+in terms of the combinator ``control`` which handles the bracket and automatic
+handler lifting.
 
-* MonadIO
-* MonadThrow
-* MonadBaseControl
+```haskell
+control :: MonadBaseControl b m => (RunInBase m b -> b (StM m a)) -> m a
+```
 
+For example the function catch provided by ``Control.Exception`` is normally
+locked into IO.
 
-TODO
+```
+catch :: Exception e => IO a -> (e -> IO a) -> IO a
+```
 
-resource-pool
--------------
+By composing it in terms of control we can construct a generic version which
+automatically lifts inside of any combination of the usual transformer stacks
+that has ``MonadBaseControl`` instance.
 
-TODO
+```haskell
+catch 
+  :: (MonadBaseControl IO m, Exception e)
+  => m a        -- ^ Computation
+  -> (e -> m a) -- ^ Handler
+  -> m a
+catch a handler = control $ \runInIO ->
+                    E.catch (runInIO a)
+                            (\e -> runInIO $ handler e)
+```
 
 <hr/>
 
@@ -5138,8 +5231,6 @@ invariant under extension with new expressions.
 Finally Tagless
 ---------------
 
-TODO
-
 Writing an evaluator for the lambda calculus can likewise also be modeled with a
 final interpreter and a Identity functor.
 
@@ -5617,12 +5708,17 @@ Unit tests
 silently
 --------
 
-TODO
+Often in the process of testing IO heavy code we'll need to redirect stdout to
+compare it some known quantity. The ``silently`` package allows us to capture
+anything done to stdout across any library inside of IO block and return the
+result to the test runner.
 
-tasty-golden
-------------
+```haskell
+capture :: IO a -> IO (String, a)
+```
 
-TODO
+~~~~ {.haskell include="src/15-testing/silently.hs"}
+~~~~
 
 </hr>
 
@@ -5843,14 +5939,10 @@ on under the hood.
 ~~~~ {.haskell include="src/16-type-families/role_infer.hs"}
 ~~~~
 
-**unsafe Coerce with Roles**
-
-TODO
-
 See:
 
-* [Roles: A New Feature of GHC](http://typesandkinds.wordpress.com/2013/08/15/roles-a-new-feature-of-ghc/)
 * [Roles](https://ghc.haskell.org/trac/ghc/wiki/Roles)
+* [Roles: A New Feature of GHC](http://typesandkinds.wordpress.com/2013/08/15/roles-a-new-feature-of-ghc/)
 
 Monotraversable
 ---------------
@@ -6857,29 +6949,6 @@ enabled by default.
 
 See: [Typeable and Data in Haskell](http://chrisdone.com/posts/data-typeable)
 
-Syb
----
-
-```haskell
-everywhere :: (forall a. Data a => a -> a) -> forall a. Data a => a -> a
-everywhereM :: Monad m => GenericM m -> GenericM m
-somewhere :: MonadPlus m => GenericM m -> GenericM m
-listify :: Typeable r => (r -> Bool) -> GenericQ [r]
-everything :: (r -> r -> r) -> GenericQ r -> GenericQ r
-```
-
-```haskell
-gsize :: Data a => a -> Int
-glength :: GenericQ Int
-gdepth :: GenericQ Int
-gcount :: GenericQ Bool -> GenericQ Int
-gnodecount :: GenericQ Int
-gtypecount :: Typeable a => a -> GenericQ Int
-gfindtype :: (Data x, Typeable y) => x -> Maybe y
-```
-
-* [Data.Generics.Schemes](https://hackage.haskell.org/package/syb-0.6/docs/Data-Generics-Schemes.html)
-
 Dynamic
 -------
 
@@ -7044,10 +7113,30 @@ example2 = numHoles (Just 3)
 -- 1
 ```
 
-This method adapts itself well to generic traversals but the types quickly
-become rather hairy when dealing anymore more complicated involving folds and
-unsafe coercions.
+Syb
+---
 
+Using the interface provided by the Data we can retrieve the information we need
+to, at runtime, inspect the types of expressions and rewrite them, collect
+terms, and find subterms matching specific predicates.
+
+```haskell
+everywhere :: (forall a. Data a => a -> a) -> forall a. Data a => a -> a
+everywhereM :: Monad m => GenericM m -> GenericM m
+somewhere :: MonadPlus m => GenericM m -> GenericM m
+listify :: Typeable r => (r -> Bool) -> GenericQ [r]
+everything :: (r -> r -> r) -> GenericQ r -> GenericQ r
+```
+
+For example consider we have some custom collection of datatypes for which we
+want to write generic transformations that transform numerical subexpressions
+according to set of rewrite rules. We can use ``syb`` to write the
+transformation rules quite succinctly. 
+
+~~~~ {.haskell include="src/18-generics/syb.hs"}
+~~~~
+
+* [Data.Generics.Schemes](https://hackage.haskell.org/package/syb-0.6/docs/Data-Generics-Schemes.html)
 
 Generic
 -------
@@ -7218,10 +7307,10 @@ derive JSON representations for JSON instances.
 
 See: [A Generic Deriving Mechanism for Haskell](http://dreixel.net/research/pdf/gdmh.pdf)
 
-Higher Kinded Generics
-----------------------
+##### Higher Kinded Generics
 
-TODO
+Using the same interface GHC.Generics provides a seperate typeclass for
+higher-kinded generics.
 
 ```haskell
 class Generic1 f where
@@ -7230,16 +7319,15 @@ class Generic1 f where
   to1    :: (Rep1 f) a -> f a
 ```
 
-generics-sop
-----------------
+So for instance ``Maybe`` has ``Rep1`` of the form:
 
-TODO
-
-* [generics-sop](https://hackage.haskell.org/package/generics-sop)
-* [Applying Type Level and Generic Programming in Haskell](https://github.com/kosmikus/SSGEP/blob/master/Lecture1.pdf)
-
-generics-eot
-----------------
+```haskell
+type instance Rep1 Maybe
+  = D1
+      GHC.Generics.D1Maybe
+      (C1 C1_0Maybe U1
+       :+: C1 C1_1Maybe (S1 NoSelector Par1))
+```
 
 Uniplate
 --------
@@ -7786,11 +7874,6 @@ sc2 = scc' (fromList ex2)
 
 See: [GraphSCC](http://hackage.haskell.org/package/GraphSCC)
 
-Multiset
---------
-
-TODO
-
 Graph Theory
 ------------
 
@@ -7936,10 +8019,10 @@ Hello from Haskell, here's a number passed between runtimes:
 Back inside of C again.
 ```
 
+<!--
+
 Calling Haskell from C
 ----------------------
-
-TODO
 
 ```cpp
 #include <stdio.h>
@@ -7991,25 +8074,7 @@ int main( int argc, char *argv[] )
 }
 ```
 
-Static Pointers
----------------
-
-TODO
-
-See: [Static Pointers](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/static-pointers.html)
-
-libffi
-------
-
-The foreign function interface provides a mechanism by which a function can
-generate a call to another function at runtime without requiring knowledge of
-the called function's interface at compile time.
-
-TODO
-
-See: [libffi](https://hackage.haskell.org/package/libffi)
-
-</hr>
+-->
 
 Concurrency
 ===========
@@ -9188,6 +9253,11 @@ sparked and shared across threads off without blocking the main thread.
 
 ~~~~ {.haskell include="src/28-databases/hedis_pubsub.hs"}
 ~~~~
+
+resource-pool
+-------------
+
+TODO
 
 Acid State
 ----------

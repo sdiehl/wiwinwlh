@@ -3,6 +3,11 @@
     src: url(../fonts/FiraSans-Regular.ttf);
 }
 
+@font-face {
+    font-family: 'Source Code Pro';
+    src: url(../fonts/SourceCodePro-Regular.ttf);
+}
+
 html {
 }
 
@@ -10,6 +15,7 @@ body {
   /*font-family: HelveticaNeue, 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
 
   font-family: 'Fira Sans';
+  font-size: 10pt;
   font-style: normal;
   font-weight: 400;
 
@@ -47,12 +53,16 @@ code {
 
 pre code {
   /*font: 15px/19px Inconsolata, Monaco,"Lucida Console",Terminal,"Courier New",Courier;*/
-  font: 12pt "Source Code Pro";
+  font: 10pt "Source Code Pro";
 }
 
 img {
   max-width: 100%;
   height: auto;
+}
+
+#sidebar-wrapper {
+  font-size: 9pt;
 }
 
 .sidebar-nav li {
