@@ -1,5 +1,4 @@
-% What I Wish I Knew When Learning Haskell
-% Version 2.3
+% What I Wish I Knew When Learning Haskell (Version 2.3)
 % Stephen Diehl
 % March 2016
 
@@ -24,7 +23,7 @@ always accepted for changes and additional content. This is a living document.
 
 #### Changelog
 
-**2.3 (Work in Progress)**
+**2.3**
 
 * Stack
 * Stackage
@@ -47,15 +46,12 @@ always accepted for changes and additional content. This is a living document.
 * LiquidHaskell
 * Cpp
 * Minimal Pragma
-* Rewrite Rules
-* Fusion
+* Typeclass Extensions
 * ExtendedDefaultRules
 * mmorph
-* shake
 * integer-gmp
 * Static Pointers
 * spoon
-* Functorized ASTs
 * monad-control
 * monad-base
 * postgresql-simple
@@ -68,14 +64,9 @@ always accepted for changes and additional content. This is a living document.
 * optparse-applicative
 * hastache
 * silently
-* haxl
-* c2hs
-* hsc2hs
 * Mulitiline Strings
 * git-embed
 * Coercible
-* ghc-prim
-* haskell-src-exts
 * -fdefer-type-errors
 
 **2.2**
@@ -6110,7 +6101,6 @@ that the resulting type is uniquely determined by a set of the type families
 parameters.
 
 ```haskell
-
 {-# LANGUAGE XTypeFamilyDependencies #-}
 
 type family F a b c = (result :: k) | result -> a b c
@@ -9249,11 +9239,6 @@ sparked and shared across threads off without blocking the main thread.
 ~~~~ {.haskell include="src/28-databases/hedis_pubsub.hs"}
 ~~~~
 
-resource-pool
--------------
-
-TODO
-
 Acid State
 ----------
 
@@ -9358,6 +9343,7 @@ Flag                   Action
 ``-ddump-asm``         The final assembly generated.
 ``-ddump-llvm``        The final LLVM IR generated.
 
+<!--
 
 GHC Api
 -------
@@ -9456,11 +9442,6 @@ srcSpanStart :: SrcSpan -> SrcLoc
 srcSpanEnd :: SrcSpan -> SrcLoc
 ```
 
-Outputable
-----------
-
-TODO
-
 ```haskell
 showSDoc :: DynFlags -> SDoc -> String
 ```
@@ -9472,7 +9453,6 @@ showGhc = GHC.showPpr GHC.unsafeGlobalDynFlags
 ```
 
 * [Outputable](https://downloads.haskell.org/~ghc/7.10.3/docs/html/libraries/ghc-7.10.3/Outputable.html)
-
 
 Types
 -----
@@ -9549,6 +9529,8 @@ Types
 **StgSyn**
 
 TODO
+
+-->
 
 Core
 ----
@@ -9834,6 +9816,8 @@ See:
 
 * [Secrets of the Glasgow Haskell Compiler inliner](https://research.microsoft.com/en-us/um/people/simonpj/Papers/inlining/inline.pdf)
 
+<!--
+
 Rewrite Rules
 -------------
 
@@ -9856,6 +9840,8 @@ This is an advanced section, and is not typically necessary to write Haskell.
 TODO
 
 * [List Fusion](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/rewrite-rules.html)
+
+-->
 
 Dictionaries
 ------------
@@ -11176,11 +11162,6 @@ See:
 
 * [wl-pprint-text](https://hackage.haskell.org/package/wl-pprint-text)
 
-
-ansi-terminal
----------
-
-TODO
 
 Haskeline
 ---------
