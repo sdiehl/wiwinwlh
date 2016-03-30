@@ -1237,15 +1237,6 @@ show-extensions  Annotates the documentation with the language extensions used.
 hide             Forces the module to be hidden from Haddock.
 prune            Omits definitions with no annotations.
 
-Shake
------
-
-<div class="alert alert-danger">
-This is an advanced section, and is not typically necessary to write Haskell.
-</div>
-
-* [Shake Manual](https://github.com/ndmitchell/shake/blob/master/docs/Manual.md)
-
 <hr/>
 
 Monads
@@ -6112,7 +6103,21 @@ function and reify it as a value.
 TypeFamilyDependencies
 ----------------------
 
-TODO
+Type families historically have not been injective, i.e. they are not guaranteed
+to maps distinct elements of its arguments to the same element of its result.
+The syntax is similar to the multiparmater typeclass functional dependencies in
+that the resulting type is uniquely determined by a set of the type families
+parameters.
+
+```haskell
+
+{-# LANGUAGE XTypeFamilyDependencies #-}
+
+type family F a b c = (result :: k) | result -> a b c
+type instance F Int  Char Bool = Bool
+type instance F Char Bool Int  = Int
+type instance F Bool Int  Char = Char
+```
 
 See:
 
@@ -8416,11 +8421,6 @@ of these combinators which yield the string parser when evaluated under with the
 ~~~~ {.haskell include="src/24-parsing/simple_parser.hs"}
 ~~~~
 
-Expression Parsing
-------------------
-
-TODO
-
 Custom Lexer
 ------------
 
@@ -9231,11 +9231,6 @@ This yields the result set:
 ]
 ```
 
-Sqlite
-------
-
-TODO
-
 Redis
 -----
 
@@ -9421,8 +9416,6 @@ main = do
    putStrLn $ showSDoc ( ppr res )
 ```
 
-TODO
-
 Artifacts
 ----------
 
@@ -9430,8 +9423,6 @@ Artifacts
 * TypecheckedModule
 * DesugaredModule
 * CoreModule
-
-TODO
 
 Located
 -------
