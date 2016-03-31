@@ -133,7 +133,7 @@ replaced by [Stack](#stack). The following use of Cabal sandboxes is left for
 historical reasons and can often be replaced by modern tools.
 </div>
 
-Cabal is the build system for Haskell. 
+Cabal is the build system for Haskell.
 
 For example to install the [parsec](http://hackage.haskell.org/package/parsec)
 package from Hackage to our system invoke the install command:
@@ -421,7 +421,7 @@ Instead of using a rolling build like ``cabal-install`` stack breaks up sets of
 packages into release blocks that guarantee internal compatibility between sets
 of packages. The package solver for Stack uses a different strategy for
 resolving dependencies than ``cabal-install`` has used historically and is
-generally more robust. 
+generally more robust.
 
 <div class="alert alert-success">
 Contrary to much misinformation, **Stack does not replace Cabal as the build
@@ -441,7 +441,7 @@ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 575159689BEFB442  
 echo 'deb http://download.fpcomplete.com/ubuntu trusty main'|sudo tee /etc/apt/sources.list.d/fpco.list    # add appropriate source repo
 sudo apt-get update && sudo apt-get install stack -y
 ```
-For other operating systems see the offocial install directions [here](http://docs.haskellstack.org/en/stable/install_and_upgrade/) 
+For other operating systems see the offocial install directions [here](http://docs.haskellstack.org/en/stable/install_and_upgrade/)
 
 #### Usage
 
@@ -462,7 +462,7 @@ packages: []
 extra-deps: []
 ```
 
-Most of the common libraries used in everyday development 
+Most of the common libraries used in everyday development
 The ``extra-deps`` package can be used to add Hackage dependencies that are not
 in the Stackage repository. They are specified by the package and the version
 key. For instance the ``zenc`` package could be added to the stack build
@@ -472,9 +472,9 @@ extra-deps:
 - zenc-0.1.1
 ```
 
-Stack can be used to install packages and executables into the either current
-build environment or the global environemnt. For example the following installs
-the ``hint`` linter executable and places it in on the PATH. 
+Stack can be used to install packages and executables either into the current
+build environment or the global environment. For example the following installs
+the ``hint`` linter executable and places it in on the PATH.
 
 ```bash
 $ stack install hint
@@ -611,7 +611,7 @@ Command    Shortcut   Action
 `:print`   `:p`       Print the expression
 `:edit`    `:e`       Load file in system editor.
 `:load`    `:l`       Set the active Main module in the REPL.
-`:add`     `:ad`      Load a file into the REPL namespace. 
+`:add`     `:ad`      Load a file into the REPL namespace.
 `:browse`  `:bro`     Browse all available symbols in the REPL namespace.
 
 The introspection commands are an essential part of debugging and interacting
@@ -1106,8 +1106,8 @@ It is run from the command line in the root of the cabal project directory  by
 specifying a commnad to run, for example ``cabal repl`` or ``stack repl``.
 
 ```haskell
-ghcid --command="cabal repl" 
-ghcid --command="stack repl" 
+ghcid --command="cabal repl"
+ghcid --command="stack repl"
 ```
 
 Any subsequent change to your project's filesystem will trigger and automatic
@@ -1937,7 +1937,7 @@ Newtype Deriving
 Newtypes let us reference a data type with a single constructor as a new
 distinct type, with no runtime overhead from boxing, unlike an algebraic
 datatype with single constructor.  Newtype wrappers around strings and numeric
-types can often drastically reduce accidental errors.  
+types can often drastically reduce accidental errors.
 
 Consider the case of using a newtype to distinguish between two different text
 blobs with different semantics. Both have the same runtime representation as
@@ -2047,7 +2047,7 @@ into ``StateT s m a``.
 generalize :: Monad m => Identity a -> m a
 ```
 
-So we could generalize an existing transformer to lift a IO layer into it. 
+So we could generalize an existing transformer to lift a IO layer into it.
 
 ~~~~ {.haskell include="src/10-advanced-monads/mmorph.hs"}
 ~~~~
@@ -2220,7 +2220,7 @@ first type from the list that will satisfy the context of the type variable is
 instantiated. So for instance given the following default rules.
 
 ```haskell
-default (C1 a,...,Cn a) 
+default (C1 a,...,Cn a)
 ```
 
 The following set of heuristics is used to determine what to instnatiate the
@@ -2384,7 +2384,7 @@ of a monadic context that need to hold a reference to themselves.
 {-# LANGUAGE DoRec #-}
 
 justOnes :: [Int]
-justOnes = do 
+justOnes = do
   rec xs <- Just (1:xs)
   return (map negate xs)
 ```
@@ -2410,7 +2410,7 @@ Desugars into:
 
 ```haskell
 test :: Monad m => m (a, b, c)
-test = 
+test =
 f >>= \a ->
   g >>= \b ->
     h >>= \c ->
@@ -2432,7 +2432,7 @@ Pattern guards are an extension to the pattern matching syntax.  Given a ``<-``
 pattern qualifier, the right hand side is evaluated and matched against the
 pattern on the left.  If the match fails then the whole guard fails and the next
 equation is tried.  If it succeeds, then the appropriate binding takes place,
-and the next qualifier is matched, in the augmented environment. 
+and the next qualifier is matched, in the augmented environment.
 
 ```haskell
 {-# LANGUAGE PatternGuards #-}
@@ -2479,12 +2479,12 @@ MultiWayIf
 ```haskell
 {-# LANGUAGE MultiWayIf #-}
 
-bmiTell :: Float -> String  
-bmiTell bmi = if 
-  | bmi <= 18.5 -> "You're underweight."  
+bmiTell :: Float -> String
+bmiTell bmi = if
+  | bmi <= 18.5 -> "You're underweight."
   | bmi <= 25.0 -> "You're average weight."
-  | bmi <= 30.0 -> "You're overewight." 
-  | otherwise   -> "You're a whale." 
+  | bmi <= 30.0 -> "You're overewight."
+  | otherwise   -> "You're a whale."
 ```
 
 EmptyCase
@@ -2505,7 +2505,7 @@ For case statements, LambdaCase allows the elimination of redundant free
 variables introduced purely for the case of pattern matching on.
 
 ```haskell
-\case 
+\case
   p1 -> 32
   p2 -> 32
 ```
@@ -2544,7 +2544,7 @@ have taken care to avoid conflicts in the namespace and this is not usually a
 problem in most modern Haskell.
 
 For example we could explicitly ask GHC to resolve that ``Control.Monad.Error``
-package be drawn from the ``mtl`` library. 
+package be drawn from the ``mtl`` library.
 
 ```haskell
 import qualified "mtl" Control.Monad.Error as Error
@@ -2705,12 +2705,12 @@ instance HasField x r a => IsLabel x (r -> a) where
   fromLabel = getField
 
 main :: IO ()
-main = do 
+main = do
   print (#foo (MkS 42))
   print (#foo (MkT True False))
 ```
 
-See: 
+See:
 
 * [OverloadedRecordFields revived](http://www.well-typed.com/blog/2015/03/overloadedrecordfields-revived/)
 
@@ -3152,7 +3152,7 @@ data Employee = Employee
 #### Strict
 
 Strict implies ``-XStrictData`` and extends strictness annotations to all
-arguments of functions. 
+arguments of functions.
 
 ```haskell
 f x y = x + y
@@ -3224,7 +3224,7 @@ Irrefutable Patterns
 --------------------
 
 A lazy pattern doesn't require a match on the outer constructor, instead it
-lazily calls the accessors of the values as needed. In the presence of a 
+lazily calls the accessors of the values as needed. In the presence of a
 bottom, we fail at the usage site instead of the outer pattern match.
 
 ~~~~ {.haskell include="src/05-laziness/lazy_patterns.hs"}
@@ -3311,7 +3311,7 @@ libraries like ``safe`` to build up a more industrial focused set of default
 functions. For example:
 
 ```haskell
-module Custom ( 
+module Custom (
   module Exports,
 ) where
 
@@ -3324,7 +3324,7 @@ import Data.Traversable as Exports
 
 import Control.Monad.Trans.Except
   as Exports
-  (ExceptT(ExceptT), Except, except, runExcept, runExceptT, 
+  (ExceptT(ExceptT), Except, except, runExcept, runExceptT,
    mapExcept, mapExceptT, withExcept, withExceptT)
 ```
 
@@ -4268,7 +4268,7 @@ The ``spoon`` function evaluates its argument to head normal form, while
 ~~~~ {.haskell include="src/09-errors/spoon.hs"}
 ~~~~
 
-See: 
+See:
 
 * [Spoon](https://hackage.haskell.org/package/spoon)
 
@@ -4587,7 +4587,7 @@ automatically lifts inside of any combination of the usual transformer stacks
 that has ``MonadBaseControl`` instance.
 
 ```haskell
-catch 
+catch
   :: (MonadBaseControl IO m, Exception e)
   => m a        -- ^ Computation
   -> (e -> m a) -- ^ Handler
@@ -6833,7 +6833,7 @@ To Install LiquidHaskell in Ubuntu add the following line to your
 ``/etc/sources.list``:
 
 ```bash
-deb http://ppa.launchpad.net/hvr/z3/ubuntu trusty main 
+deb http://ppa.launchpad.net/hvr/z3/ubuntu trusty main
 ```
 
 And then install the external SMT solver.
@@ -6875,10 +6875,10 @@ $ liquid example.hs
 Done solving.
 
 **** DONE:  solve **************************************************************
- 
+
 
 **** DONE:  annotate ***********************************************************
- 
+
 
 **** RESULT: SAFE **************************************************************
 ```
@@ -6963,7 +6963,7 @@ cast :: (Typeable a, Typeable b) => a -> Maybe b
 ~~~~
 
 In GHC 7.8 the Typeable class is poly-kinded so polymorphic functions can be
-applied over functions and higher kinded types. 
+applied over functions and higher kinded types.
 
 
 <div class="alert alert-danger">
@@ -7126,7 +7126,7 @@ everything :: (r -> r -> r) -> GenericQ r -> GenericQ r
 For example consider we have some custom collection of datatypes for which we
 want to write generic transformations that transform numerical subexpressions
 according to set of rewrite rules. We can use ``syb`` to write the
-transformation rules quite succinctly. 
+transformation rules quite succinctly.
 
 ~~~~ {.haskell include="src/18-generics/syb.hs"}
 ~~~~
@@ -8577,7 +8577,7 @@ generating Haskell expressions on the right with indexed metavariables (``$1``,
 ``term`` ~ ``$1``, ``term`` ~ ``$2``).
 
 ```perl
-terms 
+terms
     : term                   { [$1] }
     | term terms             { $1 : $2 }
 ```
@@ -8590,7 +8590,7 @@ As a simple input consider the following simple program.
 ~~~~ {.haskell include="src/24-parsing/happy/input.test"}
 ~~~~
 
-Configurator 
+Configurator
 ------------
 
 ~~~~ {.haskell include="src/24-parsing/configurator.hs"}
@@ -8768,7 +8768,7 @@ type Object = HashMap Text Value
 type Array = Vector Value
 
 -- | A JSON value represented as a Haskell value.
-data Value 
+data Value
   = Object !Object
   | Array !Array
   | String !Text
@@ -9372,9 +9372,9 @@ import DynFlags
 
 targetFile :: FilePath
 targetFile = "B.hs"
- 
+
 example :: IO ()
-example = 
+example =
   defaultErrorHandler defaultFatalMessager defaultFlushOut $ do
     runGhc (Just libdir) $ do
       dflags <- getSessionDynFlags
@@ -9388,11 +9388,11 @@ example =
       p <- parseModule modSum      -- ModuleSummary
       t <- typecheckModule p       -- TypecheckedSource
       d <- desugarModule t         -- DesugaredModule
-      l <- loadModule d            
+      l <- loadModule d
       let c = coreModule d         -- CoreModule
- 
+
       g <- getModuleGraph
-      mapM showModule g     
+      mapM showModule g
 
       return $ c
 
@@ -10918,7 +10918,7 @@ compiler. The internal structure of this file can be dumped using the
 ``--show-iface`` flag.  The precise structure changes between versions of GHC.
 
 ```bash
-$ ghc --show-iface let.hi                                                                                               
+$ ghc --show-iface let.hi
 Magic: Wanted 33214052,
        got    33214052
 Version: Wanted [7, 0, 8, 4],
@@ -11141,7 +11141,7 @@ import Text.Show.Pretty (ppShow)
 let pprint x = putStrLn $ ppShow x
 ```
 
-See: 
+See:
 
 * [The Design of a Pretty-printing Library](http://belle.sourceforge.net/doc/hughes95design.pdf)
 
@@ -11184,7 +11184,7 @@ that is becomes useful to abstract them out into a library. While haskeline
 provides a sensible lower-level API for interfacing with GNU readline, it is
 somewhat tedious to implement tab completion logic and common command logic over
 and over. To that end Repline assists in building interactive shells that that
-resemble GHCi's default behavior. 
+resemble GHCi's default behavior.
 
 ~~~~ {.haskell include="src/30-languages/repline.hs"}
 ~~~~
@@ -11205,9 +11205,9 @@ kirk
 "spam"
 
 >>> :say Hello Haskell
- _______________ 
+ _______________
 < Hello Haskell >
- --------------- 
+ ---------------
         \   ^__^
          \  (oo)\_______
             (__)\       )\/\
@@ -12070,7 +12070,7 @@ Standard ML
 -----------
 
 Standard ML was a general-purpose, modular, functional programming language with
-compile-time type checking and type inference. 
+compile-time type checking and type inference.
 
 Standard ML was traditionally a general purpose language, although it's lack of
 a modern compiler largely only makes it useful for work on pure type theory and
@@ -12194,7 +12194,7 @@ evaluation within a web browser. Semantically it is very close to Haskell except
 that is uses a call-by-value model instead of Haksell's call-by-need. The type
 system is a superset of Haskell 2010 and includes ad-hoc polymorphism,
 parametric polymorphism, rank-n polymorphism, row-polymorphism, higher-kinded
-types and full algebraic data types. 
+types and full algebraic data types.
 
 **Main difference**: Purescript targets Javascript in the browser, while GHC
 Haskell is designed to work on top of the GHC managed runtime.
