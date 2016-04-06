@@ -3288,7 +3288,6 @@ To get work done you probably need.
 * vector
 * filepath
 * directory
-* containers
 * process
 * unix
 * deepseq
