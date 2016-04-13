@@ -12,6 +12,7 @@ library
 
   build-depends:       
     spoon           >= 0.3 && <0.4,
+    mtl             >= 2.2 && <2.3,
     base            >= 4.6 && <4.10
 
   default-language:    Haskell2010
