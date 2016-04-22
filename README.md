@@ -7,7 +7,7 @@
 [![MIT License](http://img.shields.io/badge/license-mit-blue.svg)](https://github.com/sdiehl/wiwinwlh/blob/master/LICENSE)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sdiehl/wiwinwlh?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-Real Online:
+Read Online:
 
 * [**HTML**](http://dev.stephendiehl.com/hask/)
 * [**Example Code**](https://github.com/sdiehl/wiwinwlh/tree/master/src)
