@@ -12007,10 +12007,11 @@ Resources
 Other Languages
 ===============
 
-Let us attempt to give an objective comparison of Haskell to other languages
-with regards to which language principles they share and how they differ. This
-is not advisement to use or not use any of these languages simply a statement of
-the similarities and differences between them at the language level.
+Let us attempt to objectively compare Haskell to other programming languages
+with regards to which language principles they share and in what respects
+they differ. These comparisons are not advisements to use or avoid any of
+these languages, but rather statements of the similarities and differences
+between them at the language level.
 
 No notion of "weak" or "strong" typing will be discussed because the terms have
 no universal meaning.
