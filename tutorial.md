@@ -12020,8 +12020,23 @@ because the terms have no universal meaning.
 
 Haskell
 -------
+Haskell's genesis happened in 1987 at the [Functional Programming Languages and
+Computer Architecture](https://www.haskell.org/onlinereport/preface-jfp.html)
+conference in Portland, OR. Participants had achieved a consensus that there
+was a profusion of non-strict, pure languages and concluded that this
+excess was hampering the development and wider use of such languages.
+Subsequently, a committee was formed to design a new pure, lazy, general
+purpose programming language. Out of this collaboration emerged Haskell, named
+for logician [Haskell B. Curry](https://en.wikipedia.org/wiki/Haskell_Curry),
+upon whose research the logical underpinnings of the Haskell language rest.
 
-Haskell's main implementation is *ghc*.
+Since 1987, the Haskell language standard has continued to evolve. Haskell 1.0
+was released in April of 1990, with particularly significant updates to the
+standard released in [1998](https://www.haskell.org/onlinereport/) and
+[2010](https://www.haskell.org/onlinereport/haskell2010/).
+
+Haskell's main implementation is [*ghc*](https://www.haskell.org/ghc/). GHC
+is licenced under a permissive, non-copyleft, 3-clause BSD-style licence.
 
 Haskell is a *general purpose language*.
 
@@ -12035,6 +12050,8 @@ Haskell allows polymorphism by means of *parametric polymorphism* and *ad-hoc
 polymorphism* through typeclasses.
 
 Haskell is *pure* and statically tracks effects.
+
+Haskell employs *lazy evaluation* by default.
 
 OCaml
 -----
