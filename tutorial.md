@@ -12057,21 +12057,27 @@ Haskell employs *lazy evaluation* by default.
 OCaml
 -----
 
-OCaml originally known as Objective Caml, is the main implementation of the Caml
+OCaml, originally known as Objective Caml, is the main implementation of the Caml
 programming language. The type system of OCaml is significantly less advanced
-than modern GHC Haskell and does not supported higher-kinded typed or type-level
+than modern GHC Haskell and does not supported higher-kinded types or type-level
 programming to the extent that has become prevalent in portions of recent
 Haskell. The OCaml compiler is also significantly less advanced than modern GHC
 runtime and largely does not perform any compiler optimizations or program
-transformations. The language itself does has several advantages over Haskell in
-that is has a module system Although it is possible to write pure OCaml there is
-no language-integrated support and the current engineering practice around the
-language encourages ubiquitous impurity in third party libraries.
+transformations. The language itself does have several advantages over Haskell in
+that is has a module system. Although it is possible to write pure OCaml, there is
+no language-integrated support, and the current engineering practice around the
+language encourages ubiquitous impurity in third-party libraries.
 
-**Main difference**: Both have fairly modern type type systems, but OCaml does
-not enforce purity and uses call-by-value.
+**Main difference**: Both have fairly modern type systems, but OCaml does not
+enforce purity and uses call-by-value.
 
-Ocaml's main implementation is *ocamlc*.
+OCaml's main implementation is [*ocamlc*](http://ocaml.org/). The OCaml compiler
+is distributed under [the Q Public
+licence](http://www.gnu.org/licenses/license-list.html#QPL), a permissive,
+non-copyleft FLOSS licence. Some portions of the OCaml libaries are licensed under
+the [GPLv2](http://www.gnu.org/licenses/gpl.html). See the [OCaml GitHub
+page](https://github.com/ocaml/ocaml/blob/trunk/LICENSE) for more information
+about licensing specifics.
 
 OCaml is a *general purpose language*.
 
@@ -12086,7 +12092,9 @@ OCaml has a module system and functors.
 
 OCaml is not an optimizing compiler.
 
-Ocaml is *impure* by default and does not statically track effects.
+OCaml is *impure* by default and does not statically track effects.
+
+OCaml has a package manager called [OPAM](https://opam.ocaml.org/).
 
 Standard ML
 -----------
