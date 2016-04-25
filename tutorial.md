@@ -2072,10 +2072,15 @@ do type system research will have a very different interpretation of Haskell
 
 **Key**
 
-* *Benign* implies that importing the extension won't change the semantics of
-  the module if not used.
+* *Benign* implies both that importing the extension won't change the semantics of
+  the module if not used and that enabling it makes it no easier to shoot
+  yourself in the foot.
 * *Historical* implies that one shouldn't use this extension, it's in GHC purely
   for backwards compatibility.  Sometimes these are dangerous to enable.
+* *Steals syntax* means that enabling this extension means that certain code
+  valid in vanilla Haskell will no longer be accepted. For example, `f $(a)`
+  is the same as `f $ (a)` in Haskell98, but `TemplateHaskell` will interpret
+  `$(a)` as a splice.
 
 <extensions></extensions>
 
