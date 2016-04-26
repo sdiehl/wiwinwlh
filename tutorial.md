@@ -172,7 +172,7 @@ A ``.cabal`` file will be created with the configuration options for our new
 project.
 
 The latest feature of Cabal is the addition of
-[Sandboxes](http://coldwa.st/e/blog/2013-08-20-Cabal-sandbox.html) ( in cabal
+[Sandboxes](http://coldwa.st/e/blog/2013-08-20-Cabal-sandbox.html), ( in cabal
 > 1.18 ) which are self contained environments of Haskell packages
 separate from the global package index stored in the ``./.cabal-sandbox`` of our
 project's root. To create a new sandbox for our cabal project, run:
@@ -181,7 +181,7 @@ project's root. To create a new sandbox for our cabal project, run:
 $ cabal sandbox init
 ```
 
-In addition the sandbox can be torn down:
+Additionally, the sandbox can be torn down:
 
 ```bash
 $ cabal sandbox delete
@@ -208,7 +208,7 @@ $ cabal install -j4 --only-dependencies
 
 Let's look at an example cabal file. There are two main entry points that any
 package may provide: a ``library`` and an ``executable``. Multiple executables
-can be defined, but only one library. In addition there is a special form of
+can be defined but only one library. In addition, there is a special form of
 executable entry point ``Test-Suite`` which defines an interface for unit tests
 to be invoked from cabal.
 
@@ -217,7 +217,7 @@ modules within the package structure will be publicly visible when the package
 is installed. These are the user-facing APIs that we wish to expose to
 downstream consumers.
 
-For an executable the ``main-is`` field indicates the Main module for the
+For an executable, the ``main-is`` field indicates the Main module for the
 project that exports the ``main`` function to run for the executable logic of
 the application. Every module in the package must be listed in one of
 ``other-modules``, ``exposed-modules`` or ``main-is`` fields.
@@ -281,8 +281,8 @@ The ``<name>`` metavariable is either one of the executable or library
 declarations in the cabal file, and can optionally be disambiguated by the
 prefix ``exe:<name>`` or ``lib:<name>`` respectively.
 
-To build the package locally into the ``./dist/build`` folder execute the
-``build`` command.
+To build the package locally into the ``./dist/build`` folder, execute the
+``build`` command:
 
 ```bash
 $ cabal build
@@ -299,10 +299,10 @@ $ cabal test
 $ cabal test <name>
 ```
 
-In addition arbitrary shell commands can also be invoked with the GHC
-environmental variables set up for the sandbox. Quite common is to invoke a new
-shell with this command such that the ``ghc`` and ``ghci`` commands use the
-sandbox ( they don't by default, which is a common source of frustration ).
+Moreover, arbitrary shell commands can be invoked with the GHC environmental
+variables set up for the sandbox. Quite common is to invoke a new shell with
+this command such that the ``ghc`` and ``ghci`` commands use the sandbox.
+( They don't by default, which is a common source of frustration. ).
 
 ```bash
 $ cabal exec
@@ -310,7 +310,7 @@ $ cabal exec sh # launch a shell with GHC sandbox path set.
 ```
 
 The haddock documentation can be built for the local project by executing the
-``haddock`` command, it will be built to the ``./dist`` folder.
+``haddock`` command. It will be built to the ``./dist`` folder.
 
 ```bash
 $ cabal haddock
@@ -326,7 +326,7 @@ $ cabal upload dist/mylibrary-0.1.tar.gz
 ```
 
 Sometimes you'd also like to add a library from a local project into a sandbox.
-In this case the add-source command can be used to bring it into the sandbox
+In this case, the add-source command can be used to bring it into the sandbox
 from a local directory.
 
 ```bash
@@ -334,7 +334,7 @@ $ cabal sandbox add-source /path/to/project
 ```
 
 The current state of a sandbox can be frozen with all current package
-constraints enumerated.
+constraints enumerated:
 
 ```bash
 $ cabal freeze
@@ -348,8 +348,8 @@ constraints: mtl ==2.2.1,
              transformers ==0.4.1.0
 ```
 
-Using the ``cabal repl`` and ``cabal run`` commands is preferable but sometimes
-we'd like to manually perform their equivalents at the shell, there are several
+Using the ``cabal repl`` and ``cabal run`` commands is preferable, but sometimes
+we'd like to manually perform their equivalents at the shell. There are several
 useful aliases that rely on shell directory expansion to find the package
 database in the current working directory and launch GHC with the appropriate
 flags:
@@ -361,7 +361,7 @@ alias runhaskell-sandbox="runhaskell -no-user-package-db -package-db .cabal-sand
 ```
 
 There is also a zsh script to show the sandbox status of the current working
-directory in our shell.
+directory in our shell:
 
 ```bash
 function cabal_sandbox_info() {
@@ -405,7 +405,7 @@ directory.
 documentation: True
 ```
 
-If GHC is currently installed the documentation for the Prelude and Base
+If GHC is currently installed, the documentation for the Prelude and Base
 libraries should be available at this local link:
 
 [/usr/share/doc/ghc-doc/html/libraries/index.html](file:///usr/share/doc/ghc-doc/html/libraries/index.html)
