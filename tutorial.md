@@ -12103,17 +12103,18 @@ Standard ML
 Standard ML was a general-purpose, modular, functional programming language with
 compile-time type checking and type inference.
 
-Standard ML was traditionally a general purpose language, although it's lack of
-a modern compiler largely only makes it useful for work on pure type theory and
-proof assistants and not in industrial settings. Standard ML has been largely
-abandoned in recent years and is a good example of a promising language that
-withered on the vine from a lack of engineering effort devoted toward the
-backend compiler.
+[Standard ML](https://en.wikipedia.org/wiki/Standard_ML) was traditionally a
+general purpose language, although it's lack of a modern compiler largely only
+makes it useful for work on pure type theory and proof assistants and not in
+industrial settings. Standard ML has been largely abandoned in recent years
+and is a good example of a promising language that withered on the vine from
+a lack of engineering effort devoted toward the backend compiler.
 
 **Main difference**: Standard ML is no longer actively developed, Haskell is.
 
-Standard ML's main implementation is *smlnj*. Other implementations existed in
-*mlton* and *polyml*.
+Standard ML's main implementation is [*smlnj*](http://smlnj.org/). Other
+implementations existed in [*mlton*](http://mlton.org/) and
+[*polyml*](http://www.polyml.org/).
 
 Standard ML has no package manager.
 
