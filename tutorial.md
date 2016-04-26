@@ -12127,6 +12127,8 @@ Standard ML is *impure* by default and does not statically track effects.
 
 Standard ML implementations are typically *garbage collected*.
 
+Standard ML employs strict evaluation.
+
 Agda
 ----
 
