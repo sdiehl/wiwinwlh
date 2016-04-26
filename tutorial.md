@@ -133,10 +133,11 @@ replaced by [Stack](#stack). The following use of Cabal sandboxes is left for
 historical reasons and can often be replaced by modern tools.
 </div>
 
-Cabal is the build system for Haskell.
+[Cabal](https://www.haskell.org/cabal/) is the build system for Haskell.
 
-For example to install the [parsec](http://hackage.haskell.org/package/parsec)
-package from Hackage to our system invoke the install command:
+For example, to install the [parsec](http://hackage.haskell.org/package/parsec)
+package to our system from [Hackage](#hackage), the upstream source of Haskell
+packages, invoke the install command:
 
 ```bash
 $ cabal install parsec           # latest version
