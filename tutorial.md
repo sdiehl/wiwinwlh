@@ -218,7 +218,7 @@ is installed. These are the user-facing APIs that we wish to expose to
 downstream consumers.
 
 For an executable, the ``main-is`` field indicates the Main module for the
-project that exports the ``main`` function to run for the executable logic of
+project that exports the ``main`` function that runs the executable logic of
 the application. Every module in the package must be listed in one of
 ``other-modules``, ``exposed-modules`` or ``main-is`` fields.
 
