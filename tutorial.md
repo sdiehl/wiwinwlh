@@ -155,13 +155,13 @@ $ cabal build
 $ cabal install
 ```
 
-To update the package index from Hackage run:
+To update the package index from Hackage, run:
 
 ```bash
 $ cabal update
 ```
 
-To start a new Haskell project run
+To start a new Haskell project, run:
 
 ```bash
 $ cabal init
@@ -174,24 +174,24 @@ project.
 The latest feature of Cabal is the addition of Sandboxes ( in cabal
 > 1.18 ) which are self contained environments of Haskell packages
 separate from the global package index stored in the ``./.cabal-sandbox`` of our
-project's root. To create a new sandbox for our cabal project run.
+project's root. To create a new sandbox for our cabal project, run:
 
 ```bash
 $ cabal sandbox init
 ```
 
-In addition the sandbox can be torn down.
+In addition the sandbox can be torn down:
 
 ```bash
 $ cabal sandbox delete
 ```
 
 Invoking the cabal commands when in the working directory of a project with a
-sandbox configuration set up alters the behavior of cabal itself. For example
+sandbox configuration set up alters the behavior of cabal itself. For example,
 the ``cabal install`` command will only alter the install to the local package
 index and will not touch the global configuration.
 
-To install the dependencies from the cabal file into the newly created sandbox
+To install the dependencies from the cabal file into the newly created sandbox,
 run:
 
 ```bash
@@ -205,7 +205,7 @@ the number of concurrent builds.
 $ cabal install -j4 --only-dependencies
 ```
 
-Let's look at an example cabal file, there are two main entry points that any
+Let's look at an example cabal file. There are two main entry points that any
 package may provide: a ``library`` and an ``executable``. Multiple executables
 can be defined, but only one library. In addition there is a special form of
 executable entry point ``Test-Suite`` which defines an interface for unit tests
