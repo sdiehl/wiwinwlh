@@ -396,7 +396,7 @@ on this is discussed in the section on [Concurrency](#concurrency) and
 library-profiling: True
 ```
 
-Another common flag to enable is the ``documentation`` which forces the local
+Another common flag to enable is ``documentation`` which forces the local
 build of Haddock documentation, which can be useful for offline reference. On a
 Linux filesystem these are built to the ``/usr/share/doc/ghc-doc/html/libraries/``
 directory.
