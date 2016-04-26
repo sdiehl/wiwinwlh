@@ -289,8 +289,8 @@ $ cabal build
 ```
 
 To run the tests, our package must itself be reconfigured with the
-``--enable-tests`` and the ``build-depends`` from the Test-Suite must be
-manually installed if not already.
+``--enable-tests`` and the ``build-depends`` options. The Test-Suite must be
+installed manually, if not already present.
 
 ```bash
 $ cabal install --only-dependencies --enable-tests
