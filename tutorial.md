@@ -12356,17 +12356,18 @@ C++
 Go
 --
 
-Go is a programming language developed at Google.  Although Go is statically
-typed it has failed to integrate most modern advances in programming language
-work since the 1970s and instead chooses a seemingly regressive design. Most
-notably it lacks any notion of generics and polymorphism is either achieved by
-manual code duplication or unsafe coercions.
+[Go](https://golang.org/) is a programming language developed at Google.
+Although Go is statically typed, it has failed to integrate most modern
+advances in programming language design done after the 1970s and instead
+chooses a seemingly regressive design. Most notably, it lacks any notion of
+generics, while polymorphism is achieved either by manual code duplication or
+unsafe coercions.
 
 **Main difference**: Go is a language designed around the idea that language
 design has not advanced since 1970, while Haskell incorporates many ideas from
 modern research.
 
-Go's main implementation is *go*.
+Go's main implementation is [*go*](https://go.googlesource.com/go).
 
 Go is a *statically typed* language.
 
