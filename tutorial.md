@@ -309,8 +309,9 @@ $ cabal exec
 $ cabal exec sh # launch a shell with GHC sandbox path set.
 ```
 
-The haddock documentation can be built for the local project by executing the
-``haddock`` command. It will be built to the ``./dist`` folder.
+The [haddock](#haddock) documentation can be generated for the local project by
+executing the ``haddock`` command. The documentation will be built to
+the ``./dist`` folder.
 
 ```bash
 $ cabal haddock
