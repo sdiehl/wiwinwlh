@@ -350,10 +350,9 @@ constraints: mtl ==2.2.1,
 ```
 
 Using the ``cabal repl`` and ``cabal run`` commands is preferable, but sometimes
-we'd like to manually perform their equivalents at the shell. There are several
-useful aliases that rely on shell directory expansion to find the package
-database in the current working directory and launch GHC with the appropriate
-flags:
+we'd like to manually perform their equivalents at the shell. Several useful
+aliases rely on shell directory expansion to find the package database in the
+current working directory and launch GHC with the appropriate flags:
 
 ```bash
 alias ghc-sandbox="ghc -no-user-package-db -package-db .cabal-sandbox/*-packages.conf.d"
