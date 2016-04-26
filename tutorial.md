@@ -209,8 +209,8 @@ $ cabal install -j4 --only-dependencies
 Let's look at an example cabal file. There are two main entry points that any
 package may provide: a ``library`` and an ``executable``. Multiple executables
 can be defined but only one library. In addition, there is a special form of
-executable entry point ``Test-Suite`` which defines an interface for unit tests
-to be invoked from cabal.
+executable entry point ``Test-Suite``, which defines an interface for invoking
+unit tests from cabal.
 
 For a library, the ``exposed-modules`` field in the cabal file indicates which
 modules within the package structure will be publicly visible when the package
