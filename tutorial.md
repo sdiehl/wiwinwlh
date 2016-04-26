@@ -278,7 +278,7 @@ $ cabal repl <name>
 ```
 
 The ``<name>`` metavariable is either one of the executable or library
-declarations in the cabal file, and can optionally be disambiguated by the
+declarations in the cabal file and can optionally be disambiguated by the
 prefix ``exe:<name>`` or ``lib:<name>`` respectively.
 
 To build the package locally into the ``./dist/build`` folder, execute the
