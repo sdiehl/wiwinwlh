@@ -187,10 +187,10 @@ Additionally, the sandbox can be torn down:
 $ cabal sandbox delete
 ```
 
-Invoking the cabal commands when in the working directory of a project with a
-sandbox configuration set up alters the behavior of cabal itself. For example,
-the ``cabal install`` command will only alter the install to the local package
-index and will not touch the global configuration.
+When in the working directory of a project with a sandbox that has a configuation
+already set up, invoking cabal commands alters the behaviour of cabal itself. For
+instance, the ``cabal install`` command will alter only the install to the local
+package index, not the global configuration.
 
 To install the dependencies from the cabal file into the newly created sandbox,
 run:
