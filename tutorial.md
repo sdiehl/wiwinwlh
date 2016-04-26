@@ -327,8 +327,8 @@ $ cabal upload dist/mylibrary-0.1.tar.gz
 ```
 
 Sometimes you'd also like to add a library from a local project into a sandbox.
-In this case, the add-source command can be used to bring it into the sandbox
-from a local directory.
+In this case, run the ``add-source`` command to bring the library into the
+sandbox from a local directory:
 
 ```bash
 $ cabal sandbox add-source /path/to/project
