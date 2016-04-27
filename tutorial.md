@@ -452,8 +452,8 @@ directions](http://docs.haskellstack.org/en/stable/install_and_upgrade/).
 
 #### Usage
 
-Once Stack installed it can be used to setup a build environment on top of your
-existing project's cabal file by running:
+Once ``stack`` is installed, it is possible to setup a build environment on top
+of your existing project's ``cabal`` file by running:
 
 ```bash
 stack init
