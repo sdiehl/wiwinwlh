@@ -459,7 +459,7 @@ of your existing project's ``cabal`` file by running:
 stack init
 ```
 
-An example ``stack.yaml`` file for [GHC](https://www.haskell.org/ghc) 7.10.2 would look like the following:
+An example ``stack.yaml`` file for [GHC](https://www.haskell.org/ghc) 7.10.2 would look like:
 
 ```bash
 resolver: lts-3.14
