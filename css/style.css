@@ -2,9 +2,7 @@ html {
 }
 
 body {
-  /*font-family: HelveticaNeue, 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
-
-  font-family: 'Fira Sans';
+  font-family: 'Fira Sans', HelveticaNeue, 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: 10pt;
   font-style: normal;
   font-weight: 400;
@@ -24,7 +22,7 @@ body {
 
 h1, h2, h3, h4, h5 {
   color: #332;
-  font-family: 'Fira Sans';
+  font-family: 'Fira Sans', sans-serif;
   font-weight: 400;
   line-height: 1.1;
 }
@@ -42,8 +40,7 @@ code {
 }
 
 pre code {
-  /*font: 15px/19px Inconsolata, Monaco,"Lucida Console",Terminal,"Courier New",Courier;*/
-  font: 10pt "Source Code Pro";
+  font: 10pt "Source Code Pro", Monaco, "Lucida Console",Terminal,"Courier New",Courier;
 }
 
 img {
