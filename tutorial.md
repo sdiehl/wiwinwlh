@@ -457,7 +457,7 @@ existing project's cabal file by running:
 stack init
 ```
 
-An example ``stack.yaml`` file for [GHC](https://www.haskell.org/ghc) 7.10.2 would look like the following.
+An example ``stack.yaml`` file for [GHC](https://www.haskell.org/ghc) 7.10.2 would look like the following:
 
 ```bash
 resolver: lts-3.14
@@ -487,7 +487,7 @@ the ``hint`` linter executable and places it in on the PATH.
 $ stack install hint
 ```
 
-To check the set of dependencies
+To check the set of dependencies:
 
 ```bash
 $ stack list-dependencies
