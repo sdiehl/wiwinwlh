@@ -128,7 +128,7 @@ Cabal
 -----
 
 <div class="alert alert-success">
-Historically Cabal had a component known as cabal-install that has largely been
+Historically Cabal had a component known as ``cabal-install`` that has largely been
 replaced by [Stack](#stack). The following use of Cabal sandboxes is left for
 historical reasons and can often be replaced by modern tools.
 </div>
@@ -379,7 +379,7 @@ function cabal_sandbox_info() {
 RPROMPT="\$(cabal_sandbox_info) $RPROMPT"
 ```
 
-The cabal configuration is stored in ``$HOME/.cabal/config`` and contains
+The ``cabal`` configuration is stored in ``$HOME/.cabal/config`` and contains
 various options including credential information for Hackage upload. One
 addition to configuration is to completely disallow the installation of packages
 outside of sandboxes to prevent accidental collisions.
@@ -439,7 +439,7 @@ resolution of their dependencies.
 
 #### Install
 
-To install stack on Ubuntu Linux:
+To install ``stack`` on Ubuntu Linux:
 
 ```bash
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 575159689BEFB442                             # get fp complete key
@@ -472,16 +472,16 @@ The ``extra-deps`` package can be used to add
 [Hackage](http://hackage.haskell.org/) dependencies that are not in the
 [Stackage](https://www.stackage.org/) repository. They are specified by the
 package and the version key. For instance the ``zenc`` package could be added
-to the stack build
+to the ``stack`` build
 
 ```
 extra-deps:
 - zenc-0.1.1
 ```
 
-Stack can be used to install packages and executables either into the current
-build environment or the global environment. For example the following installs
-the ``hint`` linter executable and places it in on the PATH.
+The ``stack`` command can be used to install packages and executables either
+into the current build environment or the global environment. For example the
+following installs the ``hint`` linter executable and places it in on the PATH.
 
 ```bash
 $ stack install hint
@@ -494,7 +494,7 @@ $ stack list-dependencies
 ```
 
 Just as with Cabal project the build and debug process can be orchestrated using
-stack commands.
+``stack`` commands.
 
 ```bash
 $ stack build                 # Build a cabal target
