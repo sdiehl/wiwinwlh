@@ -29,6 +29,7 @@ before_install:
 # executables, and test suites, and runs the test suites. --no-terminal works
 # around some quirks in Travis's terminal implementation.
 script: 
+- stack $ARGS --no-terminal --install-ghc build 
 - stack $ARGS --no-terminal --install-ghc ghc includes.hs -o includes
 - stack $ARGS --no-terminal --install-ghc exec make
 
