@@ -483,10 +483,11 @@ extra-deps:
 
 The ``stack`` command can be used to install packages and executables into
 either the current build environment or the global environment. For example, the
-following command installs the ``hint`` linter executable and places it in the PATH.
+following command installs the executable for ``hlint``, [a popular linting tool for
+Haskell](https://github.com/ndmitchell/hlint), and places it in the PATH:
 
 ```bash
-$ stack install hint
+$ stack install hlint
 ```
 
 To check the set of dependencies:
