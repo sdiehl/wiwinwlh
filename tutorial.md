@@ -439,14 +439,16 @@ resolution of their dependencies.
 
 #### Install
 
-To install ``stack`` on Ubuntu Linux:
+To install ``stack`` on Ubuntu Linux, run:
 
 ```bash
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 575159689BEFB442                             # get fp complete key
 echo 'deb http://download.fpcomplete.com/ubuntu trusty main'|sudo tee /etc/apt/sources.list.d/fpco.list    # add appropriate source repo
 sudo apt-get update && sudo apt-get install stack -y
 ```
-For other operating systems see the offocial install directions [here](http://docs.haskellstack.org/en/stable/install_and_upgrade/)
+
+For other operating systems, see [the official install
+directions](http://docs.haskellstack.org/en/stable/install_and_upgrade/).
 
 #### Usage
 
