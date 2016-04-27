@@ -422,11 +422,10 @@ Stack
 
 [Stack](http://docs.haskellstack.org/en/stable/README/) is a new approach to
 Haskell package structure that emerged in 2015. Instead of using a rolling
-build like ``cabal-install`` stack breaks up sets of
-packages into release blocks that guarantee internal compatibility between sets
-of packages. The package solver for Stack uses a different strategy for
-resolving dependencies than ``cabal-install`` has used historically and is
-generally more robust.
+build like ``cabal-install``,  ``stack`` breaks up sets of packages into
+release blocks that guarantee internal compatibility between sets of packages.
+The package solver for ``stack`` uses a different, more robust strategy for
+resolving dependencies than ``cabal-install`` has historically used.
 
 <div class="alert alert-success">
 Contrary to much misinformation, **Stack does not replace [Cabal](#cabal) as
