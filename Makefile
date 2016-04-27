@@ -4,15 +4,11 @@ FLAGS = --standalone --toc --toc-depth=2 --highlight-style pygments
 TEMPLATE = resources/page.tmpl
 LTEMPLATE = resources/page.latex
 STYLE = css/style.css
+GHC=ghc
 
 HTML = tutorial.html
 
 # Check if sandbox exists. If it does, then use it instead.
-ifeq ("$(wildcard $(.cabal-sandbox/))","")
-	GHC=ghc -no-user-package-db -package-db .cabal-sandbox/*-packages.conf.d
-else
-	GHC=ghc
-endif
 
 all: $(HTML)
 
