@@ -481,9 +481,9 @@ extra-deps:
 - zenc-0.1.1
 ```
 
-The ``stack`` command can be used to install packages and executables either
-into the current build environment or the global environment. For example the
-following installs the ``hint`` linter executable and places it in on the PATH.
+The ``stack`` command can be used to install packages and executables into
+either the current build environment or the global environment. For example, the
+following command installs the ``hint`` linter executable and places it in the PATH.
 
 ```bash
 $ stack install hint
