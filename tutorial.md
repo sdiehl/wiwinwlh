@@ -469,12 +469,12 @@ packages: []
 extra-deps: []
 ```
 
-Most of the common libraries used in everyday development
-The ``extra-deps`` package can be used to add
-[Hackage](http://hackage.haskell.org/) dependencies that are not in the
-[Stackage](https://www.stackage.org/) repository. They are specified by the
-package and the version key. For instance the ``zenc`` package could be added
-to the ``stack`` build
+Most of the common libraries used in everyday development are already in the
+[Stackage](https://www.stackage.org/) repository. The ``extra-deps`` package
+can be used to add [Hackage](http://hackage.haskell.org/) dependencies that are
+not in the Stackage repository. They are specified by the package and the
+version key. For instance the ``zenc`` package could be added to
+the ``stack`` build:
 
 ```
 extra-deps:
