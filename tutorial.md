@@ -432,8 +432,8 @@ generally more robust.
 Contrary to much misinformation, **Stack does not replace [Cabal](#cabal) as
 the build system** and [uses it under the
 hood](http://docs.haskellstack.org/en/stable/faq/#what-is-the-relationship-between-stack-and-cabal).
-Stack simply streamlines integrating with third-party packages and resolving
-their dependencies.
+Stack simply streamlines integration with third-party packages and the
+resolution of their dependencies.
 </div>
 
 </hr>
