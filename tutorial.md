@@ -490,14 +490,14 @@ Haskell](https://github.com/ndmitchell/hlint), and places it in the PATH:
 $ stack install hlint
 ```
 
-To check the set of dependencies:
+To check the set of dependencies, run:
 
 ```bash
 $ stack list-dependencies
 ```
 
-Just as with Cabal project the build and debug process can be orchestrated using
-``stack`` commands.
+Just as with ``cabal``,  the build and debug process can be orchestrated using
+``stack`` commands:
 
 ```bash
 $ stack build                 # Build a cabal target
@@ -507,8 +507,8 @@ $ stack exec bash             # Execute a shell command with the stack GHC envir
 $ stack build --file-watch    # Build on every filesystem change
 ```
 
-To visualize the dependency graph use the dot command pipe the output into
-graphviz and your favorite image viewer:
+To visualize the dependency graph, use the dot command piped first into
+graphviz, then piped again into your favorite image viewer:
 
 ```bash
 $ stack dot --external | dot -Tpng | feh -
