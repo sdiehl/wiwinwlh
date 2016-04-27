@@ -420,18 +420,20 @@ See:
 Stack
 -----
 
-Stack is a new approach to Haskell package structure that emerged in 2015.
-Instead of using a rolling build like ``cabal-install`` stack breaks up sets of
+[Stack](http://docs.haskellstack.org/en/stable/README/) is a new approach to
+Haskell package structure that emerged in 2015. Instead of using a rolling
+build like ``cabal-install`` stack breaks up sets of
 packages into release blocks that guarantee internal compatibility between sets
 of packages. The package solver for Stack uses a different strategy for
 resolving dependencies than ``cabal-install`` has used historically and is
 generally more robust.
 
 <div class="alert alert-success">
-Contrary to much misinformation, **Stack does not replace Cabal as the build
-system** and uses it under the hood. It just makes the process of integrating
-with third party packages and resolving their dependencies much more
-streamlined.
+Contrary to much misinformation, **Stack does not replace [Cabal](#cabal) as
+the build system** and [uses it under the
+hood](http://docs.haskellstack.org/en/stable/faq/#what-is-the-relationship-between-stack-and-cabal).
+It just makes the process of integrating with third party packages
+and resolving their dependencies much more streamlined.
 </div>
 
 </hr>
@@ -456,7 +458,7 @@ existing project's cabal file by running:
 stack init
 ```
 
-An example ``stack.yaml`` file for GHC 7.10.2 would look like the following.
+An example ``stack.yaml`` file for [GHC](https://www.haskell.org/ghc) 7.10.2 would look like the following.
 
 ```bash
 resolver: lts-3.14
@@ -467,9 +469,11 @@ extra-deps: []
 ```
 
 Most of the common libraries used in everyday development
-The ``extra-deps`` package can be used to add Hackage dependencies that are not
-in the Stackage repository. They are specified by the package and the version
-key. For instance the ``zenc`` package could be added to the stack build
+The ``extra-deps`` package can be used to add
+[Hackage](http://hackage.haskell.org/) dependencies that are not in the
+[Stackage](https://www.stackage.org/) repository. They are specified by the
+package and the version key. For instance the ``zenc`` package could be added
+to the stack build
 
 ```
 extra-deps:
