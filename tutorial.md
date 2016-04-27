@@ -172,8 +172,8 @@ A ``.cabal`` file will be created with the configuration options for our new
 project.
 
 The latest feature of Cabal is the addition of
-[Sandboxes](http://coldwa.st/e/blog/2013-08-20-Cabal-sandbox.html), ( in cabal
-> 1.18 ) which are self contained environments of Haskell packages
+[Sandboxes](http://coldwa.st/e/blog/2013-08-20-Cabal-sandbox.html), ( in
+cabal > 1.18 ) which are self contained environments of Haskell packages
 separate from the global package index stored in the ``./.cabal-sandbox`` of our
 project's root. To create a new sandbox for our cabal project, run:
 
