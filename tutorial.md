@@ -128,7 +128,7 @@ Cabal
 -----
 
 <div class="alert alert-success">
-Historically Cabal had a component known as cabal-install that has largely been
+Historically Cabal had a component known as ``cabal-install`` that has largely been
 replaced by [Stack](#stack). The following use of Cabal sandboxes is left for
 historical reasons and can often be replaced by modern tools.
 </div>
@@ -379,7 +379,7 @@ function cabal_sandbox_info() {
 RPROMPT="\$(cabal_sandbox_info) $RPROMPT"
 ```
 
-The cabal configuration is stored in ``$HOME/.cabal/config`` and contains
+The ``cabal`` configuration is stored in ``$HOME/.cabal/config`` and contains
 various options including credential information for Hackage upload. One
 addition to configuration is to completely disallow the installation of packages
 outside of sandboxes to prevent accidental collisions.
@@ -420,43 +420,46 @@ See:
 Stack
 -----
 
-Stack is a new approach to Haskell package structure that emerged in 2015.
-Instead of using a rolling build like ``cabal-install`` stack breaks up sets of
-packages into release blocks that guarantee internal compatibility between sets
-of packages. The package solver for Stack uses a different strategy for
-resolving dependencies than ``cabal-install`` has used historically and is
-generally more robust.
+[Stack](http://docs.haskellstack.org/en/stable/README/) is a new approach to
+Haskell package structure that emerged in 2015. Instead of using a rolling
+build like ``cabal-install``,  ``stack`` breaks up sets of packages into
+release blocks that guarantee internal compatibility between sets of packages.
+The package solver for ``stack`` uses a different, more robust strategy for
+resolving dependencies than ``cabal-install`` has historically used.
 
 <div class="alert alert-success">
-Contrary to much misinformation, **Stack does not replace Cabal as the build
-system** and uses it under the hood. It just makes the process of integrating
-with third party packages and resolving their dependencies much more
-streamlined.
+Contrary to much misinformation, **Stack does not replace [Cabal](#cabal) as
+the build system** and [uses it under the
+hood](http://docs.haskellstack.org/en/stable/faq/#what-is-the-relationship-between-stack-and-cabal).
+Stack simply streamlines integration with third-party packages and the
+resolution of their dependencies.
 </div>
 
 </hr>
 
 #### Install
 
-To install stack on Ubuntu Linux:
+To install ``stack`` on Ubuntu Linux, run:
 
 ```bash
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 575159689BEFB442                             # get fp complete key
 echo 'deb http://download.fpcomplete.com/ubuntu trusty main'|sudo tee /etc/apt/sources.list.d/fpco.list    # add appropriate source repo
 sudo apt-get update && sudo apt-get install stack -y
 ```
-For other operating systems see the offocial install directions [here](http://docs.haskellstack.org/en/stable/install_and_upgrade/)
+
+For other operating systems, see [the official install
+directions](http://docs.haskellstack.org/en/stable/install_and_upgrade/).
 
 #### Usage
 
-Once Stack installed it can be used to setup a build environment on top of your
-existing project's cabal file by running:
+Once ``stack`` is installed, it is possible to setup a build environment on top
+of your existing project's ``cabal`` file by running:
 
 ```bash
 stack init
 ```
 
-An example ``stack.yaml`` file for GHC 7.10.2 would look like the following.
+An example ``stack.yaml`` file for [GHC](https://www.haskell.org/ghc) 7.10.2 would look like:
 
 ```bash
 resolver: lts-3.14
@@ -466,32 +469,35 @@ packages: []
 extra-deps: []
 ```
 
-Most of the common libraries used in everyday development
-The ``extra-deps`` package can be used to add Hackage dependencies that are not
-in the Stackage repository. They are specified by the package and the version
-key. For instance the ``zenc`` package could be added to the stack build
+Most of the common libraries used in everyday development are already in the
+[Stackage](https://www.stackage.org/) repository. The ``extra-deps`` field
+can be used to add [Hackage](http://hackage.haskell.org/) dependencies that are
+not in the Stackage repository. They are specified by the package and the
+version key. For instance, the ``zenc`` package could be added to
+the ``stack`` build:
 
 ```
 extra-deps:
 - zenc-0.1.1
 ```
 
-Stack can be used to install packages and executables either into the current
-build environment or the global environment. For example the following installs
-the ``hint`` linter executable and places it in on the PATH.
+The ``stack`` command can be used to install packages and executables into
+either the current build environment or the global environment. For example, the
+following command installs the executable for ``hlint``, [a popular linting tool for
+Haskell](https://github.com/ndmitchell/hlint), and places it in the PATH:
 
 ```bash
-$ stack install hint
+$ stack install hlint
 ```
 
-To check the set of dependencies
+To check the set of dependencies, run:
 
 ```bash
 $ stack list-dependencies
 ```
 
-Just as with Cabal project the build and debug process can be orchestrated using
-stack commands.
+Just as with ``cabal``,  the build and debug process can be orchestrated using
+``stack`` commands:
 
 ```bash
 $ stack build                 # Build a cabal target
@@ -501,8 +507,8 @@ $ stack exec bash             # Execute a shell command with the stack GHC envir
 $ stack build --file-watch    # Build on every filesystem change
 ```
 
-To visualize the dependency graph use the dot command pipe the output into
-graphviz and your favorite image viewer:
+To visualize the dependency graph, use the dot command piped first into
+graphviz, then piped again into your favorite image viewer:
 
 ```bash
 $ stack dot --external | dot -Tpng | feh -
