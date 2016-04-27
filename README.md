@@ -6,6 +6,7 @@
 
 [![MIT License](http://img.shields.io/badge/license-mit-blue.svg)](https://github.com/sdiehl/wiwinwlh/blob/master/LICENSE)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sdiehl/wiwinwlh?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/sdiehl/wiwinwlh.svg?branch=master)](https://travis-ci.org/sdiehl/wiwinwlh)
 
 Read Online:
 
