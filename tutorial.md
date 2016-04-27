@@ -270,7 +270,7 @@ $ cabal run
 $ cabal run <name>
 ```
 
-To load the "library" into a GHCi shell under the cabal sandbox:
+To load the "library" into a [GHCi](#ghci) shell under the cabal sandbox:
 
 ```bash
 $ cabal repl
@@ -299,10 +299,11 @@ $ cabal test
 $ cabal test <name>
 ```
 
-Moreover, arbitrary shell commands can be invoked with the GHC environmental
-variables set up for the sandbox. Quite common is to invoke a new shell with
-this command such that the ``ghc`` and ``ghci`` commands use the sandbox.
-( They don't by default, which is a common source of frustration. ).
+Moreover, arbitrary shell commands can be invoked with the
+[GHC](https://www.haskell.org/ghc/) environmental variables set up for the
+sandbox. Quite common is to invoke a new shell with this command such that
+the ``ghc`` and ``ghci`` commands use the sandbox. ( They don't by default,
+which is a common source of frustration. ).
 
 ```bash
 $ cabal exec
