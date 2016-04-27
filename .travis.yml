@@ -30,7 +30,7 @@ before_install:
 # around some quirks in Travis's terminal implementation.
 script: 
 - stack $ARGS --no-terminal --install-ghc build 
-- stack $ARGS --no-terminal --install-ghc ghc includes.hs -o includes
+- stack $ARGS --no-terminal --install-ghc ghc includes.hs -- -o includes
 - stack $ARGS --no-terminal --install-ghc exec make
 
 # Caching so the next build will be fast too.
