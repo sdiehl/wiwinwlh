@@ -133,10 +133,11 @@ replaced by [Stack](#stack). The following use of Cabal sandboxes is left for
 historical reasons and can often be replaced by modern tools.
 </div>
 
-Cabal is the build system for Haskell.
+[Cabal](https://www.haskell.org/cabal/) is the build system for Haskell.
 
-For example to install the [parsec](http://hackage.haskell.org/package/parsec)
-package from Hackage to our system invoke the install command:
+For example, to install the [parsec](http://hackage.haskell.org/package/parsec)
+package to our system from [Hackage](#hackage), the upstream source of Haskell
+packages, invoke the install command:
 
 ```bash
 $ cabal install parsec           # latest version
@@ -154,13 +155,13 @@ $ cabal build
 $ cabal install
 ```
 
-To update the package index from Hackage run:
+To update the package index from Hackage, run:
 
 ```bash
 $ cabal update
 ```
 
-To start a new Haskell project run
+To start a new Haskell project, run:
 
 ```bash
 $ cabal init
@@ -170,27 +171,28 @@ $ cabal configure
 A ``.cabal`` file will be created with the configuration options for our new
 project.
 
-The latest feature of Cabal is the addition of Sandboxes ( in cabal
+The latest feature of Cabal is the addition of
+[Sandboxes](http://coldwa.st/e/blog/2013-08-20-Cabal-sandbox.html), ( in cabal
 > 1.18 ) which are self contained environments of Haskell packages
 separate from the global package index stored in the ``./.cabal-sandbox`` of our
-project's root. To create a new sandbox for our cabal project run.
+project's root. To create a new sandbox for our cabal project, run:
 
 ```bash
 $ cabal sandbox init
 ```
 
-In addition the sandbox can be torn down.
+Additionally, the sandbox can be torn down:
 
 ```bash
 $ cabal sandbox delete
 ```
 
-Invoking the cabal commands when in the working directory of a project with a
-sandbox configuration set up alters the behavior of cabal itself. For example
-the ``cabal install`` command will only alter the install to the local package
-index and will not touch the global configuration.
+When in the working directory of a project with a sandbox that has a configuation
+already set up, invoking cabal commands alters the behaviour of cabal itself. For
+instance, the ``cabal install`` command will alter only the install to the local
+package index, not the global configuration.
 
-To install the dependencies from the cabal file into the newly created sandbox
+To install the dependencies from the cabal file into the newly created sandbox,
 run:
 
 ```bash
@@ -204,19 +206,19 @@ the number of concurrent builds.
 $ cabal install -j4 --only-dependencies
 ```
 
-Let's look at an example cabal file, there are two main entry points that any
+Let's look at an example cabal file. There are two main entry points that any
 package may provide: a ``library`` and an ``executable``. Multiple executables
-can be defined, but only one library. In addition there is a special form of
-executable entry point ``Test-Suite`` which defines an interface for unit tests
-to be invoked from cabal.
+can be defined but only one library. In addition, there is a special form of
+executable entry point ``Test-Suite``, which defines an interface for invoking
+unit tests from cabal.
 
 For a library, the ``exposed-modules`` field in the cabal file indicates which
 modules within the package structure will be publicly visible when the package
 is installed. These are the user-facing APIs that we wish to expose to
 downstream consumers.
 
-For an executable the ``main-is`` field indicates the Main module for the
-project that exports the ``main`` function to run for the executable logic of
+For an executable, the ``main-is`` field indicates the Main module for the
+project that exports the ``main`` function that runs the executable logic of
 the application. Every module in the package must be listed in one of
 ``other-modules``, ``exposed-modules`` or ``main-is`` fields.
 
@@ -268,7 +270,7 @@ $ cabal run
 $ cabal run <name>
 ```
 
-To load the "library" into a GHCi shell under the cabal sandbox:
+To load the "library" into a [GHCi](#ghci) shell under the cabal sandbox:
 
 ```bash
 $ cabal repl
@@ -276,19 +278,19 @@ $ cabal repl <name>
 ```
 
 The ``<name>`` metavariable is either one of the executable or library
-declarations in the cabal file, and can optionally be disambiguated by the
+declarations in the cabal file and can optionally be disambiguated by the
 prefix ``exe:<name>`` or ``lib:<name>`` respectively.
 
-To build the package locally into the ``./dist/build`` folder execute the
-``build`` command.
+To build the package locally into the ``./dist/build`` folder, execute the
+``build`` command:
 
 ```bash
 $ cabal build
 ```
 
 To run the tests, our package must itself be reconfigured with the
-``--enable-tests`` and the ``build-depends`` from the Test-Suite must be
-manually installed if not already.
+``--enable-tests`` and the ``build-depends`` options. The Test-Suite must be
+installed manually, if not already present.
 
 ```bash
 $ cabal install --only-dependencies --enable-tests
@@ -297,18 +299,20 @@ $ cabal test
 $ cabal test <name>
 ```
 
-In addition arbitrary shell commands can also be invoked with the GHC
-environmental variables set up for the sandbox. Quite common is to invoke a new
-shell with this command such that the ``ghc`` and ``ghci`` commands use the
-sandbox ( they don't by default, which is a common source of frustration ).
+Moreover, arbitrary shell commands can be invoked with the
+[GHC](https://www.haskell.org/ghc/) environmental variables set up for the
+sandbox. Quite common is to invoke a new shell with this command such that
+the ``ghc`` and ``ghci`` commands use the sandbox. ( They don't by default,
+which is a common source of frustration. ).
 
 ```bash
 $ cabal exec
 $ cabal exec sh # launch a shell with GHC sandbox path set.
 ```
 
-The haddock documentation can be built for the local project by executing the
-``haddock`` command, it will be built to the ``./dist`` folder.
+The [haddock](#haddock) documentation can be generated for the local project by
+executing the ``haddock`` command. The documentation will be built to
+the ``./dist`` folder.
 
 ```bash
 $ cabal haddock
@@ -324,15 +328,15 @@ $ cabal upload dist/mylibrary-0.1.tar.gz
 ```
 
 Sometimes you'd also like to add a library from a local project into a sandbox.
-In this case the add-source command can be used to bring it into the sandbox
-from a local directory.
+In this case, run the ``add-source`` command to bring the library into the
+sandbox from a local directory:
 
 ```bash
 $ cabal sandbox add-source /path/to/project
 ```
 
 The current state of a sandbox can be frozen with all current package
-constraints enumerated.
+constraints enumerated:
 
 ```bash
 $ cabal freeze
@@ -346,11 +350,10 @@ constraints: mtl ==2.2.1,
              transformers ==0.4.1.0
 ```
 
-Using the ``cabal repl`` and ``cabal run`` commands is preferable but sometimes
-we'd like to manually perform their equivalents at the shell, there are several
-useful aliases that rely on shell directory expansion to find the package
-database in the current working directory and launch GHC with the appropriate
-flags:
+Using the ``cabal repl`` and ``cabal run`` commands is preferable, but sometimes
+we'd like to manually perform their equivalents at the shell. Several useful
+aliases rely on shell directory expansion to find the package database in the
+current working directory and launch GHC with the appropriate flags:
 
 ```bash
 alias ghc-sandbox="ghc -no-user-package-db -package-db .cabal-sandbox/*-packages.conf.d"
@@ -359,7 +362,7 @@ alias runhaskell-sandbox="runhaskell -no-user-package-db -package-db .cabal-sand
 ```
 
 There is also a zsh script to show the sandbox status of the current working
-directory in our shell.
+directory in our shell:
 
 ```bash
 function cabal_sandbox_info() {
@@ -387,13 +390,14 @@ require-sandbox: True
 ```
 
 A library can also be compiled with runtime profiling information enabled. More
-on this is discussed in the section on Concurrency and profiling.
+on this is discussed in the section on [Concurrency](#concurrency) and
+[Profiling](#profiling).
 
 ```perl
 library-profiling: True
 ```
 
-Another common flag to enable is the ``documentation`` which forces the local
+Another common flag to enable is ``documentation`` which forces the local
 build of Haddock documentation, which can be useful for offline reference. On a
 Linux filesystem these are built to the ``/usr/share/doc/ghc-doc/html/libraries/``
 directory.
@@ -402,7 +406,7 @@ directory.
 documentation: True
 ```
 
-If GHC is currently installed the documentation for the Prelude and Base
+If GHC is currently installed, the documentation for the Prelude and Base
 libraries should be available at this local link:
 
 [/usr/share/doc/ghc-doc/html/libraries/index.html](file:///usr/share/doc/ghc-doc/html/libraries/index.html)
@@ -12007,10 +12011,11 @@ Resources
 Other Languages
 ===============
 
-Let us attempt to give an objective comparison of Haskell to other languages
-with regards to which language principles they share and how they differ. This
-is not advisement to use or not use any of these languages simply a statement of
-the similarities and differences between them at the language level.
+Let us attempt to objectively compare Haskell to other programming languages
+with regards to which language principles they share and in what respects
+they differ. These comparisons are not advisements to use or avoid any of
+these languages, but rather statements of the similarities and differences
+between them at the language level.
 
 No notion of "weak" or "strong" typing will be discussed because the terms have
 no universal meaning.
@@ -12021,7 +12026,23 @@ because the terms have no universal meaning.
 Haskell
 -------
 
-Haskell's main implementation is *ghc*.
+Haskell's genesis happened in 1987 at the [Functional Programming Languages and
+Computer Architecture](https://www.haskell.org/onlinereport/preface-jfp.html)
+conference in Portland, OR. Participants had achieved a consensus that there
+was a profusion of non-strict, pure languages and concluded that this
+excess was hampering the development and wider use of such languages.
+Subsequently, a committee was formed to design a new pure, lazy, general
+purpose programming language. Out of this collaboration emerged Haskell, named
+for logician [Haskell B. Curry](https://en.wikipedia.org/wiki/Haskell_Curry),
+upon whose research the logical underpinnings of the Haskell language rest.
+
+Since 1987, the Haskell language standard has continued to evolve. Haskell 1.0
+was released in April of 1990, with particularly significant updates to the
+standard released in [1998](https://www.haskell.org/onlinereport/) and
+[2010](https://www.haskell.org/onlinereport/haskell2010/).
+
+Haskell's main implementation is [*ghc*](https://www.haskell.org/ghc/). GHC
+is licenced under a permissive, non-copyleft, 3-clause BSD-style licence.
 
 Haskell is a *general purpose language*.
 
@@ -12036,24 +12057,32 @@ polymorphism* through typeclasses.
 
 Haskell is *pure* and statically tracks effects.
 
+Haskell employs *lazy evaluation* by default.
+
 OCaml
 -----
 
-OCaml originally known as Objective Caml, is the main implementation of the Caml
+OCaml, originally known as Objective Caml, is the main implementation of the Caml
 programming language. The type system of OCaml is significantly less advanced
-than modern GHC Haskell and does not supported higher-kinded typed or type-level
+than modern GHC Haskell and does not supported higher-kinded types or type-level
 programming to the extent that has become prevalent in portions of recent
 Haskell. The OCaml compiler is also significantly less advanced than modern GHC
 runtime and largely does not perform any compiler optimizations or program
-transformations. The language itself does has several advantages over Haskell in
-that is has a module system Although it is possible to write pure OCaml there is
-no language-integrated support and the current engineering practice around the
-language encourages ubiquitous impurity in third party libraries.
+transformations. The language itself does have several advantages over Haskell in
+that is has a module system. Although it is possible to write pure OCaml, there is
+no language-integrated support, and the current engineering practice around the
+language encourages ubiquitous impurity in third-party libraries.
 
-**Main difference**: Both have fairly modern type type systems, but OCaml does
-not enforce purity and uses call-by-value.
+**Main difference**: Both have fairly modern type systems, but OCaml does not
+enforce purity and uses call-by-value.
 
-Ocaml's main implementation is *ocamlc*.
+OCaml's main implementation is [*ocamlc*](http://ocaml.org/). The OCaml compiler
+is distributed under [the Q Public
+licence](http://www.gnu.org/licenses/license-list.html#QPL), a permissive,
+non-copyleft FLOSS licence. Some portions of the OCaml libaries are licensed under
+the [GPLv2](http://www.gnu.org/licenses/gpl.html). See the [OCaml GitHub
+page](https://github.com/ocaml/ocaml/blob/trunk/LICENSE) for more information
+about licensing specifics.
 
 OCaml is a *general purpose language*.
 
@@ -12068,7 +12097,9 @@ OCaml has a module system and functors.
 
 OCaml is not an optimizing compiler.
 
-Ocaml is *impure* by default and does not statically track effects.
+OCaml is *impure* by default and does not statically track effects.
+
+OCaml has a package manager called [OPAM](https://opam.ocaml.org/).
 
 Standard ML
 -----------
@@ -12076,17 +12107,18 @@ Standard ML
 Standard ML was a general-purpose, modular, functional programming language with
 compile-time type checking and type inference.
 
-Standard ML was traditionally a general purpose language, although it's lack of
-a modern compiler largely only makes it useful for work on pure type theory and
-proof assistants and not in industrial settings. Standard ML has been largely
-abandoned in recent years and is a good example of a promising language that
-withered on the vine from a lack of engineering effort devoted toward the
-backend compiler.
+[Standard ML](https://en.wikipedia.org/wiki/Standard_ML) was traditionally a
+general purpose language, although it's lack of a modern compiler largely only
+makes it useful for work on pure type theory and proof assistants and not in
+industrial settings. Standard ML has been largely abandoned in recent years
+and is a good example of a promising language that withered on the vine from
+a lack of engineering effort devoted toward the backend compiler.
 
 **Main difference**: Standard ML is no longer actively developed, Haskell is.
 
-Standard ML's main implementation is *smlnj*. Other implementations existed in
-*mlton* and *polyml*.
+Standard ML's main implementation is [*smlnj*](http://smlnj.org/). Other
+implementations existed in [*mlton*](http://mlton.org/) and
+[*polyml*](http://www.polyml.org/).
 
 Standard ML has no package manager.
 
@@ -12099,6 +12131,8 @@ Standard ML is a *statically typed* language.
 Standard ML is *impure* by default and does not statically track effects.
 
 Standard ML implementations are typically *garbage collected*.
+
+Standard ML employs strict evaluation.
 
 Agda
 ----
