@@ -558,9 +558,12 @@ library mylib
     -fwarn-incomplete-patterns
 ```
 
-For debugging GHC internals, see the [commentary](#block-diagram) on GHC
-internals. These are simply the most useful, for all flags see the [official
-reference](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/flag-reference.html).
+The flags described above are simply the most useful. See the [official
+reference](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/flag-reference.html)
+for the complete set of GHC's supported flags.
+
+For information on debugging GHC internals, see the [commentary](#block-diagram)
+on GHC internals.
 
 Hackage
 -------
