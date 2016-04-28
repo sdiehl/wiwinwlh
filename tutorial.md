@@ -570,8 +570,9 @@ Hackage
 
 [Hackage](http://hackage.haskell.org/) is the upstream source of
 [FLOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software#FLOSS)
-Haskell packages. Being a evolving language, Hackage is many things to many
-people but there seem to be two dominant philosophies of uploaded libraries.
+Haskell packages. With Haskell's continuing evolution, Hackage has become many
+things to developers, but there seem to be two dominant philosophies of uploaded
+libraries.
 
 **Reusable Code / Building Blocks**
 
