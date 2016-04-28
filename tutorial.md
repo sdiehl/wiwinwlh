@@ -568,9 +568,9 @@ on GHC internals.
 Hackage
 -------
 
-Hackage is the upstream source of open source Haskell packages. Being a evolving
-language, Hackage is many things to many people but there seem to be two
-dominant philosophies of uploaded libraries.
+[Hackage](http://hackage.haskell.org/) is the upstream source of open source
+Haskell packages. Being a evolving language, Hackage is many things to many
+people but there seem to be two dominant philosophies of uploaded libraries.
 
 **Reusable Code / Building Blocks**
 
