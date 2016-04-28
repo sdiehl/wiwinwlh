@@ -600,9 +600,8 @@ undocumented as well.
 For developers coming to Haskell from other language ecosystems that favor
 the former philsophy (e.g., Python,Javascript, Ruby), seeing  *thousands of
 libraries without the slightest hint of documentation or description of purpose*
-can be unnerving. It is an open question about the cultural differences between
-the two philosophies and how sustainable the current cultural state of Hackage
-is.
+can be unnerving. It is an open question whether the current cultural state of
+Hackage is sustainable in light of these philsophical differences.
 
 Needless to say there is a lot of very low-quality Haskell code and
 documentation out there today, and being conservative in library assessment is a
