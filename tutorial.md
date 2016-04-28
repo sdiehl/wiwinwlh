@@ -539,10 +539,10 @@ Flag                                 Description
 -fno-code                            Don't doing code generation, just parse and typecheck
 -fobject-code                        Don't doing code generation, just parse and typecheck
 
-Like most compilers ``-Wall`` can be used to enable all warnings. Although some
-of the enabled warnings are somewhat overzealous like ``-fwarn-unused-do-bind``
-and ``-fwarn-unused-matches`` which typically wouldn't correspond to errors or
-failures.
+Like most compilers, GHC takes the ``-Wall`` flag to enable all warnings.
+However, a few of the enabled warnings are highly verbose. For example,
+``-fwarn-unused-do-bind`` and ``-fwarn-unused-matches`` typically
+would not correspond to errors or failures.
 
 Any of these can be added to the cabal file using the ``ghc-options`` section of
 a Cabal target. For example
