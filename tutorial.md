@@ -544,8 +544,8 @@ However, a few of the enabled warnings are highly verbose. For example,
 ``-fwarn-unused-do-bind`` and ``-fwarn-unused-matches`` typically
 would not correspond to errors or failures.
 
-Any of these can be added to the cabal file using the ``ghc-options`` section of
-a Cabal target. For example
+Any of these flags can be added to the ``ghc-options`` section of a
+project's ``.cabal`` file. For example:
 
 ```perl
 library mylib
