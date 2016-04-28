@@ -576,10 +576,11 @@ libraries.
 
 **Reusable Code / Building Blocks**
 
-Libraries exist as stable, community supported, building blocks for building
-higher level functionality on top of an edifice which is common and stable. The
-author(s) of the library have written the library as a means of packaging up
-their understanding of a problem domain so that others can build on their
+In the first philosophy, libraries exist as stable, community-supported building
+blocks for constructing higher level functionality on top of an edifice that is
+common and stable. In development communities where this method is the dominant
+philosophy, the author(s) of libraries have written them as a means of packaging
+up their understanding of a problem domain so that others can build on their
 understanding and expertise.
 
 **A Staging Area / Request for Comments**
