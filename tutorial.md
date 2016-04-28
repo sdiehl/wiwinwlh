@@ -517,8 +517,10 @@ $ stack dot --external | dot -Tpng | feh -
 Flags
 -----
 
-The most commonly used GHC compiler flags for detecting common code errors are
-the following:
+Enabling [GHC](https://www.haskell.org/ghc) [compiler
+flags](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/flag-reference.html)
+grants the user more control in detecting common code errors. The most
+frequently used flags are:
 
 Flag                                 Description
 ----                                 ------------
