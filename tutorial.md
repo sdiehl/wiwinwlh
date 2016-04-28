@@ -585,15 +585,17 @@ understanding and expertise.
 
 **A Staging Area / Request for Comments**
 
-A common philosophy is that Hackage is a place to upload experimental libraries
-up as a means of getting community feedback and making the code publicly
-available.  The library author(s) often rationalize putting these kind of
-libraries up undocumented, often not indicating what the library even does, by
-simply stating that they intend to tear it all down and rewrite it later. This
-unfortunately means a lot of Hackage namespace has become polluted with dead-end
-bit-rotting code. Sometimes packages are also uploaded purely for internal use
-or to accompany a paper, or just to integrate with the cabal build system. These
-are often left undocumented as well.
+In contrast to the previous method of packaging, a common philosophy in the
+Haskell community is that Hackage is a place to upload experimental libraries
+as a means of getting community feedback and making the code publicly available.
+Library author(s) often rationalize putting these kind of libraries up
+undocumented, often without indication of what the library actually does, by
+simply stating that they intend to tear the code down and rewrite it later. This
+approach unfortunately means a lot of Hackage namespace has become polluted
+with dead-end, bit-rotting code. Sometimes packages are also uploaded purely for
+internal use within an organisation or to accompany a paper, or just to
+integrate with the ``cabal`` build system. These packages are often left
+undocumented as well.
 
 Many other language ecosystems (Python, Javascript, Ruby) favor the former
 philosophy, and coming to Haskell can be kind of unnerving to see *thousands of
