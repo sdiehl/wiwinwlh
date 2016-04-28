@@ -524,7 +524,7 @@ frequently used flags are:
 
 Flag                                 Description
 ----                                 ------------
--fwarn-tabs                          Emit warnings of tabs instead of spaces in the source code.
+-fwarn-tabs                          Emit warnings of tabs instead of spaces in the source code
 -fwarn-unused-imports                Warn about libraries imported without being used
 -fwarn-name-shadowing                Warn on duplicate names in nested bindings
 -fwarn-incomplete-uni-patterns       Emit warnings for incomplete patterns in lambdas or pattern bindings
@@ -534,10 +534,10 @@ Flag                                 Description
 -fdefer-type-errors                  Turn type errors into warnings
 -fwarn-missing-signatures            Warn about toplevel missing type signatures
 -fwarn-monomorphism-restriction      Warn when the monomorphism restriction is applied implicitly
--fwarn-orphans                       Warn on orphan typeclass instances.
+-fwarn-orphans                       Warn on orphan typeclass instances
 -fforce-recomp                       Force recompilation regardless of timestamp
--fno-code                            Don't doing code generation, just parse and typecheck.
--fobject-code                        Don't doing code generation, just parse and typecheck.
+-fno-code                            Don't doing code generation, just parse and typecheck
+-fobject-code                        Don't doing code generation, just parse and typecheck
 
 Like most compilers ``-Wall`` can be used to enable all warnings. Although some
 of the enabled warnings are somewhat overzealous like ``-fwarn-unused-do-bind``
