@@ -137,7 +137,7 @@ historical reasons and can often be replaced by modern tools.
 
 For example, to install the [parsec](http://hackage.haskell.org/package/parsec)
 package to our system from [Hackage](#hackage), the upstream source of Haskell
-packages, invoke the install command:
+packages, invoke the ``install`` command:
 
 ```bash
 $ cabal install parsec           # latest version
@@ -171,29 +171,29 @@ $ cabal configure
 A ``.cabal`` file will be created with the configuration options for our new
 project.
 
-The latest feature of Cabal is the addition of
+The latest feature of ``cabal`` is the addition of
 [Sandboxes](http://coldwa.st/e/blog/2013-08-20-Cabal-sandbox.html), ( in
 cabal > 1.18 ) which are self contained environments of Haskell packages
 separate from the global package index stored in the ``./.cabal-sandbox`` of our
-project's root. To create a new sandbox for our cabal project, run:
+project's root. To create a new ``sandbox`` for our ``cabal`` project, run:
 
 ```bash
 $ cabal sandbox init
 ```
 
-Additionally, the sandbox can be torn down:
+Additionally, the ``sandbox`` can be torn down:
 
 ```bash
 $ cabal sandbox delete
 ```
 
-When in the working directory of a project with a sandbox that has a configuation
-already set up, invoking cabal commands alters the behaviour of cabal itself. For
+When in the working directory of a project with a ``sandbox`` that has a configuation
+already set up, invoking ``cabal`` commands alters the behaviour of cabal itself. For
 instance, the ``cabal install`` command will alter only the install to the local
 package index, not the global configuration.
 
-To install the dependencies from the cabal file into the newly created sandbox,
-run:
+To install the dependencies from the ``.cabal`` file into the newly created
+``sandbox``, run:
 
 ```bash
 $ cabal install --only-dependencies
@@ -206,16 +206,16 @@ the number of concurrent builds.
 $ cabal install -j4 --only-dependencies
 ```
 
-Let's look at an example cabal file. There are two main entry points that any
-package may provide: a ``library`` and an ``executable``. Multiple executables
-can be defined but only one library. In addition, there is a special form of
-executable entry point ``Test-Suite``, which defines an interface for invoking
-unit tests from cabal.
+Let's look at an example ``.cabal`` file. There are two main entry points that
+any package may provide: a ``library`` and an ``executable``. Multiple
+executables can be defined but only one library. In addition, there is a special
+form of executable entry point ``Test-Suite``, which defines an interface for
+invoking unit tests from ``cabal``.
 
-For a library, the ``exposed-modules`` field in the cabal file indicates which
-modules within the package structure will be publicly visible when the package
-is installed. These are the user-facing APIs that we wish to expose to
-downstream consumers.
+For a library, the ``exposed-modules`` field in the ``.cabal`` file indicates
+which modules within the package structure will be publicly visible when the
+package is installed. These modules are the user-facing APIs that we wish to
+expose to downstream consumers.
 
 For an executable, the ``main-is`` field indicates the Main module for the
 project that exports the ``main`` function that runs the executable logic of
@@ -263,14 +263,14 @@ Test-Suite test
       mylibrary == 0.1
 ```
 
-To run the "executable" for a library under the cabal sandbox:
+To run the "executable" for a library under the ``cabal`` ``sandbox``:
 
 ```bash
 $ cabal run
 $ cabal run <name>
 ```
 
-To load the "library" into a [GHCi](#ghci) shell under the cabal sandbox:
+To load the "library" into a [GHCi](#ghci) shell under ``cabal`` ``sandbox``:
 
 ```bash
 $ cabal repl
@@ -278,7 +278,7 @@ $ cabal repl <name>
 ```
 
 The ``<name>`` metavariable is either one of the executable or library
-declarations in the cabal file and can optionally be disambiguated by the
+declarations in the ``.cabal`` file and can optionally be disambiguated by the
 prefix ``exe:<name>`` or ``lib:<name>`` respectively.
 
 To build the package locally into the ``./dist/build`` folder, execute the
@@ -289,7 +289,7 @@ $ cabal build
 ```
 
 To run the tests, our package must itself be reconfigured with the
-``--enable-tests`` and the ``build-depends`` options. The Test-Suite must be
+``--enable-tests`` and the ``build-depends`` options. The ``Test-Suite`` must be
 installed manually, if not already present.
 
 ```bash
@@ -301,8 +301,8 @@ $ cabal test <name>
 
 Moreover, arbitrary shell commands can be invoked with the
 [GHC](https://www.haskell.org/ghc/) environmental variables set up for the
-sandbox. Quite common is to invoke a new shell with this command such that
-the ``ghc`` and ``ghci`` commands use the sandbox. ( They don't by default,
+``sandbox``. Quite common is to invoke a new shell with this command such that
+the ``ghc`` and ``ghci`` commands use the ``sandbox``. ( They don't by default,
 which is a common source of frustration. ).
 
 ```bash
@@ -327,15 +327,15 @@ $ cabal sdist
 $ cabal upload dist/mylibrary-0.1.tar.gz
 ```
 
-Sometimes you'd also like to add a library from a local project into a sandbox.
-In this case, run the ``add-source`` command to bring the library into the
-sandbox from a local directory:
+Sometimes you'd also like to add a library from a local project into
+a ``sandbox``. In this case, run the ``add-source`` command to bring the
+library into the ``sandbox`` from a local directory:
 
 ```bash
 $ cabal sandbox add-source /path/to/project
 ```
 
-The current state of a sandbox can be frozen with all current package
+The current state of a ``sandbox`` can be frozen with all current package
 constraints enumerated:
 
 ```bash
