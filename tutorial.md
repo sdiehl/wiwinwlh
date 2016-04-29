@@ -576,9 +576,9 @@ two dominant philosophies of uploaded libraries.
 
 **Reusable Code / Building Blocks**
 
-In the first philosophy, libraries exist as stable, community-supported building
-blocks for constructing higher level functionality on top of an edifice that is
-common and stable. In development communities where this method is the dominant
+In the first philosophy, libraries exist as reliable, community-supported
+building blocks for constructing higher level functionality on top of a common,
+stable edifice. In development communities where this method is the dominant
 philosophy, the author(s) of libraries have written them as a means of packaging
 up their understanding of a problem domain so that others can build on their
 understanding and expertise.
