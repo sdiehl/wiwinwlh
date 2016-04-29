@@ -605,7 +605,7 @@ Hackage is sustainable in light of these philsophical differences.
 
 Needless to say, there is a lot of very low-quality Haskell code and
 documentation out there today, so being conservative in library assessment is a
-necessary skill. That said, there is also quite a few  phenomenal libraries on
+necessary skill. That said, there are also quite a few phenomenal libraries on
 Hackage that are highly curated by many people.
 
 As a rule of thumb if the Haddock docs for the library does not have a **minimal
