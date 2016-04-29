@@ -603,8 +603,8 @@ libraries without the slightest hint of documentation or description of purpose*
 can be unnerving. It is an open question whether the current cultural state of
 Hackage is sustainable in light of these philsophical differences.
 
-Needless to say there is a lot of very low-quality Haskell code and
-documentation out there today, and being conservative in library assessment is a
+Needless to say, there is a lot of very low-quality Haskell code and
+documentation out there today, so being conservative in library assessment is a
 necessary skill. That said, there is also quite a few  phenomenal libraries on
 Hackage that are highly curated by many people.
 
