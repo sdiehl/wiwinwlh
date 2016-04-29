@@ -763,8 +763,8 @@ Data.Traversable fmapDefault :: Traversable t => (a -> b) -> t a -> t b
 Prelude fmap :: Functor f => (a -> b) -> f a -> f b
 ```
 
-For reasons of sexiness it is desirable to set your GHC prompt to a ``λ`` or a
-``ΠΣ`` if you're into that lifestyle.
+For reasons of aesthetic pleasure, it is desirable to set your GHC prompt to a ``λ`` or a
+``ΠΣ``. Only if you're into that lifestyle, though.
 
 ```haskell
 :set prompt "λ: "
@@ -773,8 +773,8 @@ For reasons of sexiness it is desirable to set your GHC prompt to a ``λ`` or a
 
 #### GHCi Performance
 
-For large projects, GHCi with the default flags can use quite a bit of memory and
-take a long time to compile. To speed compilation by keeping artificats for
+For large projects, GHCi with the default flags can use quite a bit of memory
+and take a long time to compile. To speed compilation by keeping artificats for
 compiled modules around, we can enable object code compilation instead of
 bytecode.
 
@@ -782,10 +782,11 @@ bytecode.
 :set -fobject-code
 ```
 
-This has some drawbacks in that type information provided to the shell can
-sometimes be less informative and break with some langauge extensions. In that
-case you can temporally reenable bytecode on a per module basis with the
-opposite flag.
+Enabling object code compliation may complicate type inference, since type
+information provided to the shell can sometimes be less informative than
+source-loaded code. This under specificity can result in breakage with some
+langauge extensions. In that case you can temporally reenable bytecode on a per
+module basis with the opposite flag.
 
 ```haskell
 :set -fbyte-code
