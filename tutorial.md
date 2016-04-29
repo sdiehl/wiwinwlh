@@ -794,10 +794,10 @@ compilation on a per module basis with the ``-fbyte-code`` flag.
 ```
 
 If you all you need is to typecheck your code in the interactive shell, then
-disabling code generation entirely makes reloading code almost instantaneous.
+disabling code generation entirely makes reloading code almost instantaneous:
 
 ```haskell
-:set -fbyte-code
+:set -fno-code
 ```
 
 Editor Integration
