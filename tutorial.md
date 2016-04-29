@@ -793,8 +793,8 @@ compilation on a per module basis with the ``-fbyte-code`` flag.
 :load MyModule.hs
 ```
 
-If you all you need is just to typecheck your code in the interactive shell then
-disabling code generation entirely makes reloads almost instantaneous.
+If you all you need is to typecheck your code in the interactive shell, then
+disabling code generation entirely makes reloading code almost instantaneous.
 
 ```haskell
 :set -fbyte-code
