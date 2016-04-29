@@ -664,15 +664,15 @@ data [] a = ... | a : [a]       -- Defined in `GHC.Types'
 infixr 5 :
 ```
 
-The current state of the global environment in the shell can also be queried.
-Such as module-level bindings and types:
+Querying the current state of the global environment in the shell is also
+possible. For example, to view module-level bindings and types in GHCi, run:
 
 ```haskell
 λ: :browse
 λ: :show bindings
 ```
 
-Or module level imports:
+Examining module-level imports, execute:
 
 ```haskell
 λ: :show imports
@@ -681,7 +681,7 @@ import Data.Eq
 import Control.Monad
 ```
 
-Or compiler-level flags and pragmas:
+To see compiler-level flags and pragmas, use:
 
 ```haskell
 λ: :set
