@@ -773,9 +773,9 @@ For reasons of sexiness it is desirable to set your GHC prompt to a ``λ`` or a
 
 #### GHCi Performance
 
-For large projects GHCi with the default flags can use quite a bit of memory and
+For large projects, GHCi with the default flags can use quite a bit of memory and
 take a long time to compile. To speed compilation by keeping artificats for
-compiled modules around we can enable object code compilation instead of
+compiled modules around, we can enable object code compilation instead of
 bytecode.
 
 ```haskell
