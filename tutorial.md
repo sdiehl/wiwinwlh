@@ -593,7 +593,7 @@ undocumented, often without indication of what the library actually does, by
 simply stating that they intend to tear the code down and rewrite it later. This
 approach unfortunately means a lot of Hackage namespace has become polluted
 with dead-end, bit-rotting code. Sometimes packages are also uploaded purely for
-internal use within an organisation or to accompany a paper, or just to
+internal use within an organisation, to accompany a paper, or just to
 integrate with the ``cabal`` build system. These packages are often left
 undocumented as well.
 
