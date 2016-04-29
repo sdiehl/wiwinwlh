@@ -608,9 +608,9 @@ documentation out there today, so being conservative in library assessment is a
 necessary skill. That said, there are also quite a few phenomenal libraries on
 Hackage that are highly curated by many people.
 
-As a rule of thumb if the Haddock docs for the library does not have a **minimal
-worked example**, it is usually safe to assume that it is a RFC-style library
-and probably should be avoided in production-grade code.
+As a general rule, if the Haddock documentations for the library does not have
+a **minimal worked example**, it is usually safe to assume that it is an
+RFC-style library and probably should be avoided in production-grade code.
 
 As another rule of thumb if the library **predates the text library** circa
 2007 it probably should be avoided in production code. The way we write Haskell
