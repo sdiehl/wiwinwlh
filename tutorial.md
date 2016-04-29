@@ -621,7 +621,7 @@ GHCi
 ----
 
 [GHCi](https://wiki.haskell.org/GHC/GHCi) is the interactive shell for the
-[GHC](https://wiki.haskell.org/GHC) compiler. GHCi is where we will spend
+[GHC](https://www.haskell.org/GHC) compiler. GHCi is where we will spend
 most of our time in every day development.
 
 Command    Shortcut   Action
