@@ -598,7 +598,7 @@ integrate with the ``cabal`` build system. These packages are often left
 undocumented as well.
 
 For developers coming to Haskell from other language ecosystems that favor
-the former philsophy (e.g., Python,Javascript, Ruby), seeing  *thousands of
+the former philsophy (e.g., Python, Javascript, Ruby), seeing  *thousands of
 libraries without the slightest hint of documentation or description of purpose*
 can be unnerving. It is an open question whether the current cultural state of
 Hackage is sustainable in light of these philsophical differences.
@@ -608,7 +608,7 @@ documentation out there today, so being conservative in library assessment is a
 necessary skill. That said, there are also quite a few phenomenal libraries on
 Hackage that are highly curated by many people.
 
-As a general rule, if the Haddock documentations for the library does not have
+As a general rule, if the Haddock documentation for the library does not have
 a **minimal worked example**, it is usually safe to assume that it is an
 RFC-style library and probably should be avoided in production-grade code.
 
