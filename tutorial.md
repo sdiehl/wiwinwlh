@@ -704,7 +704,7 @@ with the following modifiers:
 ```
 
 Language extensions and compiler pragmas can be set at the prompt. See the [Flag
-Reference](#flags) for the vast set of compiler flag options.
+Reference](#flags) for the vast collection of compiler flag options.
 
 Several commands for interactive shell have shortcuts:
 
