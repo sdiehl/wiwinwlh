@@ -612,9 +612,10 @@ As a general rule, if the Haddock documentations for the library does not have
 a **minimal worked example**, it is usually safe to assume that it is an
 RFC-style library and probably should be avoided in production-grade code.
 
-As another rule of thumb if the library **predates the text library** circa
-2007 it probably should be avoided in production code. The way we write Haskell
-has changed drastically since the early days.
+Similarly, if the library **predates the
+[text](http://hackage.haskell.org/package/text) library** (released circa
+2007), it probably should be avoided in production code. The way we write
+Haskell has changed drastically since the early days.
 
 GHCi
 ----
