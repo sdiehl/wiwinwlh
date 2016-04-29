@@ -785,8 +785,8 @@ bytecode.
 Enabling object code compliation may complicate type inference, since type
 information provided to the shell can sometimes be less informative than
 source-loaded code. This under specificity can result in breakage with some
-langauge extensions. In that case you can temporally reenable bytecode on a per
-module basis with the opposite flag.
+langauge extensions. In that case, you can temporarily reenable bytecode
+compilation on a per module basis with the ``-fbyte-code`` flag.
 
 ```haskell
 :set -fbyte-code
