@@ -743,13 +743,15 @@ The configuration for the GHCi shell can be customized globally by defining a
 ``ghci.conf`` in ``$HOME/.ghc/`` or in the current working directory as
 ``./.ghci.conf``.
 
-For example we can add a command to use the Hoogle type search from within GHCi.
+For example, we can add a command to use the Hoogle type search from within
+GHCi. First, install ``hoogle``:
 
 ```bash
 cabal install hoogle
 ```
 
-We can use it by adding a command to our ``ghci.conf``.
+Then, we can enable the search functionality  by adding a command to
+our ``ghci.conf``:
 
 ~~~~ {.haskell include="src/01-basics/ghci.conf"}
 ~~~~
