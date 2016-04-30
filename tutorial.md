@@ -807,7 +807,7 @@ Haskell has a variety of editor tools that can be used to provide interactive
 development feedback and functionality such as querying types of subexpressions,
 linting, type checking, and code completion.
 
-Many prepackaged setups exist to expedite the process of setting up many of the
+Several prepackaged setups exist to expedite the process of setting up many of the
 programmer editors for Haskell development. In particular ``ghc-mod`` can
 remarkably improve the efficiency and productivity.
 
