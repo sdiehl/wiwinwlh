@@ -828,14 +828,15 @@ implement features common to modern IDEs.
 Bottoms
 -------
 
+The bottom is a singular value that inhabits every type. When evaluated the
+semantics of Haskell no longer yields a meaningful value. It's usually written
+as the symbol [⊥](https://en.wikipedia.org/wiki/Up_tack) ( i.e. the compiler
+flipping you off ).
+
 ```haskell
 error :: String -> a
 undefined :: a
 ```
-
-The bottom is a singular value that inhabits every type. When evaluated the
-semantics of Haskell no longer yields a meaningful value. It's usually written
-as the symbol ⊥ (i.e. the compiler flipping you off ).
 
 An example of an infinite looping term:
 
