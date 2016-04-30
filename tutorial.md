@@ -137,7 +137,7 @@ historical reasons and can often be replaced by modern tools.
 
 For example, to install the [parsec](http://hackage.haskell.org/package/parsec)
 package to our system from [Hackage](#hackage), the upstream source of Haskell
-packages, invoke the install command:
+packages, invoke the ``install`` command:
 
 ```bash
 $ cabal install parsec           # latest version
@@ -171,29 +171,29 @@ $ cabal configure
 A ``.cabal`` file will be created with the configuration options for our new
 project.
 
-The latest feature of Cabal is the addition of
+The latest feature of ``cabal`` is the addition of
 [Sandboxes](http://coldwa.st/e/blog/2013-08-20-Cabal-sandbox.html), ( in
 cabal > 1.18 ) which are self contained environments of Haskell packages
 separate from the global package index stored in the ``./.cabal-sandbox`` of our
-project's root. To create a new sandbox for our cabal project, run:
+project's root. To create a new ``sandbox`` for our ``cabal`` project, run:
 
 ```bash
 $ cabal sandbox init
 ```
 
-Additionally, the sandbox can be torn down:
+Additionally, the ``sandbox`` can be torn down:
 
 ```bash
 $ cabal sandbox delete
 ```
 
-When in the working directory of a project with a sandbox that has a configuation
-already set up, invoking cabal commands alters the behaviour of cabal itself. For
+When in the working directory of a project with a ``sandbox`` that has a configuation
+already set up, invoking ``cabal`` commands alters the behaviour of cabal itself. For
 instance, the ``cabal install`` command will alter only the install to the local
 package index, not the global configuration.
 
-To install the dependencies from the cabal file into the newly created sandbox,
-run:
+To install the dependencies from the ``.cabal`` file into the newly created
+``sandbox``, run:
 
 ```bash
 $ cabal install --only-dependencies
@@ -206,16 +206,16 @@ the number of concurrent builds.
 $ cabal install -j4 --only-dependencies
 ```
 
-Let's look at an example cabal file. There are two main entry points that any
-package may provide: a ``library`` and an ``executable``. Multiple executables
-can be defined but only one library. In addition, there is a special form of
-executable entry point ``Test-Suite``, which defines an interface for invoking
-unit tests from cabal.
+Let's look at an example ``.cabal`` file. There are two main entry points that
+any package may provide: a ``library`` and an ``executable``. Multiple
+executables can be defined but only one library. In addition, there is a special
+form of executable entry point ``Test-Suite``, which defines an interface for
+invoking unit tests from ``cabal``.
 
-For a library, the ``exposed-modules`` field in the cabal file indicates which
-modules within the package structure will be publicly visible when the package
-is installed. These are the user-facing APIs that we wish to expose to
-downstream consumers.
+For a library, the ``exposed-modules`` field in the ``.cabal`` file indicates
+which modules within the package structure will be publicly visible when the
+package is installed. These modules are the user-facing APIs that we wish to
+expose to downstream consumers.
 
 For an executable, the ``main-is`` field indicates the Main module for the
 project that exports the ``main`` function that runs the executable logic of
@@ -263,14 +263,14 @@ Test-Suite test
       mylibrary == 0.1
 ```
 
-To run the "executable" for a library under the cabal sandbox:
+To run the "executable" for a library under the ``cabal`` ``sandbox``:
 
 ```bash
 $ cabal run
 $ cabal run <name>
 ```
 
-To load the "library" into a [GHCi](#ghci) shell under the cabal sandbox:
+To load the "library" into a [GHCi](#ghci) shell under ``cabal`` ``sandbox``:
 
 ```bash
 $ cabal repl
@@ -278,7 +278,7 @@ $ cabal repl <name>
 ```
 
 The ``<name>`` metavariable is either one of the executable or library
-declarations in the cabal file and can optionally be disambiguated by the
+declarations in the ``.cabal`` file and can optionally be disambiguated by the
 prefix ``exe:<name>`` or ``lib:<name>`` respectively.
 
 To build the package locally into the ``./dist/build`` folder, execute the
@@ -289,7 +289,7 @@ $ cabal build
 ```
 
 To run the tests, our package must itself be reconfigured with the
-``--enable-tests`` and the ``build-depends`` options. The Test-Suite must be
+``--enable-tests`` and the ``build-depends`` options. The ``Test-Suite`` must be
 installed manually, if not already present.
 
 ```bash
@@ -301,8 +301,8 @@ $ cabal test <name>
 
 Moreover, arbitrary shell commands can be invoked with the
 [GHC](https://www.haskell.org/ghc/) environmental variables set up for the
-sandbox. Quite common is to invoke a new shell with this command such that
-the ``ghc`` and ``ghci`` commands use the sandbox. ( They don't by default,
+``sandbox``. Quite common is to invoke a new shell with this command such that
+the ``ghc`` and ``ghci`` commands use the ``sandbox``. ( They don't by default,
 which is a common source of frustration. ).
 
 ```bash
@@ -327,15 +327,15 @@ $ cabal sdist
 $ cabal upload dist/mylibrary-0.1.tar.gz
 ```
 
-Sometimes you'd also like to add a library from a local project into a sandbox.
-In this case, run the ``add-source`` command to bring the library into the
-sandbox from a local directory:
+Sometimes you'd also like to add a library from a local project into
+a ``sandbox``. In this case, run the ``add-source`` command to bring the
+library into the ``sandbox`` from a local directory:
 
 ```bash
 $ cabal sandbox add-source /path/to/project
 ```
 
-The current state of a sandbox can be frozen with all current package
+The current state of a ``sandbox`` can be frozen with all current package
 constraints enumerated:
 
 ```bash
@@ -517,12 +517,14 @@ $ stack dot --external | dot -Tpng | feh -
 Flags
 -----
 
-The most commonly used GHC compiler flags for detecting common code errors are
-the following:
+Enabling [GHC](https://www.haskell.org/ghc) [compiler
+flags](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/flag-reference.html)
+grants the user more control in detecting common code errors. The most
+frequently used flags are:
 
 Flag                                 Description
 ----                                 ------------
--fwarn-tabs                          Emit warnings of tabs instead of spaces in the source code.
+-fwarn-tabs                          Emit warnings of tabs instead of spaces in the source code
 -fwarn-unused-imports                Warn about libraries imported without being used
 -fwarn-name-shadowing                Warn on duplicate names in nested bindings
 -fwarn-incomplete-uni-patterns       Emit warnings for incomplete patterns in lambdas or pattern bindings
@@ -532,18 +534,18 @@ Flag                                 Description
 -fdefer-type-errors                  Turn type errors into warnings
 -fwarn-missing-signatures            Warn about toplevel missing type signatures
 -fwarn-monomorphism-restriction      Warn when the monomorphism restriction is applied implicitly
--fwarn-orphans                       Warn on orphan typeclass instances.
+-fwarn-orphans                       Warn on orphan typeclass instances
 -fforce-recomp                       Force recompilation regardless of timestamp
--fno-code                            Don't doing code generation, just parse and typecheck.
--fobject-code                        Don't doing code generation, just parse and typecheck.
+-fno-code                            Don't doing code generation, just parse and typecheck
+-fobject-code                        Don't doing code generation, just parse and typecheck
 
-Like most compilers ``-Wall`` can be used to enable all warnings. Although some
-of the enabled warnings are somewhat overzealous like ``-fwarn-unused-do-bind``
-and ``-fwarn-unused-matches`` which typically wouldn't correspond to errors or
-failures.
+Like most compilers, GHC takes the ``-Wall`` flag to enable all warnings.
+However, a few of the enabled warnings are highly verbose. For example,
+``-fwarn-unused-do-bind`` and ``-fwarn-unused-matches`` typically
+would not correspond to errors or failures.
 
-Any of these can be added to the cabal file using the ``ghc-options`` section of
-a Cabal target. For example
+Any of these flags can be added to the ``ghc-options`` section of a
+project's ``.cabal`` file. For example:
 
 ```perl
 library mylib
@@ -556,55 +558,64 @@ library mylib
     -fwarn-incomplete-patterns
 ```
 
-For debugging GHC internals, see the [commentary](#block-diagram) on GHC
-internals. These are simply the most useful, for all flags see the [official
-reference](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/flag-reference.html).
+The flags described above are simply the most useful. See the [official
+reference](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/flag-reference.html)
+for the complete set of GHC's supported flags.
+
+For information on debugging GHC internals, see the [commentary](#block-diagram)
+on GHC internals.
 
 Hackage
 -------
 
-Hackage is the upstream source of open source Haskell packages. Being a evolving
-language, Hackage is many things to many people but there seem to be two
-dominant philosophies of uploaded libraries.
+[Hackage](http://hackage.haskell.org/) is the upstream source of
+[Free](://www.fsf.org/about/what-is-free-software) and/or [Open
+Source](https://opensource.org/) Haskell packages. With Haskell's continuing
+evolution, Hackage has become many things to developers, but there seem to be
+two dominant philosophies of uploaded libraries.
 
 **Reusable Code / Building Blocks**
 
-Libraries exist as stable, community supported, building blocks for building
-higher level functionality on top of an edifice which is common and stable. The
-author(s) of the library have written the library as a means of packaging up
-their understanding of a problem domain so that others can build on their
+In the first philosophy, libraries exist as reliable, community-supported
+building blocks for constructing higher level functionality on top of a common,
+stable edifice. In development communities where this method is the dominant
+philosophy, the author(s) of libraries have written them as a means of packaging
+up their understanding of a problem domain so that others can build on their
 understanding and expertise.
 
 **A Staging Area / Request for Comments**
 
-A common philosophy is that Hackage is a place to upload experimental libraries
-up as a means of getting community feedback and making the code publicly
-available.  The library author(s) often rationalize putting these kind of
-libraries up undocumented, often not indicating what the library even does, by
-simply stating that they intend to tear it all down and rewrite it later. This
-unfortunately means a lot of Hackage namespace has become polluted with dead-end
-bit-rotting code. Sometimes packages are also uploaded purely for internal use
-or to accompany a paper, or just to integrate with the cabal build system. These
-are often left undocumented as well.
+In contrast to the previous method of packaging, a common philosophy in the
+Haskell community is that Hackage is a place to upload experimental libraries
+as a means of getting community feedback and making the code publicly available.
+Library author(s) often rationalize putting these kind of libraries up
+undocumented, often without indication of what the library actually does, by
+simply stating that they intend to tear the code down and rewrite it later. This
+approach unfortunately means a lot of Hackage namespace has become polluted
+with dead-end, bit-rotting code. Sometimes packages are also uploaded purely for
+internal use within an organisation, to accompany a paper, or just to
+integrate with the ``cabal`` build system. These packages are often left
+undocumented as well.
 
-Many other language ecosystems (Python, Javascript, Ruby) favor the former
-philosophy, and coming to Haskell can be kind of unnerving to see *thousands of
-libraries without the slightest hint of documentation or description of
-purpose*. It is an open question about the cultural differences between the two
-philosophies and how sustainable the current cultural state of Hackage is.
+For developers coming to Haskell from other language ecosystems that favor
+the former philsophy (e.g., Python, Javascript, Ruby), seeing  *thousands of
+libraries without the slightest hint of documentation or description of purpose*
+can be unnerving. It is an open question whether the current cultural state of
+Hackage is sustainable in light of these philsophical differences.
 
-Needless to say there is a lot of very low-quality Haskell code and
-documentation out there today, and being conservative in library assessment is a
-necessary skill. That said, there is also quite a few  phenomenal libraries on
+Needless to say, there is a lot of very low-quality Haskell code and
+documentation out there today, so being conservative in library assessment is a
+necessary skill. That said, there are also quite a few phenomenal libraries on
 Hackage that are highly curated by many people.
 
-As a rule of thumb if the Haddock docs for the library does not have a **minimal
-worked example**, it is usually safe to assume that it is a RFC-style library
-and probably should be avoided in production-grade code.
+As a general rule, if the Haddock documentation for the library does not have
+a **minimal worked example**, it is usually safe to assume that it is an
+RFC-style library and probably should be avoided in production-grade code.
 
-As another rule of thumb if the library **predates the text library** circa
-2007 it probably should be avoided in production code. The way we write Haskell
-has changed drastically since the early days.
+Similarly, if the library **predates the
+[text](http://hackage.haskell.org/package/text) library** (released circa
+2007), it probably should be avoided in production code. The way we write
+Haskell has changed drastically since the early days.
 
 GHCi
 ----
