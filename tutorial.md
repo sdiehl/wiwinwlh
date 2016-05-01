@@ -824,7 +824,6 @@ implement features common to modern IDEs.
 * [Haskell Development From Emacs](http://tim.dysinger.net/posts/2014-02-18-haskell-with-emacs.html)
 * [Structured Haskell Mode](https://github.com/chrisdone/structured-haskell-mode)
 
-
 Bottoms
 -------
 
@@ -885,7 +884,6 @@ A third type way to express a bottom is with an infinitely looping term:
 ```haskell
 f :: a
 f = let x = x in x
-
 ```
 
 Examples of actual Haskell code that use this looping syntax live in the source
