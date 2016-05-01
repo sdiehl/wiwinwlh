@@ -876,12 +876,12 @@ f = let x = x in x
 
 Examples of actual Haskell code that use this looping syntax live in the source
 code of the [GHC.Prim](https://hackage.haskell.org/package/ghc-prim-0.4.0.0/docs/GHC-Prim.html)
-module. These bottoms exist because the operations [cannot be defined in
-Haskell](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/primitives.html)
-cannot be expressed in native Haskell. Such operations are baked into the
-compiler at a very low level. However, this module exists so that Haddock can
-generate documentation for these primative operations, while the looping syntax
-serves as a placeholder for the actual implementation of the primops.
+module. These bottoms exist because the operations [cannot be defined in native
+Haskell](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/primitives.html).
+Such operations are baked into the compiler at a very low level. However, this
+module exists so that Haddock can generate documentation for these primativeb
+operations, while the looping syntax serves as a placeholder for the actual
+implementation of the primops.
 
 Partial functions from non-exhaustive pattern matching is probably the most
 common introduction of bottoms.
