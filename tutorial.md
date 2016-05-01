@@ -874,6 +874,7 @@ error :: String -> a                       -- Takes an error message of type
                                            -- String and returns what ever type
                                            -- is needed
 ```
+
 ~~~~ {.haskell include="src/01-basics/errors.hs"}
 ~~~~
 
