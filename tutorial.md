@@ -937,10 +937,12 @@ Foo (recConError "<interactive>:4:9-12|a")
 
 Fortunately, GHC will warn us by default about missing record fields.
 
-What's not immediately apparent is that bottoms are used extensively throughout
-[the Prelude](#prelude), some for practical reasons others for historical reasons. The canonical
-example is the ``head`` function which as written ``[a] -> a`` could not be
-well-typed without the bottom.
+Bottoms are used extensively throughout [the Prelude](#prelude), although this
+fact may not be immediately apparent. The reasons for including bottoms are
+either practical or historical.
+
+The canonical example is the ``head`` function which has type ``[a] -> a``.
+This function could not be well-typed without the bottom.
 
 ~~~~ {.haskell include="src/01-basics/bottoms.hs"}
 ~~~~
