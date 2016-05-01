@@ -920,20 +920,22 @@ case x of _ {
 GHC can be made more vocal about incomplete patterns using
 the ``-fwarn-incomplete-patterns`` and ``-fwarn-incomplete-uni-patterns``flags.
 
-The same holds with record construction with missing fields, although there's
-almost never a good reason to construct a record with missing fields and GHC
-will warn us by default.
+Although constructing a record with missing fields is rarely useful, it is
+still possible.
 
 ```haskell
 data Foo = Foo { example1 :: Int }
-f = Foo {}
+f = Foo {}     -- Record defined with a missing field
 ```
 
-Again this has an error term put in place by the compiler:
+When the developer, omits a field's definition, the compiler inserts an
+exception in the GHC Core representation:
 
 ```haskell
 Foo (recConError "<interactive>:4:9-12|a")
 ```
+
+Fortunately, GHC will warn us by default about missing record fields.
 
 What's not immediately apparent is that they are used extensively throughout the
 Prelude, some for practical reasons others for historical reasons. The canonical
