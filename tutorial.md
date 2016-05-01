@@ -938,7 +938,7 @@ Foo (recConError "<interactive>:4:9-12|a")
 Fortunately, GHC will warn us by default about missing record fields.
 
 What's not immediately apparent is that bottoms are used extensively throughout
-the Prelude, some for practical reasons others for historical reasons. The canonical
+[the Prelude](#prelude), some for practical reasons others for historical reasons. The canonical
 example is the ``head`` function which as written ``[a] -> a`` could not be
 well-typed without the bottom.
 
