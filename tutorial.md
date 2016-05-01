@@ -952,12 +952,14 @@ code because they cause the program to halt. The preferred method for handling
 exceptions is instead to combine the use of safe variants provided in
 ``Data.Maybe``with the usual fold functions ``maybe`` and ``either``.
 
-Another method is to use pattern matching:
+Another method is to use pattern matching, as shown in ``listToMaybe``, a
+safer version of ``head`` described below:
 
 ```haskell
 listToMaybe :: [a] -> Maybe a
-listToMaybe []     =  Nothing
-listToMaybe (a:_)  =  Just a
+listToMaybe []     =  Nothing    -- An empty list returns Nothing
+listToMaybe (a:_)  =  Just ag    -- A non-empty list returns the first element
+                                 -- wrapped in the Just context.
 ```
 
 When a bottom defined in terms of error is invoked it typically will not generate
