@@ -895,8 +895,10 @@ module exists so that Haddock can generate documentation for these primativeb
 operations, while the looping syntax serves as a placeholder for the actual
 implementation of the primops.
 
-Partial functions from non-exhaustive pattern matching is probably the most
-common introduction of bottoms.
+Perhaps the most common introduction to bottoms is writing a partial function
+that does not have exhaustive pattern matching defined. For example, the
+following code has non-exhaustive pattern matching because the ``case``
+expression, lacks a definition of what to do with a ``B``:
 
 ```haskell
 data F = A | B
@@ -905,9 +907,7 @@ case x of
 ```
 
 The above is translated into the following GHC Core with the exception inserted
-for the non-exhaustive patterns. GHC can be made more vocal about incomplete
-  patterns using the ``-fwarn-incomplete-patterns`` and
-  ``-fwarn-incomplete-uni-patterns`` flags.
+for the non-exhaustive patterns.
 
 ```haskell
 case x of _ {
@@ -915,6 +915,8 @@ case x of _ {
   B -> patError "<interactive>:3:11-31|case"
 }
 ```
+GHC can be made more vocal about incomplete patterns using
+the ``-fwarn-incomplete-patterns`` and ``-fwarn-incomplete-uni-patterns``flags.
 
 The same holds with record construction with missing fields, although there's
 almost never a good reason to construct a record with missing fields and GHC
