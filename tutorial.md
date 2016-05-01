@@ -958,7 +958,7 @@ safer version of ``head`` described below:
 ```haskell
 listToMaybe :: [a] -> Maybe a
 listToMaybe []     =  Nothing    -- An empty list returns Nothing
-listToMaybe (a:_)  =  Just ag    -- A non-empty list returns the first element
+listToMaybe (a:_)  =  Just a     -- A non-empty list returns the first element
                                  -- wrapped in the Just context.
 ```
 
