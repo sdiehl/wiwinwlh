@@ -906,8 +906,9 @@ case x of
   A -> ()
 ```
 
-The above is translated into the following GHC Core with the exception inserted
-for the non-exhaustive patterns.
+The code snippet immediately above is translated into the following [GHC
+Core](#code) output. The compiler inserts an exception to account for the
+non-exhaustive patterns:
 
 ```haskell
 case x of _ {
@@ -915,6 +916,7 @@ case x of _ {
   B -> patError "<interactive>:3:11-31|case"
 }
 ```
+
 GHC can be made more vocal about incomplete patterns using
 the ``-fwarn-incomplete-patterns`` and ``-fwarn-incomplete-uni-patterns``flags.
 
