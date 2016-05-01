@@ -962,10 +962,10 @@ listToMaybe (a:_)  =  Just a     -- A non-empty list returns the first element
                                  -- wrapped in the Just context.
 ```
 
-When a bottom defined in terms of error is invoked it typically will not generate
-any position information, but the function used to provide assertions ``assert``
-can be short circuited to generate position information in the place of either
-``undefined`` or ``error`` call.
+Invoking a bottom defined in terms of ``error`` typically will not generate any
+position information. However, ``assert``, which is used to provide assertions,
+can be short-circuited to generate position information in the place of either
+``undefined`` or ``error`` calls.
 
 ~~~~ {.haskell include="src/01-basics/fail.hs"}
 ~~~~
