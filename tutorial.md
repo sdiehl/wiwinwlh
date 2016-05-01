@@ -861,10 +861,23 @@ f = undefined                                -- Write tomorrow, typecheck today!
 ```
 
 Another example of a bottom value comes from the evaluation of the``error``
-function.
+function, which takes a ``String`` and returns something that can be of any
+type. This property is quite similar to ``undefined``, which also can also
+stand in for any type.
+
+Calling ``error`` in a function causes the compiler to throw an
+exception, halt the program, and print the specified error message. In the
+``divByY`` function below, passing the function ``0`` as the divisor results
+in this function results in such an exception.
 
 ```haskell
-error :: String -> a
+error :: String -> a                       -- Takes an error message of type
+                                           -- String and returns what ever type
+                                           -- is needed
+
+divByY:: (Num a, Eq a, Fractional a) => a -> a -> a
+divByY _ 0 = error "Divide by zero error"      -- Dividing by 0 causes an error
+divByY dividend divisor = dividend / divisor   -- Handles defined division
 ```
 
 A third type way to express a bottom is with an infinitely looping term:
@@ -872,6 +885,7 @@ A third type way to express a bottom is with an infinitely looping term:
 ```haskell
 f :: a
 f = let x = x in x
+
 ```
 
 Examples of actual Haskell code that use this looping syntax live in the source
