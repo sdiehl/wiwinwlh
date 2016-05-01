@@ -947,8 +947,8 @@ This function could not be well-typed without the bottom.
 ~~~~ {.haskell include="src/01-basics/bottoms.hs"}
 ~~~~
 
-It's rare to see these partial functions thrown around carelessly in production
-code and the preferred method is instead to use the safe variants provided in
+It is rare to see these partial functions thrown around carelessly in production
+code because they cause the program to halt. The preferred method is instead to use the safe variants provided in
 ``Data.Maybe`` combined with the usual fold functions ``maybe`` and ``either``
 or to use pattern matching.
 
