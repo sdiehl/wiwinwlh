@@ -829,9 +829,10 @@ Bottoms
 -------
 
 The bottom is a singular value that inhabits every type. When this value is
-evaluated, the semantics of Haskell no longer yield a meaningful value. It's
-usually written as the symbol [⊥](https://en.wikipedia.org/wiki/Up_tack) ( i.e.
-the compiler flipping you off ).
+evaluated, the semantics of Haskell no longer yield a meaningful value. A
+bottom value is usually written as the symbol
+[⊥](https://en.wikipedia.org/wiki/Up_tack), ( i.e. the compiler flipping you
+off ).
 
 ```haskell
 error :: String -> a
