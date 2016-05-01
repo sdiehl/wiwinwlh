@@ -834,10 +834,36 @@ bottom value is usually written as the symbol
 [⊥](https://en.wikipedia.org/wiki/Up_tack), ( i.e. the compiler flipping you
 off ). Several ways exist to express bottoms in Haskell code.
 
+For instance, ``undefined`` is an easily called example of a bottom value.
+This function has type ``a`` but lacks any type constraints in its type
+signature. Thus, ``undefined`` is able to stand in for any type in a function
+body, allowing type checking to succeed, even if the function is incomplete or
+lacking a definition entirely. The ``undefined`` function is extremely
+practical for debugging  or to accommodate writing incomplete programs.
+
+```haskell
+undefined :: a
+
+
+mean :: Num a => Vector a -> a
+mean nums = (total / count) where            -- Partially defined function
+              total = undefined
+              count = undefined
+
+addThreeNums :: Num a => a -> a -> a -> a
+addThreeNums n m j = undefined               -- No function body declared at all
+
+f :: a -> Complicated Type
+f = undefined                                -- Write tomorrow, typecheck today!
+                                             -- Arbitrarily complicated types
+                                             -- welcome!
+```
+
+Another example of a bottom value comes from the evaluation of the``error``
+function.
 
 ```haskell
 error :: String -> a
-undefined :: a
 ```
 
 An example of an infinite looping term:
@@ -845,14 +871,6 @@ An example of an infinite looping term:
 ```haskell
 f :: a
 f = let x = x in x
-```
-
-The ``undefined`` function is nevertheless extremely practical to accommodate
-writing incomplete programs and for debugging.
-
-```haskell
-f :: a -> Complicated Type
-f = undefined -- write tomorrow, typecheck today!
 ```
 
 Partial functions from non-exhaustive pattern matching is probably the most
