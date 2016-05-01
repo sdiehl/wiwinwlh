@@ -920,8 +920,8 @@ case x of _ {
 GHC can be made more vocal about incomplete patterns using
 the ``-fwarn-incomplete-patterns`` and ``-fwarn-incomplete-uni-patterns``flags.
 
-Although constructing a record with missing fields is rarely useful, it is
-still possible.
+A similar situation can arise with records. Although constructing a record with
+missing fields is rarely useful, it is still possible.
 
 ```haskell
 data Foo = Foo { example1 :: Int }
