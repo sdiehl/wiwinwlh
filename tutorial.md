@@ -948,9 +948,11 @@ This function could not be well-typed without the bottom.
 ~~~~
 
 It is rare to see these partial functions thrown around carelessly in production
-code because they cause the program to halt. The preferred method is instead to use the safe variants provided in
-``Data.Maybe`` combined with the usual fold functions ``maybe`` and ``either``
-or to use pattern matching.
+code because they cause the program to halt. The preferred method for handling
+exceptions is instead to combine the use of safe variants provided in
+``Data.Maybe``with the usual fold functions ``maybe`` and ``either``.
+
+Another method is to use pattern matching:
 
 ```haskell
 listToMaybe :: [a] -> Maybe a
