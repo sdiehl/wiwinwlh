@@ -873,11 +873,9 @@ in this function results in such an exception.
 error :: String -> a                       -- Takes an error message of type
                                            -- String and returns what ever type
                                            -- is needed
-
-divByY:: (Num a, Eq a, Fractional a) => a -> a -> a
-divByY _ 0 = error "Divide by zero error"      -- Dividing by 0 causes an error
-divByY dividend divisor = dividend / divisor   -- Handles defined division
 ```
+~~~~ {.haskell include="src/01-basics/errors.hs"}
+~~~~
 
 A third type way to express a bottom is with an infinitely looping term:
 
