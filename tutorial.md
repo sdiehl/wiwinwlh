@@ -1007,7 +1007,8 @@ A.hs:3:1:
 ```
 
 The ``-Wall`` or incomplete pattern flag can also be added on a per-module basis
-with the ``OPTIONS_GHC`` pragma.
+with the ``OPTIONS_GHC``
+[pragma](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/pragmas.html).
 
 ```haskell
 {-# OPTIONS_GHC -Wall #-}
