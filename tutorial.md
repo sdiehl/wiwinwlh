@@ -927,7 +927,7 @@ data Foo = Foo { example1 :: Int }
 f = Foo {}     -- Record defined with a missing field
 ```
 
-When the developer, omits a field's definition, the compiler inserts an
+When the developer omits a field's definition, the compiler inserts an
 exception in the GHC Core representation:
 
 ```haskell
