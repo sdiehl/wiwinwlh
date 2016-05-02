@@ -1016,8 +1016,10 @@ per-module basis by using the ``OPTIONS_GHC``
 ```
 
 A more subtle case of non-exhaustivity is the use of implicit pattern matching
-with a single "uni-pattern" in a lambda expression. For instance, the
-function ``boom`` will fail when given a Nothing.
+with a single *uni-pattern* in a lambda expression. In a manner similar to
+the ``unsafe`` function above, a uni-pattern cannot handle all types of valid
+input. For instance, the function ``boom`` will fail when given a Nothing,
+even though the type of the lambda expression's argument is a ``Maybe a``.
 
 ```haskell
 boom = \(Just a) -> something
