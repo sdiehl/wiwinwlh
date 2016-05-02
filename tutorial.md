@@ -987,9 +987,9 @@ unsafe (Just x) = Just $ x + 1
 Since ``unsafe`` takes a ``Maybe a`` value as its argument, two possible
 values are valid input: ``Nothing```and ``Just a``. Since the case of a
 ``Nothing`` was not defined in ``unsafe``, we say that the pattern matching
-with that function is *non-exhaustive*. The function does not implement
-appropriate handling of all valid inputs. Instead of yielding a value, such
-a function will halt from an incomplete match.
+within that function is *non-exhaustive*. In other words, the function does not
+implement appropriate handling of all valid inputs. Instead of yielding a value,
+such a function will halt from an incomplete match.
 
 Partial functions from non-exhaustivity are a controversial subject, and
 frequent use of non-exhaustive patterns is considered a dangerous code smell.
