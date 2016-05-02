@@ -1037,7 +1037,8 @@ boom3 = do
   Just a <- something
 ```
 
-GHC can warn about these cases with the ``-fwarn-incomplete-uni-patterns`` flag.
+GHC can warn about these cases of non-exhaustivity with
+the ``-fwarn-incomplete-uni-patterns`` flag.
 
 Grossly speaking any non-trivial program will use some measure of partial
 functions, it's simply a fact. This just means there exists obligations for the
