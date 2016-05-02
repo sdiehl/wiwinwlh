@@ -895,9 +895,9 @@ operations, while the looping syntax serves as a placeholder for the actual
 implementation of the primops.
 
 Perhaps the most common introduction to bottoms is writing a partial function
-that does not have exhaustive pattern matching defined. For example, the
-following code has non-exhaustive pattern matching because the ``case``
-expression, lacks a definition of what to do with a ``B``:
+that does not have [exhaustive](#exhaustiveness) pattern matching defined. For
+example, the following code has non-exhaustive pattern matching because
+the ``case`` expression, lacks a definition of what to do with a ``B``:
 
 ```haskell
 data F = A | B
