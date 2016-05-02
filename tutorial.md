@@ -1006,8 +1006,8 @@ A.hs:3:1:
              In an equation for `unsafe': Patterns not matched: Nothing
 ```
 
-The ``-Wall`` or incomplete pattern flag can also be added on a per-module basis
-with the ``OPTIONS_GHC``
+The ``-Wall`` or ``-fwarn-incomplete-patterns`` flag can also be added on a
+per-module basis by using the ``OPTIONS_GHC``
 [pragma](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/pragmas.html).
 
 ```haskell
