@@ -975,23 +975,29 @@ Exhaustiveness
 --------------
 
 Pattern matching in Haskell allows for the possibility of non-exhaustive
-patterns, or cases which are not exhaustive and instead of yielding a value halt
-from an incomplete match.
-
-Partial functions from non-exhaustivity are controversial subject, and large use
-of non-exhaustive patterns is considered a dangerous code smell. Although the
-complete removal of non-exhaustive patterns from the language entirely would
-itself be too restrictive and forbid too many valid programs.
-
-For example, the following function given a Nothing will crash at runtime and is
-otherwise a valid type-checked program.
+patterns. For example, passing Nothing to ``unsafe``  will cause the program
+to crash at runtime. However, this function is an otherwise valid, type-checked
+program.
 
 ```haskell
-unsafe (Just x) = x + 1
+unsafe :: Maybe a -> Maybe a
+unsafe (Just x) = Just $ x + 1
 ```
 
-There are however flags we can pass to the compiler to warn us about such things
-or forbid them entirely either locally or globally.
+Since ``unsafe`` takes a ``Maybe a`` value as its argument, two possible
+values are valid input: ``Nothing```and ``Just a``. Since the case of a
+``Nothing`` was not defined in ``unsafe``, we say that the pattern matching
+with that function is *non-exhaustive*. The function does not implement
+appropriate handling of all valid inputs. Instead of yielding a value, such
+a function will halt from an incomplete match.
+
+Partial functions from non-exhaustivity are a controversial subject, and
+frequent use of non-exhaustive patterns is considered a dangerous code smell.
+However, the complete removal of non-exhaustive patterns from the language
+would itself be too restrictive and forbid too many valid programs.
+
+Several flags exist that we can pass to the compiler to warn us about such
+patterns or forbid them entirely either locally or globally.
 
 ```haskell
 $ ghc -c -Wall -Werror A.hs
