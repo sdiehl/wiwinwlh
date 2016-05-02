@@ -1040,8 +1040,8 @@ boom3 = do
 GHC can warn about these cases of non-exhaustivity with
 the ``-fwarn-incomplete-uni-patterns`` flag.
 
-Grossly speaking any non-trivial program will use some measure of partial
-functions, it's simply a fact. This just means there exists obligations for the
+Grossly speaking, any non-trivial program will use some measure of partial
+functions. It is simply a fact. Thus, there exists obligations for the
 programmer than cannot be manifest in the Haskell type system.
 
 Debugger
