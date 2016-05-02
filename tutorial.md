@@ -1025,8 +1025,9 @@ even though the type of the lambda expression's argument is a ``Maybe a``.
 boom = \(Just a) -> something
 ```
 
-This occurs frequently in let or do-blocks which after desugaring translate into
-a lambda like the above example.
+Non-exhaustivity arising from uni-patterns in lambda expressions occurs
+frequently in ``let`` or ``do``-blocks after desugaring because such
+code is translated into lambda expressions similar to ``boom``.
 
 ```haskell
 boom2 = let
