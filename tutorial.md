@@ -1027,10 +1027,10 @@ This occurs frequently in let or do-blocks which after desugaring translate into
 a lambda like the above example.
 
 ```haskell
-boom = let
+boom2 = let
   Just a = something
 
-boom = do
+boom3 = do
   Just a <- something
 ```
 
