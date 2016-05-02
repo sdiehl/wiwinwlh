@@ -1,3 +1,4 @@
+
 -- Annotated code that features use of the error function.
 
 divByY:: (Num a, Eq a, Fractional a) => a -> a -> a
