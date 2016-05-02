@@ -1015,9 +1015,9 @@ per-module basis by using the ``OPTIONS_GHC``
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 ```
 
-A more subtle case is when implicitly pattern matching with a single
-"uni-pattern" in a lambda expression. The following will fail when given a
-Nothing.
+A more subtle case of non-exhaustivity is the use of implicit pattern matching
+with a single "uni-pattern" in a lambda expression. For instance, the
+function ``boom`` will fail when given a Nothing.
 
 ```haskell
 boom = \(Just a) -> something
