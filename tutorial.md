@@ -980,7 +980,7 @@ to crash at runtime. However, this function is an otherwise valid, type-checked
 program.
 
 ```haskell
-unsafe :: Maybe a -> Maybe a
+unsafe :: Num a => Maybe a -> Maybe a
 unsafe (Just x) = Just $ x + 1
 ```
 
