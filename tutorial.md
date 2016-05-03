@@ -1055,6 +1055,7 @@ debugging segfaults with gdb.
 
 ```haskell
 λ: :set -fbreak-on-exception       -- Sets option for evaluation to stop on exception
+λ: :break 2 15                     -- Sets a break point at line 2, column 15
 λ: :trace main                     -- Run a function to generate a sequence of evaluation steps
 λ: :hist                           -- Step backwards from a breakpoint through previous steps of evaluation
 λ: :back                           -- Step backwards a single step at a time through the history
