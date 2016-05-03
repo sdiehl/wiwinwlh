@@ -620,7 +620,8 @@ Haskell has changed drastically since the early days.
 GHCi
 ----
 
-GHCi is the interactive shell for the GHC compiler. GHCi is where we will spend
+[GHCi](https://wiki.haskell.org/GHC/GHCi) is the interactive shell for the
+[GHC](https://www.haskell.org/GHC) compiler. GHCi is where we will spend
 most of our time in every day development.
 
 Command    Shortcut   Action
@@ -630,10 +631,10 @@ Command    Shortcut   Action
 `:kind`    `:k`       Kind inspection
 `:info`    `:i`       Information
 `:print`   `:p`       Print the expression
-`:edit`    `:e`       Load file in system editor.
-`:load`    `:l`       Set the active Main module in the REPL.
-`:add`     `:ad`      Load a file into the REPL namespace.
-`:browse`  `:bro`     Browse all available symbols in the REPL namespace.
+`:edit`    `:e`       Load file in system editor
+`:load`    `:l`       Set the active Main module in the REPL
+`:add`     `:ad`      Load a file into the REPL namespace
+`:browse`  `:bro`     Browse all available symbols in the REPL namespace
 
 The introspection commands are an essential part of debugging and interacting
 with Haskell code:
@@ -663,15 +664,15 @@ data [] a = ... | a : [a]       -- Defined in `GHC.Types'
 infixr 5 :
 ```
 
-The current state of the global environment in the shell can also be queried.
-Such as module-level bindings and types:
+Querying the current state of the global environment in the shell is also
+possible. For example, to view module-level bindings and types in GHCi, run:
 
 ```haskell
 λ: :browse
 λ: :show bindings
 ```
 
-Or module level imports:
+Examining module-level imports, execute:
 
 ```haskell
 λ: :show imports
@@ -680,7 +681,7 @@ import Data.Eq
 import Control.Monad
 ```
 
-Or compiler-level flags and pragmas:
+To see compiler-level flags and pragmas, use:
 
 ```haskell
 λ: :set
@@ -703,9 +704,9 @@ with the following modifiers:
 ```
 
 Language extensions and compiler pragmas can be set at the prompt. See the [Flag
-Reference](#flags) for the vast set of compiler flag options.
+Reference](#flags) for the vast collection of compiler flag options.
 
-Several commands for interactive shell have shortcuts:
+Several commands for the interactive shell have shortcuts:
 
         Function
 ------  ---------
@@ -742,13 +743,16 @@ The configuration for the GHCi shell can be customized globally by defining a
 ``ghci.conf`` in ``$HOME/.ghc/`` or in the current working directory as
 ``./.ghci.conf``.
 
-For example we can add a command to use the Hoogle type search from within GHCi.
+For example, we can add a command to use the
+[Hoogle](https://www.haskell.org/hoogle/) type search from within GHCi. First,
+install ``hoogle``:
 
 ```bash
 cabal install hoogle
 ```
 
-We can use it by adding a command to our ``ghci.conf``.
+Then, we can enable the search functionality  by adding a command to
+our ``ghci.conf``:
 
 ~~~~ {.haskell include="src/01-basics/ghci.conf"}
 ~~~~
@@ -759,8 +763,8 @@ Data.Traversable fmapDefault :: Traversable t => (a -> b) -> t a -> t b
 Prelude fmap :: Functor f => (a -> b) -> f a -> f b
 ```
 
-For reasons of sexiness it is desirable to set your GHC prompt to a ``λ`` or a
-``ΠΣ`` if you're into that lifestyle.
+For reasons of aesthetic pleasure, it is desirable to set your GHC prompt to a ``λ`` or a
+``ΠΣ``. Only if you're into that lifestyle, though.
 
 ```haskell
 :set prompt "λ: "
@@ -769,30 +773,31 @@ For reasons of sexiness it is desirable to set your GHC prompt to a ``λ`` or a
 
 #### GHCi Performance
 
-For large projects GHCi with the default flags can use quite a bit of memory and
-take a long time to compile. To speed compilation by keeping artificats for
-compiled modules around we can enable object code compilation instead of
+For large projects, GHCi with the default flags can use quite a bit of memory
+and take a long time to compile. To speed compilation by keeping artificats for
+compiled modules around, we can enable object code compilation instead of
 bytecode.
 
 ```haskell
 :set -fobject-code
 ```
 
-This has some drawbacks in that type information provided to the shell can
-sometimes be less informative and break with some langauge extensions. In that
-case you can temporally reenable bytecode on a per module basis with the
-opposite flag.
+Enabling object code compliation may complicate type inference, since type
+information provided to the shell can sometimes be less informative than
+source-loaded code. This under specificity can result in breakage with some
+langauge extensions. In that case, you can temporarily reenable bytecode
+compilation on a per module basis with the ``-fbyte-code`` flag.
 
 ```haskell
 :set -fbyte-code
 :load MyModule.hs
 ```
 
-If you all you need is just to typecheck your code in the interactive shell then
-disabling code generation entirely makes reloads almost instantaneous.
+If you all you need is to typecheck your code in the interactive shell, then
+disabling code generation entirely makes reloading code almost instantaneous:
 
 ```haskell
-:set -fbyte-code
+:set -fno-code
 ```
 
 Editor Integration
@@ -802,10 +807,11 @@ Haskell has a variety of editor tools that can be used to provide interactive
 development feedback and functionality such as querying types of subexpressions,
 linting, type checking, and code completion.
 
-Many prepackaged setups exist to expedite the process of setting up many of the
-programmer editors for Haskell development. In particular ``ghc-mod`` can
-remarkably improve the efficiency and productivity.
-
+Several prepackaged setups exist to expedite the process of setting up many of
+the programmer editors for Haskell development. In particular,
+using ``ghc-mod`` can remarkably improve programmer efficiency and productivity
+because [the project](http://www.mew.org/~kazu/proj/ghc-mod/en/) attempts to
+implement features common to modern IDEs.
 
 **Vim**
 
@@ -818,36 +824,80 @@ remarkably improve the efficiency and productivity.
 * [Haskell Development From Emacs](http://tim.dysinger.net/posts/2014-02-18-haskell-with-emacs.html)
 * [Structured Haskell Mode](https://github.com/chrisdone/structured-haskell-mode)
 
-
 Bottoms
 -------
 
+The bottom is a singular value that inhabits every type. When this value is
+evaluated, the semantics of Haskell no longer yield a meaningful value. In
+other words, further operations on the value cannot be defined in Haskell. A
+bottom value is usually written as the symbol
+[⊥](https://en.wikipedia.org/wiki/Up_tack), ( i.e. the compiler flipping you
+off ). Several ways exist to express bottoms in Haskell code.
+
+For instance, ``undefined`` is an easily called example of a bottom value.
+This function has type ``a`` but lacks any type constraints in its type
+signature. Thus, ``undefined`` is able to stand in for any type in a function
+body, allowing type checking to succeed, even if the function is incomplete or
+lacking a definition entirely. The ``undefined`` function is extremely
+practical for debugging  or to accommodate writing incomplete programs.
+
 ```haskell
-error :: String -> a
 undefined :: a
+
+
+mean :: Num a => Vector a -> a
+mean nums = (total / count) where            -- Partially defined function
+              total = undefined
+              count = undefined
+
+addThreeNums :: Num a => a -> a -> a -> a
+addThreeNums n m j = undefined               -- No function body declared at all
+
+f :: a -> Complicated Type
+f = undefined                                -- Write tomorrow, typecheck today!
+                                             -- Arbitrarily complicated types
+                                             -- welcome!
 ```
 
-The bottom is a singular value that inhabits every type. When evaluated the
-semantics of Haskell no longer yields a meaningful value. It's usually written
-as the symbol ⊥ (i.e. the compiler flipping you off ).
+Another example of a bottom value comes from the evaluation of the``error``
+function, which takes a ``String`` and returns something that can be of any
+type. This property is quite similar to ``undefined``, which also can also
+stand in for any type.
 
-An example of an infinite looping term:
+Calling ``error`` in a function causes the compiler to throw an
+exception, halt the program, and print the specified error message. In the
+``divByY`` function below, passing the function ``0`` as the divisor results
+in this function results in such an exception.
+
+```haskell
+error :: String -> a                       -- Takes an error message of type
+                                           -- String and returns what ever type
+                                           -- is needed
+```
+
+~~~~ {.haskell include="src/01-basics/errors.hs"}
+~~~~
+
+A third type way to express a bottom is with an infinitely looping term:
 
 ```haskell
 f :: a
 f = let x = x in x
 ```
 
-The ``undefined`` function is nevertheless extremely practical to accommodate
-writing incomplete programs and for debugging.
+Examples of actual Haskell code that use this looping syntax live in the source
+code of the [GHC.Prim](https://hackage.haskell.org/package/ghc-prim-0.4.0.0/docs/GHC-Prim.html)
+module. These bottoms exist because the operations [cannot be defined in native
+Haskell](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/primitives.html).
+Such operations are baked into the compiler at a very low level. However, this
+module exists so that Haddock can generate documentation for these primativeb
+operations, while the looping syntax serves as a placeholder for the actual
+implementation of the primops.
 
-```haskell
-f :: a -> Complicated Type
-f = undefined -- write tomorrow, typecheck today!
-```
-
-Partial functions from non-exhaustive pattern matching is probably the most
-common introduction of bottoms.
+Perhaps the most common introduction to bottoms is writing a partial function
+that does not have [exhaustive](#exhaustiveness) pattern matching defined. For
+example, the following code has non-exhaustive pattern matching because
+the ``case`` expression, lacks a definition of what to do with a ``B``:
 
 ```haskell
 data F = A | B
@@ -855,10 +905,9 @@ case x of
   A -> ()
 ```
 
-The above is translated into the following GHC Core with the exception inserted
-for the non-exhaustive patterns. GHC can be made more vocal about incomplete
-  patterns using the ``-fwarn-incomplete-patterns`` and
-  ``-fwarn-incomplete-uni-patterns`` flags.
+The code snippet immediately above is translated into the following [GHC
+Core](#code) output. The compiler inserts an exception to account for the
+non-exhaustive patterns:
 
 ```haskell
 case x of _ {
@@ -867,44 +916,55 @@ case x of _ {
 }
 ```
 
-The same holds with record construction with missing fields, although there's
-almost never a good reason to construct a record with missing fields and GHC
-will warn us by default.
+GHC can be made more vocal about incomplete patterns using
+the ``-fwarn-incomplete-patterns`` and ``-fwarn-incomplete-uni-patterns``flags.
+
+A similar situation can arise with records. Although constructing a record with
+missing fields is rarely useful, it is still possible.
 
 ```haskell
 data Foo = Foo { example1 :: Int }
-f = Foo {}
+f = Foo {}     -- Record defined with a missing field
 ```
 
-Again this has an error term put in place by the compiler:
+When the developer omits a field's definition, the compiler inserts an
+exception in the GHC Core representation:
 
 ```haskell
 Foo (recConError "<interactive>:4:9-12|a")
 ```
 
-What's not immediately apparent is that they are used extensively throughout the
-Prelude, some for practical reasons others for historical reasons. The canonical
-example is the ``head`` function which as written ``[a] -> a`` could not be
-well-typed without the bottom.
+Fortunately, GHC will warn us by default about missing record fields.
+
+Bottoms are used extensively throughout [the Prelude](#prelude), although this
+fact may not be immediately apparent. The reasons for including bottoms are
+either practical or historical.
+
+The canonical example is the ``head`` function which has type ``[a] -> a``.
+This function could not be well-typed without the bottom.
 
 ~~~~ {.haskell include="src/01-basics/bottoms.hs"}
 ~~~~
 
-It's rare to see these partial functions thrown around carelessly in production
-code and the preferred method is instead to use the safe variants provided in
-``Data.Maybe`` combined with the usual fold functions ``maybe`` and ``either``
-or to use pattern matching.
+It is rare to see these partial functions thrown around carelessly in production
+code because they cause the program to halt. The preferred method for handling
+exceptions is instead to combine the use of safe variants provided in
+``Data.Maybe``with the usual fold functions ``maybe`` and ``either``.
+
+Another method is to use pattern matching, as shown in ``listToMaybe``, a
+safer version of ``head`` described below:
 
 ```haskell
 listToMaybe :: [a] -> Maybe a
-listToMaybe []     =  Nothing
-listToMaybe (a:_)  =  Just a
+listToMaybe []     =  Nothing    -- An empty list returns Nothing
+listToMaybe (a:_)  =  Just a     -- A non-empty list returns the first element
+                                 -- wrapped in the Just context.
 ```
 
-When a bottom defined in terms of error is invoked it typically will not generate
-any position information, but the function used to provide assertions ``assert``
-can be short circuited to generate position information in the place of either
-``undefined`` or ``error`` call.
+Invoking a bottom defined in terms of ``error`` typically will not generate any
+position information. However, ``assert``, which is used to provide assertions,
+can be short-circuited to generate position information in the place of either
+``undefined`` or ``error`` calls.
 
 ~~~~ {.haskell include="src/01-basics/fail.hs"}
 ~~~~
