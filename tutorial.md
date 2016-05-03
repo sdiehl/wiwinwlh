@@ -839,7 +839,7 @@ This function has type ``a`` but lacks any type constraints in its type
 signature. Thus, ``undefined`` is able to stand in for any type in a function
 body, allowing type checking to succeed, even if the function is incomplete or
 lacking a definition entirely. The ``undefined`` function is extremely
-practical for debugging  or to accommodate writing incomplete programs.
+practical for debugging or to accommodate writing incomplete programs.
 
 ```haskell
 undefined :: a
