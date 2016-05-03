@@ -1093,10 +1093,10 @@ And indeed, the runtime tells us that the exception occurred in the function
   called from Main.CAF
 ```
 
-It is best to run this without optimizations applied ``-O0`` so as to preserve
-the original call stack as represented in the source. With optimizations
-applied, this may often entirely different since GHC will rearrange the program
-in rather drastic ways.
+It is best to run this code without optimizations applied ``-O0`` so as to
+preserve the original call stack as represented in the source. With
+optimizations applied, this may often entirely different since GHC will
+rearrange the program in rather drastic ways.
 
 See:
 
