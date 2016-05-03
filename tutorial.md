@@ -1047,7 +1047,7 @@ programmer than cannot be manifest in the Haskell type system.
 Debugger
 --------
 
-Although its use is somewhat rare, GHCi actually does have a builtin debugger.
+Although its use is somewhat rare, GHCi actually does have a built-in debugger.
 Debugging uncaught exceptions from bottoms or asynchronous exceptions is in
 similar style to debugging segfaults with gdb.
 
