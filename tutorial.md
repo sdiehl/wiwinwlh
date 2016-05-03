@@ -1065,8 +1065,8 @@ debugging segfaults with gdb.
 Stacktraces
 -----------
 
-With runtime profiling enabled GHC can also print a stack trace when an
-diverging bottom term (error, undefined) is hit, though this requires a special
+With runtime profiling enabled, GHC can also print a stack trace when a
+diverging bottom term (error, undefined) is hit. though this requires a special
 flag and profiling to be enabled, both are disabled by default. So for example:
 
 ~~~~ {.haskell include="src/01-basics/stacktrace.hs"}
