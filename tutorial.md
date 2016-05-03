@@ -1047,9 +1047,10 @@ programmer than cannot be manifest in the Haskell type system.
 Debugger
 --------
 
-Although its use is somewhat rare, GHCi actually does have a built-in debugger.
-Debugging uncaught exceptions from bottoms or asynchronous exceptions is in
-similar style to debugging segfaults with gdb.
+Although its use is somewhat rare, [GHCi](#ghci) actually does have a built-in
+[debugger](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/ghci-debugger.html).
+Debugging uncaught exceptions from bottoms or asynchronous exceptions
+is in similar style to [debugging segfaults with gdb.
 
 ```haskell
 λ: :set -fbreak-on-exception
