@@ -1062,7 +1062,7 @@ debugging segfaults with gdb.
 λ: :forward                        -- Step forward a single step at a time through the history
 ```
 
-Stacktraces
+Stack Traces
 -----------
 
 With runtime profiling enabled, GHC can also print a stack trace when a
