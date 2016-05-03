@@ -1054,10 +1054,10 @@ exceptions from bottoms or asynchronous exceptions is in similar style to
 debugging segfaults with gdb.
 
 ```haskell
-λ: :set -fbreak-on-exception
-λ: :trace main
-λ: :hist
-λ: :back
+λ: :set -fbreak-on-exception       -- Sets option for evaluation to stop on exception
+λ: :trace main                     -- Run a function to generate a sequence of evaluation steps
+λ: :hist                           -- Step backwards from a breakpoint through previous steps of evaluation
+λ: :back                           -- Step backwards a single step at a time through the history
 ```
 
 Stacktraces
