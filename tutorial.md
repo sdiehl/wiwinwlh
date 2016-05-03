@@ -1058,6 +1058,7 @@ debugging segfaults with gdb.
 λ: :trace main                     -- Run a function to generate a sequence of evaluation steps
 λ: :hist                           -- Step backwards from a breakpoint through previous steps of evaluation
 λ: :back                           -- Step backwards a single step at a time through the history
+λ: :forward                        -- Step forward a single step at a time through the history
 ```
 
 Stacktraces
