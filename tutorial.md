@@ -1080,7 +1080,7 @@ $ ghc -O0 -rtsopts=all -prof -auto-all --make stacktrace.hs
 ./stacktrace +RTS -xc
 ```
 
-And indeed the runtime tells us that the exception occurred in the function
+And indeed, the runtime tells us that the exception occurred in the function
 ``g`` and enumerates the call stack.
 
 ```haskell
@@ -1094,8 +1094,8 @@ And indeed the runtime tells us that the exception occurred in the function
 ```
 
 It is best to run this without optimizations applied ``-O0`` so as to preserve
-the original call stack as represented in the source.  With optimizations
-applied this may often entirely different since GHC will rearrange the program
+the original call stack as represented in the source. With optimizations
+applied, this may often entirely different since GHC will rearrange the program
 in rather drastic ways.
 
 See:
