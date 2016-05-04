@@ -763,8 +763,8 @@ Data.Traversable fmapDefault :: Traversable t => (a -> b) -> t a -> t b
 Prelude fmap :: Functor f => (a -> b) -> f a -> f b
 ```
 
-For reasons of aesthetic pleasure, it is desirable to set your GHC prompt to a ``λ`` or a
-``ΠΣ``. Only if you're into that lifestyle, though.
+For reasons of sexiness, it is desirable to set your GHC prompt to a ``λ`` or a
+``λΠ``. Only if you're into that lifestyle, though.
 
 ```haskell
 :set prompt "λ: "
