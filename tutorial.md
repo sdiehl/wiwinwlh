@@ -1105,11 +1105,13 @@ See:
 Trace
 -----
 
-Since Haskell is a pure language, it has the unique property that most code
-is introspectable on its own. as such the "printf" style of debugging is often unnecessary when we
-can simply open GHCi and test the function. Nevertheless Haskell does come with
-an unsafe ``trace`` function which can be used to perform arbitrary print
-statements outside of the IO monad.
+Since Haskell is a [pure
+language](http://dev.stephendiehl.com/fun/000_introduction.html#functional-languages),
+it has the unique property that most code is introspectable on its own. as such
+the "printf" style of debugging is often unnecessary when we can simply open
+GHCi and test the function. Nevertheless Haskell does come with an
+unsafe ``trace`` function which can be used to perform arbitrary print statements
+outside of the IO monad.
 
 ~~~~ {.haskell include="src/01-basics/trace.hs"}
 ~~~~
