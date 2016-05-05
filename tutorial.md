@@ -1123,7 +1123,8 @@ Trace uses ``unsafePerformIO`` under the hood and should **not** be used in
 stable code.
 </div>
 
-In addition to just the trace function, several common monadic patterns are quite common.
+In addition to the ``trace`` function, several monadic patterns are quite
+common.
 
 ```haskell
 import Text.Printf
