@@ -1119,8 +1119,8 @@ be used to perform arbitrary print statements outside of the IO monad.
 
 
 <div class="alert alert-danger">
-Trace uses ``unsafePerformIO`` under the hood and shouldn't be used in stable
-code.
+Trace uses ``unsafePerformIO`` under the hood and should **not** be used in
+stable code.
 </div>
 
 In addition to just the trace function, several common monadic patterns are quite common.
