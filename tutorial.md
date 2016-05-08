@@ -839,7 +839,7 @@ This function has type ``a`` but lacks any type constraints in its type
 signature. Thus, ``undefined`` is able to stand in for any type in a function
 body, allowing type checking to succeed, even if the function is incomplete or
 lacking a definition entirely. The ``undefined`` function is extremely
-practical for debugging  or to accommodate writing incomplete programs.
+practical for debugging or to accommodate writing incomplete programs.
 
 ```haskell
 undefined :: a
@@ -975,23 +975,29 @@ Exhaustiveness
 --------------
 
 Pattern matching in Haskell allows for the possibility of non-exhaustive
-patterns, or cases which are not exhaustive and instead of yielding a value halt
-from an incomplete match.
-
-Partial functions from non-exhaustivity are controversial subject, and large use
-of non-exhaustive patterns is considered a dangerous code smell. Although the
-complete removal of non-exhaustive patterns from the language entirely would
-itself be too restrictive and forbid too many valid programs.
-
-For example, the following function given a Nothing will crash at runtime and is
-otherwise a valid type-checked program.
+patterns. For example, passing Nothing to ``unsafe``  will cause the program
+to crash at runtime. However, this function is an otherwise valid, type-checked
+program.
 
 ```haskell
-unsafe (Just x) = x + 1
+unsafe :: Num a => Maybe a -> Maybe a
+unsafe (Just x) = Just $ x + 1
 ```
 
-There are however flags we can pass to the compiler to warn us about such things
-or forbid them entirely either locally or globally.
+Since ``unsafe`` takes a ``Maybe a`` value as its argument, two possible
+values are valid input: ``Nothing```and ``Just a``. Since the case of a
+``Nothing`` was not defined in ``unsafe``, we say that the pattern matching
+within that function is *non-exhaustive*. In other words, the function does not
+implement appropriate handling of all valid inputs. Instead of yielding a value,
+such a function will halt from an incomplete match.
+
+Partial functions from non-exhaustivity are a controversial subject, and
+frequent use of non-exhaustive patterns is considered a dangerous code smell.
+However, the complete removal of non-exhaustive patterns from the language
+would itself be too restrictive and forbid too many valid programs.
+
+Several flags exist that we can pass to the compiler to warn us about such
+patterns or forbid them entirely either locally or globally.
 
 ```haskell
 $ ghc -c -Wall -Werror A.hs
@@ -1000,59 +1006,71 @@ A.hs:3:1:
              In an equation for `unsafe': Patterns not matched: Nothing
 ```
 
-The ``-Wall`` or incomplete pattern flag can also be added on a per-module basis
-with the ``OPTIONS_GHC`` pragma.
+The ``-Wall`` or ``-fwarn-incomplete-patterns`` flag can also be added on a
+per-module basis by using the ``OPTIONS_GHC``
+[pragma](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/pragmas.html).
 
 ```haskell
 {-# OPTIONS_GHC -Wall #-}
 {-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
 ```
 
-A more subtle case is when implicitly pattern matching with a single
-"uni-pattern" in a lambda expression. The following will fail when given a
-Nothing.
+A more subtle case of non-exhaustivity is the use of implicit pattern matching
+with a single *uni-pattern* in a lambda expression. In a manner similar to
+the ``unsafe`` function above, a uni-pattern cannot handle all types of valid
+input. For instance, the function ``boom`` will fail when given a Nothing,
+even though the type of the lambda expression's argument is a ``Maybe a``.
 
 ```haskell
 boom = \(Just a) -> something
 ```
 
-This occurs frequently in let or do-blocks which after desugaring translate into
-a lambda like the above example.
+Non-exhaustivity arising from uni-patterns in lambda expressions occurs
+frequently in ``let`` or ``do``-blocks after desugaring because such
+code is translated into lambda expressions similar to ``boom``.
 
 ```haskell
-boom = let
+boom2 = let
   Just a = something
 
-boom = do
+boom3 = do
   Just a <- something
 ```
 
-GHC can warn about these cases with the ``-fwarn-incomplete-uni-patterns`` flag.
+GHC can warn about these cases of non-exhaustivity with
+the ``-fwarn-incomplete-uni-patterns`` flag.
 
-Grossly speaking any non-trivial program will use some measure of partial
-functions, it's simply a fact. This just means there exists obligations for the
+Grossly speaking, any non-trivial program will use some measure of partial
+functions. It is simply a fact. Thus, there exists obligations for the
 programmer than cannot be manifest in the Haskell type system.
 
 Debugger
 --------
 
-Although its use is somewhat rare, GHCi actually does have a builtin debugger.
-Debugging uncaught exceptions from bottoms or asynchronous exceptions is in
-similar style to debugging segfaults with gdb.
+Since [GHCi](#ghci) version 6.8.1, a built-in
+[debugger](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/ghci-debugger.html).
+has been available, although its use is somewhat rare. Debugging uncaught
+exceptions from bottoms or asynchronous exceptions is in similar style to
+debugging segfaults with gdb.
 
 ```haskell
-λ: :set -fbreak-on-exception
-λ: :trace main
-λ: :hist
-λ: :back
+λ: :set -fbreak-on-exception       -- Sets option for evaluation to stop on exception
+λ: :break 2 15                     -- Sets a break point at line 2, column 15
+λ: :trace main                     -- Run a function to generate a sequence of evaluation steps
+λ: :hist                           -- Step backwards from a breakpoint through previous steps of evaluation
+λ: :back                           -- Step backwards a single step at a time through the history
+λ: :forward                        -- Step forward a single step at a time through the history
 ```
 
-Stacktraces
+Stack Traces
 -----------
 
-With runtime profiling enabled GHC can also print a stack trace when an
-diverging bottom term (error, undefined) is hit, though this requires a special
-flag and profiling to be enabled, both are disabled by default. So for example:
+With [runtime profiling
+enabled](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/profiling.html),
+[GHC](https://www.haskell.org/ghc/) can also print a stack trace when a
+diverging bottom term (error, undefined) is hit. This action, though, requires
+a special flag and profiling to be enabled, both of which are disabled by
+default. So for example:
 
 ~~~~ {.haskell include="src/01-basics/stacktrace.hs"}
 ~~~~
@@ -1062,7 +1080,7 @@ $ ghc -O0 -rtsopts=all -prof -auto-all --make stacktrace.hs
 ./stacktrace +RTS -xc
 ```
 
-And indeed the runtime tells us that the exception occurred in the function
+And indeed, the runtime tells us that the exception occurred in the function
 ``g`` and enumerates the call stack.
 
 ```haskell
@@ -1075,10 +1093,10 @@ And indeed the runtime tells us that the exception occurred in the function
   called from Main.CAF
 ```
 
-It is best to run this without optimizations applied ``-O0`` so as to preserve
-the original call stack as represented in the source.  With optimizations
-applied this may often entirely different since GHC will rearrange the program
-in rather drastic ways.
+It is best to run this code without optimizations applied ``-O0`` so as to
+preserve the original call stack as represented in the source. With
+optimizations applied, GHC will rearrange the program in rather drastic ways,
+resulting in what may be an entirely different call stack.
 
 See:
 
