@@ -890,9 +890,9 @@ code of the [GHC.Prim](https://hackage.haskell.org/package/ghc-prim-0.4.0.0/docs
 module. These bottoms exist because the operations [cannot be defined in native
 Haskell](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/primitives.html).
 Such operations are baked into the compiler at a very low level. However, this
-module exists so that Haddock can generate documentation for these primativeb
-operations, while the looping syntax serves as a placeholder for the actual
-implementation of the primops.
+module exists so that [Haddock](#haddock) can generate documentation for these
+primative operations, while the looping syntax serves as a placeholder for the
+actual implementation of the primops.
 
 Perhaps the most common introduction to bottoms is writing a partial function
 that does not have [exhaustive](#exhaustiveness) pattern matching defined. For
