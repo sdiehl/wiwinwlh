@@ -1143,8 +1143,8 @@ tracePrintfM s = traceM . printf s
 Type Holes
 ----------
 
-Since GHC 7.8 we have a new tool for debugging incomplete programs by means of
-*typed holes*. By placing an underscore on any value on the right hand-side of a
+Since the release of GHC 7.8, *typed holes* allow for debugging incomplete
+programs. By placing an underscore on any value on the right hand-side of a
 declaration GHC will throw an error during type-checker that reflects the
 possible values that could placed at this point in the program to make the
 program type-check.
