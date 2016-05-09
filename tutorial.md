@@ -1145,9 +1145,10 @@ Type Holes
 
 Since the release of GHC 7.8, *typed holes* allow for debugging incomplete
 programs. By placing an underscore on any value on the right hand-side of a
-declaration GHC will throw an error during type-checker that reflects the
-possible values that could placed at this point in the program to make the
-program type-check.
+declaration, [GHC](https://www.haskell.org/ghc/) will throw an error during
+type-checking. Such an error reflects what type(s) the value in the position
+of the type hole could be in order to cause the program to type-check
+successfully.
 
 ```haskell
 instance Functor [] where
