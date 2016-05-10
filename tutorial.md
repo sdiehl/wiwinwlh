@@ -1179,11 +1179,11 @@ GHC has rightly suggested that the expression needed to finish the program is
 Deferred Type Errors
 --------------------
 
-As of 7.8 GHC support the option of pushing type errors to runtime errors
-allowing us to run the program and let it simply fail only when a mistyped
-expression is evaluated, letting the rest of the program proceed to run. This is
-enabled with the ``-fdefer-type-errors`` which can be enabled at the module
-level, when compiled or inside of a GHCi interactive session.
+Since the release of version 7.8, [GHC](https://www.haskell.org/ghc/) supports
+the option of treating type errors as runtime errors. With this option enabled,
+programs will run, but they will fail when a mistyped expression is evaluated.
+This is enabled with the ``-fdefer-type-errors`` which can be enabled at the
+module level, when compiled or inside of a GHCi interactive session.
 
 ~~~~ {.haskell include="src/01-basics/defer.hs"}
 ~~~~
