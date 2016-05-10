@@ -1110,9 +1110,9 @@ language](http://dev.stephendiehl.com/fun/000_introduction.html#functional-langu
 it has the unique property that most code is introspectable on its own. As such,
 using [printf](https://www.codingunit.com/printf-format-specifiers-format-conversions-and-formatted-output)
 to display the state of the program at critical times throughout execution is
-often unnecessary because we can simply open [GHCi](#ghci) and test the function.
-Nevertheless, Haskell does come with an unsafe ``trace`` function which can
-be used to perform arbitrary print statements outside of the IO monad.
+often unnecessary because we can simply open [GHCi](#ghci) and test the
+function. Nevertheless, Haskell does come with an unsafe ``trace`` function
+which can be used to perform arbitrary print statements outside of the IO monad.
 
 ~~~~ {.haskell include="src/01-basics/trace.hs"}
 ~~~~
