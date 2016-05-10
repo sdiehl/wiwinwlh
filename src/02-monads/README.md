@@ -2,14 +2,13 @@ Monads
 ======
 
 ```bash
-$ stach exec list.hs
-$ stach exec list_impl.hs
-$ stach exec maybe.hs
-$ stach exec maybe_impl.hs
-$ stach exec reader.hs
-$ stach exec reader_impl.hs
-$ stach exec state.hs
-$ stach exec state_impl.hs
-$ stach exec writer.hs
-$ stach exec writer_impl.hs
+$ stack exec ghci list.hs
+$ stack exec ghci maybe.hs
+$ stack exec ghci maybe_impl.hs
+$ stack exec ghci reader.hs
+$ stack exec ghci reader_impl.hs
+$ stack exec ghci state.hs
+$ stack exec ghci state_impl.hs
+$ stack exec ghci writer.hs
+$ stack exec ghci writer_impl.hs
 ```
