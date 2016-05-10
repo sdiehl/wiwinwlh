@@ -1182,8 +1182,9 @@ Deferred Type Errors
 Since the release of version 7.8, [GHC](https://www.haskell.org/ghc/) supports
 the option of treating type errors as runtime errors. With this option enabled,
 programs will run, but they will fail when a mistyped expression is evaluated.
-This is enabled with the ``-fdefer-type-errors`` which can be enabled at the
-module level, when compiled or inside of a GHCi interactive session.
+This feature is enabled with the ``-fdefer-type-errors`` flag in three ways:
+at the module level, when compiled from the command line, or inside of a
+[GHCi](#ghci) interactive session.
 
 ~~~~ {.haskell include="src/01-basics/defer.hs"}
 ~~~~
