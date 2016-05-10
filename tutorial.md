@@ -1186,11 +1186,12 @@ This feature is enabled with the ``-fdefer-type-errors`` flag in three ways:
 at the module level, when compiled from the command line, or inside of a
 [GHCi](#ghci) interactive session.
 
+For instance, the program below will compile:
+
 ~~~~ {.haskell include="src/01-basics/defer.hs"}
 ~~~~
-
-The resulting program will compile but at runtime we'll see a message like the
-following when a pathological term is evaluated.
+However, when a pathological term is evaluated at runtime, we'll see a message
+like:
 
 ```bash
 defer: defer.hs:4:5:
@@ -1199,6 +1200,10 @@ defer: defer.hs:4:5:
     In an equation for ‘x’: x = print 3
 (deferred type error)
 ```
+
+This error tells us that while ``x`` has a declared type of ``()``, the body
+of the function ``print 3`` has a type of ``IO ()``. However, if the term is
+never evaluated, GHC will not throw an exception.
 
 ghcid
 -----
