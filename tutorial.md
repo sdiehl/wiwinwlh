@@ -1212,8 +1212,8 @@ ghcid
 [ghcid](https://github.com/ndmitchell/ghcid) is a lightweight IDE hook that
 allows continuous feedback whenever code is updated.
 
-It is run from the command line in the root of the cabal project directory  by
-specifying a commnad to run, for example ``cabal repl`` or ``stack repl``.
+It is run from the command line in the root of the ``cabal`` project directory
+by specifying a command to run, for example ``cabal repl`` or ``stack repl``.
 
 ```haskell
 ghcid --command="cabal repl"
