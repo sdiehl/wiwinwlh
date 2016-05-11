@@ -1273,7 +1273,7 @@ data T a b
   | B b -- ^ Documentation for 'B'
 ```
 
-Modules themselves can be referenced by enclosing them in double quotes.
+Modules themselves can be referenced by enclosing them in double quotes:
 
 ```haskell
 -- | Here we use the "Data.Text" library and import
