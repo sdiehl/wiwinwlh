@@ -1280,15 +1280,31 @@ Modules themselves can be referenced by enclosing them in double quotes:
 -- the 'Data.Text.pack' function.
 ```
 
+``haddock`` also allows the user to include blocks of code within the
+generated documentation. Two methods of demarcating the code blocks
+exist in ``haddock``. For example, enclosing a code snippet in ``@``
+symbols marks it as a code block:
+
 ```haskell
 -- | An example of a code block.
 --
 -- @
 --    f x = f (f x)
 -- @
+```
 
+Similarly, it's possible to use bird tracks (``>``) in a comment line to
+set off a code block. This usage is very similar to [Bird style Literate
+Haskell](https://wiki.haskell.org/Literate_programming#Bird_Style).
+
+```haskell
+-- | A similar code block example that uses bird tracks (i.e. '>')
 -- > f x = f (f x)
 ```
+
+Snippets of interactive shell sessions can be also include in ``haddock``
+documentation. In order to denote the beginning of code intended to be
+run in a REPL, the ``>>>`` symbol is used:
 
 ```haskell
 -- | Example of an interactive shell session.
