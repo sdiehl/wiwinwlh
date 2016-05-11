@@ -1336,8 +1336,8 @@ directory in which ``haddock`` is run or an absolute reference.
 <<diagram.png title>>
 ```
 
-``haddock`` options can also be specified with pragmas in the source, either on
-module or project level.
+``haddock`` options can also be specified with pragmas in the source, either at
+the module or project level.
 
 ```haskell
 {-# OPTIONS_HADDOCK show-extensions, ignore-exports #-}
