@@ -1265,7 +1265,7 @@ data MyRecord = MR { name :: String -- ^ Documentation for name field
 ```
 
 Elements within a module (i.e., value, types, classes) can be hyperlinked by
-enclosing the identifier in single quotes.
+enclosing the identifier in single quotes:
 
 ```haskell
 data T a b
