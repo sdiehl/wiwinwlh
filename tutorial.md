@@ -1329,8 +1329,8 @@ Links can be added with the syntax:
 <url text>
 ```
 
-Images can can also be included, so long as the path is relative to the haddock
-or an absolute reference.
+Images can can also be included, so long as the path is either relative to the
+directory in which ``haddock`` is run or an absolute reference.
 
 ```haskell
 <<diagram.png title>>
