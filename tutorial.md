@@ -1227,8 +1227,9 @@ program automatically reloads and evaluates the code for errors and warnings.
 Haddock
 -------
 
-Haddock is the automatic documentation tool for Haskell source code. It
-integrates with the usual cabal toolchain.
+[Haddock](haskel://www.haskell.org/haddock/#Overview) is the automatic
+documentation generation tool for Haskell source code. It integrates with the
+usual ``cabal`` toolchain.
 
 ```haskell
 -- | Documentation for f
