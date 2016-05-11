@@ -1323,7 +1323,7 @@ module Foo (
 -- 'example1' and 'example2'.
 ```
 
-Links can be added with the syntax:
+Links can be added with the following syntax:
 
 ```haskell
 <url text>
