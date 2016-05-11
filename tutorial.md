@@ -1221,7 +1221,7 @@ ghcid --command="stack repl"
 When a Haskell module is loaded into ``ghcid``, the code is evaluated in order
 to provide the user with any errors or warnings that would happen at compile
 time. When the developer edits and saves code loaded into ``ghcid``, the
-program reloads and evaluats the code for errors and warnings automatically.
+program reloads and evaluates the code for errors and warnings automatically.
 
 Haddock
 -------
