@@ -1210,20 +1210,18 @@ ghcid
 -----
 
 [ghcid](https://github.com/ndmitchell/ghcid) is a lightweight IDE hook that
-allows continuous feedback whenever code is updated.
-
-It is run from the command line in the root of the ``cabal`` project directory
-by specifying a command to run (e.g.,  ``ghci``, ``cabal repl``,
-or ``stack repl``).
+allows continuous feedback whenever code is updated.  It is run from the
+command line in the root of the ``cabal`` project directory by specifying a
+command to run (e.g.,  ``ghci``, ``cabal repl``, or ``stack repl``).
 
 ```haskell
 ghcid --command="cabal repl"
 ghcid --command="stack repl"
 ```
-
-Any subsequent change to your project's filesystem will trigger and automatic
-reload.
-
+When a Haskell module is loaded into ``ghcid``, the code is evaluated in order
+to provide the user with any errors or warnings that would happen at compile
+time. When the developer edits and saves the code loaded into ``ghcid``, the
+code is reloaded and evaluated for errors and warnings automatically.
 
 Haddock
 -------
