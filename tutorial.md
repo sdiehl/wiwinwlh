@@ -1214,7 +1214,7 @@ allows continuous feedback whenever code is updated.  It is run from the
 command line in the root of the ``cabal`` project directory by specifying a
 command to run (e.g.,  ``ghci``, ``cabal repl``, or ``stack repl``).
 
-```haskell
+```bash
 ghcid --command="cabal repl"
 ghcid --command="stack repl"
 ```
