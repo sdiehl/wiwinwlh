@@ -1298,7 +1298,7 @@ Modules themselves can be referenced by enclosing them in double quotes:
 ```
 
 Headers for specific blocks can be added by prefacing the comment in the module
-block with a star:
+block with a ``*``:
 
 ```haskell
 module Foo (
