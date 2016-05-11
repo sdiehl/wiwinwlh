@@ -1215,8 +1215,9 @@ command line in the root of the ``cabal`` project directory by specifying a
 command to run (e.g.,  ``ghci``, ``cabal repl``, or ``stack repl``).
 
 ```bash
-ghcid --command="cabal repl"
-ghcid --command="stack repl"
+ghcid --command="cabal repl"   # Run cabal repl under ghcid
+ghcid --command="stack repl"   # Run stack repl under ghcid
+ghcid --command="ghci baz.hs"  # Open baz.hs under ghcid
 ```
 When a Haskell module is loaded into ``ghcid``, the code is evaluated in order
 to provide the user with any errors or warnings that would happen at compile
