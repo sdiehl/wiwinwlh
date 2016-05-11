@@ -1259,6 +1259,10 @@ declaration parts is also possible:
 data T a b
   = A a -- ^ Documentation for A
   | B b -- ^ Documentation for B
+
+data MyRecord = MR { name :: String -- ^ Documentation for name field
+                   , age  :: Int    -- ^ Documentation for age field
+                   } deriving (Eq, Show)
 ```
 
 Elements within a module (i.e., value, types, classes) can be hyperlinked by
