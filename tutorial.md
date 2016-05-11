@@ -1209,8 +1209,8 @@ never evaluated, GHC will not throw an exception.
 ghcid
 -----
 
-ghcid is a lightweight IDE hook that allows continuous feedback whenever code is
-updated.
+[ghcid](https://github.com/ndmitchell/ghcid) is a lightweight IDE hook that
+allows continuous feedback whenever code is updated.
 
 It is run from the command line in the root of the cabal project directory  by
 specifying a commnad to run, for example ``cabal repl`` or ``stack repl``.
