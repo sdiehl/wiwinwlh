@@ -890,9 +890,9 @@ code of the [GHC.Prim](https://hackage.haskell.org/package/ghc-prim-0.4.0.0/docs
 module. These bottoms exist because the operations [cannot be defined in native
 Haskell](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/primitives.html).
 Such operations are baked into the compiler at a very low level. However, this
-module exists so that Haddock can generate documentation for these primativeb
-operations, while the looping syntax serves as a placeholder for the actual
-implementation of the primops.
+module exists so that [Haddock](#haddock) can generate documentation for these
+primative operations, while the looping syntax serves as a placeholder for the
+actual implementation of the primops.
 
 Perhaps the most common introduction to bottoms is writing a partial function
 that does not have [exhaustive](#exhaustiveness) pattern matching defined. For
@@ -1143,11 +1143,12 @@ tracePrintfM s = traceM . printf s
 Type Holes
 ----------
 
-Since GHC 7.8 we have a new tool for debugging incomplete programs by means of
-*typed holes*. By placing an underscore on any value on the right hand-side of a
-declaration GHC will throw an error during type-checker that reflects the
-possible values that could placed at this point in the program to make the
-program type-check.
+Since the release of GHC 7.8, *typed holes* allow for debugging incomplete
+programs. By placing an underscore on any value on the right hand-side of a
+declaration, [GHC](https://www.haskell.org/ghc/) will throw an error during
+type-checking. Such an error reflects what type(s) the value in the position
+of the type hole could be in order to cause the program to type-check
+successfully.
 
 ```haskell
 instance Functor [] where
