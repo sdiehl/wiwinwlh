@@ -1336,7 +1336,7 @@ or an absolute reference.
 <<diagram.png title>>
 ```
 
-Haddock options can also be specified with pragmas in the source, either on
+``haddock`` options can also be specified with pragmas in the source, either on
 module or project level.
 
 ```haskell
