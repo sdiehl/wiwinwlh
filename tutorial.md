@@ -1229,7 +1229,8 @@ Haddock
 
 [Haddock](haskel://www.haskell.org/haddock/#Overview) is the automatic
 documentation generation tool for Haskell source code. It integrates with the
-usual ``cabal`` toolchain.
+usual ``cabal`` toolchain. In this section, we will explore how to document
+code so that Haddock can generate documentation successfully.
 
 ```haskell
 -- | Documentation for f
