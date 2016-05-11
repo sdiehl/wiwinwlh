@@ -1232,11 +1232,16 @@ documentation generation tool for Haskell source code. It integrates with the
 usual ``cabal`` toolchain. In this section, we will explore how to document
 code so that Haddock can generate documentation successfully.
 
+Several frequent comment patterns are used to document code for Haddock. The
+first of these methods uses ``--|`` to delineate the beginning of a comment:
+
 ```haskell
 -- | Documentation for f
 f :: a -> a
 f = ...
 ```
+
+Multiline comments are also possible:
 
 ```haskell
 -- | Multiline documentation for the function
@@ -1247,14 +1252,17 @@ fmap :: Functor f =>
      -> f b       -- ^ output
 ```
 
+Using ``-- ^`` to comment on Constructors, Record fields, or function
+declaration parts:
+
 ```haskell
 data T a b
   = A a -- ^ Documentation for A
   | B b -- ^ Documentation for B
 ```
 
-Elements within a module (value, types, classes) can be hyperlinked by enclosing
-the identifier in single quotes.
+Elements within a module (i.e., value, types, classes) can be hyperlinked by
+enclosing the identifier in single quotes.
 
 ```haskell
 data T a b
