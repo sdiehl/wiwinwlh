@@ -1307,7 +1307,7 @@ documentation. In order to denote the beginning of code intended to be
 run in a REPL, the ``>>>`` symbol is used:
 
 ```haskell
--- | Example of an interactive shell session.
+-- | Example of an interactive shell session embedded within documentation
 --
 -- >>> factorial 5
 -- 120
