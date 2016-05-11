@@ -1253,7 +1253,7 @@ fmap :: Functor f =>
 ```
 
 Using ``-- ^`` to comment on Constructors, Record fields, or function
-declaration parts:
+declaration parts is also possible:
 
 ```haskell
 data T a b
