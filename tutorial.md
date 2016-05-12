@@ -1380,7 +1380,7 @@ Instead, I suggest a path to enlightenment:
 
 1. Don't read the monad tutorials.
 2. No really, don't read the monad tutorials.
-3. Learn about Haskell types.
+3. Learn about [Haskell types](http://book.realworldhaskell.org/read/types-and-functions.html).
 4. Learn what a typeclass is.
 5. Read the [Typeclassopedia](http://wiki.haskell.org/Typeclassopedia).
 6. Read the monad definitions.
