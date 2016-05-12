@@ -1376,7 +1376,7 @@ Eightfold Path to Monad Satori
 ------------------------------
 
 Much ink has been spilled waxing lyrical about the supposed mystique of monads.
-Instead I suggest a path to enlightenment:
+Instead, I suggest a path to enlightenment:
 
 1. Don't read the monad tutorials.
 2. No really, don't read the monad tutorials.
