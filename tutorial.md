@@ -1406,6 +1406,7 @@ The following are all **false**:
 * Monads are a "back-door" in the language to perform side-effects.
 * Monads are an embedded imperative language inside Haskell.
 * Monads require knowing abstract mathematics.
+* Monads are unique to Haskell.
 
 See: [What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
 
