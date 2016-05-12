@@ -1415,8 +1415,8 @@ Laws
 
 Monads are not complicated, the implementation is a typeclass with two
 functions, ``(>>=)`` pronounced "bind" and ``return``. Any preconceptions one
-might have for the word "return" should be discarded, it has an entirely
-different meaning.
+might have for the word "return" should be discarded: It has an entirely
+different meaning in the context of Haskell.
 
 ```haskell
 class Monad m where
