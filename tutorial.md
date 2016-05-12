@@ -1388,7 +1388,7 @@ Instead, I suggest a path to enlightenment:
 8. Don't write monad-analogy tutorials.
 
 In other words, the only path to understanding monads is to read the fine
-source, fire up GHC and write some code. Analogies and metaphors will not lead
+source, fire up GHC, and write some code. Analogies and metaphors will not lead
 to understanding.
 
 
