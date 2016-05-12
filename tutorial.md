@@ -1413,8 +1413,8 @@ See: [What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
 Laws
 ----
 
-Monads are not complicated, the implementation is a typeclass with two
-functions, ``(>>=)`` pronounced "bind" and ``return``. Any preconceptions one
+Monads are not complicated. They are implemented as a typeclass with two
+functions, ``(>>=)`` (pronounced "bind") and ``return``. Any preconceptions one
 might have for the word "return" should be discarded: It has an entirely
 different meaning in the context of Haskell.
 
