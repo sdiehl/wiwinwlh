@@ -1,4 +1,5 @@
-{-# OPTIONS_GHC -fdefer-type-errors #-}
+{-# OPTIONS_GHC -fdefer-type-errors #-} -- Enable deferred type
+                                        -- errors at module level
 
 x :: ()
 x = print 3

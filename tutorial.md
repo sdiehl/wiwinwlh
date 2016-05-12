@@ -890,9 +890,9 @@ code of the [GHC.Prim](https://hackage.haskell.org/package/ghc-prim-0.4.0.0/docs
 module. These bottoms exist because the operations [cannot be defined in native
 Haskell](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/primitives.html).
 Such operations are baked into the compiler at a very low level. However, this
-module exists so that Haddock can generate documentation for these primativeb
-operations, while the looping syntax serves as a placeholder for the actual
-implementation of the primops.
+module exists so that [Haddock](#haddock) can generate documentation for these
+primative operations, while the looping syntax serves as a placeholder for the
+actual implementation of the primops.
 
 Perhaps the most common introduction to bottoms is writing a partial function
 that does not have [exhaustive](#exhaustiveness) pattern matching defined. For
@@ -1143,11 +1143,12 @@ tracePrintfM s = traceM . printf s
 Type Holes
 ----------
 
-Since GHC 7.8 we have a new tool for debugging incomplete programs by means of
-*typed holes*. By placing an underscore on any value on the right hand-side of a
-declaration GHC will throw an error during type-checker that reflects the
-possible values that could placed at this point in the program to make the
-program type-check.
+Since the release of GHC 7.8, *typed holes* allow for debugging incomplete
+programs. By placing an underscore on any value on the right hand-side of a
+declaration, [GHC](https://www.haskell.org/ghc/) will throw an error during
+type-checking. Such an error reflects what type(s) the value in the position
+of the type hole could be in order to cause the program to type-check
+successfully.
 
 ```haskell
 instance Functor [] where
@@ -1179,17 +1180,19 @@ GHC has rightly suggested that the expression needed to finish the program is
 Deferred Type Errors
 --------------------
 
-As of 7.8 GHC support the option of pushing type errors to runtime errors
-allowing us to run the program and let it simply fail only when a mistyped
-expression is evaluated, letting the rest of the program proceed to run. This is
-enabled with the ``-fdefer-type-errors`` which can be enabled at the module
-level, when compiled or inside of a GHCi interactive session.
+Since the release of version 7.8, [GHC](https://www.haskell.org/ghc/) supports
+the option of treating type errors as runtime errors. With this option enabled,
+programs will run, but they will fail when a mistyped expression is evaluated.
+This feature is enabled with the ``-fdefer-type-errors`` flag in three ways:
+at the module level, when compiled from the command line, or inside of a
+[GHCi](#ghci) interactive session.
+
+For instance, the program below will compile:
 
 ~~~~ {.haskell include="src/01-basics/defer.hs"}
 ~~~~
-
-The resulting program will compile but at runtime we'll see a message like the
-following when a pathological term is evaluated.
+However, when a pathological term is evaluated at runtime, we'll see a message
+like:
 
 ```bash
 defer: defer.hs:4:5:
@@ -1199,35 +1202,46 @@ defer: defer.hs:4:5:
 (deferred type error)
 ```
 
+This error tells us that while ``x`` has a declared type of ``()``, the body
+of the function ``print 3`` has a type of ``IO ()``. However, if the term is
+never evaluated, GHC will not throw an exception.
+
 ghcid
 -----
 
-ghcid is a lightweight IDE hook that allows continuous feedback whenever code is
-updated.
+[ghcid](https://github.com/ndmitchell/ghcid) is a lightweight IDE hook that
+allows continuous feedback whenever code is updated.  It is run from the
+command line in the root of the ``cabal`` project directory by specifying a
+command to run (e.g.,  ``ghci``, ``cabal repl``, or ``stack repl``).
 
-It is run from the command line in the root of the cabal project directory  by
-specifying a commnad to run, for example ``cabal repl`` or ``stack repl``.
-
-```haskell
-ghcid --command="cabal repl"
-ghcid --command="stack repl"
+```bash
+ghcid --command="cabal repl"   # Run cabal repl under ghcid
+ghcid --command="stack repl"   # Run stack repl under ghcid
+ghcid --command="ghci baz.hs"  # Open baz.hs under ghcid
 ```
-
-Any subsequent change to your project's filesystem will trigger and automatic
-reload.
-
+When a Haskell module is loaded into ``ghcid``, the code is evaluated in order
+to provide the user with any errors or warnings that would happen at compile
+time. When the developer edits and saves code loaded into ``ghcid``, the
+program automatically reloads and evaluates the code for errors and warnings.
 
 Haddock
 -------
 
-Haddock is the automatic documentation tool for Haskell source code. It
-integrates with the usual cabal toolchain.
+[Haddock](haskel://www.haskell.org/haddock/#Overview) is the automatic
+documentation generation tool for Haskell source code. It integrates with the
+usual ``cabal`` toolchain. In this section, we will explore how to document
+code so that Haddock can generate documentation successfully.
+
+Several frequent comment patterns are used to document code for Haddock. The
+first of these methods uses ``--|`` to delineate the beginning of a comment:
 
 ```haskell
 -- | Documentation for f
 f :: a -> a
 f = ...
 ```
+
+Multiline comments are also possible:
 
 ```haskell
 -- | Multiline documentation for the function
@@ -1238,14 +1252,20 @@ fmap :: Functor f =>
      -> f b       -- ^ output
 ```
 
+Using ``-- ^`` to comment on Constructors or Record fields is also possible:
+
 ```haskell
 data T a b
   = A a -- ^ Documentation for A
   | B b -- ^ Documentation for B
+
+data MyRecord = MR { name :: String -- ^ Documentation for name field
+                   , age  :: Int    -- ^ Documentation for age field
+                   } deriving (Eq, Show)
 ```
 
-Elements within a module (value, types, classes) can be hyperlinked by enclosing
-the identifier in single quotes.
+Elements within a module (i.e., value, types, classes) can be hyperlinked by
+enclosing the identifier in single quotes:
 
 ```haskell
 data T a b
@@ -1253,12 +1273,17 @@ data T a b
   | B b -- ^ Documentation for 'B'
 ```
 
-Modules themselves can be referenced by enclosing them in double quotes.
+Modules themselves can be referenced by enclosing them in double quotes:
 
 ```haskell
 -- | Here we use the "Data.Text" library and import
 -- the 'Data.Text.pack' function.
 ```
+
+``haddock`` also allows the user to include blocks of code within the
+generated documentation. Two methods of demarcating the code blocks
+exist in ``haddock``. For example, enclosing a code snippet in ``@``
+symbols marks it as a code block:
 
 ```haskell
 -- | An example of a code block.
@@ -1266,19 +1291,30 @@ Modules themselves can be referenced by enclosing them in double quotes.
 -- @
 --    f x = f (f x)
 -- @
+```
 
+Similarly, it's possible to use bird tracks (``>``) in a comment line to
+set off a code block. This usage is very similar to [Bird style Literate
+Haskell](https://wiki.haskell.org/Literate_programming#Bird_Style).
+
+```haskell
+-- | A similar code block example that uses bird tracks (i.e. '>')
 -- > f x = f (f x)
 ```
 
+Snippets of interactive shell sessions can be also include in ``haddock``
+documentation. In order to denote the beginning of code intended to be
+run in a REPL, the ``>>>`` symbol is used:
+
 ```haskell
--- | Example of an interactive shell session.
+-- | Example of an interactive shell session embedded within documentation
 --
 -- >>> factorial 5
 -- 120
 ```
 
 Headers for specific blocks can be added by prefacing the comment in the module
-block with a star:
+block with a ``*``:
 
 ```haskell
 module Foo (
@@ -1303,21 +1339,21 @@ module Foo (
 -- 'example1' and 'example2'.
 ```
 
-Links can be added with the syntax:
+Links can be added with the following syntax:
 
 ```haskell
 <url text>
 ```
 
-Images can can also be included, so long as the path is relative to the haddock
-or an absolute reference.
+Images can can also be included, so long as the path is either relative to the
+directory in which ``haddock`` is run or an absolute reference.
 
 ```haskell
 <<diagram.png title>>
 ```
 
-Haddock options can also be specified with pragmas in the source, either on
-module or project level.
+``haddock`` options can also be specified with pragmas in the source, either at
+the module or project level.
 
 ```haskell
 {-# OPTIONS_HADDOCK show-extensions, ignore-exports #-}
