@@ -11,6 +11,7 @@
 Read Online:
 
 * [**HTML**](http://dev.stephendiehl.com/hask/)
+* [**PDF**](http://dev.stephendiehl.com/hask/tutorial.pdf)
 * [**Example Code**](https://github.com/sdiehl/wiwinwlh/tree/master/src)
 
 Chapter Code Examples:
