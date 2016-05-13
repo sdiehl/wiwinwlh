@@ -1434,7 +1434,7 @@ function ``f``, this expression is exactly equivalent to ``f a``.
 **Law 1**
 
 ```haskell
-return a >>= f ≡ f a
+return a >>= f ≡ f a    -- N.B. 'a' refers to a value, not a type
 ```
 
 **Law 2**
