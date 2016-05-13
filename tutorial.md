@@ -1424,7 +1424,9 @@ class Monad m where
   (>>=)  :: m a -> (a -> m b) -> m b
   return :: a -> m a
 ```
-Together with three laws that all monad instances must satisfy.
+
+In addition to specific implementations of ``(>>=)`` and ``return``, all monad
+instance must satisfy three laws.
 
 **Law 1**
 
