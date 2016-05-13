@@ -1422,13 +1422,15 @@ describes the arity of the functions required by the Monad typeclass.
 ```haskell
 class Monad m where
   (>>=)  :: m a -> (a -> m b) -> m b
-  return :: a -> m a
+  return :: a -> m a                     -- N.B. 'm' refers to a higher-kinded  type
+                                         -- (e.g., Maybe, List, Either, etc.) that
+                                         -- implements the Monad typeclass.
 ```
 
 In addition to specific implementations of ``(>>=)`` and ``return``, all monad
 instance must satisfy three laws.
 
-The first law says that when ``return a`` is passed through a ``bind`` into a
+The first law says that when ``return a`` is passed through a ``(>>=)`` into a
 function ``f``, this expression is exactly equivalent to ``f a``.
 
 **Law 1**
@@ -1436,6 +1438,7 @@ function ``f``, this expression is exactly equivalent to ``f a``.
 ```haskell
 return a >>= f ≡ f a    -- N.B. 'a' refers to a value, not a type
 ```
+
 
 **Law 2**
 
