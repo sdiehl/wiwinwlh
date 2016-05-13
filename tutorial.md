@@ -1416,7 +1416,8 @@ Laws
 Monads are not complicated. They are implemented as a typeclass with two
 functions, ``(>>=)`` (pronounced "bind") and ``return``. Any preconceptions one
 might have for the word "return" should be discarded: It has an entirely
-different meaning in the context of Haskell.
+different meaning in the context of Haskell. The following code snippet
+describes the arity of the functions required by the Monad typeclass.
 
 ```haskell
 class Monad m where
