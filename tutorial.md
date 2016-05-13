@@ -1420,12 +1420,14 @@ described in the typeclass definition:
 
 ```haskell
 class Monad m where
-  (>>=)  :: m a -> (a -> m b) -> m b
   return :: a -> m a                     -- N.B. 'm' refers to a type constructor
                                          -- (e.g., Maybe, Either, etc.) that
                                          -- implements the Monad typeclass
+
+  (>>=)  :: m a -> (a -> m b) -> m b
 ```
 
+The first type signature in the Monad class definition is for ``return``.
 Any preconceptions one might have for the word "return" should be discarded:
 It has an entirely different meaning in the context of Haskell. The ``return``
 function acts very differently than in languages like C, Python, or Java.
