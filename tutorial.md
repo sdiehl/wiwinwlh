@@ -1421,8 +1421,9 @@ described in the typeclass definition:
 ```haskell
 class Monad m where
   (>>=)  :: m a -> (a -> m b) -> m b
-  return :: a -> m a                     -- N.B. 'm' refers to a higher-kinded  type
-                                         -- (e.g., Maybe, List, Either, etc.) that
+  return :: a -> m a                     -- N.B. 'm' refers to a type constructor
+                                         -- (e.g., Maybe, Either, etc.) that
+                                         -- implements the Monad typeclass
 ```
 
 Any preconceptions one might have for the word "return" should be discarded:
