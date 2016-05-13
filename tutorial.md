@@ -1428,6 +1428,9 @@ class Monad m where
 In addition to specific implementations of ``(>>=)`` and ``return``, all monad
 instance must satisfy three laws.
 
+The first law says that when ``return a`` is passed through a ``bind`` into a
+function ``f``, this expression is exactly equivalent to ``f a``.
+
 **Law 1**
 
 ```haskell
