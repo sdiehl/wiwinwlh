@@ -1414,18 +1414,23 @@ Laws
 ----
 
 Monads are not complicated. They are implemented as a typeclass with two
-functions, ``(>>=)`` (pronounced "bind") and ``return``. Any preconceptions one
-might have for the word "return" should be discarded: It has an entirely
-different meaning in the context of Haskell. The following code snippet
-describes the arity of the functions required by the Monad typeclass.
+functions, ``return`` and ``(>>=)`` (pronounced "bind"). In order to implement
+a Monad instance, these two functions must be defined in accordance with arity
+described in the typeclass definition:
 
 ```haskell
 class Monad m where
   (>>=)  :: m a -> (a -> m b) -> m b
   return :: a -> m a                     -- N.B. 'm' refers to a higher-kinded  type
                                          -- (e.g., Maybe, List, Either, etc.) that
-                                         -- implements the Monad typeclass.
 ```
+
+Any preconceptions one might have for the word "return" should be discarded:
+It has an entirely different meaning in the context of Haskell. The ``return``
+function acts very differently than in languages like C, Python, or Java.
+Instead of being the final arbiter of what value a function
+produces, ``return`` in Haskell injects a value of type ``a`` into a monadic
+context (e.g., Maybe, Either, etc.).
 
 In addition to specific implementations of ``(>>=)`` and ``return``, all monad
 instance must satisfy three laws.
@@ -1438,7 +1443,6 @@ function ``f``, this expression is exactly equivalent to ``f a``.
 ```haskell
 return a >>= f ≡ f a    -- N.B. 'a' refers to a value, not a type
 ```
-
 
 **Law 2**
 
