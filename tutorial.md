@@ -1435,6 +1435,11 @@ Instead of being the final arbiter of what value a function
 produces, ``return`` in Haskell injects a value of type ``a`` into a monadic
 context (e.g., Maybe, Either, etc.).
 
+The other function essential to implementing a Monad instance is ``(>>=)``.
+This infix takes two arguments. On its left side is a value with type ``m a``,
+while on the right side is a function with type ``(a -> m b)``. The bind
+operation results in a final value of type ``m b``.
+
 In addition to specific implementations of ``(>>=)`` and ``return``, all monad
 instance must satisfy three laws.
 
