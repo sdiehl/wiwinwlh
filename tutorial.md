@@ -1410,7 +1410,7 @@ The following are all **false**:
 
 See: [What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
 
-Laws
+Monadic Methods
 ---------------
 
 Monads are not complicated. They are implemented as a typeclass with two
@@ -1442,6 +1442,9 @@ operation results in a final value of type ``m b``.
 
 In addition to specific implementations of ``(>>=)`` and ``return``, all monad
 instance must satisfy three laws.
+
+Laws
+----
 
 The first law says that when ``return a`` is passed through a ``(>>=)`` into a
 function ``f``, this expression is exactly equivalent to ``f a``.
