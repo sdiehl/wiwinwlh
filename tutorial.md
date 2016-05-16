@@ -1415,8 +1415,8 @@ Monadic Methods
 
 Monads are not complicated. They are implemented as a typeclass with two
 methods, ``return`` and ``(>>=)`` (pronounced "bind"). In order to implement
-a Monad instance, these two functions must be defined in accordance with arity
-described in the typeclass definition:
+a Monad instance, these two functions must be defined in accordance with the
+arity described in the typeclass definition:
 
 ```haskell
 class Monad m where
