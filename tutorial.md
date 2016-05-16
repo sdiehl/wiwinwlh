@@ -1468,6 +1468,10 @@ function ``f``, this expression is exactly equivalent to ``f a``.
 return a >>= f ≡ f a    -- N.B. 'a' refers to a value, not a type
 ```
 
+The second law states that a monadic value ``m`` passed through ``(>>=)``
+into ``return`` is exactly equivalent to itself. In other words, using bind to
+pass a monadic value to ``return`` does not change the initial value.
+
 **Law 2**
 
 ```haskell
