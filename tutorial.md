@@ -1475,7 +1475,7 @@ pass a monadic value to ``return`` does not change the initial value.
 **Law 2**
 
 ```haskell
-m >>= return ≡ m
+m >>= return ≡ m        -- 'm' here refers to a value that has type 'm a'
 ```
 
 **Law 3**
