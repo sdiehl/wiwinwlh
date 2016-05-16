@@ -1440,6 +1440,14 @@ This infix takes two arguments. On its left side is a value with type ``m a``,
 while on the right side is a function with type ``(a -> m b)``. The bind
 operation results in a final value of type ``m b``.
 
+A third, auxiliary function (``(>>)``) is defined in terms of the bind operation
+that discards its argument.
+
+```haskell
+(>>) :: Monad m => m a -> m b -> m b
+m >> k = m >>= \_ -> k
+```
+
 Laws
 ----
 
@@ -1465,14 +1473,6 @@ m >>= return ≡ m
 
 ```haskell
 (m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)
-```
-
-There is an auxiliary function (``(>>)``) defined in terms of the bind operation
-that discards its argument.
-
-```haskell
-(>>) :: Monad m => m a -> m b -> m b
-m >> k = m >>= \_ -> k
 ```
 
 See: [Monad Laws](http://wiki.haskell.org/Monad_laws)
