@@ -1420,9 +1420,9 @@ arity described in the typeclass definition:
 
 ```haskell
 class Monad m where
-  return :: a -> m a                     -- N.B. 'm' refers to a type constructor
-                                         -- (e.g., Maybe, Either, etc.) that
-                                         -- implements the Monad typeclass
+  return :: a -> m a                    -- N.B. 'm' refers to a type constructor
+                                        -- (e.g., Maybe, Either, etc.) that
+                                        -- implements the Monad typeclass
 
   (>>=)  :: m a -> (a -> m b) -> m b
 ```
