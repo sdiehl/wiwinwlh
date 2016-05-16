@@ -1414,7 +1414,7 @@ Monadic Methods
 ---------------
 
 Monads are not complicated. They are implemented as a typeclass with two
-functions, ``return`` and ``(>>=)`` (pronounced "bind"). In order to implement
+methods, ``return`` and ``(>>=)`` (pronounced "bind"). In order to implement
 a Monad instance, these two functions must be defined in accordance with arity
 described in the typeclass definition:
 
