@@ -1448,6 +1448,11 @@ that discards its argument.
 m >> k = m >>= \_ -> k
 ```
 
+This definition says that (>>) has a left and right argument which are monadic
+with types ``m a`` and ``m b`` respectively, while the infix returns a value of
+type ``m b``.  The actual implementation of (>>) says that when ``m`` is passed
+to ``(>>)`` with ``k`` on the right, the value ``k`` will always be returned.
+
 Laws
 ----
 
