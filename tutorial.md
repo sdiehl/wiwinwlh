@@ -1411,7 +1411,7 @@ The following are all **false**:
 See: [What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
 
 Laws
-----
+---------------
 
 Monads are not complicated. They are implemented as a typeclass with two
 functions, ``return`` and ``(>>=)`` (pronounced "bind"). In order to implement
@@ -1429,11 +1429,11 @@ class Monad m where
 
 The first type signature in the Monad class definition is for ``return``.
 Any preconceptions one might have for the word "return" should be discarded:
-It has an entirely different meaning in the context of Haskell. The ``return``
-function acts very differently than in languages like C, Python, or Java.
-Instead of being the final arbiter of what value a function
-produces, ``return`` in Haskell injects a value of type ``a`` into a monadic
-context (e.g., Maybe, Either, etc.).
+It has an entirely different meaning in the context of Haskell and acts very
+differently than in languages like C, Python, or Java. Instead of being the
+final arbiter of what value a function produces, ``return`` in Haskell injects a
+value of type ``a`` into a monadic context (e.g., Maybe, Either, etc.), which is
+denoted as ``m a``.
 
 The other function essential to implementing a Monad instance is ``(>>=)``.
 This infix takes two arguments. On its left side is a value with type ``m a``,
