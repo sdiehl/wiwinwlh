@@ -1478,10 +1478,14 @@ pass a monadic value to ``return`` does not change the initial value.
 m >>= return ≡ m        -- 'm' here refers to a value that has type 'm a'
 ```
 
+
 **Law 3**
 
 ```haskell
-(m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)
+(m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)  -- Like in the last law, 'm' has
+                                           -- has type 'm a'. The functions 'f'
+                                           -- and 'g' have types '(a -> m b)'
+                                           -- and '(b -> m c)' respectively
 ```
 
 See: [Monad Laws](http://wiki.haskell.org/Monad_laws)
