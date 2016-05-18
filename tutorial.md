@@ -1556,10 +1556,11 @@ are equivalent:
 
 ```haskell
 do
-  a <- f
-  b <- g
-  c <- h
-  return (a, b, c)
+  a <- f                               -- f, g, and h are bound to the names a,
+  b <- g                               -- b, and c. These names are then passed
+  c <- h                               -- to 'return' to ensure that all values
+  return (a, b, c)                     -- are wrapped in the appropriate monadic
+                                       -- context
 
 do {                                   -- N.B. '{}' characters are rarely used
   a <- f;                              -- in do-notation
