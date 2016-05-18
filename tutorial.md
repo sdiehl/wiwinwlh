@@ -1485,6 +1485,21 @@ pass a monadic value to ``return`` does not change the initial value.
 m >>= return ≡ m        -- 'm' here refers to a value that has type 'm a'
 ```
 
+A more explicit way to write the second Monad law exists.  In this following
+example code, the first expression shows how the second law applies to values
+represented by
+[non-nullary](https://wiki.haskell.org/Constructor#Type_constructor) type
+constructors. The second snippet shows how a value represented by a nullary type
+constructor works within the context of the second law.
+
+```haskell
+(SomeMonad x) >>= return ≡ SomeMonad x    -- 'SomeMonad x' has type 'm a' just
+                                          -- 'm' from the first example of the
+                                          -- second law
+
+NullaryMonadType >>= return ≡ NullaryMonadType
+```
+
 While the first two laws are relatively clear, the third law may be more
 difficult to understand. This law states that when a monadic value ``m`` is
 passed through ``(>>=)`` to the function ``f`` and then the result of that
