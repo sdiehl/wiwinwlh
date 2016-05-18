@@ -1540,10 +1540,10 @@ See: [Monad Laws](http://wiki.haskell.org/Monad_laws)
 Do Notation
 -----------
 
-Monads syntax in Haskell is written in a sugared form, known as ``do`` notation.
-The advantages of this special syntax are that it is easier to write and is
-entirely equivalent to just applications of the monad operations. The desugaring is defined
-recursively by the rules:
+Monadic syntax in Haskell is written in a sugared form, known as ``do``
+notation. The advantages of this special syntax are that it is easier to write
+and is entirely equivalent to just applications of the monad operations. The
+desugaring is defined recursively by the rules:
 
 ```haskell
 do { a <- f ; m } ≡ f >>= \a -> do { m }
