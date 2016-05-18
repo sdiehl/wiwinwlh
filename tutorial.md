@@ -1507,8 +1507,10 @@ difficult to understand. This law states that when a monadic value ``m`` is
 passed through ``(>>=)`` to the function ``f`` and then the result of that
 expression is passed to ``>>= g``, the entire expression is exactly equivalent
 to passing ``m`` to a lamda expression that takes one parameter ``x`` and
-outputs the function ``f`` applied to ``x``, with the resultant value of that
-expression passed through ``(>>=)`` to the function ``g``.
+outputs the function ``f`` applied to ``x``. By the definition of bind, ``f x``
+*must* return a value wrapped in the same Monad. Because of this property, the
+resultant value of that expression can be  passed through ``(>>=)`` to the
+function ``g``, which also returns a monadic value.
 
 ```haskell
 (m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)  -- Like in the last law, 'm' has
