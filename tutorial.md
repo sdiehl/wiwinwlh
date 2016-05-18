@@ -1468,6 +1468,13 @@ function ``f``, this expression is exactly equivalent to ``f a``.
 return a >>= f ≡ f a    -- N.B. 'a' refers to a value, not a type
 ```
 
+In discussing the next two laws, we'll refer to a value ``m``. This notation is
+shorthand for value wrapped in a monadic context. Such a value has type ``m a``,
+and could be represented more concretely by values like ``Nothing``, ``Just x``,
+or ``Right x``. It is important to note that some of these concrete
+instantiations of the value ``m`` have multiple components. In discussing the
+second and third monad laws, we'll see some examples of how this plays out.
+
 The second law states that a monadic value ``m`` passed through ``(>>=)``
 into ``return`` is exactly equivalent to itself. In other words, using bind to
 pass a monadic value to ``return`` does not change the initial value.
