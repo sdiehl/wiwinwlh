@@ -1560,8 +1560,8 @@ do
   c <- h
   return (a, b, c)
 
-do {
-  a <- f;
+do {                                   -- N.B. '{}' characters are rarely used
+  a <- f;                              -- in do-notation
   b <- g;
   c <- h;
   return (a, b, c)
