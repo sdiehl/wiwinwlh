@@ -1493,9 +1493,9 @@ constructors. The second snippet shows how a value represented by a nullary type
 constructor works within the context of the second law.
 
 ```haskell
-(SomeMonad x) >>= return ≡ SomeMonad x    -- 'SomeMonad x' has type 'm a' just
-                                          -- 'm' from the first example of the
-                                          -- second law
+(SomeMonad val) >>= return ≡ SomeMonad val  -- 'SomeMonad val' has type 'm a' just
+                                            -- 'm' from the first example of the
+                                            -- second law
 
 NullaryMonadType >>= return ≡ NullaryMonadType
 ```
@@ -1515,6 +1515,22 @@ expression passed through ``(>>=)`` to the function ``g``.
                                            -- has type 'm a'. The functions 'f'
                                            -- and 'g' have types '(a -> m b)'
                                            -- and '(b -> m c)' respectively
+```
+
+Again, it is possible to write this law with more explicit code. Like in the
+explict examples for law 2, ``m`` has been replaced by ``SomeMonad val`` in
+order to be very clear that there can be multiple components to a monadic value.
+Although little has changed in the code, it is easier to see what
+value--namely, ``val``--corresponds to the ``x`` in the lambda expression.
+After ``SomeMonad val`` is passed through ``(>>=)`` to ``f``, the function ``f``
+operates on ``val`` and returns a result still wrapped in the ``SomeMonad``
+type constructor. We can call this new value ``SomeMonad newVal``. Since it is
+still wrapped in the monadic context, ``SomeMonad newVal`` can thus be passed
+through the bind operation into the function ``g``.
+
+```haskell
+((SomeMonad val) >>= f) >>= g ≡ (SomeMonad val) >>= (\x -> f x >>= g)
+
 ```
 
 See: [Monad Laws](http://wiki.haskell.org/Monad_laws)
