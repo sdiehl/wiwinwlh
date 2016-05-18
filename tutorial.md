@@ -1551,7 +1551,8 @@ do { f ; m } ≡ f >> do { m }
 do { m } ≡ m
 ```
 
-So for example the following are equivalent:
+Thus, through the application of the desugaring rules, the following expressions
+are equivalent:
 
 ```haskell
 do
