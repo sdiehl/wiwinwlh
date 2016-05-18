@@ -1459,10 +1459,10 @@ Laws
 In addition to specific implementations of ``(>>=)`` and ``return``, all monad
 instance must satisfy three laws.
 
+**Law 1**
+
 The first law says that when ``return a`` is passed through a ``(>>=)`` into a
 function ``f``, this expression is exactly equivalent to ``f a``.
-
-**Law 1**
 
 ```haskell
 return a >>= f ≡ f a    -- N.B. 'a' refers to a value, not a type
@@ -1475,17 +1475,17 @@ or ``Right x``. It is important to note that some of these concrete
 instantiations of the value ``m`` have multiple components. In discussing the
 second and third monad laws, we'll see some examples of how this plays out.
 
+**Law 2**
+
 The second law states that a monadic value ``m`` passed through ``(>>=)``
 into ``return`` is exactly equivalent to itself. In other words, using bind to
 pass a monadic value to ``return`` does not change the initial value.
-
-**Law 2**
 
 ```haskell
 m >>= return ≡ m        -- 'm' here refers to a value that has type 'm a'
 ```
 
-A more explicit way to write the second Monad law exists.  In this following
+A more explicit way to write the second Monad law exists. In this following
 example code, the first expression shows how the second law applies to values
 represented by
 [non-nullary](https://wiki.haskell.org/Constructor#Type_constructor) type
@@ -1500,6 +1500,8 @@ constructor works within the context of the second law.
 NullaryMonadType >>= return ≡ NullaryMonadType
 ```
 
+**Law 3**
+
 While the first two laws are relatively clear, the third law may be more
 difficult to understand. This law states that when a monadic value ``m`` is
 passed through ``(>>=)`` to the function ``f`` and then the result of that
@@ -1507,8 +1509,6 @@ expression is passed to ``>>= g``, the entire expression is exactly equivalent
 to passing ``m`` to a lamda expression that takes one parameter ``x`` and
 outputs the function ``f`` applied to ``x``, with the resultant value of that
 expression passed through ``(>>=)`` to the function ``g``.
-
-**Law 3**
 
 ```haskell
 (m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)  -- Like in the last law, 'm' has
