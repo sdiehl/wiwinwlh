@@ -1478,6 +1478,13 @@ pass a monadic value to ``return`` does not change the initial value.
 m >>= return ≡ m        -- 'm' here refers to a value that has type 'm a'
 ```
 
+While the first two laws are relatively clear, the third law may be more
+difficult to understand. This law states that when a monadic value ``m`` is
+passed through ``(>>=)`` to the function ``f`` and then the result of that
+expression is passed to ``>>= g``, the entire expression is exactly equivalent
+to passing ``m`` to a lamda expression that takes one parameter ``x`` and
+outputs the function ``f`` applied to ``x``, with the resultant value of that
+expression passed through ``(>>=)`` to the function ``g``.
 
 **Law 3**
 
