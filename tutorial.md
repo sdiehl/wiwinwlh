@@ -1586,7 +1586,7 @@ bindMonad(f, lambda a:
       returnMonad (a,b,c))))
 ```
 
-In the do-notation the monad laws from above are equivalently written:
+In the do-notation, the [monad laws](#laws) from above are equivalently written:
 
 **Law 1**
 
