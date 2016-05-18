@@ -1376,11 +1376,11 @@ Eightfold Path to Monad Satori
 ------------------------------
 
 Much ink has been spilled waxing lyrical about the supposed mystique of monads.
-Instead I suggest a path to enlightenment:
+Instead, I suggest a path to enlightenment:
 
 1. Don't read the monad tutorials.
 2. No really, don't read the monad tutorials.
-3. Learn about Haskell types.
+3. Learn about [Haskell types](http://book.realworldhaskell.org/read/types-and-functions.html).
 4. Learn what a typeclass is.
 5. Read the [Typeclassopedia](http://wiki.haskell.org/Typeclassopedia).
 6. Read the monad definitions.
@@ -1388,7 +1388,7 @@ Instead I suggest a path to enlightenment:
 8. Don't write monad-analogy tutorials.
 
 In other words, the only path to understanding monads is to read the fine
-source, fire up GHC and write some code. Analogies and metaphors will not lead
+source, fire up GHC, and write some code. Analogies and metaphors will not lead
 to understanding.
 
 
@@ -1406,48 +1406,133 @@ The following are all **false**:
 * Monads are a "back-door" in the language to perform side-effects.
 * Monads are an embedded imperative language inside Haskell.
 * Monads require knowing abstract mathematics.
+* Monads are unique to Haskell.
 
 See: [What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
 
-Laws
-----
+Monadic Methods
+---------------
 
-Monads are not complicated, the implementation is a typeclass with two
-functions, ``(>>=)`` pronounced "bind" and ``return``. Any preconceptions one
-might have for the word "return" should be discarded, it has an entirely
-different meaning.
+Monads are not complicated. They are implemented as a typeclass with two
+methods, ``return`` and ``(>>=)`` (pronounced "bind"). In order to implement
+a Monad instance, these two functions must be defined in accordance with the
+arity described in the typeclass definition:
 
 ```haskell
 class Monad m where
+  return :: a -> m a                    -- N.B. 'm' refers to a type constructor
+                                        -- (e.g., Maybe, Either, etc.) that
+                                        -- implements the Monad typeclass
+
   (>>=)  :: m a -> (a -> m b) -> m b
-  return :: a -> m a
-```
-Together with three laws that all monad instances must satisfy.
-
-**Law 1**
-
-```haskell
-return a >>= f ≡ f a
 ```
 
-**Law 2**
+The first type signature in the Monad class definition is for ``return``.
+Any preconceptions one might have for the word "return" should be discarded:
+It has an entirely different meaning in the context of Haskell and acts very
+differently than in languages like C, Python, or Java. Instead of being the
+final arbiter of what value a function produces, ``return`` in Haskell injects a
+value of type ``a`` into a monadic context (e.g., Maybe, Either, etc.), which is
+denoted as ``m a``.
 
-```haskell
-m >>= return ≡ m
-```
+The other function essential to implementing a Monad instance is ``(>>=)``.
+This infix takes two arguments. On its left side is a value with type ``m a``,
+while on the right side is a function with type ``(a -> m b)``. The bind
+operation results in a final value of type ``m b``.
 
-**Law 3**
-
-```haskell
-(m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)
-```
-
-There is an auxiliary function (``(>>)``) defined in terms of the bind operation
+A third, auxiliary function (``(>>)``) is defined in terms of the bind operation
 that discards its argument.
 
 ```haskell
 (>>) :: Monad m => m a -> m b -> m b
 m >> k = m >>= \_ -> k
+```
+
+This definition says that (>>) has a left and right argument which are monadic
+with types ``m a`` and ``m b`` respectively, while the infix returns a value of
+type ``m b``.  The actual implementation of (>>) says that when ``m`` is passed
+to ``(>>)`` with ``k`` on the right, the value ``k`` will always be returned.
+
+Laws
+----
+
+In addition to specific implementations of ``(>>=)`` and ``return``, all monad
+instance must satisfy three laws.
+
+**Law 1**
+
+The first law says that when ``return a`` is passed through a ``(>>=)`` into a
+function ``f``, this expression is exactly equivalent to ``f a``.
+
+```haskell
+return a >>= f ≡ f a    -- N.B. 'a' refers to a value, not a type
+```
+
+In discussing the next two laws, we'll refer to a value ``m``. This notation is
+shorthand for value wrapped in a monadic context. Such a value has type ``m a``,
+and could be represented more concretely by values like ``Nothing``, ``Just x``,
+or ``Right x``. It is important to note that some of these concrete
+instantiations of the value ``m`` have multiple components. In discussing the
+second and third monad laws, we'll see some examples of how this plays out.
+
+**Law 2**
+
+The second law states that a monadic value ``m`` passed through ``(>>=)``
+into ``return`` is exactly equivalent to itself. In other words, using bind to
+pass a monadic value to ``return`` does not change the initial value.
+
+```haskell
+m >>= return ≡ m        -- 'm' here refers to a value that has type 'm a'
+```
+
+A more explicit way to write the second Monad law exists. In this following
+example code, the first expression shows how the second law applies to values
+represented by
+[non-nullary](https://wiki.haskell.org/Constructor#Type_constructor) type
+constructors. The second snippet shows how a value represented by a nullary type
+constructor works within the context of the second law.
+
+```haskell
+(SomeMonad val) >>= return ≡ SomeMonad val  -- 'SomeMonad val' has type 'm a' just
+                                            -- 'm' from the first example of the
+                                            -- second law
+
+NullaryMonadType >>= return ≡ NullaryMonadType
+```
+
+**Law 3**
+
+While the first two laws are relatively clear, the third law may be more
+difficult to understand. This law states that when a monadic value ``m`` is
+passed through ``(>>=)`` to the function ``f`` and then the result of that
+expression is passed to ``>>= g``, the entire expression is exactly equivalent
+to passing ``m`` to a lamda expression that takes one parameter ``x`` and
+outputs the function ``f`` applied to ``x``. By the definition of bind, ``f x``
+*must* return a value wrapped in the same Monad. Because of this property, the
+resultant value of that expression can be  passed through ``(>>=)`` to the
+function ``g``, which also returns a monadic value.
+
+```haskell
+(m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)  -- Like in the last law, 'm' has
+                                           -- has type 'm a'. The functions 'f'
+                                           -- and 'g' have types '(a -> m b)'
+                                           -- and '(b -> m c)' respectively
+```
+
+Again, it is possible to write this law with more explicit code. Like in the
+explict examples for law 2, ``m`` has been replaced by ``SomeMonad val`` in
+order to be very clear that there can be multiple components to a monadic value.
+Although little has changed in the code, it is easier to see what
+value--namely, ``val``--corresponds to the ``x`` in the lambda expression.
+After ``SomeMonad val`` is passed through ``(>>=)`` to ``f``, the function ``f``
+operates on ``val`` and returns a result still wrapped in the ``SomeMonad``
+type constructor. We can call this new value ``SomeMonad newVal``. Since it is
+still wrapped in the monadic context, ``SomeMonad newVal`` can thus be passed
+through the bind operation into the function ``g``.
+
+```haskell
+((SomeMonad val) >>= f) >>= g ≡ (SomeMonad val) >>= (\x -> f x >>= g)
+
 ```
 
 See: [Monad Laws](http://wiki.haskell.org/Monad_laws)
