@@ -1546,8 +1546,12 @@ and is entirely equivalent to just applications of the monad operations. The
 desugaring is defined recursively by the rules:
 
 ```haskell
-do { a <- f ; m } ≡ f >>= \a -> do { m }
-do { f ; m } ≡ f >> do { m }
+do { a <- f ; m } ≡ f >>= \a -> do { m }  -- bind 'f' to a, proceed to desugar
+                                          -- 'm'
+
+do { f ; m } ≡ f >> do { m }              -- evaluate 'f', then proceed to
+                                          -- desurgar  m 
+
 do { m } ≡ m
 ```
 
