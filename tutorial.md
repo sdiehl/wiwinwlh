@@ -1550,7 +1550,7 @@ do { a <- f ; m } ≡ f >>= \a -> do { m }  -- bind 'f' to a, proceed to desugar
                                           -- 'm'
 
 do { f ; m } ≡ f >> do { m }              -- evaluate 'f', then proceed to
-                                          -- desurgar  m 
+                                          -- desurgar  m
 
 do { m } ≡ m
 ```
@@ -1641,7 +1641,7 @@ data Maybe a = Just a | Nothing
 
 ```haskell
 instance Monad Maybe where
-  (Just x) >>= k = k x
+  (Just x) >>= k = k x            -- 'k' is a function with type  (a -> Maybe a)
   Nothing  >>= k = Nothing
 
   return = Just
