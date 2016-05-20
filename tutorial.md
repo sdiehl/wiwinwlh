@@ -1628,12 +1628,16 @@ In the do-notation, the [monad laws](#laws) from above are equivalently written:
 
 See: [Haskell 2010: Do Expressions](http://www.haskell.org/onlinereport/haskell2010/haskellch3.html#x8-470003.14)
 
+
 Maybe
 -----
 
 The *Maybe* monad is the simplest first example of a monad instance. The Maybe
 monad models computations which fail to yield a value at any point during
 computation.
+
+The Maybe type has two value constructors. The first, ``Just``,  is a unary
+constructor, while the second, ``Nothing``, is a nullary constructor.
 
 ```haskell
 data Maybe a = Just a | Nothing
