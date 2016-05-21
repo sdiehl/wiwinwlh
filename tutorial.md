@@ -1637,18 +1637,27 @@ monad models computations which fail to yield a value at any point during
 computation.
 
 The Maybe type has two value constructors. The first, ``Just``,  is a unary
-constructor, while the second, ``Nothing``, is a nullary constructor.
+constructor representing a successful computation, while the
+second, ``Nothing``, is a nullary constructor that represents failure.
 
 ```haskell
 data Maybe a = Just a | Nothing
 ```
+
+The monad instance describes the implementation of ``(>>=)`` for ``Maybe``
+by pattern matching on the possible inputs that could be passed to the bind
+operation (i.e., ``Nothing`` or ``Just x``).  The instance declaration also
+provides an implementation of ``return``, which in this case is simply ``Just``.
 
 ```haskell
 instance Monad Maybe where
   (Just x) >>= k = k x            -- 'k' is a function with type  (a -> Maybe a)
   Nothing  >>= k = Nothing
 
-  return = Just
+  return = Just                   -- Just's type signature is 'a -> Maybe a', in
+                                  -- other words, extremely similar to the
+                                  -- type of 'return' in the typeclass
+                                  -- declaration above.
 ```
 
 ```haskell
