@@ -1660,13 +1660,32 @@ instance Monad Maybe where
                                   -- declaration above.
 ```
 
+The following code shows some simple operations to do within the Maybe monad.
+
+In the first example, The value ``Just 3`` is passed via ``(>>=)`` to the lambda
+function ``\x -> return (x + 1)``. ``x`` refers to the ``Int`` portion
+of ``Just 3``, and we can use ``x`` in the second half of the lambda expression,
+where ``return (x + 1)`` evaluates to ``Just 4``, indicating a successful
+computation.
+
 ```haskell
 (Just 3) >>= (\x -> return (x + 1))
 -- Just 4
+```
 
+In the second example, the value ``Nothing`` is passed via ``(>>=)`` to the same
+lambda function as in the previous example. However, according to the ``Maybe``
+Monad instance, whenever ``Nothing`` is bound to a function, the expression's
+result will be ``Nothing``.
+
+```haskell
 Nothing >>= (\x -> return (x + 1))
 -- Nothing
+```
 
+In the next example, ``return`` is applied to ``4`` and returns ``Just 4``.
+
+```haskell
 return 4 :: Maybe Int
 -- Just 4
 ```
