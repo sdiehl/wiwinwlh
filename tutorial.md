@@ -1690,6 +1690,8 @@ return 4 :: Maybe Int
 -- Just 4
 ```
 
+The next code examples show how to use ``do`` notation within the Maybe monad.
+
 ~~~~ {.haskell include="src/02-monads/maybe.hs"}
 ~~~~
 
