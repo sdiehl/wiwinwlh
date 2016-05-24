@@ -26,3 +26,9 @@ example2 = do
                              -- step within the process, the whole computation
                              -- fails, leaving us with 'Nothing' as the final
                              -- result.
+
+example2Desugared :: Maybe Int
+example2Desugared = Just 3 >>= \a ->     -- This example is the desugared
+                      Nothing >>= \b ->  -- equivalent to example2
+                        return $ a + b
+-- Nothing
