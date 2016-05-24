@@ -1699,7 +1699,11 @@ do addition that might fail. Desugared examples are provided as well.
 List
 ----
 
-The *List* monad is the second simplest example of a monad instance.
+The *List* monad is the second simplest example of a monad instance. As always,
+this monad implements both ``(>>=)`` and ``return``. The definition of bind says
+that when the list ``m`` is bound to to a function ``f``, the result is a
+concatenation of ``map f`` over the list ``m``. The ``return`` method simply
+takes a single value ``x`` and injects into a singleton list ``[x]``.
 
 ```haskell
 instance Monad [] where
