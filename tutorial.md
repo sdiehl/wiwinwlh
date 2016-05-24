@@ -1707,7 +1707,7 @@ takes a single value ``x`` and injects into a singleton list ``[x]``.
 
 ```haskell
 instance Monad [] where
-  m >>= f   =  concat (map f m)
+  m >>= f   =  concat (map f m)          -- 'm' is a list
   return x  =  [x]
 ```
 
