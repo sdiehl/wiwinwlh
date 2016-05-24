@@ -18,4 +18,11 @@ example2 = do
   a <- Just 3                -- Bind 3 to name a
   b <- Nothing               -- Bind Nothing to name b
   return $ a + b
--- Nothing
+-- Nothing                   -- This result might be somewhat surprising, since
+                             -- addition within the Maybe monad can actually
+                             -- return 'Nothing'. This result occurs because one
+                             -- of the values, Nothing, indicates computational
+                             -- failure. Since the computation failed at one
+                             -- step within the process, the whole computation
+                             -- fails, leaving us with 'Nothing' as the final
+                             -- result.
