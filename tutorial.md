@@ -1715,7 +1715,10 @@ In order to domestrate using the ``List`` monad's methods, we can define two
 functions ``m`` and ``f``.
 
 ```haskell
+m :: [Int]
 m = [1,2,3,4]
+
+f :: Int -> [Int]
 f = \x -> [1,0]
 ```
 
