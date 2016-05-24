@@ -1566,8 +1566,8 @@ do
   return (a, b, c)                     -- are wrapped in the appropriate monadic
                                        -- context
 
-do {                                   -- N.B. '{}' characters are rarely used
-  a <- f;                              -- in do-notation
+do {                                   -- N.B. '{}'  and ';' characters are
+  a <- f;                              --  rarely used in do-notation
   b <- g;
   c <- h;
   return (a, b, c)
