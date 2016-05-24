@@ -1711,7 +1711,8 @@ instance Monad [] where
   return x  =  [x]
 ```
 
-So for example with:
+In order to domestrate using the ``List`` monad's methods, we can define two
+functions ``m`` and ``f``.
 
 ```haskell
 m = [1,2,3,4]
