@@ -7,6 +7,11 @@ example1 = do
                              -- satisfy the type signature
 -- Just 7
 
+example1Desugared :: Maybe Int
+example1Desugared = Just 3 >>= \a ->    -- This example is the desugared
+                      Just 4 >>= \b ->  -- equivalent to example1
+                        return $ a + b
+
 example2 :: Maybe Int
 example2 = do
   a <- Just 3
