@@ -1712,7 +1712,8 @@ instance Monad [] where
 ```
 
 In order to domestrate using the ``List`` monad's methods, we can define two
-functions ``m`` and ``f``.
+functions ``m`` and ``f``. ``m`` is a simple list, while ``f`` is a function
+that takes a single ``Int`` and returns a two element list ``[1, 0]``.
 
 ```haskell
 m :: [Int]
