@@ -11,6 +11,7 @@ example1Desugared :: Maybe Int
 example1Desugared = Just 3 >>= \a ->    -- This example is the desugared
                       Just 4 >>= \b ->  -- equivalent to example1
                         return $ a + b
+-- Just 7
 
 example2 :: Maybe Int
 example2 = do
