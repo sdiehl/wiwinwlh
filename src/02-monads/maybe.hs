@@ -15,7 +15,7 @@ example1Desugared = Just 3 >>= \a ->    -- This example is the desugared
 
 example2 :: Maybe Int
 example2 = do
-  a <- Just 3
-  b <- Nothing
+  a <- Just 3                -- Bind 3 to name a
+  b <- Nothing               -- Bind Nothing to name b
   return $ a + b
 -- Nothing
