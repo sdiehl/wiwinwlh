@@ -1550,7 +1550,7 @@ do { a <- f ; m } ≡ f >>= \a -> do { m }  -- bind 'f' to a, proceed to desugar
                                           -- 'm'
 
 do { f ; m } ≡ f >> do { m }              -- evaluate 'f', then proceed to
-                                          -- desurgar  m
+                                          -- desugar  m
 
 do { m } ≡ m
 ```
