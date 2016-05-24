@@ -1720,7 +1720,7 @@ m :: [Int]
 m = [1,2,3,4]
 
 f :: Int -> [Int]
-f = \x -> [1,0]
+f = \x -> [1,0]               -- 'f' always returns [1, 0]
 ```
 
 The evaluation proceeds as follows:
