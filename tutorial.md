@@ -1734,17 +1734,37 @@ m >>= f
 ```
 
 The list comprehension syntax in Haskell can be implemented in terms of the list
-monad.
+monad. List comprehensions can be considered syntactic sugar for more obviously
+monadic implementations. Examples ``a`` and ``b`` illustrate these use cases.
+
+The first example (``a``) illustrates how to write a list comprehension.
+Although this syntax may look stranges, there are elements may look familiar.
+For instance, the use of the ``<-`` is just like bind in ``do`` notation: It
+binds a list to a name. However, one major difference is apparent: ``a`` seems
+to lack a call to ``return``. Not to worry, though, the ``[]`` fill this role.
+This syntax can be easily desugared by the compiler to an explicit invocation
+of ``return`` and serves to remind the user that the computation is taking place
+in the List monad.
 
 ```haskell
-a = [f x y | x <- xs, y <- ys, x == y ]
+a = [
+      f x y |        -- Corresponds to 'f x y' in example b
+      x <- xs,
+      y <- ys,
+      x == y         -- Corresponds to 'guard $ x == y' in example b
+    ]
+```
 
+The second example (``b``) shows the the list comprehension above rewritten with
+``do`` notation:
+
+```haskell
 -- Identical to `a`
 b = do
   x <- xs
   y <- ys
-  guard $ x == y
-  return $ f x y
+  guard $ x == y     -- Corresponds to 'x == y' in example a
+  return $ f x y     -- Corresponds to the '[]' and 'f x y' in example a
 ```
 
 ~~~~ {.haskell include="src/02-monads/list.hs"}
