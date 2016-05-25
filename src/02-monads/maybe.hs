@@ -7,10 +7,10 @@ example1 = do
                              -- satisfy the type signature
 -- Just 7
 
-example1Desugared :: Maybe Int
-example1Desugared = Just 3 >>= \a ->    -- This example is the desugared
-                      Just 4 >>= \b ->  -- equivalent to example1
-                        return $ a + b
+desugared1 :: Maybe Int
+desugared1 = Just 3 >>= \a ->    -- This example is the desugared
+               Just 4 >>= \b ->  -- equivalent to example1
+                 return $ a + b
 -- Just 7
 
 example2 :: Maybe Int
@@ -27,8 +27,8 @@ example2 = do
                              -- fails, leaving us with 'Nothing' as the final
                              -- result.
 
-example2Desugared :: Maybe Int
-example2Desugared = Just 3 >>= \a ->     -- This example is the desugared
-                      Nothing >>= \b ->  -- equivalent to example2
-                        return $ a + b
+desugared2 :: Maybe Int
+desugared2 = Just 3 >>= \a ->     -- This example is the desugared
+               Nothing >>= \b ->  -- equivalent to example2
+                 return $ a + b
 -- Nothing
