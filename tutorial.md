@@ -1540,27 +1540,34 @@ See: [Monad Laws](http://wiki.haskell.org/Monad_laws)
 Do Notation
 -----------
 
-Monads syntax in Haskell is written in sugared form that is entirely equivalent
-to just applications of the monad operations. The desugaring is defined
-recursively by the rules:
+Monadic syntax in Haskell is written in a sugared form, known as ``do``
+notation. The advantages of this special syntax are that it is easier to write
+and is entirely equivalent to just applications of the monad operations. The
+desugaring is defined recursively by the rules:
 
 ```haskell
-do { a <- f ; m } ≡ f >>= \a -> do { m }
-do { f ; m } ≡ f >> do { m }
+do { a <- f ; m } ≡ f >>= \a -> do { m }  -- bind 'f' to a, proceed to desugar
+                                          -- 'm'
+
+do { f ; m } ≡ f >> do { m }              -- evaluate 'f', then proceed to
+                                          -- desugar  m
+
 do { m } ≡ m
 ```
 
-So for example the following are equivalent:
+Thus, through the application of the desugaring rules, the following expressions
+are equivalent:
 
 ```haskell
 do
-  a <- f
-  b <- g
-  c <- h
-  return (a, b, c)
+  a <- f                               -- f, g, and h are bound to the names a,
+  b <- g                               -- b, and c. These names are then passed
+  c <- h                               -- to 'return' to ensure that all values
+  return (a, b, c)                     -- are wrapped in the appropriate monadic
+                                       -- context
 
-do {
-  a <- f;
+do {                                   -- N.B. '{}'  and ';' characters are
+  a <- f;                              --  rarely used in do-notation
   b <- g;
   c <- h;
   return (a, b, c)
@@ -1583,7 +1590,7 @@ bindMonad(f, lambda a:
       returnMonad (a,b,c))))
 ```
 
-In the do-notation the monad laws from above are equivalently written:
+In the do-notation, the [monad laws](#laws) from above are equivalently written:
 
 **Law 1**
 
@@ -1621,6 +1628,7 @@ In the do-notation the monad laws from above are equivalently written:
 
 See: [Haskell 2010: Do Expressions](http://www.haskell.org/onlinereport/haskell2010/haskellch3.html#x8-470003.14)
 
+
 Maybe
 -----
 
@@ -1628,28 +1636,62 @@ The *Maybe* monad is the simplest first example of a monad instance. The Maybe
 monad models computations which fail to yield a value at any point during
 computation.
 
+The Maybe type has two value constructors. The first, ``Just``,  is a unary
+constructor representing a successful computation, while the
+second, ``Nothing``, is a nullary constructor that represents failure.
+
 ```haskell
 data Maybe a = Just a | Nothing
 ```
 
+The monad instance describes the implementation of ``(>>=)`` for ``Maybe``
+by pattern matching on the possible inputs that could be passed to the bind
+operation (i.e., ``Nothing`` or ``Just x``).  The instance declaration also
+provides an implementation of ``return``, which in this case is simply ``Just``.
+
 ```haskell
 instance Monad Maybe where
-  (Just x) >>= k = k x
+  (Just x) >>= k = k x            -- 'k' is a function with type  (a -> Maybe a)
   Nothing  >>= k = Nothing
 
-  return = Just
+  return = Just                   -- Just's type signature is 'a -> Maybe a', in
+                                  -- other words, extremely similar to the
+                                  -- type of 'return' in the typeclass
+                                  -- declaration above.
 ```
+
+The following code shows some simple operations to do within the Maybe monad.
+
+In the first example, The value ``Just 3`` is passed via ``(>>=)`` to the lambda
+function ``\x -> return (x + 1)``. ``x`` refers to the ``Int`` portion
+of ``Just 3``, and we can use ``x`` in the second half of the lambda expression,
+where ``return (x + 1)`` evaluates to ``Just 4``, indicating a successful
+computation.
 
 ```haskell
 (Just 3) >>= (\x -> return (x + 1))
 -- Just 4
+```
 
+In the second example, the value ``Nothing`` is passed via ``(>>=)`` to the same
+lambda function as in the previous example. However, according to the ``Maybe``
+Monad instance, whenever ``Nothing`` is bound to a function, the expression's
+result will be ``Nothing``.
+
+```haskell
 Nothing >>= (\x -> return (x + 1))
 -- Nothing
+```
 
+In the next example, ``return`` is applied to ``4`` and returns ``Just 4``.
+
+```haskell
 return 4 :: Maybe Int
 -- Just 4
 ```
+
+The next code examples show the use of ``do`` notation within the Maybe monad to
+do addition that might fail. Desugared examples are provided as well.
 
 ~~~~ {.haskell include="src/02-monads/maybe.hs"}
 ~~~~
@@ -1657,19 +1699,28 @@ return 4 :: Maybe Int
 List
 ----
 
-The *List* monad is the second simplest example of a monad instance.
+The *List* monad is the second simplest example of a monad instance. As always,
+this monad implements both ``(>>=)`` and ``return``. The definition of bind says
+that when the list ``m`` is bound to to a function ``f``, the result is a
+concatenation of ``map f`` over the list ``m``. The ``return`` method simply
+takes a single value ``x`` and injects into a singleton list ``[x]``.
 
 ```haskell
 instance Monad [] where
-  m >>= f   =  concat (map f m)
+  m >>= f   =  concat (map f m)          -- 'm' is a list
   return x  =  [x]
 ```
 
-So for example with:
+In order to domestrate using the ``List`` monad's methods, we can define two
+functions ``m`` and ``f``. ``m`` is a simple list, while ``f`` is a function
+that takes a single ``Int`` and returns a two element list ``[1, 0]``.
 
 ```haskell
+m :: [Int]
 m = [1,2,3,4]
-f = \x -> [1,0]
+
+f :: Int -> [Int]
+f = \x -> [1,0]               -- 'f' always returns [1, 0]
 ```
 
 The evaluation proceeds as follows:
@@ -1683,18 +1734,44 @@ m >>= f
 ```
 
 The list comprehension syntax in Haskell can be implemented in terms of the list
-monad.
+monad. List comprehensions can be considered syntactic sugar for more obviously
+monadic implementations. Examples ``a`` and ``b`` illustrate these use cases.
+
+The first example (``a``) illustrates how to write a list comprehension.
+Although this syntax may look stranges, there are elements may look familiar.
+For instance, the use of the ``<-`` is just like bind in ``do`` notation: It
+binds a list to a name. However, one major difference is apparent: ``a`` seems
+to lack a call to ``return``. Not to worry, though, the ``[]`` fill this role.
+This syntax can be easily desugared by the compiler to an explicit invocation
+of ``return``. Furthermore, it serves to remind the user that the computation
+takes place in the List monad.
 
 ```haskell
-a = [f x y | x <- xs, y <- ys, x == y ]
+a = [
+      f x y |        -- Corresponds to 'f x y' in example b
+      x <- xs,
+      y <- ys,
+      x == y         -- Corresponds to 'guard $ x == y' in example b
+    ]
+```
 
+The second example (``b``) shows the the list comprehension above rewritten with
+``do`` notation:
+
+```haskell
 -- Identical to `a`
 b = do
   x <- xs
   y <- ys
-  guard $ x == y
-  return $ f x y
+  guard $ x == y     -- Corresponds to 'x == y' in example a
+  return $ f x y     -- Corresponds to the '[]' and 'f x y' in example a
 ```
+
+The final examples are further illustrations of the List monad. The functions
+below each return a list of 3-tuples which contain the possible combinations of
+the three lists that get bound the names ``a``, ``b``, and ``c``. N.B.: Only
+values in the list bound to ``a`` can be used in ``a`` position of the tuple;
+the same fact holds true for the lists bound to ``b`` and ``c``.
 
 ~~~~ {.haskell include="src/02-monads/list.hs"}
 ~~~~
