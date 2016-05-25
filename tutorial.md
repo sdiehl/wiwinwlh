@@ -1743,8 +1743,8 @@ For instance, the use of the ``<-`` is just like bind in ``do`` notation: It
 binds a list to a name. However, one major difference is apparent: ``a`` seems
 to lack a call to ``return``. Not to worry, though, the ``[]`` fill this role.
 This syntax can be easily desugared by the compiler to an explicit invocation
-of ``return`` and serves to remind the user that the computation is taking place
-in the List monad.
+of ``return``. Furthermore, it serves to remind the user that the computation
+is taking place in the List monad.
 
 ```haskell
 a = [
