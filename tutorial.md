@@ -1767,6 +1767,12 @@ b = do
   return $ f x y     -- Corresponds to the '[]' and 'f x y' in example a
 ```
 
+The final examples are further illustrations of the List monad. The functions
+below each return a list of 3-tuples which contain the possible combinations of
+the three lists that get bound the names ``a``, ``b``, and ``c``. N.B.: Only
+values in the list bound to ``a`` can be used in ``a`` position of the tuple;
+the same fact holds true for the lists bound to ``b`` and ``c``.
+
 ~~~~ {.haskell include="src/02-monads/list.hs"}
 ~~~~
 
