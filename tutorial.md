@@ -1778,9 +1778,13 @@ the same fact holds true for the lists bound to ``b`` and ``c``.
 
 IO
 --
-
+Perhaps the most (in)famous example of a monad in Haskell is ``IO``.
 A value of type ``IO a`` is a computation which, when performed, does some I/O
-before returning a value of type ``a``. Desugaring the IO monad:
+before returning a value of type ``a``. These computations are called
+[actions](https://wiki.haskell.org/Introduction_to_Haskell_IO/Actions). IO
+actions are the means by which a program can operate on the external world.
+
+Desugaring the IO monad:
 
 ```haskell
 main :: IO ()
