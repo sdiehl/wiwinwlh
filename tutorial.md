@@ -1793,7 +1793,22 @@ many things, including but not limited to:
  - Take input from a radio antenna for singal processing
 
 Conceptualizing I/O as a monad enables the developer to access information
-outside the program but operate on the data with pure functions.
+outside the program but operate on the data with pure functions. The following
+examples will show how we can use IO actions and IO values to receive input from
+and print to stdout.
+
+Perhaps the most immediately useful function for doing I/O in Haskell
+is ``putStrLn``. This function takes a ``String`` and returns an ``IO ()``.
+Calling this function from ``main`` will result in the ``String`` being printed
+to stdout.
+
+```haskell
+main :: IO ()
+main = putStrLn "Vesihiisi sihisi hississäään." >>=
+         \_ -> putStrLn "Or in English: 'The water devil was hissing
+                         in her elevator'."
+
+```
 
 Desugaring the IO monad:
 
