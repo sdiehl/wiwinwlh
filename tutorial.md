@@ -1782,7 +1782,18 @@ Perhaps the most (in)famous example of a monad in Haskell is ``IO``.
 A value of type ``IO a`` is a computation which, when performed, does some I/O
 before returning a value of type ``a``. These computations are called
 [actions](https://wiki.haskell.org/Introduction_to_Haskell_IO/Actions). IO
-actions are the means by which a program can operate on the external world.
+actions executed in ``main`` are the means by which a program can operate on or
+access information in the external world. IO actions allow the program to do
+many things, including but not limited to:
+
+ - Print a String to the terminal
+ - Read and parse input from the terminal
+ - Read from or write to a file on the system
+ - Establish an ``ssh`` connection to a remote computer
+ - Take input from a radio antenna for singal processing
+
+Conceptualizing I/O as a monad allows the developer to access information
+outside the program but operate on it with pure functions.
 
 Desugaring the IO monad:
 
