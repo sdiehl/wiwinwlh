@@ -1793,7 +1793,7 @@ many things, including but not limited to:
  - Take input from a radio antenna for singal processing
 
 Conceptualizing I/O as a monad enables the developer to access information
-outside the program but operate on it with pure functions.
+outside the program but operate on the data with pure functions.
 
 Desugaring the IO monad:
 
