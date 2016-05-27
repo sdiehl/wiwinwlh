@@ -1792,7 +1792,7 @@ many things, including but not limited to:
  - Establish an ``ssh`` connection to a remote computer
  - Take input from a radio antenna for singal processing
 
-Conceptualizing I/O as a monad allows the developer to access information
+Conceptualizing I/O as a monad enables the developer to access information
 outside the program but operate on it with pure functions.
 
 Desugaring the IO monad:
