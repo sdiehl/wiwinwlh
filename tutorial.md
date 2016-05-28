@@ -1786,7 +1786,7 @@ actions executed in ``main`` are the means by which a program can operate on or
 access information in the external world. IO actions allow the program to do
 many things, including but not limited to:
 
- - Print a String to the terminal
+ - Print a ``String`` to the terminal
  - Read and parse input from the terminal
  - Read from or write to a file on the system
  - Establish an ``ssh`` connection to a remote computer
