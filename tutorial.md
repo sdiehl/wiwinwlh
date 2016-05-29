@@ -1799,8 +1799,12 @@ and print to stdout.
 
 Perhaps the most immediately useful function for doing I/O in Haskell
 is ``putStrLn``. This function takes a ``String`` and returns an ``IO ()``.
-Calling this function from ``main`` will result in the ``String`` being printed
-to stdout.
+Calling this function from ``main`` will result in the ``String`` followed a
+newline character being printed to stdout.
+
+```haskell
+putStrLn :: String -> IO ()
+```
 
 ```haskell
 main :: IO ()
