@@ -1822,11 +1822,16 @@ main :: IO ()
 main = do putStrLn "Vesihiisi sihisi hississäään."
           putStrLn "Or in English: 'The water devil was hissing in her
                     elevator'."
-
--
 ```
 
-Desugaring the IO monad:
+Another useful function is ``getLine`` which has type ``IO String``. This
+function gets a line of input from stdin. The developer can then bind this line
+to a name in order to operate on the value within the program.
+
+```haskell
+getLine :: IO String
+```
+
 
 ```haskell
 main :: IO ()
