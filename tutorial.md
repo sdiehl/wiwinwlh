@@ -1836,8 +1836,8 @@ The code below demonstrates a simple combination of these two functions as well
 as desugaring ``IO`` code. First, a ``putStrLn`` prints a ``String`` is to
 stdout to ask the user to supply their name. Then, ``getLine`` is executed,
 supplying a prompt to the user for entering their name. Next, the
-resultant ``IO String`` is then bound to ``name`` and passed to ``putStrLn``.
-Finally, the program prints the entered name to the terminal.
+resultant ``IO String`` is bound to ``name`` and passed to ``putStrLn``.
+Finally, the program prints the name to the terminal.
 
 ```haskell
 main :: IO ()
