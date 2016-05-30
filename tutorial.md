@@ -1847,6 +1847,9 @@ main = do putStrLn "What is your name: "
           putStrLn name
 ```
 
+The next code block is the desugared equivalent of the previous example;
+however, the uses of ``(>>=)`` are made explict.
+
 ```haskell
 main :: IO ()
 main = putStrLn "What is your name:" >>=
