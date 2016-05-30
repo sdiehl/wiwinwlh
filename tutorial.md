@@ -1806,12 +1806,24 @@ newline character being printed to stdout.
 putStrLn :: String -> IO ()
 ```
 
+Here is some code that prints a couple of lines to the terminal. The first
+invocation of ``putStrLn`` is executed, causing the ``String`` to be printed to
+stdout. The result is bound to a lambda expression that discards its argument,
+and then executes the next ``putStrLn``.
+
 ```haskell
 main :: IO ()
 main = putStrLn "Vesihiisi sihisi hississäään." >>=
          \_ -> putStrLn "Or in English: 'The water devil was hissing
                          in her elevator'."
 
+-- Sugared code, written with do notation
+main :: IO ()
+main = do putStrLn "Vesihiisi sihisi hississäään."
+          putStrLn "Or in English: 'The water devil was hissing in her
+                    elevator'."
+
+-
 ```
 
 Desugaring the IO monad:
