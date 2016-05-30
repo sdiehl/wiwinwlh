@@ -1857,6 +1857,10 @@ main = putStrLn "What is your name:" >>=
        \name -> putStrLn name
 ```
 
+Our final example executes in the same way as the previous two examples. This
+example, though, uses the ``(>>)`` [operator](#monadic-methods) to take the
+place of binding a function to the lamda that discards its argument.
+
 ```haskell
 main :: IO ()
 main = putStrLn "What is your name: " >> (getLine >>= (\name -> putStrLn name))
