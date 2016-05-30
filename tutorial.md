@@ -1833,11 +1833,12 @@ getLine :: IO String
 ```
 
 The code below demonstrates a simple combination of these two functions as well
-as desugaring ``IO`` code. First, a ``putStrLn`` prints a ``String`` is to
-stdout to ask the user to supply their name. Then, ``getLine`` is executed,
-supplying a prompt to the user for entering their name. Next, the
-resultant ``IO String`` is bound to ``name`` and passed to ``putStrLn``.
-Finally, the program prints the name to the terminal.
+as desugaring ``IO`` code. First, ``putStrLn`` prints a ``String`` to stdout
+to ask the user to supply their name, with the result being bound to a lambda
+that discards it argument. Then, ``getLine`` is executed, supplying a prompt to
+the user for entering their name. Next, the resultant ``IO String`` is bound
+to ``name`` and passed to ``putStrLn``. Finally, the program prints the name to
+the terminal.
 
 ```haskell
 main :: IO ()
