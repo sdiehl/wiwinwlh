@@ -1890,9 +1890,9 @@ sequence = foldr mcons (return [])
 
 mcons :: Monad m => m t -> m [t] -> m [t]
 mcons p q = do
-  x <- p
-  y <- q
-  return (x:y)
+  x <- p          -- 'x' refers to a singleton value
+  y <- q          -- 'y' refers to a list. Because of this fact, 'x' can be
+  return (x:y)    --  prepended to it
 ```
 
 What does this function mean in terms of each of the monads discussed above?
