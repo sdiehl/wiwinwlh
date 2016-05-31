@@ -2665,7 +2665,7 @@ typedhole.hs:3:10:
 Failed, modules loaded: none.
 ```
 
-When the flag ``-XPartialTypeSignature`` is passed to GHC and the inferred type
+When the flag ``-XPartialTypeSignatures`` is passed to GHC and the inferred type
 is unambiguous, GHC will let us leave the holes in place and the compilation
 will proceed.
 
