@@ -1878,7 +1878,7 @@ we now have a uniform interface for talking about three very different but
 foundational ideas for programming: *Failure*,*Collections*, and *Effects*.
 
 Let's write down a new function called ``sequence`` which folds a function
-``mcons`` over a list of monadic computations. We can think of this function as
+``mcons`` over a list of monadic computations. We can think of ``mcons`` as
 analogous to the list constructor (i.e. ``(a : b : [])``) except it pulls the
 two list elements out of two monadic values (``p``,``q``) by means of bind. The
 bound values are then joined with the list constructor ``:``, before finally
