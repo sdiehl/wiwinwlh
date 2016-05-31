@@ -1910,6 +1910,7 @@ sequence :: [Maybe a] -> Maybe [a]
 ```haskell
 sequence [Just 3, Just 4]
 -- Just [3,4]
+
 sequence [Just 3, Just 4, Nothing]
 -- Nothing
 ```
@@ -1931,8 +1932,8 @@ sequence [[1,2,3],[10,20,30]]
 
 **IO**
 
-Sequence takes a list of IO actions, performs them sequentially and returns the
-list of resulting values in the order sequenced.
+``sequence`` takes a list of IO actions, performs them sequentially, and then
+returns the list of resulting values in the order sequenced.
 
 ```haskell
 sequence :: [IO a] -> IO [a]
