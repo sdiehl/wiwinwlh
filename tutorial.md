@@ -1947,11 +1947,11 @@ sequence [getLine, getLine]
 ```
 
 So there we have it, three fundamental concepts of computation that are normally
-defined independently of each other actually all share this similar structure
-that can be abstracted out and reused to build higher abstractions that work for
-all current and future implementations. If you want a motivating reason for
-understanding monads, this is it! This is the essence of what I wish I knew
-about monads looking back.
+defined independently of each other actually all share this similar structure.
+This unifying pattern can be abstracted out and reused to build higher
+abstractions that work for all current and future implementations. If you want a
+motivating reason for understanding monads, this is it! This is the essence of
+what I wish I knew about monads looking back.
 
 See: [Control.Monad](http://hackage.haskell.org/package/base-4.6.0.1/docs/Control-Monad.html#g:4)
 
