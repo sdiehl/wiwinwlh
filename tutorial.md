@@ -1901,7 +1901,7 @@ What does this function mean in terms of each of the monads discussed above?
 
 Sequencing a list of ``Maybe`` values allows us to collect the results of a
 series of computations which can possibly fail and yield the aggregated values
-only if they all succeeded.
+only if each computation succeeds.
 
 ```haskell
 sequence :: [Maybe a] -> Maybe [a]
