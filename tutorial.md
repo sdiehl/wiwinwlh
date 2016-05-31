@@ -1871,9 +1871,11 @@ See: [Haskell 2010: Basic/Input Output](http://www.haskell.org/onlinereport/hask
 Whats the point?
 ----------------
 
-Consider the non-intuitive fact that we now have a uniform interface for talking
-about three very different but foundational ideas for programming: *Failure*,
-*Collections*, and *Effects*.
+Although it is difficult, if not impossible, to touch, see, or otherwise
+physically interact with a monad, this construct has some very interesting
+implications for programmers. For instance, consider the non-intuitive fact that
+we now have a uniform interface for talking about three very different but
+foundational ideas for programming: *Failure*,*Collections*, and *Effects*.
 
 Let's write down a new function called ``sequence`` which folds a function
 ``mcons``, which we can think of as analogues to the list constructor (i.e. ``(a
