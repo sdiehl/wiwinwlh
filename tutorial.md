@@ -1929,7 +1929,7 @@ sequence [[1,2,3],[10,20,30]]
 
 **IO**
 
-Sequence takes a list of IO actions, performs them sequentially, and returns the
+Sequence takes a list of IO actions, performs them sequentially and returns the
 list of resulting values in the order sequenced.
 
 ```haskell
