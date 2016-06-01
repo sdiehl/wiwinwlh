@@ -1918,8 +1918,9 @@ sequence [Just 3, Just 4, Nothing]
 **List**
 
 Since the bind operation for the list monad forms the pairwise list of elements
-from the two operands, folding the bind over a list of lists with ``sequence``
-implements the general Cartesian product for an arbitrary number of lists.
+from the two operands, folding the binds contained in ``mcons``  over a list of
+lists with ``sequence`` implements the general Cartesian product for an
+arbitrary number of lists.
 
 ```haskell
 sequence :: [[a]] -> [[a]]
