@@ -536,8 +536,8 @@ Flag                                 Description
 -fwarn-monomorphism-restriction      Warn when the monomorphism restriction is applied implicitly
 -fwarn-orphans                       Warn on orphan typeclass instances
 -fforce-recomp                       Force recompilation regardless of timestamp
--fno-code                            Don't doing code generation, just parse and typecheck
--fobject-code                        Don't doing code generation, just parse and typecheck
+-fno-code                            Omit code generation, just parse and typecheck
+-fobject-code                        Generate object code
 
 Like most compilers, GHC takes the ``-Wall`` flag to enable all warnings.
 However, a few of the enabled warnings are highly verbose. For example,
@@ -2743,7 +2743,7 @@ typedhole.hs:3:10:
 Failed, modules loaded: none.
 ```
 
-When the flag ``-XPartialTypeSignature`` is passed to GHC and the inferred type
+When the flag ``-XPartialTypeSignatures`` is passed to GHC and the inferred type
 is unambiguous, GHC will let us leave the holes in place and the compilation
 will proceed.
 
@@ -7122,7 +7122,7 @@ Could not deduce ((n1 :+ 'S m) ~ 'S (n1 :+ m))
       Actual type: Vec a1 (n1 :+ 'S m)
 ```
 
-As we unfold elements out of the vector we'll end up a doing a lot of type-level
+As we unfold elements out of the vector we'll end up doing a lot of type-level
 arithmetic over indices as we combine the subparts of the vector backwards, but
 as a consequence we find that GHC will run into some unification errors because
 it doesn't know about basic arithmetic properties of the natural numbers. Namely
