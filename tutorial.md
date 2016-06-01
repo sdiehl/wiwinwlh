@@ -1940,10 +1940,13 @@ sequence :: [IO a] -> IO [a]
 ```
 
 ```haskell
-sequence [getLine, getLine]
--- a
--- b
--- ["a","b"]
+sequence [getLine, getLine, getLine]
+-- a                                  -- a, b, and 9 are the inputs given by the
+-- b                                  -- at the prompt
+-- 9
+-- ["a", "b", "9"]                    -- All inputs are returned in a list as
+                                      -- a IO [String], which can be printed to
+                                      -- the screen.
 ```
 
 So there we have it, three fundamental concepts of computation that are normally
