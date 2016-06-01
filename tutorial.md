@@ -1778,12 +1778,12 @@ the same fact holds true for the lists bound to ``b`` and ``c``.
 
 IO
 --
-Perhaps the most (in)famous example of a monad in Haskell is ``IO``.
-A value of type ``IO a`` is a computation which, when performed, does some I/O
-before returning a value of type ``a``. These computations are called
-[actions](https://wiki.haskell.org/Introduction_to_Haskell_IO/Actions). IO
-actions executed in ``main`` are the means by which a program can operate on or
-access information in the external world. IO actions allow the program to do
+Perhaps the most (in)famous example in Haskell of a type that forms a monad
+is ``IO``. A value of type ``IO a`` is a computation which, when performed,
+does some I/O before returning a value of type ``a``. These computations are
+called [actions](https://wiki.haskell.org/Introduction_to_Haskell_IO/Actions).
+IO actions executed in ``main`` are the means by which a program can operate on
+or access information in the external world. IO actions allow the program to do
 many things, including but not limited to:
 
  - Print a ``String`` to the terminal
