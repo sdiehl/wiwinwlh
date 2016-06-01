@@ -1899,9 +1899,9 @@ What does this function mean in terms of each of the monads discussed above?
 
 **Maybe**
 
-Sequencing a list of ``Maybe`` values allows us to collect the results of a
-series of computations which can possibly fail and yield the aggregated values
-only if each computation succeeds.
+Sequencing a list of values within the ``Maybe`` [context](#maybe) allows us to
+collect the results of a series of computations which can possibly fail and
+yield the aggregated values only if each computation succeeds.
 
 ```haskell
 sequence :: [Maybe a] -> Maybe [a]
@@ -1917,7 +1917,7 @@ sequence [Just 3, Just 4, Nothing]
 
 **List**
 
-Since the bind operation for the list monad forms the pairwise list of elements
+Since the bind operation for the [list monad](#list) forms the pairwise list of elements
 from the two operands, folding the binds contained in ``mcons``  over a list of
 lists with ``sequence`` implements the general Cartesian product for an
 arbitrary number of lists.
@@ -1925,7 +1925,7 @@ arbitrary number of lists.
 ```haskell
 sequence :: [[a]] -> [[a]]
 ```
-
+(#maybe)(#maybe)
 ```haskell
 sequence [[1,2,3],[10,20,30]]
 -- [[1,10],[1,20],[1,30],[2,10],[2,20],[2,30],[3,10],[3,20],[3,30]]
@@ -1933,8 +1933,9 @@ sequence [[1,2,3],[10,20,30]]
 
 **IO**
 
-``sequence`` takes a list of IO actions, performs them sequentially, and then
-returns the list of resulting values in the order sequenced.
+Applying ``sequence`` within the [IO context](#io) results in still a different
+result. The function takes a list of IO actions, performs them sequentially,
+and then returns the list of resulting values in the order sequenced.
 
 ```haskell
 sequence :: [IO a] -> IO [a]
