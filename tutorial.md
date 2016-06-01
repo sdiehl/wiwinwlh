@@ -1809,7 +1809,7 @@ putStrLn :: String -> IO ()
 Here is some code that prints a couple of lines to the terminal. The first
 invocation of ``putStrLn`` is executed, causing the ``String`` to be printed to
 stdout. The result is bound to a lambda expression that discards its argument,
-and then executes the next ``putStrLn``.
+and then the next ``putStrLn`` is executed.
 
 ```haskell
 main :: IO ()
