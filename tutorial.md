@@ -1900,8 +1900,11 @@ What does this function mean in terms of each of the monads discussed above?
 **Maybe**
 
 Sequencing a list of values within the ``Maybe`` [context](#maybe) allows us to
-collect the results of a series of computations which can possibly fail and
-yield the aggregated values only if each computation succeeds.
+collect the results of a series of computations which can possibly fail.
+However, ``sequence`` yields the aggregated values only if each computation
+succeeds. In other words, if even one of the ``Maybe``values in the initial list
+passed to ``sequence``is a ``Nothing``, the result of ``sequence`` will also
+be ``Nothing``.
 
 ```haskell
 sequence :: [Maybe a] -> Maybe [a]
@@ -1911,8 +1914,8 @@ sequence :: [Maybe a] -> Maybe [a]
 sequence [Just 3, Just 4]
 -- Just [3,4]
 
-sequence [Just 3, Just 4, Nothing]
--- Nothing
+sequence [Just 3, Just 4, Nothing]     -- Since one of the results is Nothing,
+-- Nothing                             -- the whole computation fails
 ```
 
 **List**
