@@ -1925,7 +1925,7 @@ arbitrary number of lists.
 ```haskell
 sequence :: [[a]] -> [[a]]
 ```
-(#maybe)(#maybe)
+
 ```haskell
 sequence [[1,2,3],[10,20,30]]
 -- [[1,10],[1,20],[1,30],[2,10],[2,20],[2,30],[3,10],[3,20],[3,30]]
