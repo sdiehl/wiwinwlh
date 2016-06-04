@@ -1778,9 +1778,67 @@ the same fact holds true for the lists bound to ``b`` and ``c``.
 
 IO
 --
+Perhaps the most (in)famous example in Haskell of a type that forms a monad
+is ``IO``. A value of type ``IO a`` is a computation which, when performed,
+does some I/O before returning a value of type ``a``. These computations are
+called [actions](https://wiki.haskell.org/Introduction_to_Haskell_IO/Actions).
+IO actions executed in ``main`` are the means by which a program can operate on
+or access information in the external world. IO actions allow the program to do
+many things, including but not limited to:
 
-A value of type ``IO a`` is a computation which, when performed, does some I/O
-before returning a value of type ``a``. Desugaring the IO monad:
+ - Print a ``String`` to the terminal
+ - Read and parse input from the terminal
+ - Read from or write to a file on the system
+ - Establish an ``ssh`` connection to a remote computer
+ - Take input from a radio antenna for singal processing
+
+Conceptualizing I/O as a monad enables the developer to access information
+outside the program but operate on the data with pure functions. The following
+examples will show how we can use IO actions and IO values to receive input from
+and print to stdout.
+
+Perhaps the most immediately useful function for doing I/O in Haskell
+is ``putStrLn``. This function takes a ``String`` and returns an ``IO ()``.
+Calling this function from ``main`` will result in the ``String`` and a newline
+character being printed to stdout.
+
+```haskell
+putStrLn :: String -> IO ()
+```
+
+Here is some code that prints a couple of lines to the terminal. The first
+invocation of ``putStrLn`` is executed, causing the ``String`` to be printed to
+stdout. The result is bound to a lambda expression that discards its argument,
+and then the next ``putStrLn`` is executed.
+
+```haskell
+main :: IO ()
+main = putStrLn "Vesihiisi sihisi hississäään." >>=
+         \_ -> putStrLn "Or in English: 'The water devil was hissing
+                         in her elevator'."
+
+-- Sugared code, written with do notation
+main :: IO ()
+main = do putStrLn "Vesihiisi sihisi hississäään."
+          putStrLn "Or in English: 'The water devil was hissing in her
+                    elevator'."
+```
+
+Another useful function is ``getLine`` which has type ``IO String``. This
+function gets a line of input from stdin. The developer can then bind this line
+to a name in order to operate on the value within the program.
+
+```haskell
+getLine :: IO String
+```
+
+The code below demonstrates a simple combination of these two functions as well
+as desugaring ``IO`` code. First, ``putStrLn`` prints a ``String`` to stdout
+to ask the user to supply their name, with the result being bound to a lambda
+that discards it argument. Then, ``getLine`` is executed, supplying a prompt to
+the user for entering their name. Next, the resultant ``IO String`` is bound
+to ``name`` and passed to ``putStrLn``. Finally, the program prints the name to
+the terminal.
 
 ```haskell
 main :: IO ()
@@ -1789,12 +1847,19 @@ main = do putStrLn "What is your name: "
           putStrLn name
 ```
 
+The next code block is the desugared equivalent of the previous example;
+however, the uses of ``(>>=)`` are made explict.
+
 ```haskell
 main :: IO ()
 main = putStrLn "What is your name:" >>=
        \_    -> getLine >>=
        \name -> putStrLn name
 ```
+
+Our final example executes in the same way as the previous two examples. This
+example, though, uses the special ``(>>)`` [operator](#monadic-methods) to take
+the place of binding a result to the lamda that discards its argument.
 
 ```haskell
 main :: IO ()
@@ -1806,14 +1871,18 @@ See: [Haskell 2010: Basic/Input Output](http://www.haskell.org/onlinereport/hask
 Whats the point?
 ----------------
 
-Consider the non-intuitive fact that we now have a uniform interface for talking
-about three very different but foundational ideas for programming: *Failure*,
-*Collections*, and *Effects*.
+Although it is difficult, if not impossible, to touch, see, or otherwise
+physically interact with a monad, this construct has some very interesting
+implications for programmers. For instance, consider the non-intuitive fact that
+we now have a uniform interface for talking about three very different but
+foundational ideas for programming: *Failure*,*Collections*, and *Effects*.
 
 Let's write down a new function called ``sequence`` which folds a function
-``mcons``, which we can think of as analogues to the list constructor (i.e. ``(a
-: b : [])``) except it pulls the two list elements out of two monadic values
-(``p``,``q``) using bind.
+``mcons`` over a list of monadic computations. We can think of ``mcons`` as
+analogous to the list constructor (i.e. ``(a : b : [])``) except it pulls the
+two list elements out of two monadic values (``p``,``q``) by means of bind. The
+bound values are then joined with the list constructor ``:``, before finally
+being rewrapped in the appropriate monadic context with ``return``.
 
 ```haskell
 sequence :: Monad m => [m a] -> m [a]
@@ -1821,18 +1890,21 @@ sequence = foldr mcons (return [])
 
 mcons :: Monad m => m t -> m [t] -> m [t]
 mcons p q = do
-  x <- p
-  y <- q
-  return (x:y)
+  x <- p          -- 'x' refers to a singleton value
+  y <- q          -- 'y' refers to a list. Because of this fact, 'x' can be
+  return (x:y)    --  prepended to it
 ```
 
 What does this function mean in terms of each of the monads discussed above?
 
 **Maybe**
 
-Sequencing a list of a ``Maybe`` values allows us to collect the results of a
-series of computations which can possibly fail and yield the aggregated values
-only if they all succeeded.
+Sequencing a list of values within the ``Maybe`` [context](#maybe) allows us to
+collect the results of a series of computations which can possibly fail.
+However, ``sequence`` yields the aggregated values only if each computation
+succeeds. In other words, if even one of the ``Maybe``values in the initial list
+passed to ``sequence``is a ``Nothing``, the result of ``sequence`` will also
+be ``Nothing``.
 
 ```haskell
 sequence :: [Maybe a] -> Maybe [a]
@@ -1841,15 +1913,17 @@ sequence :: [Maybe a] -> Maybe [a]
 ```haskell
 sequence [Just 3, Just 4]
 -- Just [3,4]
-sequence [Just 3, Just 4, Nothing]
--- Nothing
+
+sequence [Just 3, Just 4, Nothing]     -- Since one of the results is Nothing,
+-- Nothing                             -- the whole computation fails
 ```
 
 **List**
 
-Since the bind operation for the list monad forms the pairwise list of elements
-from the two operands, folding the bind over a list of lists with ``sequence``
-implements the general Cartesian product for an arbitrary number of lists.
+The bind operation for the [list monad](#list) forms the pairwise list of
+elements from the two operands. Thus, folding the binds contained in ``mcons``
+over a list of lists with ``sequence`` implements the general Cartesian product
+for an arbitrary number of lists.
 
 ```haskell
 sequence :: [[a]] -> [[a]]
@@ -1862,28 +1936,32 @@ sequence [[1,2,3],[10,20,30]]
 
 **IO**
 
-Sequence takes a list of IO actions, performs them sequentially, and returns the
-list of resulting values in the order sequenced.
+Applying ``sequence`` within the [IO context](#io) results in still a different
+result. The function takes a list of IO actions, performs them sequentially,
+and then returns the list of resulting values in the order sequenced.
 
 ```haskell
 sequence :: [IO a] -> IO [a]
 ```
 
 ```haskell
-sequence [getLine, getLine]
--- a
--- b
--- ["a","b"]
+sequence [getLine, getLine, getLine]
+-- a                                  -- a, b, and 9 are the inputs given by the
+-- b                                  -- at the prompt
+-- 9
+-- ["a", "b", "9"]                    -- All inputs are returned in a list as
+                                      -- a IO [String], which can be printed to
+                                      -- the screen.
 ```
 
 So there we have it, three fundamental concepts of computation that are normally
-defined independently of each other actually all share this similar structure
-that can be abstracted out and reused to build higher abstractions that work for
-all current and future implementations. If you want a motivating reason for
-understanding monads, this is it! This is the essence of what I wish I knew
-about monads looking back.
+defined independently of each other actually all share this similar structure.
+This unifying pattern can be abstracted out and reused to build higher
+abstractions that work for all current and future implementations. If you want a
+motivating reason for understanding monads, this is it! These insights are the
+essence of what I wish I knew about monads looking back.
 
-See: [Control.Monad](http://hackage.haskell.org/package/base-4.6.0.1/docs/Control-Monad.html#g:4)
+See: [Control.Monad](http://hackage.haskell.org/package/base-4.9.0.0/docs/Control-Monad.html#g:4)
 
 Reader Monad
 ------------
