@@ -3716,6 +3716,19 @@ project is compiled without the implicit Prelude. Several packages have arisen
 that supply much of the same functionality in a way that appeals to more modern
 design principles.
 
+A minimalist Prelude is protolude which provides many sensible defaults for
+writing production modern Haskell and is compatible with existing code.
+
+* [protolude](http://hackage.haskell.org/package/protolude)
+
+```haskell
+{-# LANGUAGE NoImplicitPrelude #-}
+
+import Protolude
+```
+
+Others examples in the design space include, your mileage may vary with these.
+
 * [base-prelude](http://hackage.haskell.org/package/base-prelude)
 * [basic-prelude](http://hackage.haskell.org/package/basic-prelude)
 * [classy-prelude](http://hackage.haskell.org/package/classy-prelude)
