@@ -9,6 +9,6 @@ class MyClass a
 -- synonyms in the typeclass head.
 instance MyClass [Int]
 
--- Without it GHC will do this for us automatically. Type synonyms still need to
+-- With it GHC will do this for us automatically. Type synonyms still need to
 -- be fully applied.
 instance MyClass IntList
