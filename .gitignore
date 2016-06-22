@@ -1,4 +1,4 @@
-*.sw[po]
+*.sw[pon]
 *.o
 *.so
 cabal.sandbox.config
