@@ -3,6 +3,7 @@ IFORMAT = markdown
 FLAGS = --standalone --toc --toc-depth=2 --highlight-style pygments
 TEMPLATE = resources/page.tmpl
 LTEMPLATE = resources/page.latex
+ETEMPLATE = resources/page.epubt
 STYLE = css/style.css
 GHC=ghc
 
@@ -21,7 +22,8 @@ includes: includes.hs
 	| sed '/<extensions>/r extensions.html' > $@
 
 %.epub: %.md includes
-	./includes < $< | $(PANDOC) -f $(IFORMAT) -t epub $(FLAGS) -o $@
+	(cat $(ETEMPLATE); ./includes < $<) \
+	| $(PANDOC) -f $(IFORMAT) -t epub $(FLAGS) -o $@
 
 %.pdf: %.md includes
 	./includes < $< | $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --latex-engine=xelatex $(FLAGS) -o $@

@@ -6,7 +6,7 @@ Stephen Diehl (<a class="author" href="https://twitter.com/smdiehl">@smdiehl</a>
 
 This is the fourth draft of this document.
 
-**[PDF Version](tutorial.pdf)**
+**[PDF Version](http://dev.stephendiehl.com/hask/tutorial.pdf)**
 
 #### License
 
@@ -136,7 +136,7 @@ historical reasons and can often be replaced by modern tools.
 [Cabal](https://www.haskell.org/cabal/) is the build system for Haskell.
 
 For example, to install the [parsec](http://hackage.haskell.org/package/parsec)
-package to our system from [Hackage](#hackage), the upstream source of Haskell
+package to your system from [Hackage](#hackage), the upstream source of Haskell
 packages, invoke the ``install`` command:
 
 ```bash
@@ -187,7 +187,7 @@ Additionally, the ``sandbox`` can be torn down:
 $ cabal sandbox delete
 ```
 
-When in the working directory of a project with a ``sandbox`` that has a configuation
+When in the working directory of a project with a ``sandbox`` that has a configuration
 already set up, invoking ``cabal`` commands alters the behaviour of cabal itself. For
 instance, the ``cabal install`` command will alter only the install to the local
 package index, not the global configuration.
@@ -208,7 +208,7 @@ $ cabal install -j4 --only-dependencies
 
 Let's look at an example ``.cabal`` file. There are two main entry points that
 any package may provide: a ``library`` and an ``executable``. Multiple
-executables can be defined but only one library. In addition, there is a special
+executables can be defined, but only one library. In addition, there is a special
 form of executable entry point ``Test-Suite``, which defines an interface for
 invoking unit tests from ``cabal``.
 
@@ -217,8 +217,8 @@ which modules within the package structure will be publicly visible when the
 package is installed. These modules are the user-facing APIs that we wish to
 expose to downstream consumers.
 
-For an executable, the ``main-is`` field indicates the Main module for the
-project that exports the ``main`` function that runs the executable logic of
+For an executable, the ``main-is`` field indicates the module that
+exports the ``main`` function running the executable logic of
 the application. Every module in the package must be listed in one of
 ``other-modules``, ``exposed-modules`` or ``main-is`` fields.
 
@@ -263,11 +263,11 @@ Test-Suite test
       mylibrary == 0.1
 ```
 
-To run the "executable" for a library under the ``cabal`` ``sandbox``:
+To run an "executable" for a project under the ``cabal`` ``sandbox``:
 
 ```bash
 $ cabal run
-$ cabal run <name>
+$ cabal run <name> # when there are several executables in a project
 ```
 
 To load the "library" into a [GHCi](#ghci) shell under ``cabal`` ``sandbox``:
@@ -459,10 +459,10 @@ of your existing project's ``cabal`` file by running:
 stack init
 ```
 
-An example ``stack.yaml`` file for [GHC](https://www.haskell.org/ghc) 7.10.2 would look like:
+An example ``stack.yaml`` file for [GHC](https://www.haskell.org/ghc) 7.10.3 would look like:
 
 ```bash
-resolver: lts-3.14
+resolver: lts-6.4
 flags: {}
 extra-package-dbs: []
 packages: []
@@ -859,7 +859,7 @@ f = undefined                                -- Write tomorrow, typecheck today!
                                              -- welcome!
 ```
 
-Another example of a bottom value comes from the evaluation of the``error``
+Another example of a bottom value comes from the evaluation of the ``error``
 function, which takes a ``String`` and returns something that can be of any
 type. This property is quite similar to ``undefined``, which also can also
 stand in for any type.
@@ -871,7 +871,7 @@ in this function results in such an exception.
 
 ```haskell
 error :: String -> a                       -- Takes an error message of type
-                                           -- String and returns what ever type
+                                           -- String and returns whatever type
                                            -- is needed
 ```
 
@@ -891,7 +891,7 @@ module. These bottoms exist because the operations [cannot be defined in native
 Haskell](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/primitives.html).
 Such operations are baked into the compiler at a very low level. However, this
 module exists so that [Haddock](#haddock) can generate documentation for these
-primative operations, while the looping syntax serves as a placeholder for the
+primitive operations, while the looping syntax serves as a placeholder for the
 actual implementation of the primops.
 
 Perhaps the most common introduction to bottoms is writing a partial function
@@ -905,7 +905,7 @@ case x of
   A -> ()
 ```
 
-The code snippet immediately above is translated into the following [GHC
+The code snippet above is translated into the following [GHC
 Core](#code) output. The compiler inserts an exception to account for the
 non-exhaustive patterns:
 
@@ -917,7 +917,7 @@ case x of _ {
 ```
 
 GHC can be made more vocal about incomplete patterns using
-the ``-fwarn-incomplete-patterns`` and ``-fwarn-incomplete-uni-patterns``flags.
+the ``-fwarn-incomplete-patterns`` and ``-fwarn-incomplete-uni-patterns`` flags.
 
 A similar situation can arise with records. Although constructing a record with
 missing fields is rarely useful, it is still possible.
@@ -948,8 +948,8 @@ This function could not be well-typed without the bottom.
 
 It is rare to see these partial functions thrown around carelessly in production
 code because they cause the program to halt. The preferred method for handling
-exceptions is instead to combine the use of safe variants provided in
-``Data.Maybe``with the usual fold functions ``maybe`` and ``either``.
+exceptions is to combine the use of safe variants provided in
+``Data.Maybe`` with the usual fold functions ``maybe`` and ``either``.
 
 Another method is to use pattern matching, as shown in ``listToMaybe``, a
 safer version of ``head`` described below:
@@ -985,7 +985,7 @@ unsafe (Just x) = Just $ x + 1
 ```
 
 Since ``unsafe`` takes a ``Maybe a`` value as its argument, two possible
-values are valid input: ``Nothing```and ``Just a``. Since the case of a
+values are valid input: ``Nothing`` and ``Just a``. Since the case of a
 ``Nothing`` was not defined in ``unsafe``, we say that the pattern matching
 within that function is *non-exhaustive*. In other words, the function does not
 implement appropriate handling of all valid inputs. Instead of yielding a value,
@@ -1026,7 +1026,7 @@ boom = \(Just a) -> something
 ```
 
 Non-exhaustivity arising from uni-patterns in lambda expressions occurs
-frequently in ``let`` or ``do``-blocks after desugaring because such
+frequently in ``let`` or ``do``-blocks after desugaring, because such
 code is translated into lambda expressions similar to ``boom``.
 
 ```haskell
@@ -1041,14 +1041,14 @@ GHC can warn about these cases of non-exhaustivity with
 the ``-fwarn-incomplete-uni-patterns`` flag.
 
 Grossly speaking, any non-trivial program will use some measure of partial
-functions. It is simply a fact. Thus, there exists obligations for the
+functions. It is simply a fact. Thus, there exist obligations for the
 programmer than cannot be manifest in the Haskell type system.
 
 Debugger
 --------
 
 Since [GHCi](#ghci) version 6.8.1, a built-in
-[debugger](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/ghci-debugger.html).
+[debugger](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/ghci-debugger.html)
 has been available, although its use is somewhat rare. Debugging uncaught
 exceptions from bottoms or asynchronous exceptions is in similar style to
 debugging segfaults with gdb.
@@ -1070,7 +1070,7 @@ enabled](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/profili
 [GHC](https://www.haskell.org/ghc/) can also print a stack trace when a
 diverging bottom term (error, undefined) is hit. This action, though, requires
 a special flag and profiling to be enabled, both of which are disabled by
-default. So for example:
+default. So, for example:
 
 ~~~~ {.haskell include="src/01-basics/stacktrace.hs"}
 ~~~~
@@ -1123,7 +1123,7 @@ Trace uses ``unsafePerformIO`` under the hood and should **not** be used in
 stable code.
 </div>
 
-In addition to the ``trace`` function, several monadic ``trace`` varients are
+In addition to the ``trace`` function, several monadic ``trace`` variants are
 quite common.
 
 ```haskell
@@ -1146,8 +1146,8 @@ Type Holes
 Since the release of GHC 7.8, *typed holes* allow for debugging incomplete
 programs. By placing an underscore on any value on the right hand-side of a
 declaration, [GHC](https://www.haskell.org/ghc/) will throw an error during
-type-checking. Such an error reflects what type(s) the value in the position
-of the type hole could be in order to cause the program to type-check
+type-checking. Such an error reflects what type the value in the position
+of the type hole could be in order for the program to type-check
 successfully.
 
 ```haskell
@@ -1210,9 +1210,9 @@ ghcid
 -----
 
 [ghcid](https://github.com/ndmitchell/ghcid) is a lightweight IDE hook that
-allows continuous feedback whenever code is updated.  It is run from the
+allows continuous feedback whenever code is updated.  It can be run from the
 command line in the root of the ``cabal`` project directory by specifying a
-command to run (e.g.,  ``ghci``, ``cabal repl``, or ``stack repl``).
+command to run (e.g. ``ghci``, ``cabal repl``, or ``stack repl``).
 
 ```bash
 ghcid --command="cabal repl"   # Run cabal repl under ghcid
@@ -1233,7 +1233,7 @@ usual ``cabal`` toolchain. In this section, we will explore how to document
 code so that Haddock can generate documentation successfully.
 
 Several frequent comment patterns are used to document code for Haddock. The
-first of these methods uses ``--|`` to delineate the beginning of a comment:
+first of these methods uses ``-- |`` to delineate the beginning of a comment:
 
 ```haskell
 -- | Documentation for f
@@ -1252,19 +1252,20 @@ fmap :: Functor f =>
      -> f b       -- ^ output
 ```
 
-Using ``-- ^`` to comment on Constructors or Record fields is also possible:
+``-- ^`` is also used to comment Constructors or Record fields:
 
 ```haskell
 data T a b
   = A a -- ^ Documentation for A
   | B b -- ^ Documentation for B
 
-data MyRecord = MR { name :: String -- ^ Documentation for name field
-                   , age  :: Int    -- ^ Documentation for age field
-                   } deriving (Eq, Show)
+data R a b = R
+  { f1 :: a -- ^ Documentation for the field f1
+  , f2 :: b -- ^ Documentation for the field f2
+  }
 ```
 
-Elements within a module (i.e., value, types, classes) can be hyperlinked by
+Elements within a module (i.e. value, types, classes) can be hyperlinked by
 enclosing the identifier in single quotes:
 
 ```haskell
@@ -1302,7 +1303,7 @@ Haskell](https://wiki.haskell.org/Literate_programming#Bird_Style).
 -- > f x = f (f x)
 ```
 
-Snippets of interactive shell sessions can be also include in ``haddock``
+Snippets of interactive shell sessions can also be included in ``haddock``
 documentation. In order to denote the beginning of code intended to be
 run in a REPL, the ``>>>`` symbol is used:
 
@@ -1345,8 +1346,8 @@ Links can be added with the following syntax:
 <url text>
 ```
 
-Images can can also be included, so long as the path is either relative to the
-directory in which ``haddock`` is run or an absolute reference.
+Images can also be included, so long as the path is either absolute or relative to the
+directory in which ``haddock`` is run.
 
 ```haskell
 <<diagram.png title>>
