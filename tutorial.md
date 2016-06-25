@@ -6,7 +6,7 @@ Stephen Diehl (<a class="author" href="https://twitter.com/smdiehl">@smdiehl</a>
 
 This is the fourth draft of this document.
 
-**[PDF Version](tutorial.pdf)**
+**[PDF Version](http://dev.stephendiehl.com/hask/tutorial.pdf)**
 
 #### License
 
