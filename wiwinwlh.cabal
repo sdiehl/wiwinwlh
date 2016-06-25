@@ -9,11 +9,10 @@ extra-source-files:  README.md
 cabal-version:       >=1.10
 
 library 
-  build-depends:       
-    base         >= 4.7 && <4.9,
-    pretty       >= 1.1 && <1.2,
-    containers   >= 0.5 && <0.6,
-    shake        >= 0.15 && <0.16,
-    pandoc       >= 1.15 && <1.18
-  build-tools:         alex, happy
-  default-language:    Haskell2010
+  build-depends:     base
+                   , pretty
+                   , containers
+                   , shake
+                   , pandoc
+  build-tools:       alex, happy
+  default-language:  Haskell2010
