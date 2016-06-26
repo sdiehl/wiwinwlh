@@ -1503,7 +1503,8 @@ NullaryMonadType >>= return ≡ NullaryMonadType
 
 **Law 3**
 
-The third law states that when a monadic value ``m`` is
+While the first two laws are relatively clear, the third law may be more
+difficult to understand. This law states that when a monadic value ``m`` is
 passed through ``(>>=)`` to the function ``f`` and then the result of that
 expression is passed to ``>>= g``, the entire expression is exactly equivalent
 to passing ``m`` to a lambda expression that takes one parameter ``x`` and
@@ -1534,20 +1535,6 @@ through the bind operation into the function ``g``.
 ((SomeMonad val) >>= f) >>= g ≡ (SomeMonad val) >>= (\x -> f x >>= g)
 
 ```
-
-It's worth noting, that there is another version of the third law which might
-be easier to grasp. It says that:
-
-```haskell
-(f >=> g) >=> h ≡ f >=> (g >=> h)
-```
-
-where the operator ``(>=>)`` (known as the Kleisli composition) has the
-type ``(>=>) :: Monad m => (a -> m b) -> (b -> m c) -> a -> m c``.
-That way, we can look at the third law as an associativity law.
-
-(The other laws can also be expressed in terms of this operator, but I'll leave
-that as an exercise for the reader)
 
 See: [Monad Laws](http://wiki.haskell.org/Monad_laws)
 
@@ -2273,8 +2260,7 @@ ReaderT
 -------
 
 For example, there exist three possible forms of the Reader monad. The first is
-the Haskell 98 version that no longer exists (actually, it exists as the synonym
-``type Reader r = ReaderT r Identity``), but is useful for understanding the
+the Haskell 98 version that no longer exists, but is useful for understanding the
 underlying ideas. The other two are the *transformers* and *mtl* variants.
 
 *Reader*
