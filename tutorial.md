@@ -1458,7 +1458,7 @@ Laws
 ----
 
 In addition to specific implementations of ``(>>=)`` and ``return``, all monad
-instance must satisfy three laws.
+instances must satisfy three laws.
 
 **Law 1**
 
@@ -1495,7 +1495,7 @@ constructor works within the context of the second law.
 
 ```haskell
 (SomeMonad val) >>= return ≡ SomeMonad val  -- 'SomeMonad val' has type 'm a' just
-                                            -- 'm' from the first example of the
+                                            -- like 'm' from the first example of the
                                             -- second law
 
 NullaryMonadType >>= return ≡ NullaryMonadType
@@ -1503,11 +1503,10 @@ NullaryMonadType >>= return ≡ NullaryMonadType
 
 **Law 3**
 
-While the first two laws are relatively clear, the third law may be more
-difficult to understand. This law states that when a monadic value ``m`` is
+The third law states that when a monadic value ``m`` is
 passed through ``(>>=)`` to the function ``f`` and then the result of that
 expression is passed to ``>>= g``, the entire expression is exactly equivalent
-to passing ``m`` to a lamda expression that takes one parameter ``x`` and
+to passing ``m`` to a lambda expression that takes one parameter ``x`` and
 outputs the function ``f`` applied to ``x``. By the definition of bind, ``f x``
 *must* return a value wrapped in the same Monad. Because of this property, the
 resultant value of that expression can be  passed through ``(>>=)`` to the
@@ -1521,7 +1520,7 @@ function ``g``, which also returns a monadic value.
 ```
 
 Again, it is possible to write this law with more explicit code. Like in the
-explict examples for law 2, ``m`` has been replaced by ``SomeMonad val`` in
+explicit examples for law 2, ``m`` has been replaced by ``SomeMonad val`` in
 order to be very clear that there can be multiple components to a monadic value.
 Although little has changed in the code, it is easier to see what
 value--namely, ``val``--corresponds to the ``x`` in the lambda expression.
@@ -1535,6 +1534,20 @@ through the bind operation into the function ``g``.
 ((SomeMonad val) >>= f) >>= g ≡ (SomeMonad val) >>= (\x -> f x >>= g)
 
 ```
+
+It's worth noting, that there is another version of the third law which might
+be easier to grasp. It says that:
+
+```haskell
+(f >=> g) >=> h ≡ f >=> (g >=> h)
+```
+
+where the operator ``(>=>)`` (known as the Kleisli composition) has the
+type ``(>=>) :: Monad m => (a -> m b) -> (b -> m c) -> a -> m c``.
+That way, we can look at the third law as an associativity law.
+
+(The other laws can also be expressed in terms of this operator, but I'll leave
+that as an exercise for the reader)
 
 See: [Monad Laws](http://wiki.haskell.org/Monad_laws)
 
@@ -1655,7 +1668,7 @@ instance Monad Maybe where
   (Just x) >>= k = k x            -- 'k' is a function with type  (a -> Maybe a)
   Nothing  >>= k = Nothing
 
-  return = Just                   -- Just's type signature is 'a -> Maybe a', in
+  return = Just                   -- Just's type signature is (a -> Maybe a), in
                                   -- other words, extremely similar to the
                                   -- type of 'return' in the typeclass
                                   -- declaration above.
@@ -1702,7 +1715,7 @@ List
 
 The *List* monad is the second simplest example of a monad instance. As always,
 this monad implements both ``(>>=)`` and ``return``. The definition of bind says
-that when the list ``m`` is bound to to a function ``f``, the result is a
+that when the list ``m`` is bound to a function ``f``, the result is a
 concatenation of ``map f`` over the list ``m``. The ``return`` method simply
 takes a single value ``x`` and injects into a singleton list ``[x]``.
 
@@ -1712,8 +1725,8 @@ instance Monad [] where
   return x  =  [x]
 ```
 
-In order to domestrate using the ``List`` monad's methods, we can define two
-functions ``m`` and ``f``. ``m`` is a simple list, while ``f`` is a function
+In order to demonstrate the ``List`` monad's methods, we will define two
+functions: ``m`` and ``f``. ``m`` is a simple list, while ``f`` is a function
 that takes a single ``Int`` and returns a two element list ``[1, 0]``.
 
 ```haskell
@@ -1739,13 +1752,13 @@ monad. List comprehensions can be considered syntactic sugar for more obviously
 monadic implementations. Examples ``a`` and ``b`` illustrate these use cases.
 
 The first example (``a``) illustrates how to write a list comprehension.
-Although this syntax may look stranges, there are elements may look familiar.
-For instance, the use of the ``<-`` is just like bind in ``do`` notation: It
-binds a list to a name. However, one major difference is apparent: ``a`` seems
-to lack a call to ``return``. Not to worry, though, the ``[]`` fill this role.
-This syntax can be easily desugared by the compiler to an explicit invocation
-of ``return``. Furthermore, it serves to remind the user that the computation
-takes place in the List monad.
+Although the syntax looks strange at first, there are elements of it that may
+look familiar. For instance, the use of ``<-`` is just like bind in a ``do``
+notation: It binds an element of a list to a name. However, one major difference
+is apparent: ``a`` seems to lack a call to ``return``. Not to worry, though,
+the ``[]`` fills this role. This syntax can be easily desugared by the compiler
+to an explicit invocation of ``return``. Furthermore, it serves to remind the
+user that the computation takes place in the List monad.
 
 ```haskell
 a = [
@@ -1756,7 +1769,7 @@ a = [
     ]
 ```
 
-The second example (``b``) shows the the list comprehension above rewritten with
+The second example (``b``) shows the list comprehension above rewritten with
 ``do`` notation:
 
 ```haskell
@@ -1785,7 +1798,7 @@ does some I/O before returning a value of type ``a``. These computations are
 called [actions](https://wiki.haskell.org/Introduction_to_Haskell_IO/Actions).
 IO actions executed in ``main`` are the means by which a program can operate on
 or access information in the external world. IO actions allow the program to do
-many things, including but not limited to:
+many things, including, but not limited to:
 
  - Print a ``String`` to the terminal
  - Read and parse input from the terminal
@@ -1794,14 +1807,14 @@ many things, including but not limited to:
  - Take input from a radio antenna for singal processing
 
 Conceptualizing I/O as a monad enables the developer to access information
-outside the program but operate on the data with pure functions. The following
+outside the program, but operate on the data with pure functions. The following
 examples will show how we can use IO actions and IO values to receive input from
-and print to stdout.
+stdin and print to stdout.
 
 Perhaps the most immediately useful function for doing I/O in Haskell
 is ``putStrLn``. This function takes a ``String`` and returns an ``IO ()``.
-Calling this function from ``main`` will result in the ``String`` and a newline
-character being printed to stdout.
+Calling it from ``main`` will result in the ``String`` being printed to stdout
+followed by a newline character.
 
 ```haskell
 putStrLn :: String -> IO ()
@@ -1869,14 +1882,14 @@ main = putStrLn "What is your name: " >> (getLine >>= (\name -> putStrLn name))
 
 See: [Haskell 2010: Basic/Input Output](http://www.haskell.org/onlinereport/haskell2010/haskellch7.html)
 
-Whats the point?
+What's the point?
 ----------------
 
 Although it is difficult, if not impossible, to touch, see, or otherwise
 physically interact with a monad, this construct has some very interesting
 implications for programmers. For instance, consider the non-intuitive fact that
-we now have a uniform interface for talking about three very different but
-foundational ideas for programming: *Failure*,*Collections*, and *Effects*.
+we now have a uniform interface for talking about three very different, but
+foundational ideas for programming: *Failure*, *Collections* and *Effects*.
 
 Let's write down a new function called ``sequence`` which folds a function
 ``mcons`` over a list of monadic computations. We can think of ``mcons`` as
@@ -1903,7 +1916,7 @@ What does this function mean in terms of each of the monads discussed above?
 Sequencing a list of values within the ``Maybe`` [context](#maybe) allows us to
 collect the results of a series of computations which can possibly fail.
 However, ``sequence`` yields the aggregated values only if each computation
-succeeds. In other words, if even one of the ``Maybe``values in the initial list
+succeeds. In other words, if even one of the ``Maybe`` values in the initial list
 passed to ``sequence``is a ``Nothing``, the result of ``sequence`` will also
 be ``Nothing``.
 
@@ -1948,11 +1961,10 @@ sequence :: [IO a] -> IO [a]
 ```haskell
 sequence [getLine, getLine, getLine]
 -- a                                  -- a, b, and 9 are the inputs given by the
--- b                                  -- at the prompt
+-- b                                  -- user at the prompt
 -- 9
 -- ["a", "b", "9"]                    -- All inputs are returned in a list as
-                                      -- a IO [String], which can be printed to
-                                      -- the screen.
+                                      -- an IO [String].
 ```
 
 So there we have it, three fundamental concepts of computation that are normally
@@ -2003,7 +2015,7 @@ A simple implementation of the Writer monad:
 ~~~~ {.haskell include="src/02-monads/writer_impl.hs"}
 ~~~~
 
-This implementation is lazy so some care must be taken that one actually wants
+This implementation is lazy, so some care must be taken that one actually wants
 to only generate a stream of thunks. Most often the lazy writer is not suitable
 for use, instead implement the equivalent structure by embedding some monomial
 object inside a StateT monad, or using the strict version.
@@ -2015,7 +2027,8 @@ import Control.Monad.Writer.Strict
 State Monad
 -----------
 
-The state monad allows functions within a stateful monadic context to access and modify shared state.
+The state monad allows functions within a stateful monadic context to access
+and modify shared state.
 
 ```haskell
 runState  :: State s a -> s -> (a, s)
@@ -2028,7 +2041,7 @@ execState :: State s a -> s -> s
 
 The state monad is often mistakenly described as being impure, but it is in fact
 entirely pure and the same effect could be achieved by explicitly passing state.
-A simple implementation of the State monad is only a few lines:
+A simple implementation of the State monad takes only a few lines:
 
 ~~~~ {.haskell include="src/02-monads/state_impl.hs"}
 ~~~~
@@ -2042,7 +2055,7 @@ aspects to why this is so:
 
 1. *There are several levels on indirection with desugaring.*
 
-A lot of Haskell that we write is radically rearranged and transformed into
+A lot of the Haskell we write is radically rearranged and transformed into
 an entirely new form under the hood.
 
 Most monad tutorials will not manually expand out the do-sugar. This leaves the
@@ -2110,7 +2123,7 @@ main = bind getLine (\x -> bind putStrLn (\_ -> return ()))
 3. *Ad-hoc polymorphism is not commonplace in other languages.*
 
 Haskell's implementation of overloading can be unintuitive if one is not familiar
-with type inference. It is abstracted away from the user but the ``(>>=)`` or
+with type inference. It is abstracted away from the user, but the ``(>>=)`` or
 ``bind`` function is really a function of 3 arguments with the extra typeclass
 dictionary argument (``$dMonad``) implicitly threaded around.
 
@@ -2145,8 +2158,8 @@ Monad Transformers
 mtl / transformers
 ------------------
 
-So the descriptions of Monads in the previous chapter are a bit of a white lie.
-Modern Haskell monad libraries typically use a more general form of these
+So, the descriptions of Monads in the previous chapter are a bit of a white lie.
+Modern Haskell monad libraries typically use a more general form of these,
 written in terms of monad transformers which allow us to compose monads together
 to form composite monads. The monads mentioned previously are subsumed by the
 special case of the transformer form composed with the Identity monad.
@@ -2237,8 +2250,8 @@ See: [Monad Transformers: Step-By-Step](http://catamorph.de/publications/2004-10
 Basics
 ------
 
-The most basic use requires us to use the T-variants of each of the monad transformers for the outer
-layers and to explicit ``lift`` and ``return`` values between each the layers. Monads have kind ``(* -> *)``
+The most basic use requires us to use the T-variants for each of the monad transformers in the outer
+layers and to explicitly ``lift`` and ``return`` values between the layers. Monads have kind ``(* -> *)``,
 so monad transformers which take monads to monads have ``((* -> *) -> * -> *)``:
 
 ```haskell
@@ -2246,7 +2259,7 @@ Monad (m :: * -> *)
 MonadTrans (t :: (* -> *) -> * -> *)
 ```
 
-So for example if we wanted to form a composite computation using both the Reader and Maybe monads we can now
+So, for example, if we wanted to form a composite computation using both the Reader and Maybe monads we can now
 put the Maybe inside of a ``ReaderT`` to form ``ReaderT t Maybe a``.
 
 ~~~~ {.haskell include="src/03-monad-transformers/transformer.hs"}
@@ -2259,10 +2272,10 @@ The fundamental limitation of this approach is that we find ourselves ``lift.lif
 ReaderT
 -------
 
-For example, there exist three possible forms of th Reader monad. The first is
-the Haskell 98 version that no longer exists but is useful for understanding the
-underlying ideas. The other two are the *transformers* variant and the *mtl*
-variants.
+For example, there exist three possible forms of the Reader monad. The first is
+the Haskell 98 version that no longer exists (actually, it exists as the synonym
+``type Reader r = ReaderT r Identity``), but is useful for understanding the
+underlying ideas. The other two are the *transformers* and *mtl* variants.
 
 *Reader*
 
@@ -2301,7 +2314,7 @@ instance (Monad m) => MonadReader r (ReaderT r m) where
   local f m = ReaderT $ \r -> runReaderT m (f r)
 ```
 
-So hypothetically the three variants of ask would be:
+So, hypothetically the three variants of ask would be:
 
 ```haskell
 ask :: Reader r a
@@ -2316,12 +2329,12 @@ Newtype Deriving
 
 Newtypes let us reference a data type with a single constructor as a new
 distinct type, with no runtime overhead from boxing, unlike an algebraic
-datatype with single constructor.  Newtype wrappers around strings and numeric
+datatype with a single constructor. Newtype wrappers around strings and numeric
 types can often drastically reduce accidental errors.
 
 Consider the case of using a newtype to distinguish between two different text
-blobs with different semantics. Both have the same runtime representation as
-text object but are distinguished Statically so that plaintext can not be
+blobs with different semantics. Both have the same runtime representation as a
+text object, but are distinguished statically, so that plaintext can not be
 accidentally interchanged with encrypted text.
 
 ```haskell
@@ -2399,14 +2412,14 @@ Monad Morphisms
 ---------------
 
 The base monad transformer package provides a ``MonadTrans`` class for lifting
-between layer:
+to another monad:
 
 ```haskell
 lift :: Monad m => m a -> t m a
 ```
 
 But often times we need to work with and manipulate our monad transformer stack
-to either produce new transformers, modify existing ones, or extend an upstream
+to either produce new transformers, modify existing ones or extend an upstream
 library with new layers. The ``mmorph`` library provides the capacity to compose
 monad morphism transformation directly on transformer stacks. The equivalent of
 type transformer type-level map is the ``hoist`` function.
@@ -2415,19 +2428,21 @@ type transformer type-level map is the ``hoist`` function.
 hoist :: Monad m => (forall a. m a -> n a) -> t m b -> t n b
 ```
 
-Hoist takes a *monad morphism* (a mapping a ``m a`` to a ``n a``) and applies in
+Hoist takes a *monad morphism* (a mapping from a ``m a`` to a ``n a``) and applies in
 on the inner value monad of a transformer stack, transforming the value under
 the outer layer.
 
-For example the monad morphism ``generalize`` takes an Identity into another
-monad ``m`` of the same index. For example this generalizes ``State s Identity``
-into ``StateT s m a``.
+The monad morphism ``generalize`` takes an Identity monad into any another
+monad ``m``.
 
 ```haskell
 generalize :: Monad m => Identity a -> m a
 ```
 
-So we could generalize an existing transformer to lift a IO layer into it.
+For example, it generalizes ``State s a`` (which is ``StateT s Identity a``)
+to ``StateT s m a``.
+
+So we can generalize an existing transformer to lift an IO layer onto it.
 
 ~~~~ {.haskell include="src/10-advanced-monads/mmorph.hs"}
 ~~~~
