@@ -7,9 +7,10 @@ v :: Velocity
 v = Velocity 2.718
 
 x :: Double
-x = 6.636
+x = 2.718
 
--- Type error is caught at compile time even though they are the same value at runtime!
+-- Type error is caught at compile time even though
+-- they are the same value at runtime!
 err = v + x
 
 newtype Quantity v a = Quantity a
