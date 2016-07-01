@@ -7395,7 +7395,7 @@ class Typeable a => Data a where
 ```
 
 The types for ``gfoldl`` and ``gunfold`` are a little intimidating ( and depend
-on ``Rank2Types`` ), the best way to understand is to look at some examples.
+on ``RankNTypes`` ), the best way to understand is to look at some examples.
 First the most trivial case a simple sum type ``Animal`` would produce the following code:
 
 ```haskell
