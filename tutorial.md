@@ -3713,13 +3713,13 @@ import Control.Monad.Trans.Except
    mapExcept, mapExceptT, withExcept, withExceptT)
 ```
 
-The Prelude itself is entirely replicable as well presuming that an entire
+The Prelude itself is entirely replicable as well, presuming that an entire
 project is compiled without the implicit Prelude. Several packages have arisen
 that supply much of the same functionality in a way that appeals to more modern
 design principles.
 
-A minimalist Prelude is protolude which provides many sensible defaults for
-writing production modern Haskell and is compatible with existing code.
+Protolude is a minimalist Prelude which provides many sensible defaults for
+writing modern Haskell and is compatible with existing code.
 
 * [protolude](http://hackage.haskell.org/package/protolude)
 
@@ -3729,7 +3729,7 @@ writing production modern Haskell and is compatible with existing code.
 import Protolude
 ```
 
-Others examples in the design space include, your mileage may vary with these.
+Other examples for alternative Preludes include (your mileage may vary with these):
 
 * [base-prelude](http://hackage.haskell.org/package/base-prelude)
 * [basic-prelude](http://hackage.haskell.org/package/basic-prelude)
@@ -7373,7 +7373,7 @@ code smell. Consider a more idiomatic solution.
 Data
 ----
 
-Just as Typeable let's create runtime type information where needed, the Data
+Just as Typeable lets us create runtime type information, the Data
 class allows us to reflect information about the structure of datatypes to
 runtime as needed.
 
@@ -7482,15 +7482,15 @@ tuple2DataType = mkDataType "Prelude.(,)" [tuple2Constr]
 
 This is pretty neat, now within the same typeclass we have a generic way to
 introspect any ``Data`` instance and write logic that depends on the structure
-and types of its subterms. We can now write a function which allow us to
-traverse an arbitrary instance Data and twiddle values based on pattern matching
+and types of its subterms. We can now write a function which allows us to
+traverse an arbitrary instance of Data and twiddle values based on pattern matching
 on the runtime types. So let's write down a function ``over`` which increments a
 ``Value`` type for both for n-tuples and lists.
 
 ~~~~ {.haskell include="src/18-generics/data.hs"}
 ~~~~
 
-We can also write generic operations to for instance count the number of
+We can also write generic operations, for example to count the number of
 parameters in a data type.
 
 ```haskell
