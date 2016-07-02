@@ -3103,9 +3103,9 @@ See:
 Cpp
 ---
 
-The C++ preprocessor is the fallback whenever we really need to seperate out
+The C++ preprocessor is the fallback whenever we really need to separate out
 logic that has to span multiple versions of GHC and language changes while
-maintaining backwards compatibility. To dispatch on the version of GHC being
+maintaining backwards compatibility. It can dispatch on the version of GHC being
 used to compile a module.
 
 ```haskell
@@ -3713,13 +3713,13 @@ import Control.Monad.Trans.Except
    mapExcept, mapExceptT, withExcept, withExceptT)
 ```
 
-The Prelude itself is entirely replicable as well presuming that an entire
+The Prelude itself is entirely replicable as well, presuming that an entire
 project is compiled without the implicit Prelude. Several packages have arisen
 that supply much of the same functionality in a way that appeals to more modern
 design principles.
 
-A minimalist Prelude is protolude which provides many sensible defaults for
-writing production modern Haskell and is compatible with existing code.
+Protolude is a minimalist Prelude which provides many sensible defaults for
+writing modern Haskell and is compatible with existing code.
 
 * [protolude](http://hackage.haskell.org/package/protolude)
 
@@ -3729,7 +3729,7 @@ writing production modern Haskell and is compatible with existing code.
 import Protolude
 ```
 
-Others examples in the design space include, your mileage may vary with these.
+Other examples for alternative Preludes include (your mileage may vary with these):
 
 * [base-prelude](http://hackage.haskell.org/package/base-prelude)
 * [basic-prelude](http://hackage.haskell.org/package/basic-prelude)
@@ -7373,7 +7373,7 @@ code smell. Consider a more idiomatic solution.
 Data
 ----
 
-Just as Typeable let's create runtime type information where needed, the Data
+Just as Typeable lets us create runtime type information, the Data
 class allows us to reflect information about the structure of datatypes to
 runtime as needed.
 
@@ -7395,7 +7395,7 @@ class Typeable a => Data a where
 ```
 
 The types for ``gfoldl`` and ``gunfold`` are a little intimidating ( and depend
-on ``Rank2Types`` ), the best way to understand is to look at some examples.
+on ``RankNTypes`` ), the best way to understand is to look at some examples.
 First the most trivial case a simple sum type ``Animal`` would produce the following code:
 
 ```haskell
@@ -7482,15 +7482,15 @@ tuple2DataType = mkDataType "Prelude.(,)" [tuple2Constr]
 
 This is pretty neat, now within the same typeclass we have a generic way to
 introspect any ``Data`` instance and write logic that depends on the structure
-and types of its subterms. We can now write a function which allow us to
-traverse an arbitrary instance Data and twiddle values based on pattern matching
+and types of its subterms. We can now write a function which allows us to
+traverse an arbitrary instance of Data and twiddle values based on pattern matching
 on the runtime types. So let's write down a function ``over`` which increments a
 ``Value`` type for both for n-tuples and lists.
 
 ~~~~ {.haskell include="src/18-generics/data.hs"}
 ~~~~
 
-We can also write generic operations to for instance count the number of
+We can also write generic operations, for example to count the number of
 parameters in a data type.
 
 ```haskell
@@ -7535,7 +7535,7 @@ Generic
 -------
 
 The most modern method of doing generic programming uses type families to
-achieve a better of deriving the structural properties of arbitrary type
+achieve a better method of deriving the structural properties of arbitrary type
 classes.  Generic implements a typeclass with an associated type ``Rep`` (
 Representation ) together with a pair of functions that form a 2-sided inverse (
 isomorphism ) for converting to and from the associated type and the derived
@@ -7617,7 +7617,7 @@ Rep [()] :: * -> *
 ```
 
 Now the clever bit, instead writing our generic function over the datatype we
-instead write it over the Rep and then reify the result using ``from``. Some for
+instead write it over the Rep and then reify the result using ``from``. So for
 an equivalent version of Haskell's default ``Eq`` that instead uses generic
 deriving we could write:
 
@@ -7645,9 +7645,9 @@ instance (GEq' a, GEq' b) => GEq' (a :*: b) where
   geq' (a1 :*: b1) (a2 :*: b2) = geq' a1 a2 && geq' b1 b2
 ```
 
-Now to accommodate the two methods of writing classes (generic-deriving or
-custom implementations) we can use ``DefaultSignatures`` extension to allow the
-user to leave typeclass functions blank and defer to the Generic or to define
+To accommodate the two methods of writing classes (generic-deriving or
+custom implementations) we can use the ``DefaultSignatures`` extension to allow the
+user to leave typeclass functions blank and defer to Generic or to define
 their own.
 
 ```haskell
@@ -7663,7 +7663,7 @@ class GEq a where
 Now anyone using our library need only derive Generic and create an empty
 instance of our typeclass instance without writing any boilerplate for ``GEq``.
 
-And end to end example for deriving equality generics:
+Here is a complete example for deriving equality generics:
 
 ~~~~ {.haskell include="src/18-generics/generic_impl.hs"}
 ~~~~
@@ -7702,7 +7702,7 @@ See: [A Generic Deriving Mechanism for Haskell](http://dreixel.net/research/pdf/
 
 ##### Higher Kinded Generics
 
-Using the same interface GHC.Generics provides a seperate typeclass for
+Using the same interface GHC.Generics provides a separate typeclass for
 higher-kinded generics.
 
 ```haskell
