@@ -3103,9 +3103,9 @@ See:
 Cpp
 ---
 
-The C++ preprocessor is the fallback whenever we really need to seperate out
+The C++ preprocessor is the fallback whenever we really need to separate out
 logic that has to span multiple versions of GHC and language changes while
-maintaining backwards compatibility. To dispatch on the version of GHC being
+maintaining backwards compatibility. It can dispatch on the version of GHC being
 used to compile a module.
 
 ```haskell
@@ -7535,7 +7535,7 @@ Generic
 -------
 
 The most modern method of doing generic programming uses type families to
-achieve a better of deriving the structural properties of arbitrary type
+achieve a better method of deriving the structural properties of arbitrary type
 classes.  Generic implements a typeclass with an associated type ``Rep`` (
 Representation ) together with a pair of functions that form a 2-sided inverse (
 isomorphism ) for converting to and from the associated type and the derived
@@ -7617,7 +7617,7 @@ Rep [()] :: * -> *
 ```
 
 Now the clever bit, instead writing our generic function over the datatype we
-instead write it over the Rep and then reify the result using ``from``. Some for
+instead write it over the Rep and then reify the result using ``from``. So for
 an equivalent version of Haskell's default ``Eq`` that instead uses generic
 deriving we could write:
 
@@ -7645,9 +7645,9 @@ instance (GEq' a, GEq' b) => GEq' (a :*: b) where
   geq' (a1 :*: b1) (a2 :*: b2) = geq' a1 a2 && geq' b1 b2
 ```
 
-Now to accommodate the two methods of writing classes (generic-deriving or
-custom implementations) we can use ``DefaultSignatures`` extension to allow the
-user to leave typeclass functions blank and defer to the Generic or to define
+To accommodate the two methods of writing classes (generic-deriving or
+custom implementations) we can use the ``DefaultSignatures`` extension to allow the
+user to leave typeclass functions blank and defer to Generic or to define
 their own.
 
 ```haskell
@@ -7663,7 +7663,7 @@ class GEq a where
 Now anyone using our library need only derive Generic and create an empty
 instance of our typeclass instance without writing any boilerplate for ``GEq``.
 
-And end to end example for deriving equality generics:
+Here is a complete example for deriving equality generics:
 
 ~~~~ {.haskell include="src/18-generics/generic_impl.hs"}
 ~~~~
@@ -7702,7 +7702,7 @@ See: [A Generic Deriving Mechanism for Haskell](http://dreixel.net/research/pdf/
 
 ##### Higher Kinded Generics
 
-Using the same interface GHC.Generics provides a seperate typeclass for
+Using the same interface GHC.Generics provides a separate typeclass for
 higher-kinded generics.
 
 ```haskell
