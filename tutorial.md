@@ -9268,7 +9268,7 @@ instances can never fail and simply require us to pattern match on our custom
 datatype and generate an appropriate value.
 
 The law that the FromJSON and ToJSON classes should maintain is that ``encode .
-deocde`` and ``decode . encode`` should map to the same object. Although in
+decode`` and ``decode . encode`` should map to the same object. Although in
 practice there many times when we break this rule and especially if the
 serialize or de serialize is one way.
 
