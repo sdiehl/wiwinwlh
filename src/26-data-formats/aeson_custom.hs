@@ -29,10 +29,10 @@ instance FromJSON Crew where
 
 instance FromJSON Rank where
   parseJSON (String s) = case s of
-    "Captain"   -> pure Captain
-    "Ensign"    -> pure Ensign
-    "Liutenant" -> pure Ensign
-    _           -> typeMismatch "Could not parse Rank" (String s)
+    "Captain"    -> pure Captain
+    "Ensign"     -> pure Ensign
+    "Lieutenant" -> pure Lieutenant
+    _            -> typeMismatch "Could not parse Rank" (String s)
   parseJSON x = typeMismatch "Expected String" x
 
 -- Custom JSON Serializer
@@ -46,7 +46,7 @@ instance ToJSON Crew where
 instance ToJSON Rank where
   toJSON Captain    = String "Captain"
   toJSON Ensign     = String "Ensign"
-  toJSON Lieutenant = String "Liutenant"
+  toJSON Lieutenant = String "Lieutenant"
 
 
 roundTrips :: Crew -> Bool
