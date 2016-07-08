@@ -10146,7 +10146,7 @@ f $ x =  f x
 Having to enter a secondary closure every time we used ``($)`` would introduce
 an enormous overhead. Fortunately GHC has a pass to eliminate small functions
 like this by simply replacing the function call with the body of its definition
-at appropriate call-sites. There compiler contains a variety heuristics for
+at appropriate call-sites. The compiler contains a variety of heuristics for
 determining when this kind of substitution is appropriate and the potential
 costs involved.
 
@@ -10183,7 +10183,7 @@ test2 :: Int
 test2 = bar (+) 20 30
 ```
 
-Looking at the core, we can see that in ``test2`` the function has indeed been
+Looking at the core, we can see that in ``test1`` the function has indeed been
 expanded at the call site and simply performs the addition there instead of
 another indirection.
 
