@@ -12773,9 +12773,69 @@ Swift *does not* have an effect system.
 
 C#
 ------
+C# is a typed, class-based, single-inheritance object-oriented programming
+language originally developed at Microsoft as the flagship language for the
+.NET framework. Early versions closely resemble *Java*, but the language has
+since picked up a few influences from declarative and functional programming
+paradigms. .NET is Windows-only, but a cross-platform replacement, *Mono*,
+exists, that makes it possible to run .NET code on OS X and Linux.
+
+**Main difference**: C# is an impure object-oriented language, Haskell is a
+pure functional language.
+
+C#'s main implementation is *C#.NET*.
+
+C# is a *general purpose* programming language.
+
+C# is *garbage collected* (but allows opting out of GC through the use of
+`unsafe` blocks)
+
+C# is a *statically typed* language with limited *type inference* and some
+support for *dynamic typing*.
+
+C# allows polymorphism by means of *parametric polymorphism* through generics,
+*ad-hoc polymorphism* through inheritance, interfaces, and reflection.
+
+C# is impure and *does not* track effects.
+
+C# is typically *compiled* to .NET IL, which is then interpreted by the .NET
+runtime.
 
 C++
 ------
+
+C++ is a typed multi-paradigm (imperative, structured/procedural, class-based
+multiple-inheritance object-oriented, template metaprogramming) programming
+language developed by Bjarne Stroustrup in the early 1980s. The philosophy
+strongly favors zero-cost abstractions, and values performance higher than
+convenience. This has made the language extremely large and complex, and the
+culture and ecosystem diverse and fractured. Today, C++ is mainly found in
+legacy projects, but remains popular in areas where realtime performance and
+deterministic memory allocation are critical, such as embedded, audio/video,
+games, HFT, etc.
+
+**Main difference**: C++ is impure and uses RAII, Haskell is pure and
+garbage-collected.
+
+C++ has no canonical implementation; notable compilers include *gcc*,
+*clang*, and *MSVC++*.
+
+C++ is a *general purpose* programming language, with a bias towards
+*systems programming*.
+
+C++ is *not garbage collected*. Manual memory management (as in C) is
+supported, but the recommended paradigm is *RAII*.
+
+C++ is a *statically typed* language with limited *type inference* and many
+backdoors to bypass the type checker.
+
+C++ allows polymorphism by means of *parametric polymorphism* through template
+metaprogramming, and *ad-hoc polymorphism* through inheritance.
+
+C++ is *compiled*, the typical compilation target is native machine code.
+
+C++ *does not* track effects. It has limited support for tracking mutability at
+the type level.
 
 Go
 --
