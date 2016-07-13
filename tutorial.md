@@ -2303,7 +2303,7 @@ instance (Monad m) => MonadReader r (ReaderT r m) where
 So, hypothetically the three variants of ask would be:
 
 ```haskell
-ask :: Reader r a
+ask :: Reader r r
 ask :: Monad m => ReaderT r m r
 ask :: MonadReader r m => m r
 ```
