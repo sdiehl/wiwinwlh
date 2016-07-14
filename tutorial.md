@@ -3602,7 +3602,7 @@ To force a data structure itself to be fully evaluated we share the same
 argument in both positions of deepseq.
 
 ```haskell
-force :: NFData a => a
+force :: NFData a => a -> a
 force x = x `deepseq` x
 ```
 
