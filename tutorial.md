@@ -2909,15 +2909,18 @@ NumDecimals
 -----------
 
 NumDecimals allows the use of exponential notation for integral literals that
-are not necessarily floats. Without it enable any use of expontial notation
+are not necessarily floats. Without it, any use of expontial notation
 induces a Fractional class constraint.
 
 ```haskell
-1e100 :: Num a => a
+googol :: Fractional a => a
+googol = 1e100
 ```
 
 ```haskell
-1e100 :: Fractional a => a
+{-# LANGUAGE NumDecimals #-}
+googol :: Num a => a
+googol = 1e100
 ```
 
 PackageImports
