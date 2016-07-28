@@ -2909,15 +2909,18 @@ NumDecimals
 -----------
 
 NumDecimals allows the use of exponential notation for integral literals that
-are not necessarily floats. Without it enable any use of expontial notation
+are not necessarily floats. Without it, any use of expontial notation
 induces a Fractional class constraint.
 
 ```haskell
-1e100 :: Num a => a
+googol :: Fractional a => a
+googol = 1e100
 ```
 
 ```haskell
-1e100 :: Fractional a => a
+{-# LANGUAGE NumDecimals #-}
+googol :: Num a => a
+googol = 1e100
 ```
 
 PackageImports
@@ -3063,7 +3066,7 @@ OverloadedLabels
 ----------------
 
 GHC 8.0 also introduced the OverloadedLabels extension which allows a limited
-form of polymorphism over labels that share the same
+form of polymorphism over labels that share the same name.
 
 To work with overloaded labels types we need to enable several language
 extensions to work with promoted strings and multiparam typeclasses that underly
