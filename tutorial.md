@@ -5147,9 +5147,9 @@ Polymorphic Rank 3: ((forall a. a -> t) -> t) -> t
 ```
 
 Of important note is that the type variables bound by an explicit quantifier in
-a higher ranked type may not escape their enclosing scope, the typechecker will
-explicitly enforce this with by enforcing that variables bound inside of rank-n
-types ( called skolem constants ) will not unify with free meta type variables
+a higher ranked type may not escape their enclosing scope. The typechecker will
+explicitly enforce this by enforcing that variables bound inside of rank-n
+types (called skolem constants) will not unify with free meta type variables
 inferred by the inference engine.
 
 ~~~~ {.haskell include="src/11-quantification/skolem_capture.hs"}
@@ -8769,7 +8769,7 @@ us write code to generate parsers which themselves looks very similar to the par
 
               Combinators
 -----------   ------------
-``<|>``       The choice operator tries to parse the first argument before proceeding to the second. Can be chained sequentially to a generate a sequence of options.
+``<|>``       The choice operator tries to parse the first argument before proceeding to the second. Can be chained sequentially to generate a sequence of options.
 ``many``      Consumes an arbitrary number of patterns matching the given pattern and returns them as a list.
 ``many1``     Like many but requires at least one match.
 ``optional``  Optionally parses a given pattern returning its value as a Maybe.
@@ -8913,7 +8913,7 @@ Optparse-applicative is a combinator library for building command line
 interfaces that take in various user flags, commmands and switches and map them
 into Haskell data structures that can handle the input. The main interface is
 through the applicative functor ``Parser`` and various combinators such as
-``strArgument`` and ``flag`` which populate the option parsing table which some
+``strArgument`` and ``flag`` which populate the option parsing table with some
 monadic action which returns a Haskell value. The resulting sequence of values
 can be combined applicatively into a larger Config data structure that holds all
 the given options. The ``--help`` header is also automatically generated from
@@ -8942,7 +8942,7 @@ Happy & Alex
 Happy is a parser generator system for Haskell, similar to the tool `yacc' for
 C. It works as a preprocessor with it's own syntax that generates a parse table
 from two specifications,  a lexer file and parser file. Happy does not have the
-ssame underlying parser implementation as parser combinators and can effectively
+same underlying parser implementation as parser combinators and can effectively
 work with left-recursive grammars without explicit factorization. It can also
 easily be modified to track position information for tokens and handle offside
 parsing rules for indentation-sensitive grammars. Happy is used in GHC itself
