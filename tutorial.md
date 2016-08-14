@@ -9442,7 +9442,7 @@ Haskell data structures and HTML representation.
 Warp
 ----
 
-Warp is a efficient web server, it's the backed request engine behind several of
+Warp is a efficient web server, it's the backend request engine behind several of
 popular Haskell web frameworks. The internals have been finely tuned to utilize
 Haskell's concurrent runtime and is capable of handling a great deal of
 concurrent requests.
@@ -10866,7 +10866,6 @@ String     Z-Encoded String
 ``foo``    ``foo``
 ``z``      ``zz``
 ``Z``      ``ZZ``
-``.``      ``.``
 ``()``     ``Z0T``
 ``(,)``    ``Z2T``
 ``(,,)``   ``Z3T``
@@ -10897,7 +10896,7 @@ Cmm
 ---
 
 Cmm is GHC's complex internal intermediate representation that maps directly
-onto the generated code for the compiler target. Cmm code code generated from
+onto the generated code for the compiler target. Cmm code generated from
 Haskell is CPS-converted, all functions never return a value, they simply call
 the next frame in the continuation stack. All evaluation of functions proceed by
 indirectly jumping to a code object with its arguments placed on the stack by
