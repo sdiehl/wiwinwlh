@@ -8873,6 +8873,18 @@ Bach
 Feynman
 ```
 
+With a little more work and an outer wrapper, this example an easily
+be extended to automate parsing of a simple recursive type.
+
+~~~~ {.haskell include="src/24-parsing/recursive-generics.hs"}
+~~~~
+
+```haskell
+λ: parseTest expr "(App (Plus (Lit 1) (Var n)) (App (Plus (Lit 5) (Lit 5)) (Plus (Lit 6) (Lit 6))))"
+App (Plus (Lit 1) (Var "n")) (App (Plus (Lit 5) (Lit 5)) (Plus (Lit 6) (Lit 6)))
+```
+
+
 Attoparsec
 ----------
 
