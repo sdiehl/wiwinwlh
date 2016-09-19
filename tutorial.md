@@ -824,6 +824,12 @@ implement features common to modern IDEs.
 * [Haskell Development From Emacs](http://tim.dysinger.net/posts/2014-02-18-haskell-with-emacs.html)
 * [Structured Haskell Mode](https://github.com/chrisdone/structured-haskell-mode)
 
+**Atom**
+* [language-haskell plugin](https://atom.io/packages/language-haskell)
+* [ide-haskell plugin](https://atom.io/packages/ide-haskell)
+
+
+
 Bottoms
 -------
 
