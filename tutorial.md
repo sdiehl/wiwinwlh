@@ -825,6 +825,7 @@ implement features common to modern IDEs.
 * [Structured Haskell Mode](https://github.com/chrisdone/structured-haskell-mode)
 
 **Atom**
+
 * [language-haskell plugin](https://atom.io/packages/language-haskell)
 * [ide-haskell plugin](https://atom.io/packages/ide-haskell)
 
