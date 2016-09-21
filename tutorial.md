@@ -12747,6 +12747,25 @@ the Haskell notion of types.
 
 Erlang is *impure* by default and does not statically track effects.
 
+
+Java
+------
+
+Java is a general purpose programming language. It is an object-oriented, concurrent language
+which is statically typed. It is one of the most frequently used languages in the industry, as well
+as a common language used in academia to teach the fundamentals of object oriented programming.
+
+**Main difference**: Java is an object-oriented language, compared to Haskell which is functional.
+
+Java compiles to Java Bytecode which can be ran on a Java Virtual Machine.
+
+Java's most recent version is Java8
+
+Java is cross-platform. It can be ran on Linux, Windows and Mac. (WORA)
+
+Java can also be used for android development
+
+
 Clojure
 -------
 
