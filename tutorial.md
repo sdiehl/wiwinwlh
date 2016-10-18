@@ -2774,7 +2774,7 @@ infinite list. This is sometimes used for instantiating cyclic datatypes inside
 of a monadic context that need to hold a reference to themselves.
 
 ```haskell
-{-# LANGUAGE DoRec #-}
+{-# LANGUAGE RecursiveDo #-}
 
 justOnes :: [Int]
 justOnes = do
