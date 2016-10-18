@@ -12629,7 +12629,7 @@ Rust is a *general purpose language*.
 Rust allows polymorphism by means of *parametric polymorphism* and *ad-hoc
 polymorphism*.
 
-Rust is *not garbage collected* by default, instead uses static semantics to the
+Rust is *not garbage collected* by default, instead uses static semantics to
 analyze lifetimes. Optionally supports garbage collection.
 
 Rust is *impure* by default and does not statically track effects. It does
