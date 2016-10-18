@@ -12899,6 +12899,8 @@ Go has *no safe polymorphism*.
 
 Go is statically *compiled* with a custom toolchain.
 
+Go is *garbage collected*.
+
 Go *does not* have an effect system.
 
 Scala
