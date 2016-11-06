@@ -1,0 +1,145 @@
+/*!
+ * Start Bootstrap - Simple Sidebar HTML Template (http://startbootstrap.com)
+ * Code licensed under the Apache License v2.0.
+ * For details, see http://www.apache.org/licenses/LICENSE-2.0.
+ */
+
+#sidebar-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  height: 100%;
+  width: 250px;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  background: #f7f7f7;
+  border-right: 1px solid #eee;
+  -webkit-overflow-scrolling: touch;
+}
+
+#sidebar-wrapper .logo {
+  display: block;
+  margin: 10px 0 0;
+  text-align: center;
+}
+#sidebar-wrapper .logo img {
+  width: 160px;
+}
+
+#toggle-sidebar {
+  display: none;
+}
+
+.sidebar-nav {
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+}
+
+.sidebar-nav li {
+}
+
+.sidebar-nav li a {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.sidebar-nav li a:hover {
+  text-decoration: underline;
+}
+
+.sidebar-nav li a:active,
+.sidebar-nav li a:focus {
+}
+
+.sidebar-nav ul {
+  list-style-type: circle;
+  padding: 10px 10px 10px 20px;
+}
+
+.sidebar-nav > ul {
+  list-style-type: none;
+  padding-left: 10px;
+}
+
+.sidebar-nav > ul > li > a {
+  font-weight: bold;
+}
+
+
+#main-wrapper {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 250px;
+  bottom: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
+#main {
+  padding: 20px;
+  max-width: 800px;
+}
+
+@media screen and (max-width: 800px) {
+  #sidebar-wrapper {
+    z-index: 10;
+    width: 100%;
+    height: 50px;
+    right: 0;
+    border-right: 0;
+    border-bottom: 1px solid #eee;
+  }
+  #sidebar-wrapper .sidebar-nav {
+    display: none;
+    font-size: 15px;
+  }
+  #sidebar-wrapper.expanded {
+    height: 100%;
+  }
+  #sidebar-wrapper.expanded .sidebar-nav {
+    display: block;
+    position: absolute;
+    top: 50px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-top: 1px solid #eee;
+    overflow-y: auto;
+  }
+  #sidebar-wrapper .logo {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    margin: 0 10px;
+  }
+  #sidebar-wrapper .logo img {
+    height: 50px;
+    line-height: 50px;
+    vertical-align: middle;
+  }
+  #toggle-sidebar {
+    display: inline-block;
+    float: right;
+    line-height: 30px;
+    height: 50px;
+    border: 0;
+    background: none;
+    padding: 10px;
+    font-size: 15px;
+  }
+  #sidebar-wrapper #toggle-sidebar:before {
+    content: 'Show';
+  }
+  #sidebar-wrapper.expanded #toggle-sidebar:before {
+    content: 'Close';
+  }
+  #main-wrapper {
+    top: 50px;
+    left: 0;
+  }
+}

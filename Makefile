@@ -1,10 +1,14 @@
 PANDOC = pandoc
 IFORMAT = markdown
-FLAGS = --standalone --toc --toc-depth=2 --highlight-style pygments
 TEMPLATE = resources/page.tmpl
 LTEMPLATE = resources/page.latex
 ETEMPLATE = resources/page.epubt
-STYLE = css/style.css
+FLAGS = --standalone \
+				--toc \
+				--toc-depth=2 \
+				--highlight-style pygments \
+				-c css/style.css \
+				-c css/layout.css
 GHC=ghc
 
 HTML = tutorial.html
@@ -18,7 +22,7 @@ includes: includes.hs
 
 %.html: %.md includes
 	./includes < $<  \
-	| $(PANDOC) -c $(STYLE) --template $(TEMPLATE) -s -f $(IFORMAT) -t html $(FLAGS) \
+	| $(PANDOC) --template $(TEMPLATE) -s -f $(IFORMAT) -t html $(FLAGS) \
 	| sed '/<extensions>/r extensions.html' > $@
 
 %.epub: %.md includes
