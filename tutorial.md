@@ -2776,13 +2776,13 @@ of a monadic context that need to hold a reference to themselves.
 ```haskell
 {-# LANGUAGE RecursiveDo #-}
 
-justOnes :: [Int]
+justOnes :: Maybe [Int]
 justOnes = do
   rec xs <- Just (1:xs)
   return (map negate xs)
 ```
 
-See: [Recursive Do Notation](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/syntax-extns.html#recursive-do-notation)
+See: [Recursive Do Notation](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#the-recursive-do-notation)
 
 Applicative Do
 --------------
