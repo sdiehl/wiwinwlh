@@ -5,7 +5,12 @@
     <title>What I Wish I Knew When Learning Haskell 2.3 ( Stephen Diehl )</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <meta name="author" content="">
+    $for(author-meta)$
+    <meta name="author" content="$author-meta$">
+    $endfor$
+    $if(date-meta)$
+    <meta name="dcterms.date" content="$date-meta$">
+    $endif$
 
     <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,700|Source+Code+Pro" rel="stylesheet">
     <style type="text/css">
@@ -43,7 +48,7 @@
     $endfor$
   </head>
 
-  <body>
+  <body itemscope itemtype="http://schema.org/TechArticle">
     <div id="sidebar-wrapper">
       <a href="http://dev.stephendiehl.com/hask/" class="logo">
         <img src="img/haskell_logo.svg" alt="Haskell Logo">
@@ -58,6 +63,13 @@ $toc$
 
     <div id="main-wrapper">
       <div id="main">
+        <h1 class="document-title" itemprop="name">
+          What I Wish I Knew When Learning Haskell
+        </h1>
+        <p itemprop="version" class="document-version">
+        Version
+        <span class="version">2.3</span>
+        </p>
 $body$
       </div>
     </div>
