@@ -1,4 +1,5 @@
 % What I Wish I Knew When Learning Haskell (Version 2.3)
+-------
 % Stephen Diehl
 % March 2016
 
@@ -22,6 +23,8 @@ always accepted for changes and additional content. This is a living document.
 
 
 #### Changelog
+
+**2.4**
 
 **2.3**
 
@@ -3728,6 +3731,9 @@ project is compiled without the implicit Prelude. Several packages have arisen
 that supply much of the same functionality in a way that appeals to more modern
 design principles.
 
+Protolude
+---------
+
 Protolude is a minimalist Prelude which provides many sensible defaults for
 writing modern Haskell and is compatible with existing code.
 
@@ -4063,6 +4069,13 @@ iterateUntilM :: Monad m => (a -> Bool) -> (a -> m a) -> a -> m a
 whileJust :: Monad m => m (Maybe a) -> (a -> m b) -> m [b]
 ```
 
+Foundation
+----------
+
+TODO
+
+See: [Foundation](https://github.com/haskell-foundation/foundation)
+
 <hr/>
 
 Strings
@@ -4228,6 +4241,14 @@ See:
 
 * [Bytestring: Bits and Pieces](https://www.fpcomplete.com/school/to-infinity-and-beyond/pick-of-the-week/bytestring-bits-and-pieces)
 * [ByteString](http://hackage.haskell.org/package/bytestring-0.10.4.0/docs/Data-ByteString.html)
+
+utf8-string
+-----------
+
+See: [utf8-string](https://hackage.haskell.org/package/utf8-string)
+
+base64-bytestring
+-----------
 
 Printf
 ------
@@ -4681,6 +4702,11 @@ See:
 * [Spoon](https://hackage.haskell.org/package/spoon)
 
 </hr>
+
+safe-exceptions
+---------------
+
+TODO
 
 Advanced Monads
 ===============
@@ -5781,6 +5807,11 @@ An example of usage:
 See:
 
 * [recursion-schemes](http://hackage.haskell.org/package/recursion-schemes)
+
+Data types à la carte
+----------------------
+
+TODO
 
 Hint and Mueval
 ---------------
@@ -7732,6 +7763,9 @@ type instance Rep1 Maybe
        :+: C1 C1_1Maybe (S1 NoSelector Par1))
 ```
 
+generics-sop
+------------
+
 Uniplate
 --------
 
@@ -8042,6 +8076,13 @@ See:
 * [cvc4](http://cvc4.cs.nyu.edu/web/)
 * [z3](http://z3.codeplex.com/)
 
+Z3
+--
+
+TODO
+
+See: [z3](https://hackage.haskell.org/package/z3)
+
 </hr>
 
 Data Structures
@@ -8317,6 +8358,16 @@ x = G.insEdges edges gr
 DList
 -----
 
+Functionality      Function  Time Complexity
+------------------ --------  ---------------
+Initialization     empty     O(1)
+Size               size      O(1)
+Lookup             lookup    O(log(n))
+Insertion          insert    O(log(n))
+Traversal          traverse  O(n)
+Append             (|>)      O(1)
+Prepend            (<|)      O(1)
+
 A dlist is a list-like structure that is optimized for O(1) append operations,
 internally it uses a Church encoding of the list structure. It is specifically
 suited for operations which are append-only and need only access it when
@@ -8334,6 +8385,8 @@ optimized for append/prepend operations and traversal.
 
 ~~~~ {.haskell include="src/20-data-structures/sequence.hs"}
 ~~~~
+
+<hr/>
 
 FFI
 ===
@@ -9146,6 +9199,43 @@ See: [Conduit Overview](https://www.fpcomplete.com/user/snoyberg/library-documen
 
 </hr>
 
+Cryptography
+============
+
+cryptonite
+----------
+
+entropy
+-------
+
+memory
+-------
+
+crypto-pubkey
+----------
+
+crypto-api
+----------
+
+x509
+----
+
+ed25519
+-------
+
+<hr/>
+
+Compression
+============
+
+lz4
+---
+
+zlib
+----
+
+<hr/>
+
 Data Formats
 =============
 
@@ -9171,6 +9261,8 @@ decode function. So if you use decode in a point your program and bind it to a
 value ``x`` and then use ``x`` as if it were and integer throughout the rest of
 your program, Aeson will select the typeclass instance which parses the given
 input string into a Haskell integer.
+
+* [**Aeson Library**](https://hackage.haskell.org/package/aeson)
 
 #### Value
 
@@ -9307,6 +9399,8 @@ Yaml is a textual serialization format similar to JSON. It uses an indentation
 sensitive structure to encode nested maps of keys and values. The Yaml interface
 for Haskell is a precise copy of ``Data.Aeson``
 
+* [**Yaml Library**](https://hackage.haskell.org/package/yaml)
+
 ~~~~ {.haskell include="src/26-data-formats/example.yaml"}
 ~~~~
 
@@ -9334,9 +9428,12 @@ Object
      ])
 ```
 
+To parse this file we use the following datatypes and functions:
+
 ~~~~ {.haskell include="src/26-data-formats/yaml.hs"}
 ~~~~
 
+Which generates:
 
 ```haskell
 Invoice
@@ -9361,6 +9458,8 @@ CSV
 ---
 
 Cassava is an efficient CSV parser library. We'll work with this tiny snippet from the iris dataset:
+
+* [**Cassava Library**](https://hackage.haskell.org/package/cassava)
 
 ~~~~ {.perl include="src/26-data-formats/iris.csv"}
 ~~~~
@@ -9485,6 +9584,9 @@ is not itself a proper monad so the various laws and invariants that normally
 apply for monads may break down or fail with error terms.
 
 See: [Making a Website with Haskell](http://adit.io/posts/2013-04-15-making-a-website-with-haskell.html)
+
+Servant
+-------
 
 Hastache
 --------
@@ -11567,6 +11669,11 @@ See:
 wl-pprint-text
 -------------------
 
+``wl-pprint-text`` is a Wadler-style pretty printing library that uses Text
+builder objects for efficient generation under the hood. It exposes effectively
+the same interface as the String-based ``pretty`` library but is much more
+performant.
+
 ##### Combinators
 
 ```haskell
@@ -11581,6 +11688,10 @@ See:
 
 * [wl-pprint-text](https://hackage.haskell.org/package/wl-pprint-text)
 
+pretty-show
+-----------
+
+TODO
 
 Haskeline
 ---------
@@ -12176,6 +12287,11 @@ throughout functional programming, and once we recognize them we can abstract
 over them. For instance a monoid is a combination of a unit and a single
 associative operation over a set of values.
 
+Structure Notation
+--------- ---------
+Monoid    $(M, •)$
+Monad     $(T, \mu, \eta)$
+
 Categories
 ----------
 
@@ -12336,6 +12452,11 @@ transformations.
 
 See: [You Could Have Defined Natural Transformations](http://blog.sigfpe.com/2008/05/you-could-have-defined-natural.html)
 
+Adjunctions
+-----------
+
+TODO
+
 Yoneda Lemma
 ------------
 
@@ -12369,6 +12490,8 @@ In terms of Haskell types, given a fixed type ``a`` and a functor ``f``, if we
 have some a higher order polymorphic function ``g`` that when given a function
 of type ``a -> b`` yields ``f b`` then the behavior ``g`` is entirely determined
 by ``a -> b`` and the behavior of ``g`` can written purely in terms of ``f a``.
+
+**DeMorgan's Law**
 
 See:
 
@@ -12415,6 +12538,7 @@ Resources
 
 * [Category Theory, Awodey](http://www.amazon.com/Category-Theory-Oxford-Logic-Guides/dp/0199237182)
 * [Category Theory Foundations](https://www.youtube.com/watch?v=ZKmodCApZwk)
+* [Category Theory for Programmers](https://www.youtube.com/watch?v=I8LbkfSSR58&list=PLbgaMIhjbmEnaH_LTkxLI7FMa2HsnawM_)
 * [The Catsters](http://www.youtube.com/user/TheCatsters)
 
 <hr/>
@@ -12468,7 +12592,9 @@ polymorphism* through typeclasses.
 
 Haskell is *pure* and statically tracks effects.
 
-Haskell employs *lazy evaluation* by default.
+Haskell employs *lazy evaluation* by default using *call-by-need*.
+
+Haskell's package manager is cabal-install or stack.
 
 OCaml
 -----
@@ -12510,6 +12636,8 @@ OCaml is not an optimizing compiler.
 
 OCaml is *impure* by default and does not statically track effects.
 
+OCaml's evaluation is *call-by-value*.
+
 OCaml has a package manager called [OPAM](https://opam.ocaml.org/).
 
 Standard ML
@@ -12543,17 +12671,24 @@ Standard ML is *impure* by default and does not statically track effects.
 
 Standard ML implementations are typically *garbage collected*.
 
+Standard ML's evaluation is *call-by-value*.
+
 Standard ML employs strict evaluation.
 
 Agda
 ----
 
-**Main difference**: Agda is not a general purpose language, Haskell is.
+Agda is a dependently typed functional programming language used in type theory
+research. Unlike Coq, has no support for tactics, and proofs are written in a
+functional programming style. 
+
+**Main difference**: Agda is not a general purpose language, Haskell is. Agda is
+not used to write executable programs for practical uses outside of research.
 
 Agda's main implementation is *agda*.
 
 Agda is not a general purpose language, it is largely used as a proof
-environment.
+environment and tool for constructive mathematics.
 
 Agda has no package manager.
 
@@ -12594,6 +12729,8 @@ Idris is a *general purpose language*.
 Idris allows polymorphism by means of *parametric polymorphism* and *ad-hoc
 polymorphism*.
 
+Idris's evaluation is *call-by-value*.
+
 Idris is a *statically typed* language.
 
 Idris is *garbage collected* by default, although there is some novel work on
@@ -12626,6 +12763,8 @@ Rust is a *statically typed* language.
 
 Rust is a *general purpose language*.
 
+Rust's package manager is Cargo.
+
 Rust allows polymorphism by means of *parametric polymorphism* and *ad-hoc
 polymorphism*.
 
@@ -12652,6 +12791,8 @@ Purescript's main implementation is *purescript*.
 
 Purescript is a *statically typed* language.
 
+Purescript's evaluation is *call-by-value*.
+
 Purescript is *pure* and statically tracks effects using an extensible record
 system embedded in the Eff monad.
 
@@ -12669,6 +12810,9 @@ modules or higher polymorphism.
 Elm's main implementation is *elm*.
 
 Elm is a *statically typed* language.
+
+Elm targets Javascript and is "transpiled" to Javascript source code to be run
+exclusively in a browser or Javascript interpreter.
 
 Elm allows polymorphism by means of *parametric polymorphism*.
 
@@ -12699,6 +12843,13 @@ type.
 
 R
 -
+
+R is a programming language and software environment for statistical computing
+and graphics. The R language is widely used among statisticians and data miners
+for developing statistical software and data analysis
+
+**Main difference**: R is unityped and domain specific language, Haskell is
+statically typed and general purpose.
 
 R's main implementation is *r*.
 
@@ -12734,6 +12885,12 @@ Julia is *compiled* through the LLVM framework.
 Erlang
 ------
 
+Erlang is a general-purpose programming language and runtime environment. Erlang
+has built-in support for concurrency, distribution and fault tolerance. 
+
+**Main difference**: Erlang is unityped and imperative, Haskell is statically
+typed and functional.
+
 Erlang's main implementation is *erl*.
 
 Erlang is a *unityped* language.
@@ -12742,29 +12899,33 @@ Erlang is interpreted.
 
 Erlang allows polymorphism by means of *unityping*.
 
+Erlang's evaluation is *call-by-value*.
+
 Erlang internally refers to runtime value tags as *types*, which differs from
 the Haskell notion of types.
 
 Erlang is *impure* by default and does not statically track effects.
 
+Elixer
+------
 
 Java
 ------
 
-Java is a general purpose programming language. It is an object-oriented, concurrent language
-which is statically typed. It is one of the most frequently used languages in the industry, as well
-as a common language used in academia to teach the fundamentals of object oriented programming.
+Java is a general purpose programming language. It is an object-oriented,
+concurrent language which is statically typed. It is one of the most frequently
+used languages in the industry, as well as a common language used in academia to
+teach the fundamentals of object oriented programming.
 
-**Main difference**: Java is an object-oriented language, compared to Haskell which is functional.
+**Main difference**: Java is an object-oriented language, compared to Haskell
+which is functional.
 
-Java compiles to Java Bytecode which can be ran on a Java Virtual Machine.
+Java is *statically compiled* to Java Bytecode which can be ran on a Java
+Virtual Machine.
 
 Java's most recent version is Java8
 
-Java is cross-platform. It can be ran on Linux, Windows and Mac. (WORA)
-
-Java can also be used for android development
-
+Java is cross-platform. It can be ran on Linux, Windows and Mac.
 
 Clojure
 -------
@@ -12782,6 +12943,8 @@ Clojure's main implementation is *clojure*.
 Clojure is a *unityped* language.
 
 Clojure allows polymorphism by means of *unityping*.
+
+Clojure is *garbage collected*.
 
 Clojure internally refers to runtime value tags as *types*, which differs from
 the Haskell notion of types.
@@ -12803,7 +12966,9 @@ Haskell is a modern functional typed language.
 Swift's main implementation is *swiftc*.
 
 Swift allows polymorphism by means of *parametric polymorphism* and *ad-hoc
-polymorphism*.
+polymorphism* through through inheritance, interfaces, and reflection.
+
+Swift is *garbage collected*.
 
 Swift is a *statically typed* language.
 
@@ -12811,8 +12976,15 @@ Swift is *compiled* through the LLVM framework.
 
 Swift *does not* have an effect system.
 
-C#
+Scheme
 ------
+
+Racket
+------
+
+C#
+--
+
 C# is a typed, class-based, single-inheritance object-oriented programming
 language originally developed at Microsoft as the flagship language for the
 .NET framework. Early versions closely resemble *Java*, but the language has
@@ -12841,8 +13013,11 @@ C# is impure and *does not* track effects.
 C# is typically *compiled* to .NET IL, which is then interpreted by the .NET
 runtime.
 
+F#
+--
+
 C++
-------
+---
 
 C++ is a typed multi-paradigm (imperative, structured/procedural, class-based
 multiple-inheritance object-oriented, template metaprogramming) programming
@@ -12904,7 +13079,33 @@ Go is *garbage collected*.
 Go *does not* have an effect system.
 
 Scala
-----------
+-----
+
+Scala is a general purpose multi-paradigm language. Like Java, Scala is
+object-oriented, and uses a curly-brace syntax reminiscent of the C programming
+language. Unlike Java, Scala has many features of functional programming
+languages like Scheme, Standard ML and Haskell, including currying, type
+inference, immutability, lazy evaluation, and pattern matching.
+
+**Main difference**: Scala mixes functional programming with imperative
+programming and does not take a language-integrated stance on purity or effect
+tracking which breaks equational reasoning. External libraries and frameworks
+exist that embrace functional programming more effectively, but it is not
+enforced and imperative code and thin wrappers around Java libs quite often
+leaks industrial codebases.
+
+Scala's main implementation is [*scala*](http://www.scala-lang.org/).
+
+Scala is a *statically typed* language.
+
+Scala allows polymorphism by means of *parametric polymorphism* and *ad-hoc
+polymorphism* through implicits.
+
+Scala is *garbage collected*.
+
+Scala language *does not* have an effect system.
+
+Scala is statically *compiled* to Java Virtual Machien bytecode.
 
 Javascript
 ----------
@@ -12930,6 +13131,18 @@ Javascript internally refers to runtime value tags as *types*, which differs
 from the Haskell notion of types.
 
 The majority of Javascript implementations are garbage collected.
+
+Kotlin
+------
+
+PHP
+---
+
+Perl
+----
+
+Lua
+---
 
 <hr/>
 
