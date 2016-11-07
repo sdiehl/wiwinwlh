@@ -2473,7 +2473,9 @@ do type system research will have a very different interpretation of Haskell
   is the same as `f $ (a)` in Haskell98, but `TemplateHaskell` will interpret
   `$(a)` as a splice.
 
-<extensions></extensions>
+<div class="language-extensions">
+  <extensions></extensions>
+</div>
 
 See: [GHC Extension Reference](http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/flag-reference.html#idp14615552)
 

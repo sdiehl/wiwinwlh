@@ -6,7 +6,7 @@ $(function () {
     $sidebar.toggleClass('expanded');
   });
 
-  $sidebar.find('.sidebar-nav').click(function () {
+  $sidebar.find('.sidebar-nav a').click(function () {
     $sidebar.removeClass('expanded');
   });
 });
