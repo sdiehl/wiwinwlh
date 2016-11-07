@@ -97,20 +97,24 @@
   }
   #sidebar-wrapper .sidebar-nav {
     display: none;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 50px;
+    height: 100%;
+    border-top: 1px solid #eee;
+    overflow-y: auto;
     font-size: 15px;
+  }
+  #sidebar-wrapper .sidebar-nav a {
+    display: inline-block;
   }
   #sidebar-wrapper.expanded {
     height: 100%;
   }
   #sidebar-wrapper.expanded .sidebar-nav {
     display: block;
-    position: absolute;
-    top: 50px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    border-top: 1px solid #eee;
-    overflow-y: auto;
   }
   #sidebar-wrapper .logo {
     display: inline-block;
