@@ -777,7 +777,7 @@ For reasons of sexiness, it is desirable to set your GHC prompt to a ``λ`` or a
 #### GHCi Performance
 
 For large projects, GHCi with the default flags can use quite a bit of memory
-and take a long time to compile. To speed compilation by keeping artificats for
+and take a long time to compile. To speed compilation by keeping artifacts for
 compiled modules around, we can enable object code compilation instead of
 bytecode.
 
@@ -785,10 +785,10 @@ bytecode.
 :set -fobject-code
 ```
 
-Enabling object code compliation may complicate type inference, since type
+Enabling object code compilation may complicate type inference, since type
 information provided to the shell can sometimes be less informative than
 source-loaded code. This under specificity can result in breakage with some
-langauge extensions. In that case, you can temporarily reenable bytecode
+language extensions. In that case, you can temporarily reenable bytecode
 compilation on a per module basis with the ``-fbyte-code`` flag.
 
 ```haskell
@@ -12906,7 +12906,7 @@ the Haskell notion of types.
 
 Erlang is *impure* by default and does not statically track effects.
 
-Elixer
+Elixir
 ------
 
 Java
