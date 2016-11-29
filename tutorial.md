@@ -6975,8 +6975,8 @@ SS (SS SZ)   Sing ('S ('S 'Z))  2
 
 Value-level  Type-level         Models
 -----------  ---------------    -------
-STrue        Sing 'False        False
-SFalse       Sing 'True         True
+SFalse       Sing 'False        False
+STrue        Sing 'True         True
 
 **Promoted Maybe**
 
@@ -12680,7 +12680,7 @@ Agda
 
 Agda is a dependently typed functional programming language used in type theory
 research. Unlike Coq, has no support for tactics, and proofs are written in a
-functional programming style. 
+functional programming style.
 
 **Main difference**: Agda is not a general purpose language, Haskell is. Agda is
 not used to write executable programs for practical uses outside of research.
@@ -12886,7 +12886,7 @@ Erlang
 ------
 
 Erlang is a general-purpose programming language and runtime environment. Erlang
-has built-in support for concurrency, distribution and fault tolerance. 
+has built-in support for concurrency, distribution and fault tolerance.
 
 **Main difference**: Erlang is unityped and imperative, Haskell is statically
 typed and functional.
