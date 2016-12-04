@@ -4245,10 +4245,16 @@ See:
 utf8-string
 -----------
 
+TODO
+
 See: [utf8-string](https://hackage.haskell.org/package/utf8-string)
 
 base64-bytestring
 -----------
+
+TODO
+
+See: [utf8-string](https://hackage.haskell.org/package/base64-bytestring)
 
 Printf
 ------
@@ -4575,7 +4581,7 @@ resulting collected arguments must either converted into a single type or unpack
 
 See: [Polyvariadic functions](http://okmij.org/ftp/Haskell/polyvariadic.html)
 
-</hr>
+<hr/>
 
 Error Handling
 ==============
@@ -4707,6 +4713,8 @@ safe-exceptions
 ---------------
 
 TODO
+
+<hr/>
 
 Advanced Monads
 ===============
@@ -5793,6 +5801,24 @@ recursion-schemes
 This is an advanced section, and is not typically necessary to write Haskell.
 </div>
 
+Name
+-----          ---------------------------------                -----------------
+Catamorphism   ``foldr :: (a -> b -> b) -> b -> [a] -> b``      Deconstructs a data structure
+Anamorphism    ``unfoldr :: (b -> Maybe (a, b)) -> b -> [a]``   Constructs a structure level by level
+
+```haskell
+-- | A fix-point type. 
+newtype Fix f = Fix { unFix :: f (Fix f) }
+
+-- | Catamorphism or generic function fold. 
+cata :: Functor f => (f a -> a) -> (Fix f -> a)
+cata f = f . fmap (cata f) . unFix
+
+-- | Anamorphism or generic function unfold. 
+ana :: Functor f => (a -> f a) -> (a -> Fix f)
+ana f = Fix . fmap (ana f) . f
+```
+
 The code from the F-algebra examples above is implemented in an off-the-shelf
 library called ``recursion-schemes``.
 
@@ -6359,6 +6385,14 @@ on under the hood.
 
 ~~~~ {.haskell include="src/16-type-families/role_infer.hs"}
 ~~~~
+
+```haskkell
+coerce :: Coercible * a b => a -> b
+class (~R#) k k a b => Coercible k a b
+```
+
+[Safe Zero-cost Coercions for Haskell](http://cs.brynmawr.edu/~rae/papers/2014/coercible/coercible.pdf)
+[Data.Coerce](https://hackage.haskell.org/package/base-4.9.0.0/docs/Data-Coerce.html#t:Coercible)
 
 See:
 
@@ -8386,6 +8420,16 @@ optimized for append/prepend operations and traversal.
 ~~~~ {.haskell include="src/20-data-structures/sequence.hs"}
 ~~~~
 
+Fingertree
+----------
+
+See: [fingertree](https://hackage.haskell.org/package/fingertree)
+
+Vault
+-----
+
+See: [vault](https://hackage.haskell.org/package/vault)
+
 <hr/>
 
 FFI
@@ -8531,6 +8575,8 @@ int main( int argc, char *argv[] )
 ```
 
 -->
+
+<hr/>
 
 Concurrency
 ===========
@@ -9066,13 +9112,24 @@ As a simple input consider the following simple program.
 Configurator
 ------------
 
+Configurator is a library for configuring Haskell daemons and programs.  It uses
+a simple, but flexible, configuration language, supporting several of the most
+commonly needed types of data, along with interpolation of strings from the
+configuration or the system environment.
+
 ~~~~ {.haskell include="src/24-parsing/configurator.hs"}
 ~~~~
+
+An example configuration file:
 
 ~~~~ {.haskell include="src/24-parsing/example.config"}
 ~~~~
 
-</hr>
+Configurator also includes an ``import`` directive allows the configuration of a
+complex application to be split across several smaller files, or configuration
+data to be shared across several applications.
+
+<hr/>
 
 Streaming
 =========
@@ -9205,6 +9262,79 @@ Cryptography
 cryptonite
 ----------
 
+**Ciphers**
+
+Symmetric-key algorithms are algorithms for cryptography that use the same
+cryptographic keys for both encryption of plaintext and decryption of
+ciphertext.
+
+* AES
+* Blowfish
+* Camellia
+* ChaCha
+* ChaChaPoly1305
+* **DES**
+* **RC4**
+* Salsa
+* TripleDES
+* Types
+
+**Hash**
+
+A cryptographic hash function is a special class of hash function that has
+certain properties which make it suitable for use in cryptography. It is a
+mathematical algorithm that maps data of arbitrary size to a bit string of a
+fixed size (a hash function) which is designed to also be a one-way function,
+that is, a function which is infeasible to invert.
+
+* SHA1
+* SHA2
+* SHA3
+* MD2
+* MD4
+* MD5
+* **Keccak**
+* Ripemd
+* Whirlpool
+
+**MAC**
+
+A keyed-hash message authentication code (HMAC) is a specific type of message
+authentication code (MAC) involving a cryptographic hash function (hence the
+'H') in combination with a secret cryptographic key. As with any MAC, it may be
+used to simultaneously verify both the data integrity and the authentication of
+a message.
+
+* **HMAC**
+* Poly1305
+
+**Key Derivation Function**
+
+A key derivation function (KDF) derives one or more secret keys from a secret
+value such as a master key, a password, or a passphrase using a pseudo-random
+function.
+
+* PBKDF2
+* Scrypt
+* HKDF
+
+**Public Key Cryptography**
+
+Asymmetric cryptography, also known as public key cryptography, uses public and
+private keys to encrypt and decrypt data. The keys are simply large numbers that
+have been paired together but are not identical (asymmetric). One key in the
+pair can be shared with everyone; it is called the public key. The other key in
+the pair is kept secret; it is called the private key. Either of the keys can be
+used to encrypt a message; the opposite key from the one used to encrypt the
+message is used for decryption.
+
+* Curve25519
+* Diffie Hellman (DH)
+* Digital Signature Algorithm (DSA)
+* Edwards-curve Digital Signature Algorithm (ECDSA)
+* Edwards-curve 448 (Ed448)
+* RSA
+
 entropy
 -------
 
@@ -9219,6 +9349,9 @@ crypto-api
 
 x509
 ----
+
+X.509 is an ITU-T standard for a *public key infrastructure*. X.509v3 is defined
+in RCC5280 X.509 certificates are commonly used in protocols like *TLS*.
 
 ed25519
 -------
@@ -9235,6 +9368,12 @@ zlib
 ----
 
 <hr/>
+
+Date and Time
+=============
+
+hourglass
+---------
 
 Data Formats
 =============
@@ -11478,6 +11617,16 @@ require own pkg trusted: False
 
 </hr>
 
+Resources
+----------
+
+* [GHC Illustrated](https://takenobu-hs.github.io/downloads/haskell_ghc_illustrated.pdf)
+* [Dive into GHC: Pipeline](http://www.stephendiehl.com/posts/ghc_01.html)
+* [Dive into GHC: Intermediate Forms](http://www.stephendiehl.com/posts/ghc_02.html)
+* [Dive into GHC: Targeting Core](http://www.stephendiehl.com/posts/ghc_03.html)
+
+<hr/>
+
 Profiling
 =========
 
@@ -11568,6 +11717,13 @@ MAIN        MAIN                     42           0    0.0    0.7   100.0  100.0
 
 Languages
 =========
+
+Binder Libraries
+----------------
+
+* [Names for Free](https://nicolaspouillard.fr/publis/names-for-free.pdf)
+* Abstract Binding Trees
+* du Bruijn Indicies
 
 unbound
 -------
@@ -12452,11 +12608,6 @@ transformations.
 
 See: [You Could Have Defined Natural Transformations](http://blog.sigfpe.com/2008/05/you-could-have-defined-natural.html)
 
-Adjunctions
------------
-
-TODO
-
 Yoneda Lemma
 ------------
 
@@ -12491,7 +12642,19 @@ have some a higher order polymorphic function ``g`` that when given a function
 of type ``a -> b`` yields ``f b`` then the behavior ``g`` is entirely determined
 by ``a -> b`` and the behavior of ``g`` can written purely in terms of ``f a``.
 
-**DeMorgan's Law**
+**Continuation Passing**
+
+TODO
+
+See: 
+
+* [Reason Isomorphically](https://www.cs.ox.ac.uk/ralf.hinze/publications/WGP10.pdf)
+* [The Continuation Passing Transform and the Yoneda Embedding](https://golem.ph.utexas.edu/category/2008/01/the_continuation_passing_trans.html)
+* [Yoneda is CPS](https://github.com/manzyuk/blog/blob/master/yoneda-embedding-is-cps.org)
+
+**Double-negated principle of excluded middle**
+
+TODO
 
 See:
 
@@ -12532,6 +12695,21 @@ the ``Maybe`` monad.
 Just >=> f ≡ f
 f >=> Just ≡ f
 ```
+
+Adjunctions
+-----------
+
+TODO
+
+Cartesian Closed Categories
+---------------------------
+
+TODO
+
+Monoidal Categories
+-------------------
+
+In a symmetric monoidal closed category, like lambda calculus
 
 Resources
 ---------
@@ -13180,4 +13358,5 @@ Code
 * [29-ghc/               ](https://github.com/sdiehl/wiwinwlh/tree/master/src/29-ghc/)
 * [30-languages/         ](https://github.com/sdiehl/wiwinwlh/tree/master/src/30-languages/)
 * [31-template-haskell/  ](https://github.com/sdiehl/wiwinwlh/tree/master/src/31-template-haskell/)
+* [32-cryptography/      ](https://github.com/sdiehl/wiwinwlh/tree/master/src/32-cryptography)
 * [33-categories/        ](https://github.com/sdiehl/wiwinwlh/tree/master/src/33-categories/)
