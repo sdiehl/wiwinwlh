@@ -1,13 +1,10 @@
 % What I Wish I Knew When Learning Haskell (Version 2.3)
--------
 % Stephen Diehl
 % March 2016
 
 Stephen Diehl (<a class="author" href="https://twitter.com/smdiehl">@smdiehl</a> )
 
 This is the fourth draft of this document.
-
-**[PDF Version](http://dev.stephendiehl.com/hask/tutorial.pdf)**
 
 #### License
 
@@ -21,10 +18,50 @@ source is [available on
 Github](https://github.com/sdiehl/wiwinwlh/tree/master/src). Pull requests are
 always accepted for changes and additional content. This is a living document.
 
+PDF Version
+-----------
 
-#### Changelog
+**[PDF Version](http://dev.stephendiehl.com/hask/tutorial.pdf)**
+
+Changelog
+---------
 
 **2.4**
+
+* Alternate Preludes (Updated)
+* utf8-string
+* foundation
+* base64-bytestring
+* safe-exceptions
+* recrusion-schemes (Updated)
+* Data types a la carte
+* Coercible
+* generics-sop
+* Z3
+* Time complexity for data structures
+* Fingertree
+* Vault
+* Cryptography section
+* cryptonite
+* entropy
+* memory
+* crypto-pubkey
+* ed25519
+* Compression section
+* lz4
+* zlib
+* Date & Time section
+* hourglass
+* Servant
+* Names for Free
+* Abstract Binding Trees
+* de Bruijn Indices
+* wl-pprint-text (Updated)
+* pretty-show
+* Adjunctions
+* Cartesian Closed Categories
+* Monoidal Categories
+* New langauge comparisons (Koitlin, Lua, etc)
 
 **2.3**
 
@@ -37,9 +74,9 @@ always accepted for changes and additional content. This is a living document.
 * Type Holes (Updated)
 * Partial Type Signatures
 * Pattern Synonyms (Updated)
-* Unboxed Types ( Updated )
-* Vim Integration ( Updated )
-* Emacs Integration ( Updated )
+* Unboxed Types (Updated)
+* Vim Integration (Updated)
+* Emacs Integration (Updated)
 * Strict Language Extension
 * Injective Type Families
 * Custom Type Errors
@@ -2872,15 +2909,20 @@ f = (,(),,(),(),,)
 MultiWayIf
 ------------
 
+Multi-way expands traditional if statements to allow pattern match conditions
+that are equivalent to a chain of if-then-else statements. This allows us to
+write "pattern matching predicates" on a value. This alters the syntax of
+Haskell language.
+
 ```haskell
 {-# LANGUAGE MultiWayIf #-}
 
-bmiTell :: Float -> String
+bmiTell :: Float -> Text
 bmiTell bmi = if
-  | bmi <= 18.5 -> "You're underweight."
-  | bmi <= 25.0 -> "You're average weight."
-  | bmi <= 30.0 -> "You're overewight."
-  | otherwise   -> "You're a whale."
+  | bmi <= 18.5 -> "Underweight."
+  | bmi <= 25.0 -> "Average weight."
+  | bmi <= 30.0 -> "Overewight."
+  | otherwise   -> "Clinically overweight."
 ```
 
 EmptyCase
