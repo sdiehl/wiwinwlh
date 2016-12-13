@@ -29,6 +29,7 @@ Changelog
 **2.4**
 
 * Alternate Preludes (Updated)
+* NumDecimals extension
 * utf8-string
 * foundation
 * base64-bytestring
@@ -2942,14 +2943,18 @@ LambdaCase
 For case statements, LambdaCase allows the elimination of redundant free
 variables introduced purely for the case of pattern matching on.
 
+Without *LambdaCase*:
+
 ```haskell
-\case
+\temp -> case temp of
   p1 -> 32
   p2 -> 32
 ```
 
+With *LambdaCase*:
+
 ```haskell
-\temp -> case temp of
+\case
   p1 -> 32
   p2 -> 32
 ```
@@ -9301,6 +9306,9 @@ See: [Conduit Overview](https://www.fpcomplete.com/user/snoyberg/library-documen
 Cryptography
 ============
 
+memory
+-------
+
 cryptonite
 ----------
 
@@ -9319,7 +9327,6 @@ ciphertext.
 * **RC4**
 * Salsa
 * TripleDES
-* Types
 
 **Hash**
 
@@ -9331,13 +9338,58 @@ that is, a function which is infeasible to invert.
 
 * SHA1
 * SHA2
-* SHA3
-* MD2
-* MD4
 * MD5
 * **Keccak**
 * Ripemd
 * Whirlpool
+
+#### MD5
+
+<div class="alert alert-danger">
+MD5 is a deprecated hash algorithm that has practical known collision attacks
+</div>
+
+MD5 is a deprecated cryptographic hash function. It produces a 128-bit message
+digest and has practical known collision attacks.
+
+~~~~ {.haskell include="src/32-cryptography/MD5.hs"}
+~~~~
+
+#### SHA1
+
+<div class="alert alert-danger">
+NIST has deprecated SHA-1 in favor of the SHA-2 variants. Cryptanalysis of SHA-1
+has demonstrated that it is vulnerable to practical collision attacks
+</div>
+
+#### SHA3 / Keccak
+
+~~~~ {.haskell include="src/32-cryptography/Keccak.hs"}
+~~~~
+
+#### SHA256
+
+SHA-256 is a cryptographic hash function from the SHA-2 family and is
+standardized by NIST. It produces a 256-bit message digest.
+
+~~~~ {.haskell include="src/32-cryptography/SHA.hs"}
+~~~~
+
+#### Whirlpool
+
+Whirlpool is a cryptographic hash function that is part of ISO/IEC 10118-3:2004.
+It produces a 512-bit message digest.
+
+~~~~ {.haskell include="src/32-cryptography/Whirlpool.hs"}
+~~~~
+
+#### RIPEMD160
+
+RIPEMD160 is a cryptographic hash function that is part of ISO/IEC 10118-3:2004.
+It produces a 160-bit message digest.
+
+~~~~ {.haskell include="src/32-cryptography/RIPEMD.hs"}
+~~~~
 
 **MAC**
 
@@ -9349,6 +9401,11 @@ a message.
 
 * **HMAC**
 * Poly1305
+
+#### HMAC
+
+~~~~ {.haskell include="src/32-cryptography/HMAC.hs"}
+~~~~
 
 **Key Derivation Function**
 
@@ -9378,9 +9435,6 @@ message is used for decryption.
 * RSA
 
 entropy
--------
-
-memory
 -------
 
 crypto-pubkey
@@ -9498,7 +9552,7 @@ JSON:
 ~~~~ {.json include="src/26-data-formats/example.json"}
 ~~~~
 
-#### Unstructured JSON
+#### Unstructured or Dynamic JSON
 
 In dynamic scripting languages it's common to parse amorphous blobs of JSON without any a priori structure and
 then handle validation problems by throwing exceptions while traversing it. We can do the same using Aeson and
