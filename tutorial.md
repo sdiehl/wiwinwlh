@@ -1863,14 +1863,12 @@ and then the next ``putStrLn`` is executed.
 ```haskell
 main :: IO ()
 main = putStrLn "Vesihiisi sihisi hississäään." >>=
-         \_ -> putStrLn "Or in English: 'The water devil was hissing
-                         in her elevator'."
+         \_ -> putStrLn "Or in English: 'The water devil was hissing in her elevator'."
 
 -- Sugared code, written with do notation
 main :: IO ()
 main = do putStrLn "Vesihiisi sihisi hississäään."
-          putStrLn "Or in English: 'The water devil was hissing in her
-                    elevator'."
+          putStrLn "Or in English: 'The water devil was hissing in her elevator'."
 ```
 
 Another useful function is ``getLine`` which has type ``IO String``. This
@@ -4120,6 +4118,15 @@ Foundation
 ----------
 
 TODO
+
+~~~~ {.haskell include="src/06-prelude/foundation.hs"}
+~~~~
+
+**Strings and Bytearrays**
+
+**Container Interface**
+
+**Numerical Tower**
 
 See: [Foundation](https://github.com/haskell-foundation/foundation)
 

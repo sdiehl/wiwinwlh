@@ -47,7 +47,7 @@ Chapter Code Examples:
 * [29-ghc/               ](https://github.com/sdiehl/wiwinwlh/tree/master/src/29-ghc/)
 * [30-languages/         ](https://github.com/sdiehl/wiwinwlh/tree/master/src/30-languages/)
 * [31-template-haskell/  ](https://github.com/sdiehl/wiwinwlh/tree/master/src/31-template-haskell/)
-* [32-template-haskell/  ](https://github.com/sdiehl/wiwinwlh/tree/master/src/32-cryptography/)
+* [32-cryptography       ](https://github.com/sdiehl/wiwinwlh/tree/master/src/32-cryptography/)
 * [33-categories/        ](https://github.com/sdiehl/wiwinwlh/tree/master/src/33-categories/)
 
 Contributing
