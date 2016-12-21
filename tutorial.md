@@ -3068,13 +3068,19 @@ pattern Elt = [a]
 
 * [Pattern Synonyms in GHC 8](http://mpickering.github.io/posts/2015-12-12-pattern-synonyms-8.html)
 
+DeriveFunctor
+-------------
+
+~~~~ {.haskell include="src/04-extensions/derive_functor.hs"}
+~~~~
+
 DeriveTraversable
 -------------
 
-DeriveFoldable
--------------
+~~~~ {.haskell include="src/04-extensions/derive_traversable.hs"}
+~~~~
 
-DeriveFunctor
+DeriveFoldable
 -------------
 
 DeriveGeneric
@@ -9670,8 +9676,12 @@ for Haskell is a precise copy of ``Data.Aeson``
 
 * [**Yaml Library**](https://hackage.haskell.org/package/yaml)
 
+**YAML Input:**
+
 ~~~~ {.haskell include="src/26-data-formats/example.yaml"}
 ~~~~
+
+**YAML Output:**
 
 ```haskell
 Object

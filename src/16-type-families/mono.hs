@@ -28,7 +28,7 @@ instance MonoFunctor MyMonoType where
   omap f (MCons x xs) = f x `MCons` omap f xs
 
 instance MonoFoldable MyMonoType where
-  ofoldMap f = ofoldr (mappend . f) mempty
+  ofoldMap f   = ofoldr (mappend . f) mempty
   ofoldr       = mfoldr
   ofoldl'      = mfoldl'
   ofoldr1Ex f  = ofoldr1Ex f . mtoList
