@@ -10607,8 +10607,6 @@ See:
 
 * [Secrets of the Glasgow Haskell Compiler inliner](https://research.microsoft.com/en-us/um/people/simonpj/Papers/inlining/inline.pdf)
 
-<!--
-
 Rewrite Rules
 -------------
 
@@ -10631,8 +10629,6 @@ This is an advanced section, and is not typically necessary to write Haskell.
 TODO
 
 * [List Fusion](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/rewrite-rules.html)
-
--->
 
 Dictionaries
 ------------
@@ -13468,7 +13464,7 @@ enduring testament to human capacity to route around problems.
 it's design was dominated by economic factors. Haskell was designed with some
 insight into the end result.
 
-Javascripts implementations include *NodeJS*, *V8* and *spidermoneky*.
+Javascript's implementations include *NodeJS*, *V8* and *spidermoneky*.
 
 Javascript is a *unityped* language.
 
