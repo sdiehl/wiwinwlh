@@ -13,6 +13,7 @@ library
   build-depends:       
     base            >= 4.6 && <4.10,
     bytestring      >= 0.10 && <0.11,
+    cereal          -any,
     cryptonite      >= 0.19 && <0.21
 
   default-language:    Haskell2010

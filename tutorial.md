@@ -503,7 +503,7 @@ stack init
 An example ``stack.yaml`` file for [GHC](https://www.haskell.org/ghc) 7.10.3 would look like:
 
 ```bash
-resolver: lts-6.4
+resolver: lts-7.12
 flags: {}
 extra-package-dbs: []
 packages: []
@@ -517,7 +517,7 @@ not in the Stackage repository. They are specified by the package and the
 version key. For instance, the ``zenc`` package could be added to
 the ``stack`` build:
 
-```
+```haskell
 extra-deps:
 - zenc-0.1.1
 ```
@@ -7854,6 +7854,8 @@ type instance Rep1 Maybe
 generics-sop
 ------------
 
+TODO
+
 Uniplate
 --------
 
@@ -8477,10 +8479,14 @@ optimized for append/prepend operations and traversal.
 Fingertree
 ----------
 
+TODO
+
 See: [fingertree](https://hackage.haskell.org/package/fingertree)
 
 Vault
 -----
+
+TODO
 
 See: [vault](https://hackage.haskell.org/package/vault)
 
@@ -9316,6 +9322,11 @@ Cryptography
 memory
 -------
 
+ByteArray
+
+entropy
+-------
+
 cryptonite
 ----------
 
@@ -9424,6 +9435,11 @@ function.
 * Scrypt
 * HKDF
 
+#### PBKDF2
+
+~~~~ {.haskell include="src/32-cryptography/PBKDF2.hs"}
+~~~~
+
 **Public Key Cryptography**
 
 Asymmetric cryptography, also known as public key cryptography, uses public and
@@ -9441,8 +9457,19 @@ message is used for decryption.
 * Edwards-curve 448 (Ed448)
 * RSA
 
-entropy
--------
+#### Curve25519
+
+Curve25519 is a state-of-the-art Diffie-Hellman function suitable for a wide
+variety of applications.
+
+Given a user's 32-byte secret key, Curve25519 computes the user's 32-byte public
+key. Given the user's 32-byte secret key and another user's 32-byte public key,
+Curve25519 computes a 32-byte secret shared by the two users. This secret can
+then be used to authenticate and encrypt messages between the two users.
+
+~~~~ {.haskell include="src/32-cryptography/Curve25519.hs"}
+~~~~
+
 
 crypto-pubkey
 ----------
@@ -13260,8 +13287,49 @@ Swift *does not* have an effect system.
 Scheme
 ------
 
+Scheme is a minimalist LISP implementation developed in the 1970s.
+
+**Main difference**: Scheme is minimalist dynamically typed language built
+around a small set of ideas making it easy to learn and teach. Haskell by
+contrast is a much larger language built as a platform to advance many modern
+areas of language research.
+
+Scheme has no canonical implementation; notable compilers include *chez scheme*
+and *mit scheme*.
+
+Scheme is a *unityped* language.
+
+Scheme allows polymorphism by means of *unityping*.
+
+Scheme is *garbage collected*.
+
+Scheme internally refers to runtime value tags as *types*, which differs from
+the Haskell notion of types.
+
+Scheme is either *interpreted* or *compiled*, depending on the implementation.
+
 Racket
 ------
+
+Racket is a minimalist LISP implementation developed in the 1990s.
+
+**Main difference**: Racket is minimalist dynamically typed language built
+around a small set of ideas making it easy to learn and teach. Haskell by
+contrast is a much larger language built as a platform to advance many modern
+areas of language research.
+
+Rackets's main implementation is *racket*.
+
+Racket is a *unityped* language.
+
+Racket allows polymorphism by means of *unityping*.
+
+Racket is *garbage collected*.
+
+Racket internally refers to runtime value tags as *types*, which differs from
+the Haskell notion of types.
+
+Racket is *interpreted*.
 
 C#
 --
@@ -13386,7 +13454,7 @@ Scala is *garbage collected*.
 
 Scala language *does not* have an effect system.
 
-Scala is statically *compiled* to Java Virtual Machien bytecode.
+Scala is statically *compiled* to Java Virtual Machine (JVM) bytecode.
 
 Javascript
 ----------
@@ -13416,8 +13484,54 @@ The majority of Javascript implementations are garbage collected.
 Kotlin
 ------
 
+**Main difference**: Kotlin is an imperative langauge which structures code
+around objects and classes, compared to Haskell which is functional language
+emphasizing pure higher-order functions.
+
+Kotlin is a *general purpose* programming language.
+
+Kotlin is *garbage collected* (but allows opting out of GC through the use of
+`unsafe` blocks)
+
+Kotlin is a *statically typed* language with limited *type inference* and some
+support for *dynamic typing*.
+
+Kotlin allows polymorphism by means of *parametric polymorphism* through
+generics, *ad-hoc polymorphism* through inheritance, interfaces, and reflection.
+
+Kotlin is impure and *does not* track effects.
+
+Kotlin is *statically compiled* to Java Bytecode which can be ran on a Java
+Virtual Machine.
+
+Kotlin is cross-platform. It can be ran on Linux, Windows and Mac.
+
 PHP
 ---
+
+PHP is a high-level, dynamic, untyped, and interpreted programming language that
+was common for scripting web applications in the 00s. PHP is widely criticized
+for it's poor design, unsafe defaults, and improper handling of simple
+programming constructs. Nevertheless PHP is widely used as the backet for
+several of the highest profile websites.
+
+**Main difference**: PHP was designed in ad-hoc fashion to meet the needs of
+server side web development before the field was well-understood. The PHP
+runtime is "organic" and the language itself lacks disciple and rigor found in
+Haskell.
+
+PHP implementations include *php* and *hack*.
+
+PHP is a *unityped* language.
+
+PHP is *interpreted*.
+
+PHP allows polymorphism by means of *unityping*.
+
+PHP internally refers to runtime value tags as *types*, which differs from the
+Haskell notion of types.
+
+The majority of PHP implementations are garbage collected.
 
 Perl
 ----
