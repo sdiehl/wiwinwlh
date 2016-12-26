@@ -3095,12 +3095,12 @@ methods.  If the typeclass implements a default for each method then this will
 be well-defined and give rise to an automatic instances.
 
 StaticPointers
------------------
+--------------
 
 DuplicateRecordFields
 ----------------------
 
-GHC 8.0 introduced the DuplicateRecordFields extensions which loosens GHC's
+GHC 8.0 introduced the ``DuplicateRecordFields`` extensions which loosens GHC's
 restriction on records in the same module with identical accessors. The precise
 type that is being projected into is now deferred to the callsite.
 
