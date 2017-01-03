@@ -25,7 +25,7 @@ merkleRoot hs  = joinHash (merkleRoot left) (merkleRoot right)
     (left, right) = splitAt i hs
     i = until (\x -> x*2 >= length hs) (*2) 1
 
-tree :: Digest SHA256
+tree :: Hash
 tree = merkleRoot $ map hash (["4", "8", "15", "16", "23", "42"] :: [B.ByteString])
 
 file :: IO ()
