@@ -1,6 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-
 import Crypto.Hash (SHA256, Digest, hash)
 import Crypto.MAC.HMAC (HMAC(..), hmac)
 import Data.ByteArray (convert)
