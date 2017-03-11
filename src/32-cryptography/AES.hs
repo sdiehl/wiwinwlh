@@ -5,10 +5,8 @@ import Crypto.Cipher.AES (AES256)
 import Crypto.Cipher.Types (BlockCipher(..),Cipher(..),nullIV)
 import Crypto.Error (CryptoFailable(..))
 
--- https://github.com/Risto-Stevcev/haskell-crypto-simple/blob/master/src/Crypto/Simple/CBC.hs
-
 newtype Key a = Key ByteString
-    deriving (Show,Eq)
+  deriving (Show,Eq)
 
 secretKey :: ByteString
 secretKey = "012-456-89A-CDE-012-456-89A-CDE-"
@@ -40,7 +38,9 @@ bar = decrypt secretKey foo
 main :: IO ()
 main = do
   let msg = "The quick brown fox jumped over the lazy dog"
-  let res = encrypt secretKey msg
-  let dec = decrypt secretKey res
-  print res
-  print dec
+  let ctext = encrypt secretKey msg
+  let ptext = decrypt secretKey ctext
+  putStrLn "Crypotext:"
+  print ctext
+  putStrLn "Decrypted plaintext:"
+  print ptext
