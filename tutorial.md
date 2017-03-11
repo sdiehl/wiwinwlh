@@ -9330,6 +9330,18 @@ memory
 
 ByteArray
 
+```haskell
+data Base 
+  = Base16            -- ^ similar to hexadecimal
+  | Base32
+  | Base64            -- ^ standard Base64
+  | Base64URLUnpadded -- ^ unpadded URL-safe Base64
+  | Base64OpenBSD     -- ^ Base64 as used in OpenBSD password encoding (such as bcrypt)
+
+convertToBase :: (ByteArrayAccess bin, ByteArray bout) => Base -> bin -> bout
+convertFromBase :: (ByteArrayAccess bin, ByteArray bout) => Base -> bin -> Either String bout
+```
+
 entropy
 -------
 
@@ -9385,6 +9397,11 @@ digest and has practical known collision attacks.
 NIST has deprecated SHA-1 in favor of the SHA-2 variants. Cryptanalysis of SHA-1
 has demonstrated that it is vulnerable to practical collision attacks
 </div>
+
+#### SipHash
+
+~~~~ {.haskell include="src/32-cryptography/SipHash.hs"}
+~~~~
 
 #### SHA3 / Keccak
 
