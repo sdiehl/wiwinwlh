@@ -46,8 +46,6 @@ Changelog
 * cryptonite
 * entropy
 * memory
-* crypto-pubkey
-* ed25519
 * Compression section
 * lz4
 * zlib
@@ -9403,7 +9401,7 @@ has demonstrated that it is vulnerable to practical collision attacks
 ~~~~ {.haskell include="src/32-cryptography/SipHash.hs"}
 ~~~~
 
-#### SHA3 / Keccak
+#### Keccak
 
 ~~~~ {.haskell include="src/32-cryptography/Keccak.hs"}
 ~~~~
@@ -9473,12 +9471,13 @@ the pair is kept secret; it is called the private key. Either of the keys can be
 used to encrypt a message; the opposite key from the one used to encrypt the
 message is used for decryption.
 
+* RSA
 * Curve25519
 * Diffie Hellman (DH)
+* Elliptic Curve Diffie Hellman (ECDH)
 * Digital Signature Algorithm (DSA)
 * Edwards-curve Digital Signature Algorithm (ECDSA)
 * Edwards-curve 448 (Ed448)
-* RSA
 
 #### Curve25519
 
@@ -9493,21 +9492,16 @@ then be used to authenticate and encrypt messages between the two users.
 ~~~~ {.haskell include="src/32-cryptography/Curve25519.hs"}
 ~~~~
 
+#### Secp256k1
 
-crypto-pubkey
-----------
-
-crypto-api
-----------
+~~~~ {.haskell include="src/32-cryptography/Secp256k1.hs"}
+~~~~
 
 x509
 ----
 
 X.509 is an ITU-T standard for a *public key infrastructure*. X.509v3 is defined
 in RCC5280 X.509 certificates are commonly used in protocols like *TLS*.
-
-ed25519
--------
 
 <hr/>
 
