@@ -9873,7 +9873,7 @@ Of importance to note is the Blaze library used here overloads do-notation but
 is not itself a proper monad so the various laws and invariants that normally
 apply for monads may break down or fail with error terms.
 
-See: [Making a Website with Haskell](http://adit.io/posts/2013-04-15-making-a-website-with-haskell.html)
+A collection of useful related resources can be found on the Scotty wiki: [Scotty Tutorials & Examples](https://github.com/scotty-web/scotty/wiki)
 
 Servant
 -------
