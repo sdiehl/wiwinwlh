@@ -1680,7 +1680,7 @@ Maybe
 -----
 
 The *Maybe* monad is the simplest first example of a monad instance. The Maybe
-monad models computations which fail to yield a value at any point during
+monad models computations which may fail to yield a value at any point during
 computation.
 
 The Maybe type has two value constructors. The first, ``Just``,  is a unary
