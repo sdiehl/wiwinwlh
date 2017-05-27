@@ -2712,6 +2712,7 @@ problems. These include:
 These almost always indicate a design flaw and shouldn't be turned on to remedy the error at hand, as
 much as GHC might suggest otherwise!
 
+
 NoMonomorphismRestriction
 -------------------------
 
@@ -2764,15 +2765,16 @@ Now everything will work as expected:
 bar :: Num a => a -> a
 ```
 
-Extended Defaulting
--------------------
+ExtendedDefaultRules
+--------------------
 
-Haskell normally applies several defaulting rules for ambiguous literals in the
-absence of an explicit type signature. When an ambiguous literal is typechecked,
-if at least one of its typeclass constraints is numeric and all of its classes
-are standard library classes, the module's default list is consulted, and the
-first type from the list that will satisfy the context of the type variable is
-instantiated. So for instance given the following default rules.
+In the absence of explicit type signatures, Haskell normally resolves ambiguous
+literals using several defaulting rules. When an ambiguous literal is
+typechecked, if at least one of its typeclass constraints is numeric and all of
+its classes are standard library classes, the module's default list is
+consulted, and the first type from the list that will satisfy the context of
+the type variable is instantiated. So for instance, given the following default
+rules
 
 ```haskell
 default (C1 a,...,Cn a)
@@ -2781,17 +2783,17 @@ default (C1 a,...,Cn a)
 The following set of heuristics is used to determine what to instantiate the
 ambiguous type variable to.
 
-1. The type variable a appears in no other constraints
-1. All the classes Ci are standard.
-1. At least one of the classes Ci is numeric.
+1. The type variable ``a`` appears in no other constraints
+1. All the classes ``Ci`` are standard.
+1. At least one of the classes ``Ci`` is numeric.
 
-The default default is (Integer, Double)
+The default ``default`` is ``(Integer, Double)``
 
 This is normally fine, but sometimes we'd like more granular control over
 defaulting. The ``-XExtendedDefaultRules`` loosens the restriction that we're
 constrained with working on Numerical typeclasses and the constraint that we can
 only work with standard library classes. If we'd like to have our string
-literals (using -XOverlodaedStrings) automatically default to the more
+literals (using ``-XOverloadedStrings``) automatically default to the more
 efficient ``Text`` implementation instead of ``String`` we can twiddle the flag
 and GHC will perform the right substitution without the need for an explicit
 annotation on every string literal.
@@ -2807,13 +2809,13 @@ default (T.Text)
 example = "foo"
 ```
 
-For code typed at the GHCi prompt, the `-XExtendedDefaultRules` flag is always
+For code typed at the GHCi prompt, the ``-XExtendedDefaultRules`` flag is always
 on, and cannot be switched off.
 
 See: [Monomorphism Restriction](#monomorphism-restriction)
 
-Safe Haskell
-------------
+Safe
+----
 
 As everyone eventually finds out there are several functions within the
 implementation of GHC ( not the Haskell language ) that can be used to subvert
@@ -2855,8 +2857,9 @@ The module itself isn't safe.
 
 See: [Safe Haskell](https://ghc.haskell.org/trac/ghc/wiki/SafeHaskell)
 
-Partial Type Signatures
------------------------
+
+PartialTypeSignatures
+---------------------
 
 Normally a function is either given a full explicit type signature or none at
 all. The partial type signature extension allows something in between.
@@ -2876,13 +2879,14 @@ trigger warnings.
 
 See: [Partial Type Signatures](https://ghc.haskell.org/trac/ghc/wiki/PartialTypeSignatures)
 
-Recursive Do
-------------
 
-Recursive do notation allows to use to self-reference expressions on both sides
-of a monadic bind. For instance the following uses lazy evaluation to generate a
-infinite list. This is sometimes used for instantiating cyclic datatypes inside
-of a monadic context that need to hold a reference to themselves.
+RecursiveDo
+-----------
+
+Recursive do notation allows use of self-reference expressions on both sides of
+a monadic bind. For instance the following uses lazy evaluation to generate
+an infinite list. This is sometimes used to instantiate a cyclic datatype
+inside a monadic context that needs to hold a reference to itself.
 
 ```haskell
 {-# LANGUAGE RecursiveDo #-}
@@ -2895,8 +2899,8 @@ justOnes = do
 
 See: [Recursive Do Notation](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#the-recursive-do-notation)
 
-Applicative Do
---------------
+ApplicativeDo
+-------------
 
 By default GHC desugars do-notation to use implicit invocations of bind and
 return.
@@ -2929,8 +2933,8 @@ test :: Applicative m => m (a, b, c)
 test = (,,) <$> f <*> g <*> h
 ```
 
-Pattern Guards
---------------
+PatternGuards
+-------------
 
 Pattern guards are an extension to the pattern matching syntax.  Given a ``<-``
 pattern qualifier, the right hand side is evaluated and matched against the
@@ -2978,12 +2982,12 @@ f = (,(),,(),(),,)
 ```
 
 MultiWayIf
-------------
+----------
 
-Multi-way expands traditional if statements to allow pattern match conditions
-that are equivalent to a chain of if-then-else statements. This allows us to
-write "pattern matching predicates" on a value. This alters the syntax of
-Haskell language.
+Multi-way if expands traditional if statements to allow pattern match
+conditions that are equivalent to a chain of if-then-else statements. This
+allows us to write "pattern matching predicates" on a value. This alters the
+syntax of Haskell language.
 
 ```haskell
 {-# LANGUAGE MultiWayIf #-}
@@ -2992,12 +2996,12 @@ bmiTell :: Float -> Text
 bmiTell bmi = if
   | bmi <= 18.5 -> "Underweight."
   | bmi <= 25.0 -> "Average weight."
-  | bmi <= 30.0 -> "Overewight."
+  | bmi <= 30.0 -> "Overweight."
   | otherwise   -> "Clinically overweight."
 ```
 
 EmptyCase
--------------
+---------
 
 GHC normally requires at least one pattern branch in case statement this
 restriction can be relaxed with -XEmptyCase. The case statement then immediately
@@ -3008,7 +3012,7 @@ test = case of
 ```
 
 LambdaCase
--------------
+----------
 
 For case statements, LambdaCase allows the elimination of redundant free
 variables introduced purely for the case of pattern matching on.
@@ -3147,30 +3151,30 @@ DeriveFunctor
 ~~~~
 
 DeriveTraversable
--------------
+-----------------
 
 ~~~~ {.haskell include="src/04-extensions/derive_traversable.hs"}
 ~~~~
 
 DeriveFoldable
--------------
+--------------
 
 DeriveGeneric
 -------------
 
 DeriveAnyClass
--------------
+--------------
 
-With ``-XDeriveAnyClass`` we can derive any class. The deriving logic s
-generates an instance declaration for the type with no explicitly-defined
-methods.  If the typeclass implements a default for each method then this will
-be well-defined and give rise to an automatic instances.
+With ``-XDeriveAnyClass`` we can derive any class. The deriving logic generates
+an instance declaration for the type with no explicitly-defined methods. If
+the typeclass implements a default for each method then this will be
+well-defined and give rise to an automatic instances.
 
 StaticPointers
 --------------
 
 DuplicateRecordFields
-----------------------
+---------------------
 
 GHC 8.0 introduced the ``DuplicateRecordFields`` extensions which loosens GHC's
 restriction on records in the same module with identical accessors. The precise
@@ -3236,7 +3240,7 @@ See:
 
 * [OverloadedRecordFields revived](http://www.well-typed.com/blog/2015/03/overloadedrecordfields-revived/)
 
-Cpp
+CPP
 ---
 
 The C++ preprocessor is the fallback whenever we really need to separate out
