@@ -1186,42 +1186,108 @@ tracePrintfM :: (Monad m, PrintfArg a) => String -> a -> m ()
 tracePrintfM s = traceM . printf s
 ```
 
-Type Holes
-----------
+Type Holes / Pattern Wildcards
+------------------------------
 
-Since the release of GHC 7.8, *typed holes* allow for debugging incomplete
-programs. By placing an underscore on any value on the right hand-side of a
-declaration, [GHC](https://www.haskell.org/ghc/) will throw an error during
-type-checking. Such an error reflects what type the value in the position
-of the type hole could be in order for the program to type-check
-successfully.
+Since the release of GHC 7.8, type holes, or pattern wildcards, allow
+underscores as standins for actual values. They may be used either in
+declarations or in type signatures.
+
+Type holes are useful in debugging of incomplete programs. By placing an
+underscore on any value on the right hand-side of a declaration,
+[GHC](https://www.haskell.org/ghc/) will throw an error during type-checking.
+The error message describes which values may legally fill the type hole.
 
 ```haskell
-instance Functor [] where
-  fmap f (x:xs) = f x : fmap f _
+head' = head _
 ```
 
 ```bash
-[1 of 1] Compiling Main             ( src/typedhole.hs, interpreted )
-
-src/typedhole.hs:7:32:
-    Found hole ‘_’ with type: [a]
-    Where: ‘a’ is a rigid type variable bound by
-               the type signature for fmap :: (a -> b) -> [a] -> [b]
-               at src/typedhole.hs:7:3
-    Relevant bindings include
-      xs :: [a] (bound at src/typedhole.hs:7:13)
-      x :: a (bound at src/typedhole.hs:7:11)
-      f :: a -> b (bound at src/typedhole.hs:7:8)
-      fmap :: (a -> b) -> [a] -> [b] (bound at src/typedhole.hs:7:3)
-    In the second argument of ‘fmap’, namely ‘_’
-    In the second argument of ‘(:)’, namely ‘fmap f _’
-    In the expression: f x : fmap f _
-Failed, modules loaded: none.
+typedhole.hs:3:14: error:
+    • Found hole: _ :: [a]
+      Where: ‘a’ is a rigid type variable bound by
+               the inferred type of head' :: a at typedhole.hs:3:1
+    • In the first argument of ‘head’, namely ‘_’
+      In the expression: head _
+      In an equation for ‘head'’: head' = head _
+    • Relevant bindings include head' :: a (bound at typedhole.hs:3:1)
 ```
 
 GHC has rightly suggested that the expression needed to finish the program is
 ``xs :: [a]``.
+
+
+The same hole technique can be applied at the toplevel for signatures:
+
+```haskell
+const' :: _
+const' x y = x
+```
+
+```bash
+typedhole.hs:5:11: error:
+    • Found type wildcard ‘_’ standing for ‘t -> t1 -> t’
+      Where: ‘t1’ is a rigid type variable bound by
+               the inferred type of const' :: t -> t1 -> t at typedhole.hs:6:1
+             ‘t’ is a rigid type variable bound by
+               the inferred type of const' :: t -> t1 -> t at typedhole.hs:6:1
+      To use the inferred type, enable PartialTypeSignatures
+    • In the type signature:
+        const' :: _
+    • Relevant bindings include
+        const' :: t -> t1 -> t (bound at typedhole.hs:6:1)
+```
+
+Pattern wildcards can also be given explicit names so that GHC will use when
+reporting the inferred type in the resulting message.
+
+```haskell
+foo :: _a -> _a
+foo _ = False
+```
+
+```bash
+typedhole.hs:9:9: error:
+    • Couldn't match expected type ‘_a’ with actual type ‘Bool’
+      ‘_a’ is a rigid type variable bound by
+        the type signature for:
+          foo :: forall _a. _a -> _a
+        at typedhole.hs:8:8
+    • In the expression: False
+      In an equation for ‘foo’: foo _ = False
+    • Relevant bindings include
+        foo :: _a -> _a (bound at typedhole.hs:9:1)
+```
+
+The same wildcards can be used in type contexts to dump out inferred type class
+constraints:
+
+```haskell
+succ' :: _ => a -> a
+succ' x = x + 1
+```
+
+```bash
+typedhole.hs:11:10: error:
+    Found constraint wildcard ‘_’ standing for ‘Num a’
+    To use the inferred type, enable PartialTypeSignatures
+    In the type signature:
+      succ' :: _ => a -> a
+```
+
+When the flag ``-XPartialTypeSignatures`` is passed to GHC and the inferred type
+is unambiguous, GHC will let us leave the holes in place and the compilation
+will proceed.
+
+```bash
+typedhole.hs:3:10: Warning:
+    Found hole ‘_’ with type: w_
+    Where: ‘w_’ is a rigid type variable bound by
+                the inferred type of succ' :: w_ -> w_1 -> w_ at foo.hs:4:1
+    In the type signature for ‘succ'’: _ -> _ -> _
+```
+
+
 
 Deferred Type Errors
 --------------------
@@ -2733,74 +2799,23 @@ See: [Safe Haskell](https://ghc.haskell.org/trac/ghc/wiki/SafeHaskell)
 Partial Type Signatures
 -----------------------
 
-The same hole technique can be applied at the toplevel for signatures:
+Normally a function is either given a full explicit type signature or none at
+all. The partial type signature extension allows something in between.
+
+Partial types may by used to avoid writing uninteresting pieces of the
+signature, which can be convenient in development:
 
 ```haskell
-const' :: _
-const' x y = x
+{-# OPTIONS -XPartialTypeSignatures #-}
+
+triple :: Int -> _
+triple i = (i,i,i)
 ```
 
-```bash
-[1 of 1] Compiling Main             ( src/typedhole.hs, interpreted )
+If the `-Wpartial-type-signatures` GHC option is set, partial types will still
+trigger warnings.
 
-typedhole.hs:3:11:
-    Found hole ‘_’ with type: t1 -> t -> t1
-    Where: ‘t’ is a rigid type variable bound by
-               the inferred type of const' :: t1 -> t -> t1 at foo.hs:4:1
-           ‘t1’ is a rigid type variable bound by
-                the inferred type of const' :: t1 -> t -> t1 at foo.hs:4:1
-    To use the inferred type, enable PartialTypeSignatures
-    In the type signature for ‘const'’: _
-Failed, modules loaded: none.
-```
-
-Pattern wildcards can also be given explicit names so that GHC will use when
-reporting the inferred type in the resulting message.
-
-```haskell
-foo :: _a -> _a
-foo _ = False
-```
-
-```bash
-typedhole.hs:6:9:
-    Couldn't match expected type ‘_a’ with actual type ‘Bool’
-      ‘_a’ is a rigid type variable bound by
-           the type signature for foo :: _a -> _a at foo.hs:5:8
-    Relevant bindings include foo :: _a -> _a (bound at foo.hs:6:1)
-    In the expression: False
-    In an equation for ‘foo’: foo _ = False
-Failed, modules loaded: none.
-```
-
-The same wildcards can be used in type contexts to dump out inferred type class
-constraints:
-
-```haskell
-succ' :: _ => a -> a
-succ' x = x + 1
-```
-
-```bash
-typedhole.hs:3:10:
-    Found hole ‘_’ with inferred constraints: (Num a)
-    To use the inferred type, enable PartialTypeSignatures
-    In the type signature for ‘succ'’: _ => a -> a
-Failed, modules loaded: none.
-```
-
-When the flag ``-XPartialTypeSignatures`` is passed to GHC and the inferred type
-is unambiguous, GHC will let us leave the holes in place and the compilation
-will proceed.
-
-```bash
-typedhole.hs:3:10: Warning:
-    Found hole ‘_’ with type: w_
-    Where: ‘w_’ is a rigid type variable bound by
-                the inferred type of succ' :: w_ -> w_1 -> w_ at foo.hs:4:1
-    In the type signature for ‘succ'’: _ -> _ -> _
-```
-
+See: [Partial Type Signatures](https://ghc.haskell.org/trac/ghc/wiki/PartialTypeSignatures)
 
 Recursive Do
 ------------
