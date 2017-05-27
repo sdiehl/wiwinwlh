@@ -1281,6 +1281,9 @@ it :: Num a => a
 it :: Num a => a
 ```
 
+This rule my be deactivated with the ``NoMonomorphicRestriction`` extension,
+see [below](#nomonomorphicrestriction).
+
 See: [Monomorphism Restriction](https://wiki.haskell.org/Monomorphism_restriction)
 
 
@@ -2708,6 +2711,58 @@ problems. These include:
 
 These almost always indicate a design flaw and shouldn't be turned on to remedy the error at hand, as
 much as GHC might suggest otherwise!
+
+NoMonomorphismRestriction
+-------------------------
+
+The NoMonomorphismRestriction allows us to disable the monomorphism restriction
+typing rule GHC uses by default. See [monomorphism
+restriction](#monomorphism-restriction).
+
+For example, if we load the following module into GHCi
+
+```haskell
+module Bad (foo,bar) where
+foo x y = x + y
+bar = foo 1
+```
+
+and then we attempt to call the function ``bar`` with a Double, we get a type
+error:
+
+```bash
+λ: bar 1.1
+<interactive>:2:5: error:
+    • No instance for (Fractional Integer)
+      arising from the literal ‘1.0’
+    • In the first argument of ‘bar’, namely ‘1.0’
+      In the expression: bar 1.0
+      In an equation for ‘it’: it = bar 1.0
+```
+
+The problem is that GHC has inferred an overly specific type:
+
+```bash
+λ: :t bar
+bar :: Integer -> Integer
+```
+
+We can prevent GHC from specializing the type with this extension, i.e.
+
+```haskell
+{-# LANGUAGE NoMonomorphismRestriction #-}
+
+module Good (foo,bar) where
+foo x y = x + y
+bar = foo 1
+```
+
+Now everything will work as expected:
+
+```bash
+λ: :t bar
+bar :: Num a => a -> a
+```
 
 Extended Defaulting
 -------------------
