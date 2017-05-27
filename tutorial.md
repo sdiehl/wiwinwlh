@@ -637,10 +637,10 @@ integrate with the ``cabal`` build system. These packages are often left
 undocumented as well.
 
 For developers coming to Haskell from other language ecosystems that favor
-the former philsophy (e.g., Python, Javascript, Ruby), seeing  *thousands of
+the former philosophy (e.g., Python, Javascript, Ruby), seeing  *thousands of
 libraries without the slightest hint of documentation or description of purpose*
 can be unnerving. It is an open question whether the current cultural state of
-Hackage is sustainable in light of these philsophical differences.
+Hackage is sustainable in light of these philosophical differences.
 
 Needless to say, there is a lot of very low-quality Haskell code and
 documentation out there today, so being conservative in library assessment is a
@@ -1037,7 +1037,7 @@ within that function is *non-exhaustive*. In other words, the function does not
 implement appropriate handling of all valid inputs. Instead of yielding a value,
 such a function will halt from an incomplete match.
 
-Partial functions from non-exhaustivity are a controversial subject, and
+Partial functions from non-exhaustively are a controversial subject, and
 frequent use of non-exhaustive patterns is considered a dangerous code smell.
 However, the complete removal of non-exhaustive patterns from the language
 would itself be too restrictive and forbid too many valid programs.
@@ -1190,7 +1190,7 @@ Type Holes / Pattern Wildcards
 ------------------------------
 
 Since the release of GHC 7.8, type holes, or pattern wildcards, allow
-underscores as standins for actual values. They may be used either in
+underscores as stand-ins for actual values. They may be used either in
 declarations or in type signatures.
 
 Type holes are useful in debugging of incomplete programs. By placing an
@@ -1903,7 +1903,7 @@ many things, including, but not limited to:
  - Read and parse input from the terminal
  - Read from or write to a file on the system
  - Establish an ``ssh`` connection to a remote computer
- - Take input from a radio antenna for singal processing
+ - Take input from a radio antenna for signal processing
 
 Conceptualizing I/O as a monad enables the developer to access information
 outside the program, but operate on the data with pure functions. The following
@@ -1959,7 +1959,7 @@ main = do putStrLn "What is your name: "
 ```
 
 The next code block is the desugared equivalent of the previous example;
-however, the uses of ``(>>=)`` are made explict.
+however, the uses of ``(>>=)`` are made explicit.
 
 ```haskell
 main :: IO ()
@@ -1970,7 +1970,7 @@ main = putStrLn "What is your name:" >>=
 
 Our final example executes in the same way as the previous two examples. This
 example, though, uses the special ``(>>)`` [operator](#monadic-methods) to take
-the place of binding a result to the lamda that discards its argument.
+the place of binding a result to the lambda that discards its argument.
 
 ```haskell
 main :: IO ()
@@ -2708,7 +2708,7 @@ it :: Num a => a
 Extended Defaulting
 -------------------
 
-Haskell normally applies several defaulting rules for ambigious literals in the
+Haskell normally applies several defaulting rules for ambiguous literals in the
 absence of an explicit type signature. When an ambiguous literal is typechecked
 if at least one of its typeclass constraints is numeric and all of its classes
 are standard library classes, the module's default list is consulted, and the
@@ -2719,7 +2719,7 @@ instantiated. So for instance given the following default rules.
 default (C1 a,...,Cn a)
 ```
 
-The following set of heuristics is used to determine what to instnatiate the
+The following set of heuristics is used to determine what to instantiate the
 ambiguous type variable to.
 
 1. The type variable a appears in no other constraints
@@ -2977,7 +2977,7 @@ NumDecimals
 -----------
 
 NumDecimals allows the use of exponential notation for integral literals that
-are not necessarily floats. Without it, any use of expontial notation
+are not necessarily floats. Without it, any use of exponential notation
 induces a Fractional class constraint.
 
 ```haskell
@@ -3142,9 +3142,9 @@ OverloadedLabels
 GHC 8.0 also introduced the OverloadedLabels extension which allows a limited
 form of polymorphism over labels that share the same name.
 
-To work with overloaded labels types we need to enable several language
-extensions to work with promoted strings and multiparam typeclasses that underly
-it's implementation.
+To work with overloaded label types we need to enable several language
+extensions to work with promoted strings and multiparam typeclasses that
+underlay it's implementation.
 
 ```haskell
 extract :: IsLabel "id" t => t
@@ -6994,7 +6994,7 @@ e = Proxy
 In cases where we'd normally pass around a ``undefined`` as a witness of a
 typeclass dictionary, we can instead pass a Proxy object which carries the
 phantom type without the need for the bottom. Using scoped type variables we can
-then operate with the phantom paramater and manipulate wherever is needed.
+then operate with the phantom parameter and manipulate wherever is needed.
 
 ```haskell
 t1 :: a
@@ -7366,10 +7366,10 @@ Liquid Haskell
 LiquidHaskell is not typically necessary to write Haskell.
 </div>
 
-LiquidHaskell is an extension to GHC's typesystem that adds the capactity for
+LiquidHaskell is an extension to GHC's typesystem that adds the capacity for
 refinement types using the annotation syntax. The type signatures of functions
 can be checked by the external for richer type semantics than default GHC
-provides, including non-exhaustive patterns and complex arithemtic properties
+provides, including non-exhaustive patterns and complex arithmetic properties
 that require external SMT solvers to verify. For instance LiquidHaskell can
 statically verify that a function that operates over a ``Maybe a`` is always
 given a ``Just`` or that an arithmetic functions always yields an Int that is
@@ -8020,7 +8020,7 @@ Haskell supports arithmetic with complex numbers via a Complex datatype from the
 ``Data.Complex`` module. The first argument is the real part, while the second
 is the imaginary part. The type has a single parameter and inherits it's
 numerical typeclass components (Num, Fractional, Floating) from the type of this
-paramater.
+parameter.
 
 ```haskell
 -- 1 + 2i
@@ -8817,7 +8817,7 @@ in parallel.
 The functions above are quite useful, but will break down if evaluation of the arguments needs to be
 parallelized beyond simply weak head normal form. For instance if the arguments to ``rpar`` is a nested
 constructor we'd like to parallelize the entire section of work in evaluated the expression to normal form
-instead of just the outer layer. As such we'd like to generalize our strategies so the the evaluation strategy
+instead of just the outer layer. As such we'd like to generalize our strategies so the evaluation strategy
 for the arguments can be passed as an argument to the strategy.
 
 ``Control.Parallel.Strategies`` contains a generalized version of ``rpar`` which embeds additional evaluation
@@ -8834,7 +8834,7 @@ rdeepseq :: NFData a => Strategy a
 rdeepseq x = rseq (force x)
 ```
 
-We now can create a "higher order" strategy that takes two strategies and itself yields a a computation which
+We now can create a "higher order" strategy that takes two strategies and itself yields a computation which
 when evaluated uses the passed strategies in its scheduling.
 
 ~~~~ {.haskell include="src/22-concurrency/strategies_param.hs"}
@@ -8928,7 +8928,7 @@ Graphics
 Diagrams
 --------
 
-Diagrams is a a parser combinator library for generating vector images to SVG and a variety of other formats.
+Diagrams is a parser combinator library for generating vector images to SVG and a variety of other formats.
 
 ~~~~ {.haskell include="src/23-graphics/diagrams.hs"}
 ~~~~
@@ -9107,7 +9107,7 @@ Optparse Applicative
 --------------------
 
 Optparse-applicative is a combinator library for building command line
-interfaces that take in various user flags, commmands and switches and map them
+interfaces that take in various user flags, commands and switches and map them
 into Haskell data structures that can handle the input. The main interface is
 through the applicative functor ``Parser`` and various combinators such as
 ``strArgument`` and ``flag`` which populate the option parsing table with some
@@ -9959,7 +9959,7 @@ execute_ :: Connection -> Query -> IO Int64
 ```
 
 The result of the ``query`` function is a list of elements which implement the
-FromRow typeclass. This can be many things including a single elemment (Only), a
+FromRow typeclass. This can be many things including a single element (Only), a
 list of tuples where each element implements ``FromField`` or a custom datatype
 that itself implements ``FromRow``. Under the hood the database bindings
 inspects the Postgres ``oid`` objects and then attempts to convert them into the
@@ -12483,9 +12483,9 @@ In a separate module we can then enable Quasiquotes and embed the string.
 git-embed
 ----------
 
-Often times it is neccessary to embed the specific Git version hash of a build
-inside the exectuable. Using git-embed the compiler will effectivelly shell out
-to the command line to retrieve the version information of the CWD Git repostory
+Often times it is necessary to embed the specific Git version hash of a build
+inside the executable. Using git-embed the compiler will effectively shell out
+to the command line to retrieve the version information of the CWD Git repository
 and use Template Haskell to define embed this information at compile-time. This
 is often useful for embedding in ``--version`` information in the command line
 interface to your program or service.
@@ -12956,7 +12956,7 @@ enforce purity and uses call-by-value.
 OCaml's main implementation is [*ocamlc*](http://ocaml.org/). The OCaml compiler
 is distributed under [the Q Public
 licence](http://www.gnu.org/licenses/license-list.html#QPL), a permissive,
-non-copyleft FLOSS licence. Some portions of the OCaml libaries are licensed under
+non-copyleft FLOSS licence. Some portions of the OCaml libraries are licensed under
 the [GPLv2](http://www.gnu.org/licenses/gpl.html). See the [OCaml GitHub
 page](https://github.com/ocaml/ocaml/blob/trunk/LICENSE) for more information
 about licensing specifics.
@@ -13516,7 +13516,7 @@ The majority of Javascript implementations are garbage collected.
 Kotlin
 ------
 
-**Main difference**: Kotlin is an imperative langauge which structures code
+**Main difference**: Kotlin is an imperative language which structures code
 around objects and classes, compared to Haskell which is functional language
 emphasizing pure higher-order functions.
 
@@ -13544,7 +13544,7 @@ PHP
 PHP is a high-level, dynamic, untyped, and interpreted programming language that
 was common for scripting web applications in the 00s. PHP is widely criticized
 for it's poor design, unsafe defaults, and improper handling of simple
-programming constructs. Nevertheless PHP is widely used as the backet for
+programming constructs. Nevertheless, PHP is widely used as the backend for
 several of the highest profile websites.
 
 **Main difference**: PHP was designed in ad-hoc fashion to meet the needs of
