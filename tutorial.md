@@ -1186,6 +1186,104 @@ tracePrintfM :: (Monad m, PrintfArg a) => String -> a -> m ()
 tracePrintfM s = traceM . printf s
 ```
 
+Type Inference
+--------------
+
+While inference in Haskell is usually complete, there are cases where the
+principal type cannot be inferred. Three common cases are:
+
+ * Reduced polymorphism due to *mutually recursive binding groups*
+ * Undecidability due to *polymorphic recursion*
+ * Reduced polymorphism due to the *monomorphism restriction*
+
+In each of these cases, Haskell needs a hint from the programmer, which may be
+provided by adding explicit type signatures.
+
+#### Mutually Recursive Binding Groups
+
+```haskell
+f x = const x g
+g y = f 'A'
+```
+
+The inferred type signatures are correct in their usage, but don't represent
+the most general signatures. When GHC analyzes the module it analyzes the
+dependencies of expressions on each other, groups them together, and applies
+substitutions from unification across mutually defined groups. As such the
+inferred types may not be the most general types possible, and an explicit
+signature may be desired.
+
+```haskell
+-- Inferred types
+f :: Char -> Char
+g :: t -> Char
+
+-- Most general types
+f :: a -> a
+g :: a -> Char
+```
+
+#### Polymorphic recursion
+
+```haskell
+data Tree a = Leaf | Bin a (Tree (a, a))
+
+size Leaf = 0
+size (Bin _ t) = 1 + 2 * size t
+```
+
+The recursion is polymorphic because the inferred type variable ``a`` in
+``size`` spans two possible types (``a`` and ``(a,a)``). These two types won't
+pass the occurs-check of the typechecker and it yields an incorrect inferred
+type.
+
+```haskell
+    Occurs check: cannot construct the infinite type: t0 = (t0, t0)
+    Expected type: Tree t0
+      Actual type: Tree (t0, t0)
+    In the first argument of `size', namely `t'
+    In the second argument of `(*)', namely `size t'
+    In the second argument of `(+)', namely `2 * size t'
+```
+
+Simply adding an explicit type signature corrects this. Type inference using
+polymorphic recursion is undecidable in the general case.
+
+```haskell
+size :: Tree a -> Int
+size Leaf = 0
+size (Bin _ t) = 1 + 2 * size t
+```
+
+See: [Static Semantics of Function and Pattern Bindings](https://www.haskell.org/onlinereport/haskell2010/haskellch4.html#x10-880004.5)
+
+
+#### Monomorphism Restriction
+
+*Monomorphism restriction* is a controversial typing rule. By default, it is
+turned on when compiling and off in GHCi. The practical effect of this rule is
+that types inferred for functions without explicit type signatures may be more
+specific than expected. This is because GHC will sometimes reduce a general
+type, such as ``Num`` to a default type, such as ``Double``. This can be seen
+in the following example in GHCi:
+
+```haskell
+λ: :set +t
+
+λ: 3
+3
+it :: Num a => a
+
+λ: default (Double)
+
+λ: 3
+3.0
+it :: Num a => a
+```
+
+See: [Monomorphism Restriction](https://wiki.haskell.org/Monomorphism_restriction)
+
+
 Type Holes / Pattern Wildcards
 ------------------------------
 
@@ -2611,105 +2709,11 @@ problems. These include:
 These almost always indicate a design flaw and shouldn't be turned on to remedy the error at hand, as
 much as GHC might suggest otherwise!
 
-Type Inference
---------------
-
-Inference in Haskell is usually precise, although there are several boundary
-cases where inference is difficult or impossible to infer a principal type of an
-expression. There a two common cases:
-
-#### Mutually Recursive Binding Groups
-
-```haskell
-f x = const x g
-g y = f 'A'
-```
-
-The inferred type signatures are correct in their usage, but don't represent the most general signatures. When
-GHC analyzes the module it analyzes the dependencies of expressions on each other, groups them together, and
-applies substitutions from unification across mutually defined groups. As such the inferred types may not be
-the most general types possible, and an explicit signature may be desired.
-
-```haskell
--- Inferred types
-f :: Char -> Char
-g :: t -> Char
-
--- Most general types
-f :: a -> a
-g :: a -> Char
-```
-
-#### Polymorphic recursion
-
-```haskell
-data Tree a = Leaf | Bin a (Tree (a, a))
-
-size Leaf = 0
-size (Bin _ t) = 1 + 2 * size t
-```
-
-The problem with this expression is because the inferred type variable ``a``  in
-``size`` spans two possible types (``a`` and ``(a,a)``), the recursion is
-polymorphic. These two types won't pass the occurs-check of the typechecker and
-it yields an incorrect inferred type.
-
-```haskell
-    Occurs check: cannot construct the infinite type: t0 = (t0, t0)
-    Expected type: Tree t0
-      Actual type: Tree (t0, t0)
-    In the first argument of `size', namely `t'
-    In the second argument of `(*)', namely `size t'
-    In the second argument of `(+)', namely `2 * size t'
-```
-
-Simply adding an explicit type signature corrects this. Type inference using polymorphic recursion is
-undecidable in the general case.
-
-```haskell
-size :: Tree a -> Int
-size Leaf = 0
-size (Bin _ t) = 1 + 2 * size t
-```
-
-See: [Static Semantics of Function and Pattern Bindings](https://www.haskell.org/onlinereport/haskell2010/haskellch4.html#x10-880004.5)
-
-Monomorphism Restriction
-------------------------
-
-The most common edge case of the inference is known as the dreaded *monomorphism
-restriction*.
-
-When the toplevel declarations of a module are generalized the monomorphism
-restricts that toplevel values (i.e. expressions not under a lambda ) whose type
-contains the subclass of the ``Num`` type from the Prelude are not generalized
-and instead are instantiated with a monotype tried sequentially from the list
-specified by the ``default`` which is normally `Integer`, then `Double`.
-
-~~~~ {.haskell include="src/04-extensions/monomorphism.hs"}
-~~~~
-
-As of GHC 7.8, the monomorphism restriction is switched off by default in GHCi.
-
-```haskell
-λ: set +t
-
-λ: 3
-3
-it :: Num a => a
-
-λ: default (Double)
-
-λ: 3
-3.0
-it :: Num a => a
-```
-
 Extended Defaulting
 -------------------
 
 Haskell normally applies several defaulting rules for ambiguous literals in the
-absence of an explicit type signature. When an ambiguous literal is typechecked
+absence of an explicit type signature. When an ambiguous literal is typechecked,
 if at least one of its typeclass constraints is numeric and all of its classes
 are standard library classes, the module's default list is consulted, and the
 first type from the list that will satisfy the context of the type variable is
