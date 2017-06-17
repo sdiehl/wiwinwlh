@@ -859,7 +859,7 @@ implement features common to modern IDEs.
 
 **Emacs**
 
-* [Chris Done's Emacs Config](https://github.com/chrisdone/emacs-haskell-config)
+* [Chris Done's Emacs Config](https://github.com/chrisdone/chrisdone-emacs)
 * [Haskell Development From Emacs](http://tim.dysinger.net/posts/2014-02-18-haskell-with-emacs.html)
 * [Structured Haskell Mode](https://github.com/chrisdone/structured-haskell-mode)
 
@@ -1855,7 +1855,7 @@ constructor representing a successful computation, while the
 second, ``Nothing``, is a nullary constructor that represents failure.
 
 ```haskell
-data Maybe a = Just a | Nothing
+data Maybe a = Nothing | Just a
 ```
 
 The monad instance describes the implementation of ``(>>=)`` for ``Maybe``
@@ -3221,7 +3221,7 @@ extract = #id
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE ExistentialQuantification #-}
 
-import GHC.Records (HasField(..))
+import GHC.Records (HasField(..))  -- Since base 4.10.0.0
 import GHC.OverloadedLabels (IsLabel(..))
 
 data S = MkS { foo :: Int }
@@ -4411,6 +4411,7 @@ surface language with a typeclass ``IsList``.
 class IsList l where
   type Item l
   fromList  :: [Item l] -> l
+  fromListN :: Int -> [Item l] -> l
   toList    :: l -> [Item l]
 
 instance IsList [a] where
@@ -4420,8 +4421,9 @@ instance IsList [a] where
 ```
 
 ```haskell
+λ: :seti -XOverloadedLists
 λ: :type [1,2,3]
-[1,2,3] :: (Num (Item l), IsList l) => l
+[1,2,3] :: (Num (GHC.Exts.Item l), GHC.Exts.IsList l) => l
 ```
 
 ~~~~ {.haskell include="src/07-text-bytestring/overloadedlist.hs"}
@@ -4547,6 +4549,13 @@ class Applicative f => Alternative f where
   many :: f a -> f [a]
 
 optional :: Alternative f => f a -> f (Maybe a)
+
+when :: (Alternative f) => Bool -> f () -> f ()
+when p s = if p then s else return ()
+
+guard :: (Alternative f) => Bool -> f ()
+guard True  = pure ()
+guard False = mzero
 ```
 
 ```haskell
@@ -4956,7 +4965,7 @@ MonadPlus
 Choice and failure.
 
 ```haskell
-class Monad m => MonadPlus m where
+class (Alternative m, Monad m) => MonadPlus m where
    mzero :: m a
    mplus :: m a -> m a -> m a
 
@@ -4980,15 +4989,11 @@ a `mplus` mzero = a
 ```
 
 ```haskell
-when :: (Monad m) => Bool -> m () -> m ()
-when p s =  if p then s else return ()
+asum :: (Foldable t, Alternative f) => t (f a) -> f a
+asum = foldr (<|>) empty
 
-guard :: MonadPlus m => Bool -> m ()
-guard True  = return ()
-guard False = mzero
-
-msum :: MonadPlus m => [m a] -> m a
-msum =  foldr mplus mzero
+msum :: (Foldable t, MonadPlus m) => t (m a) -> m a
+msum = asum
 ```
 
 ~~~~ {.haskell include="src/10-advanced-monads/monadplus.hs"}
@@ -5684,6 +5689,8 @@ contain no value inhabitants and are "anonymous types".
 
 data Token a
 ```
+
+The [tagged](http://hackage.haskell.org/package/tagged) library defines a similar ``Tagged`` newtype wrapper.
 
 See: [Fun with Phantom Types](http://www.researchgate.net/publication/228707929_Fun_with_phantom_types/file/9c960525654760c169.pdf)
 
@@ -6588,11 +6595,6 @@ head ~(a :| _) = a
 
 ~~~~ {.haskell include="src/16-type-families/noempty.hs"}
 ~~~~
-
-Overloaded Lists
-----------------
-
-In GHC 7.8 ``-XOverloadedLists`` can be used to avoid the extraneous ``fromList`` and ``toList`` conversions.
 
 Manual Proofs
 -------------
@@ -8603,7 +8605,7 @@ only, not the size of the type associated with the pointer ( this differs from
 C).
 
 The Prelude defines Storable interfaces for most of the basic types as well as
-types in the ``Foreign.C`` library.
+types in the ``Foreign.Storable`` module.
 
 ```haskell
 class Storable a where
@@ -9284,8 +9286,8 @@ Prelude tools require us to manifest large amounts of data in memory all at once
 computation.
 
 ```haskell
-mapM :: Monad m => (a -> m b) -> [a] -> m [b]
-sequence :: Monad m => [m a] -> m [a]
+mapM :: (Monad m, Traversable t) => (a -> m b) -> t a -> m (t b)
+sequence :: (Monad m, Traversable t) => t (m a) -> m (t a)
 ```
 
 Reading from the file creates a thunk for the string that forced will then read the file. The problem is then
@@ -11396,7 +11398,7 @@ names:
 Symbol   Meaning
 ------   ----------------
 ``0``    No argument
-``p``    Garage Collected Pointer
+``p``    Garbage Collected Pointer
 ``n``    Word-sized non-pointer
 ``l``    64-bit non-pointer (long)
 ``v``    Void
@@ -12768,7 +12770,7 @@ Such that for a natural transformation ``h`` we have:
 fmap f . h ≡ h . fmap f
 ```
 
-The simplest example is between (f = List) and (g = Maybe) types.
+The simplest example is between (``f = List``) and (``g = Maybe``) types.
 
 ```haskell
 headMay :: forall a. [a] -> Maybe a

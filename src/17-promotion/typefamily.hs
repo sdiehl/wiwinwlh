@@ -3,7 +3,7 @@
 
 import Prelude hiding (Bool(..))
 
-data Bool = True | False
+data Bool = False | True
 
 type family Not (a :: Bool) :: Bool
 
