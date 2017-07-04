@@ -5302,9 +5302,8 @@ nil = Λa. Λb. λz:b. λf:(a -> b -> b). z
 cons : ∀ a. a -> [a] -> [a]
 cons = Λa. λx:a. λxs:(∀ b. b -> (a -> b -> b) -> b).
     Λb. λz:b. λf : (a -> b -> b). f x (xs_b z f)
--- cons :: forall a. a
---       -> (forall b. (a -> b -> b) -> b) -> (forall b. (a -> b -> b) -> b)
--- cons = \ (@ a) (x :: a) (xs :: forall b. (a -> b -> b) -> b)
+-- cons :: forall a. a -> [a] -> [a]
+-- cons = \ (@ a) (x :: a) (xs :: forall b. b -> (a -> b -> b) -> b)
 --     (@ b) (z :: b) (f :: a -> b -> b) -> f x (xs @ b z f)
 ```
 
