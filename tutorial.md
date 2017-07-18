@@ -13299,8 +13299,6 @@ Erlang's main implementation is *erl*.
 
 Erlang is a *unityped* language.
 
-Erlang is interpreted.
-
 Erlang allows polymorphism by means of *unityping*.
 
 Erlang's evaluation is *call-by-value*.
