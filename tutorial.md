@@ -637,10 +637,10 @@ integrate with the ``cabal`` build system. These packages are often left
 undocumented as well.
 
 For developers coming to Haskell from other language ecosystems that favor
-the former philsophy (e.g., Python, Javascript, Ruby), seeing  *thousands of
+the former philosophy (e.g., Python, Javascript, Ruby), seeing  *thousands of
 libraries without the slightest hint of documentation or description of purpose*
 can be unnerving. It is an open question whether the current cultural state of
-Hackage is sustainable in light of these philsophical differences.
+Hackage is sustainable in light of these philosophical differences.
 
 Needless to say, there is a lot of very low-quality Haskell code and
 documentation out there today, so being conservative in library assessment is a
@@ -859,7 +859,7 @@ implement features common to modern IDEs.
 
 **Emacs**
 
-* [Chris Done's Emacs Config](https://github.com/chrisdone/emacs-haskell-config)
+* [Chris Done's Emacs Config](https://github.com/chrisdone/chrisdone-emacs)
 * [Haskell Development From Emacs](http://tim.dysinger.net/posts/2014-02-18-haskell-with-emacs.html)
 * [Structured Haskell Mode](https://github.com/chrisdone/structured-haskell-mode)
 
@@ -1037,7 +1037,7 @@ within that function is *non-exhaustive*. In other words, the function does not
 implement appropriate handling of all valid inputs. Instead of yielding a value,
 such a function will halt from an incomplete match.
 
-Partial functions from non-exhaustivity are a controversial subject, and
+Partial functions from non-exhaustively are a controversial subject, and
 frequent use of non-exhaustive patterns is considered a dangerous code smell.
 However, the complete removal of non-exhaustive patterns from the language
 would itself be too restrictive and forbid too many valid programs.
@@ -1186,42 +1186,209 @@ tracePrintfM :: (Monad m, PrintfArg a) => String -> a -> m ()
 tracePrintfM s = traceM . printf s
 ```
 
-Type Holes
-----------
+Type Inference
+--------------
 
-Since the release of GHC 7.8, *typed holes* allow for debugging incomplete
-programs. By placing an underscore on any value on the right hand-side of a
-declaration, [GHC](https://www.haskell.org/ghc/) will throw an error during
-type-checking. Such an error reflects what type the value in the position
-of the type hole could be in order for the program to type-check
-successfully.
+While inference in Haskell is usually complete, there are cases where the
+principal type cannot be inferred. Three common cases are:
+
+ * Reduced polymorphism due to *mutually recursive binding groups*
+ * Undecidability due to *polymorphic recursion*
+ * Reduced polymorphism due to the *monomorphism restriction*
+
+In each of these cases, Haskell needs a hint from the programmer, which may be
+provided by adding explicit type signatures.
+
+#### Mutually Recursive Binding Groups
 
 ```haskell
-instance Functor [] where
-  fmap f (x:xs) = f x : fmap f _
+f x = const x g
+g y = f 'A'
+```
+
+The inferred type signatures are correct in their usage, but don't represent
+the most general signatures. When GHC analyzes the module it analyzes the
+dependencies of expressions on each other, groups them together, and applies
+substitutions from unification across mutually defined groups. As such the
+inferred types may not be the most general types possible, and an explicit
+signature may be desired.
+
+```haskell
+-- Inferred types
+f :: Char -> Char
+g :: t -> Char
+
+-- Most general types
+f :: a -> a
+g :: a -> Char
+```
+
+#### Polymorphic recursion
+
+```haskell
+data Tree a = Leaf | Bin a (Tree (a, a))
+
+size Leaf = 0
+size (Bin _ t) = 1 + 2 * size t
+```
+
+The recursion is polymorphic because the inferred type variable ``a`` in
+``size`` spans two possible types (``a`` and ``(a,a)``). These two types won't
+pass the occurs-check of the typechecker and it yields an incorrect inferred
+type.
+
+```haskell
+    Occurs check: cannot construct the infinite type: t0 = (t0, t0)
+    Expected type: Tree t0
+      Actual type: Tree (t0, t0)
+    In the first argument of `size', namely `t'
+    In the second argument of `(*)', namely `size t'
+    In the second argument of `(+)', namely `2 * size t'
+```
+
+Simply adding an explicit type signature corrects this. Type inference using
+polymorphic recursion is undecidable in the general case.
+
+```haskell
+size :: Tree a -> Int
+size Leaf = 0
+size (Bin _ t) = 1 + 2 * size t
+```
+
+See: [Static Semantics of Function and Pattern Bindings](https://www.haskell.org/onlinereport/haskell2010/haskellch4.html#x10-880004.5)
+
+
+#### Monomorphism Restriction
+
+*Monomorphism restriction* is a controversial typing rule. By default, it is
+turned on when compiling and off in GHCi. The practical effect of this rule is
+that types inferred for functions without explicit type signatures may be more
+specific than expected. This is because GHC will sometimes reduce a general
+type, such as ``Num`` to a default type, such as ``Double``. This can be seen
+in the following example in GHCi:
+
+```haskell
+λ: :set +t
+
+λ: 3
+3
+it :: Num a => a
+
+λ: default (Double)
+
+λ: 3
+3.0
+it :: Num a => a
+```
+
+This rule my be deactivated with the ``NoMonomorphicRestriction`` extension,
+see [below](#nomonomorphicrestriction).
+
+See: [Monomorphism Restriction](https://wiki.haskell.org/Monomorphism_restriction)
+
+
+Type Holes / Pattern Wildcards
+------------------------------
+
+Since the release of GHC 7.8, type holes, or pattern wildcards, allow
+underscores as stand-ins for actual values. They may be used either in
+declarations or in type signatures.
+
+Type holes are useful in debugging of incomplete programs. By placing an
+underscore on any value on the right hand-side of a declaration,
+[GHC](https://www.haskell.org/ghc/) will throw an error during type-checking.
+The error message describes which values may legally fill the type hole.
+
+```haskell
+head' = head _
 ```
 
 ```bash
-[1 of 1] Compiling Main             ( src/typedhole.hs, interpreted )
-
-src/typedhole.hs:7:32:
-    Found hole ‘_’ with type: [a]
-    Where: ‘a’ is a rigid type variable bound by
-               the type signature for fmap :: (a -> b) -> [a] -> [b]
-               at src/typedhole.hs:7:3
-    Relevant bindings include
-      xs :: [a] (bound at src/typedhole.hs:7:13)
-      x :: a (bound at src/typedhole.hs:7:11)
-      f :: a -> b (bound at src/typedhole.hs:7:8)
-      fmap :: (a -> b) -> [a] -> [b] (bound at src/typedhole.hs:7:3)
-    In the second argument of ‘fmap’, namely ‘_’
-    In the second argument of ‘(:)’, namely ‘fmap f _’
-    In the expression: f x : fmap f _
-Failed, modules loaded: none.
+typedhole.hs:3:14: error:
+    • Found hole: _ :: [a]
+      Where: ‘a’ is a rigid type variable bound by
+               the inferred type of head' :: a at typedhole.hs:3:1
+    • In the first argument of ‘head’, namely ‘_’
+      In the expression: head _
+      In an equation for ‘head'’: head' = head _
+    • Relevant bindings include head' :: a (bound at typedhole.hs:3:1)
 ```
 
 GHC has rightly suggested that the expression needed to finish the program is
 ``xs :: [a]``.
+
+
+The same hole technique can be applied at the toplevel for signatures:
+
+```haskell
+const' :: _
+const' x y = x
+```
+
+```bash
+typedhole.hs:5:11: error:
+    • Found type wildcard ‘_’ standing for ‘t -> t1 -> t’
+      Where: ‘t1’ is a rigid type variable bound by
+               the inferred type of const' :: t -> t1 -> t at typedhole.hs:6:1
+             ‘t’ is a rigid type variable bound by
+               the inferred type of const' :: t -> t1 -> t at typedhole.hs:6:1
+      To use the inferred type, enable PartialTypeSignatures
+    • In the type signature:
+        const' :: _
+    • Relevant bindings include
+        const' :: t -> t1 -> t (bound at typedhole.hs:6:1)
+```
+
+Pattern wildcards can also be given explicit names so that GHC will use when
+reporting the inferred type in the resulting message.
+
+```haskell
+foo :: _a -> _a
+foo _ = False
+```
+
+```bash
+typedhole.hs:9:9: error:
+    • Couldn't match expected type ‘_a’ with actual type ‘Bool’
+      ‘_a’ is a rigid type variable bound by
+        the type signature for:
+          foo :: forall _a. _a -> _a
+        at typedhole.hs:8:8
+    • In the expression: False
+      In an equation for ‘foo’: foo _ = False
+    • Relevant bindings include
+        foo :: _a -> _a (bound at typedhole.hs:9:1)
+```
+
+The same wildcards can be used in type contexts to dump out inferred type class
+constraints:
+
+```haskell
+succ' :: _ => a -> a
+succ' x = x + 1
+```
+
+```bash
+typedhole.hs:11:10: error:
+    Found constraint wildcard ‘_’ standing for ‘Num a’
+    To use the inferred type, enable PartialTypeSignatures
+    In the type signature:
+      succ' :: _ => a -> a
+```
+
+When the flag ``-XPartialTypeSignatures`` is passed to GHC and the inferred type
+is unambiguous, GHC will let us leave the holes in place and the compilation
+will proceed.
+
+```bash
+typedhole.hs:3:10: Warning:
+    Found hole ‘_’ with type: w_
+    Where: ‘w_’ is a rigid type variable bound by
+                the inferred type of succ' :: w_ -> w_1 -> w_ at foo.hs:4:1
+    In the type signature for ‘succ'’: _ -> _ -> _
+```
+
+
 
 Deferred Type Errors
 --------------------
@@ -1680,7 +1847,7 @@ Maybe
 -----
 
 The *Maybe* monad is the simplest first example of a monad instance. The Maybe
-monad models computations which fail to yield a value at any point during
+monad models computations which may fail to yield a value at any point during
 computation.
 
 The Maybe type has two value constructors. The first, ``Just``,  is a unary
@@ -1688,7 +1855,7 @@ constructor representing a successful computation, while the
 second, ``Nothing``, is a nullary constructor that represents failure.
 
 ```haskell
-data Maybe a = Just a | Nothing
+data Maybe a = Nothing | Just a
 ```
 
 The monad instance describes the implementation of ``(>>=)`` for ``Maybe``
@@ -1837,7 +2004,7 @@ many things, including, but not limited to:
  - Read and parse input from the terminal
  - Read from or write to a file on the system
  - Establish an ``ssh`` connection to a remote computer
- - Take input from a radio antenna for singal processing
+ - Take input from a radio antenna for signal processing
 
 Conceptualizing I/O as a monad enables the developer to access information
 outside the program, but operate on the data with pure functions. The following
@@ -1893,7 +2060,7 @@ main = do putStrLn "What is your name: "
 ```
 
 The next code block is the desugared equivalent of the previous example;
-however, the uses of ``(>>=)`` are made explict.
+however, the uses of ``(>>=)`` are made explicit.
 
 ```haskell
 main :: IO ()
@@ -1904,7 +2071,7 @@ main = putStrLn "What is your name:" >>=
 
 Our final example executes in the same way as the previous two examples. This
 example, though, uses the special ``(>>)`` [operator](#monadic-methods) to take
-the place of binding a result to the lamda that discards its argument.
+the place of binding a result to the lambda that discards its argument.
 
 ```haskell
 main :: IO ()
@@ -2545,128 +2712,88 @@ problems. These include:
 These almost always indicate a design flaw and shouldn't be turned on to remedy the error at hand, as
 much as GHC might suggest otherwise!
 
-Type Inference
---------------
 
-Inference in Haskell is usually precise, although there are several boundary
-cases where inference is difficult or impossible to infer a principal type of an
-expression. There a two common cases:
+NoMonomorphismRestriction
+-------------------------
 
-#### Mutually Recursive Binding Groups
+The NoMonomorphismRestriction allows us to disable the monomorphism restriction
+typing rule GHC uses by default. See [monomorphism
+restriction](#monomorphism-restriction).
 
-```haskell
-f x = const x g
-g y = f 'A'
-```
-
-The inferred type signatures are correct in their usage, but don't represent the most general signatures. When
-GHC analyzes the module it analyzes the dependencies of expressions on each other, groups them together, and
-applies substitutions from unification across mutually defined groups. As such the inferred types may not be
-the most general types possible, and an explicit signature may be desired.
+For example, if we load the following module into GHCi
 
 ```haskell
--- Inferred types
-f :: Char -> Char
-g :: t -> Char
-
--- Most general types
-f :: a -> a
-g :: a -> Char
+module Bad (foo,bar) where
+foo x y = x + y
+bar = foo 1
 ```
 
-#### Polymorphic recursion
+and then we attempt to call the function ``bar`` with a Double, we get a type
+error:
+
+```bash
+λ: bar 1.1
+<interactive>:2:5: error:
+    • No instance for (Fractional Integer)
+      arising from the literal ‘1.0’
+    • In the first argument of ‘bar’, namely ‘1.0’
+      In the expression: bar 1.0
+      In an equation for ‘it’: it = bar 1.0
+```
+
+The problem is that GHC has inferred an overly specific type:
+
+```bash
+λ: :t bar
+bar :: Integer -> Integer
+```
+
+We can prevent GHC from specializing the type with this extension, i.e.
 
 ```haskell
-data Tree a = Leaf | Bin a (Tree (a, a))
+{-# LANGUAGE NoMonomorphismRestriction #-}
 
-size Leaf = 0
-size (Bin _ t) = 1 + 2 * size t
+module Good (foo,bar) where
+foo x y = x + y
+bar = foo 1
 ```
 
-The problem with this expression is because the inferred type variable ``a``  in
-``size`` spans two possible types (``a`` and ``(a,a)``), the recursion is
-polymorphic. These two types won't pass the occurs-check of the typechecker and
-it yields an incorrect inferred type.
+Now everything will work as expected:
 
-```haskell
-    Occurs check: cannot construct the infinite type: t0 = (t0, t0)
-    Expected type: Tree t0
-      Actual type: Tree (t0, t0)
-    In the first argument of `size', namely `t'
-    In the second argument of `(*)', namely `size t'
-    In the second argument of `(+)', namely `2 * size t'
+```bash
+λ: :t bar
+bar :: Num a => a -> a
 ```
 
-Simply adding an explicit type signature corrects this. Type inference using polymorphic recursion is
-undecidable in the general case.
+ExtendedDefaultRules
+--------------------
 
-```haskell
-size :: Tree a -> Int
-size Leaf = 0
-size (Bin _ t) = 1 + 2 * size t
-```
-
-See: [Static Semantics of Function and Pattern Bindings](https://www.haskell.org/onlinereport/haskell2010/haskellch4.html#x10-880004.5)
-
-Monomorphism Restriction
-------------------------
-
-The most common edge case of the inference is known as the dreaded *monomorphism
-restriction*.
-
-When the toplevel declarations of a module are generalized the monomorphism
-restricts that toplevel values (i.e. expressions not under a lambda ) whose type
-contains the subclass of the ``Num`` type from the Prelude are not generalized
-and instead are instantiated with a monotype tried sequentially from the list
-specified by the ``default`` which is normally `Integer`, then `Double`.
-
-~~~~ {.haskell include="src/04-extensions/monomorphism.hs"}
-~~~~
-
-As of GHC 7.8, the monomorphism restriction is switched off by default in GHCi.
-
-```haskell
-λ: set +t
-
-λ: 3
-3
-it :: Num a => a
-
-λ: default (Double)
-
-λ: 3
-3.0
-it :: Num a => a
-```
-
-Extended Defaulting
--------------------
-
-Haskell normally applies several defaulting rules for ambigious literals in the
-absence of an explicit type signature. When an ambiguous literal is typechecked
-if at least one of its typeclass constraints is numeric and all of its classes
-are standard library classes, the module's default list is consulted, and the
-first type from the list that will satisfy the context of the type variable is
-instantiated. So for instance given the following default rules.
+In the absence of explicit type signatures, Haskell normally resolves ambiguous
+literals using several defaulting rules. When an ambiguous literal is
+typechecked, if at least one of its typeclass constraints is numeric and all of
+its classes are standard library classes, the module's default list is
+consulted, and the first type from the list that will satisfy the context of
+the type variable is instantiated. So for instance, given the following default
+rules
 
 ```haskell
 default (C1 a,...,Cn a)
 ```
 
-The following set of heuristics is used to determine what to instnatiate the
+The following set of heuristics is used to determine what to instantiate the
 ambiguous type variable to.
 
-1. The type variable a appears in no other constraints
-1. All the classes Ci are standard.
-1. At least one of the classes Ci is numeric.
+1. The type variable ``a`` appears in no other constraints
+1. All the classes ``Ci`` are standard.
+1. At least one of the classes ``Ci`` is numeric.
 
-The default default is (Integer, Double)
+The default ``default`` is ``(Integer, Double)``
 
 This is normally fine, but sometimes we'd like more granular control over
 defaulting. The ``-XExtendedDefaultRules`` loosens the restriction that we're
 constrained with working on Numerical typeclasses and the constraint that we can
 only work with standard library classes. If we'd like to have our string
-literals (using -XOverlodaedStrings) automatically default to the more
+literals (using ``-XOverloadedStrings``) automatically default to the more
 efficient ``Text`` implementation instead of ``String`` we can twiddle the flag
 and GHC will perform the right substitution without the need for an explicit
 annotation on every string literal.
@@ -2682,13 +2809,13 @@ default (T.Text)
 example = "foo"
 ```
 
-For code typed at the GHCi prompt, the `-XExtendedDefaultRules` flag is always
+For code typed at the GHCi prompt, the ``-XExtendedDefaultRules`` flag is always
 on, and cannot be switched off.
 
 See: [Monomorphism Restriction](#monomorphism-restriction)
 
-Safe Haskell
-------------
+Safe
+----
 
 As everyone eventually finds out there are several functions within the
 implementation of GHC ( not the Haskell language ) that can be used to subvert
@@ -2730,85 +2857,36 @@ The module itself isn't safe.
 
 See: [Safe Haskell](https://ghc.haskell.org/trac/ghc/wiki/SafeHaskell)
 
-Partial Type Signatures
------------------------
 
-The same hole technique can be applied at the toplevel for signatures:
+PartialTypeSignatures
+---------------------
 
-```haskell
-const' :: _
-const' x y = x
-```
+Normally a function is either given a full explicit type signature or none at
+all. The partial type signature extension allows something in between.
 
-```bash
-[1 of 1] Compiling Main             ( src/typedhole.hs, interpreted )
-
-typedhole.hs:3:11:
-    Found hole ‘_’ with type: t1 -> t -> t1
-    Where: ‘t’ is a rigid type variable bound by
-               the inferred type of const' :: t1 -> t -> t1 at foo.hs:4:1
-           ‘t1’ is a rigid type variable bound by
-                the inferred type of const' :: t1 -> t -> t1 at foo.hs:4:1
-    To use the inferred type, enable PartialTypeSignatures
-    In the type signature for ‘const'’: _
-Failed, modules loaded: none.
-```
-
-Pattern wildcards can also be given explicit names so that GHC will use when
-reporting the inferred type in the resulting message.
+Partial types may by used to avoid writing uninteresting pieces of the
+signature, which can be convenient in development:
 
 ```haskell
-foo :: _a -> _a
-foo _ = False
+{-# OPTIONS -XPartialTypeSignatures #-}
+
+triple :: Int -> _
+triple i = (i,i,i)
 ```
 
-```bash
-typedhole.hs:6:9:
-    Couldn't match expected type ‘_a’ with actual type ‘Bool’
-      ‘_a’ is a rigid type variable bound by
-           the type signature for foo :: _a -> _a at foo.hs:5:8
-    Relevant bindings include foo :: _a -> _a (bound at foo.hs:6:1)
-    In the expression: False
-    In an equation for ‘foo’: foo _ = False
-Failed, modules loaded: none.
-```
+If the `-Wpartial-type-signatures` GHC option is set, partial types will still
+trigger warnings.
 
-The same wildcards can be used in type contexts to dump out inferred type class
-constraints:
-
-```haskell
-succ' :: _ => a -> a
-succ' x = x + 1
-```
-
-```bash
-typedhole.hs:3:10:
-    Found hole ‘_’ with inferred constraints: (Num a)
-    To use the inferred type, enable PartialTypeSignatures
-    In the type signature for ‘succ'’: _ => a -> a
-Failed, modules loaded: none.
-```
-
-When the flag ``-XPartialTypeSignatures`` is passed to GHC and the inferred type
-is unambiguous, GHC will let us leave the holes in place and the compilation
-will proceed.
-
-```bash
-typedhole.hs:3:10: Warning:
-    Found hole ‘_’ with type: w_
-    Where: ‘w_’ is a rigid type variable bound by
-                the inferred type of succ' :: w_ -> w_1 -> w_ at foo.hs:4:1
-    In the type signature for ‘succ'’: _ -> _ -> _
-```
+See: [Partial Type Signatures](https://ghc.haskell.org/trac/ghc/wiki/PartialTypeSignatures)
 
 
-Recursive Do
-------------
+RecursiveDo
+-----------
 
-Recursive do notation allows to use to self-reference expressions on both sides
-of a monadic bind. For instance the following uses lazy evaluation to generate a
-infinite list. This is sometimes used for instantiating cyclic datatypes inside
-of a monadic context that need to hold a reference to themselves.
+Recursive do notation allows use of self-reference expressions on both sides of
+a monadic bind. For instance the following uses lazy evaluation to generate
+an infinite list. This is sometimes used to instantiate a cyclic datatype
+inside a monadic context that needs to hold a reference to itself.
 
 ```haskell
 {-# LANGUAGE RecursiveDo #-}
@@ -2821,8 +2899,8 @@ justOnes = do
 
 See: [Recursive Do Notation](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html#the-recursive-do-notation)
 
-Applicative Do
---------------
+ApplicativeDo
+-------------
 
 By default GHC desugars do-notation to use implicit invocations of bind and
 return.
@@ -2855,8 +2933,8 @@ test :: Applicative m => m (a, b, c)
 test = (,,) <$> f <*> g <*> h
 ```
 
-Pattern Guards
---------------
+PatternGuards
+-------------
 
 Pattern guards are an extension to the pattern matching syntax.  Given a ``<-``
 pattern qualifier, the right hand side is evaluated and matched against the
@@ -2904,12 +2982,12 @@ f = (,(),,(),(),,)
 ```
 
 MultiWayIf
-------------
+----------
 
-Multi-way expands traditional if statements to allow pattern match conditions
-that are equivalent to a chain of if-then-else statements. This allows us to
-write "pattern matching predicates" on a value. This alters the syntax of
-Haskell language.
+Multi-way if expands traditional if statements to allow pattern match
+conditions that are equivalent to a chain of if-then-else statements. This
+allows us to write "pattern matching predicates" on a value. This alters the
+syntax of Haskell language.
 
 ```haskell
 {-# LANGUAGE MultiWayIf #-}
@@ -2918,12 +2996,12 @@ bmiTell :: Float -> Text
 bmiTell bmi = if
   | bmi <= 18.5 -> "Underweight."
   | bmi <= 25.0 -> "Average weight."
-  | bmi <= 30.0 -> "Overewight."
+  | bmi <= 30.0 -> "Overweight."
   | otherwise   -> "Clinically overweight."
 ```
 
 EmptyCase
--------------
+---------
 
 GHC normally requires at least one pattern branch in case statement this
 restriction can be relaxed with -XEmptyCase. The case statement then immediately
@@ -2934,7 +3012,7 @@ test = case of
 ```
 
 LambdaCase
--------------
+----------
 
 For case statements, LambdaCase allows the elimination of redundant free
 variables introduced purely for the case of pattern matching on.
@@ -2962,7 +3040,7 @@ NumDecimals
 -----------
 
 NumDecimals allows the use of exponential notation for integral literals that
-are not necessarily floats. Without it, any use of expontial notation
+are not necessarily floats. Without it, any use of exponential notation
 induces a Fractional class constraint.
 
 ```haskell
@@ -3073,30 +3151,30 @@ DeriveFunctor
 ~~~~
 
 DeriveTraversable
--------------
+-----------------
 
 ~~~~ {.haskell include="src/04-extensions/derive_traversable.hs"}
 ~~~~
 
 DeriveFoldable
--------------
+--------------
 
 DeriveGeneric
 -------------
 
 DeriveAnyClass
--------------
+--------------
 
-With ``-XDeriveAnyClass`` we can derive any class. The deriving logic s
-generates an instance declaration for the type with no explicitly-defined
-methods.  If the typeclass implements a default for each method then this will
-be well-defined and give rise to an automatic instances.
+With ``-XDeriveAnyClass`` we can derive any class. The deriving logic generates
+an instance declaration for the type with no explicitly-defined methods. If
+the typeclass implements a default for each method then this will be
+well-defined and give rise to an automatic instances.
 
 StaticPointers
 --------------
 
 DuplicateRecordFields
-----------------------
+---------------------
 
 GHC 8.0 introduced the ``DuplicateRecordFields`` extensions which loosens GHC's
 restriction on records in the same module with identical accessors. The precise
@@ -3127,9 +3205,9 @@ OverloadedLabels
 GHC 8.0 also introduced the OverloadedLabels extension which allows a limited
 form of polymorphism over labels that share the same name.
 
-To work with overloaded labels types we need to enable several language
-extensions to work with promoted strings and multiparam typeclasses that underly
-it's implementation.
+To work with overloaded label types we need to enable several language
+extensions to work with promoted strings and multiparam typeclasses that
+underlay it's implementation.
 
 ```haskell
 extract :: IsLabel "id" t => t
@@ -3143,7 +3221,7 @@ extract = #id
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE ExistentialQuantification #-}
 
-import GHC.Records (HasField(..))
+import GHC.Records (HasField(..))  -- Since base 4.10.0.0
 import GHC.OverloadedLabels (IsLabel(..))
 
 data S = MkS { foo :: Int }
@@ -3162,7 +3240,7 @@ See:
 
 * [OverloadedRecordFields revived](http://www.well-typed.com/blog/2015/03/overloadedrecordfields-revived/)
 
-Cpp
+CPP
 ---
 
 The C++ preprocessor is the fallback whenever we really need to separate out
@@ -4333,6 +4411,7 @@ surface language with a typeclass ``IsList``.
 class IsList l where
   type Item l
   fromList  :: [Item l] -> l
+  fromListN :: Int -> [Item l] -> l
   toList    :: l -> [Item l]
 
 instance IsList [a] where
@@ -4342,8 +4421,9 @@ instance IsList [a] where
 ```
 
 ```haskell
+λ: :seti -XOverloadedLists
 λ: :type [1,2,3]
-[1,2,3] :: (Num (Item l), IsList l) => l
+[1,2,3] :: (Num (GHC.Exts.Item l), GHC.Exts.IsList l) => l
 ```
 
 ~~~~ {.haskell include="src/07-text-bytestring/overloadedlist.hs"}
@@ -4469,6 +4549,13 @@ class Applicative f => Alternative f where
   many :: f a -> f [a]
 
 optional :: Alternative f => f a -> f (Maybe a)
+
+when :: (Alternative f) => Bool -> f () -> f ()
+when p s = if p then s else return ()
+
+guard :: (Alternative f) => Bool -> f ()
+guard True  = pure ()
+guard False = mzero
 ```
 
 ```haskell
@@ -4878,7 +4965,7 @@ MonadPlus
 Choice and failure.
 
 ```haskell
-class Monad m => MonadPlus m where
+class (Alternative m, Monad m) => MonadPlus m where
    mzero :: m a
    mplus :: m a -> m a -> m a
 
@@ -4902,15 +4989,11 @@ a `mplus` mzero = a
 ```
 
 ```haskell
-when :: (Monad m) => Bool -> m () -> m ()
-when p s =  if p then s else return ()
+asum :: (Foldable t, Alternative f) => t (f a) -> f a
+asum = foldr (<|>) empty
 
-guard :: MonadPlus m => Bool -> m ()
-guard True  = return ()
-guard False = mzero
-
-msum :: MonadPlus m => [m a] -> m a
-msum =  foldr mplus mzero
+msum :: (Foldable t, MonadPlus m) => t (m a) -> m a
+msum = asum
 ```
 
 ~~~~ {.haskell include="src/10-advanced-monads/monadplus.hs"}
@@ -5219,9 +5302,8 @@ nil = Λa. Λb. λz:b. λf:(a -> b -> b). z
 cons : ∀ a. a -> [a] -> [a]
 cons = Λa. λx:a. λxs:(∀ b. b -> (a -> b -> b) -> b).
     Λb. λz:b. λf : (a -> b -> b). f x (xs_b z f)
--- cons :: forall a. a
---       -> (forall b. (a -> b -> b) -> b) -> (forall b. (a -> b -> b) -> b)
--- cons = \ (@ a) (x :: a) (xs :: forall b. (a -> b -> b) -> b)
+-- cons :: forall a. a -> [a] -> [a]
+-- cons = \ (@ a) (x :: a) (xs :: forall b. b -> (a -> b -> b) -> b)
 --     (@ b) (z :: b) (f :: a -> b -> b) -> f x (xs @ b z f)
 ```
 
@@ -5606,6 +5688,8 @@ contain no value inhabitants and are "anonymous types".
 
 data Token a
 ```
+
+The [tagged](http://hackage.haskell.org/package/tagged) library defines a similar ``Tagged`` newtype wrapper.
 
 See: [Fun with Phantom Types](http://www.researchgate.net/publication/228707929_Fun_with_phantom_types/file/9c960525654760c169.pdf)
 
@@ -6511,11 +6595,6 @@ head ~(a :| _) = a
 ~~~~ {.haskell include="src/16-type-families/noempty.hs"}
 ~~~~
 
-Overloaded Lists
-----------------
-
-In GHC 7.8 ``-XOverloadedLists`` can be used to avoid the extraneous ``fromList`` and ``toList`` conversions.
-
 Manual Proofs
 -------------
 
@@ -6979,7 +7058,7 @@ e = Proxy
 In cases where we'd normally pass around a ``undefined`` as a witness of a
 typeclass dictionary, we can instead pass a Proxy object which carries the
 phantom type without the need for the bottom. Using scoped type variables we can
-then operate with the phantom paramater and manipulate wherever is needed.
+then operate with the phantom parameter and manipulate wherever is needed.
 
 ```haskell
 t1 :: a
@@ -7351,10 +7430,10 @@ Liquid Haskell
 LiquidHaskell is not typically necessary to write Haskell.
 </div>
 
-LiquidHaskell is an extension to GHC's typesystem that adds the capactity for
+LiquidHaskell is an extension to GHC's typesystem that adds the capacity for
 refinement types using the annotation syntax. The type signatures of functions
 can be checked by the external for richer type semantics than default GHC
-provides, including non-exhaustive patterns and complex arithemtic properties
+provides, including non-exhaustive patterns and complex arithmetic properties
 that require external SMT solvers to verify. For instance LiquidHaskell can
 statically verify that a function that operates over a ``Maybe a`` is always
 given a ``Just`` or that an arithmetic functions always yields an Int that is
@@ -8005,7 +8084,7 @@ Haskell supports arithmetic with complex numbers via a Complex datatype from the
 ``Data.Complex`` module. The first argument is the real part, while the second
 is the imaginary part. The type has a single parameter and inherits it's
 numerical typeclass components (Num, Fractional, Floating) from the type of this
-paramater.
+parameter.
 
 ```haskell
 -- 1 + 2i
@@ -8525,7 +8604,7 @@ only, not the size of the type associated with the pointer ( this differs from
 C).
 
 The Prelude defines Storable interfaces for most of the basic types as well as
-types in the ``Foreign.C`` library.
+types in the ``Foreign.Storable`` module.
 
 ```haskell
 class Storable a where
@@ -8802,7 +8881,7 @@ in parallel.
 The functions above are quite useful, but will break down if evaluation of the arguments needs to be
 parallelized beyond simply weak head normal form. For instance if the arguments to ``rpar`` is a nested
 constructor we'd like to parallelize the entire section of work in evaluated the expression to normal form
-instead of just the outer layer. As such we'd like to generalize our strategies so the the evaluation strategy
+instead of just the outer layer. As such we'd like to generalize our strategies so the evaluation strategy
 for the arguments can be passed as an argument to the strategy.
 
 ``Control.Parallel.Strategies`` contains a generalized version of ``rpar`` which embeds additional evaluation
@@ -8819,7 +8898,7 @@ rdeepseq :: NFData a => Strategy a
 rdeepseq x = rseq (force x)
 ```
 
-We now can create a "higher order" strategy that takes two strategies and itself yields a a computation which
+We now can create a "higher order" strategy that takes two strategies and itself yields a computation which
 when evaluated uses the passed strategies in its scheduling.
 
 ~~~~ {.haskell include="src/22-concurrency/strategies_param.hs"}
@@ -8913,7 +8992,7 @@ Graphics
 Diagrams
 --------
 
-Diagrams is a a parser combinator library for generating vector images to SVG and a variety of other formats.
+Diagrams is a parser combinator library for generating vector images to SVG and a variety of other formats.
 
 ~~~~ {.haskell include="src/23-graphics/diagrams.hs"}
 ~~~~
@@ -9092,7 +9171,7 @@ Optparse Applicative
 --------------------
 
 Optparse-applicative is a combinator library for building command line
-interfaces that take in various user flags, commmands and switches and map them
+interfaces that take in various user flags, commands and switches and map them
 into Haskell data structures that can handle the input. The main interface is
 through the applicative functor ``Parser`` and various combinators such as
 ``strArgument`` and ``flag`` which populate the option parsing table with some
@@ -9206,8 +9285,8 @@ Prelude tools require us to manifest large amounts of data in memory all at once
 computation.
 
 ```haskell
-mapM :: Monad m => (a -> m b) -> [a] -> m [b]
-sequence :: Monad m => [m a] -> m [a]
+mapM :: (Monad m, Traversable t) => (a -> m b) -> t a -> m (t b)
+sequence :: (Monad m, Traversable t) => t (m a) -> m (t a)
 ```
 
 Reading from the file creates a thunk for the string that forced will then read the file. The problem is then
@@ -9891,7 +9970,7 @@ Of importance to note is the Blaze library used here overloads do-notation but
 is not itself a proper monad so the various laws and invariants that normally
 apply for monads may break down or fail with error terms.
 
-See: [Making a Website with Haskell](http://adit.io/posts/2013-04-15-making-a-website-with-haskell.html)
+A collection of useful related resources can be found on the Scotty wiki: [Scotty Tutorials & Examples](https://github.com/scotty-web/scotty/wiki)
 
 Servant
 -------
@@ -9962,7 +10041,7 @@ execute_ :: Connection -> Query -> IO Int64
 ```
 
 The result of the ``query`` function is a list of elements which implement the
-FromRow typeclass. This can be many things including a single elemment (Only), a
+FromRow typeclass. This can be many things including a single element (Only), a
 list of tuples where each element implements ``FromField`` or a custom datatype
 that itself implements ``FromRow``. Under the hood the database bindings
 inspects the Postgres ``oid`` objects and then attempts to convert them into the
@@ -11336,7 +11415,7 @@ names:
 Symbol   Meaning
 ------   ----------------
 ``0``    No argument
-``p``    Garage Collected Pointer
+``p``    Garbage Collected Pointer
 ``n``    Word-sized non-pointer
 ``l``    64-bit non-pointer (long)
 ``v``    Void
@@ -12486,9 +12565,9 @@ In a separate module we can then enable Quasiquotes and embed the string.
 git-embed
 ----------
 
-Often times it is neccessary to embed the specific Git version hash of a build
-inside the exectuable. Using git-embed the compiler will effectivelly shell out
-to the command line to retrieve the version information of the CWD Git repostory
+Often times it is necessary to embed the specific Git version hash of a build
+inside the executable. Using git-embed the compiler will effectively shell out
+to the command line to retrieve the version information of the CWD Git repository
 and use Template Haskell to define embed this information at compile-time. This
 is often useful for embedding in ``--version`` information in the command line
 interface to your program or service.
@@ -12708,7 +12787,7 @@ Such that for a natural transformation ``h`` we have:
 fmap f . h ≡ h . fmap f
 ```
 
-The simplest example is between (f = List) and (g = Maybe) types.
+The simplest example is between (``f = List``) and (``g = Maybe``) types.
 
 ```haskell
 headMay :: forall a. [a] -> Maybe a
@@ -12959,7 +13038,7 @@ enforce purity and uses call-by-value.
 OCaml's main implementation is [*ocamlc*](http://ocaml.org/). The OCaml compiler
 is distributed under [the Q Public
 licence](http://www.gnu.org/licenses/license-list.html#QPL), a permissive,
-non-copyleft FLOSS licence. Some portions of the OCaml libaries are licensed under
+non-copyleft FLOSS licence. Some portions of the OCaml libraries are licensed under
 the [GPLv2](http://www.gnu.org/licenses/gpl.html). See the [OCaml GitHub
 page](https://github.com/ocaml/ocaml/blob/trunk/LICENSE) for more information
 about licensing specifics.
@@ -13237,8 +13316,6 @@ typed and functional.
 Erlang's main implementation is *erl*.
 
 Erlang is a *unityped* language.
-
-Erlang is interpreted.
 
 Erlang allows polymorphism by means of *unityping*.
 
@@ -13519,7 +13596,7 @@ The majority of Javascript implementations are garbage collected.
 Kotlin
 ------
 
-**Main difference**: Kotlin is an imperative langauge which structures code
+**Main difference**: Kotlin is an imperative language which structures code
 around objects and classes, compared to Haskell which is functional language
 emphasizing pure higher-order functions.
 
@@ -13547,7 +13624,7 @@ PHP
 PHP is a high-level, dynamic, untyped, and interpreted programming language that
 was common for scripting web applications in the 00s. PHP is widely criticized
 for it's poor design, unsafe defaults, and improper handling of simple
-programming constructs. Nevertheless PHP is widely used as the backet for
+programming constructs. Nevertheless, PHP is widely used as the backend for
 several of the highest profile websites.
 
 **Main difference**: PHP was designed in ad-hoc fashion to meet the needs of
