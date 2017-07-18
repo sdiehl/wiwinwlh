@@ -9456,6 +9456,11 @@ function.
 * Scrypt
 * HKDF
 
+#### Padding
+
+~~~~ {.haskell include="src/32-cryptography/Padding.hs"}
+~~~~
+
 #### PBKDF2
 
 ~~~~ {.haskell include="src/32-cryptography/PBKDF2.hs"}
@@ -9494,6 +9499,19 @@ then be used to authenticate and encrypt messages between the two users.
 
 #### Secp256k1
 
+Secp256k1 is a common elliptic curve using a Koblitz curve and provably random
+parameters. 
+
+ECDH is used for the purposes of key agreement. Suppose two people, Alice and
+Bob, wish to exchange a secret key with each other. Alice will generate a
+private key $d_A$ and a public key $Q_A=d_A G$ (where $G$ is the generator for
+the curve).  Similarly Bob has his private key $d_B$ and a public key $Q_B=d_B G$.
+If Bob sends his public key to Alice then she can calculate $d_A Q_B=d_A d_B G$.
+Similarly if Alice sends her public key to Bob, then he can calculate $d_b Q_A =
+d_A d_B G$. The shared secret is the x co-ordinate of the calculated point $d_Ad
+B G$. Any eavesdropper would only know $Q_A$ and $Q_B$, and would be unable to
+calculate the shared secret.
+
 ~~~~ {.haskell include="src/32-cryptography/Secp256k1.hs"}
 ~~~~
 
@@ -9501,7 +9519,7 @@ x509
 ----
 
 X.509 is an ITU-T standard for a *public key infrastructure*. X.509v3 is defined
-in RCC5280 X.509 certificates are commonly used in protocols like *TLS*.
+in RFC5280 X.509 certificates are commonly used in protocols like *TLS*.
 
 <hr/>
 
