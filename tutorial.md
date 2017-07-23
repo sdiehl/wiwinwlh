@@ -2294,7 +2294,7 @@ fact building up a much larger function by composing functions together.
 ```haskell
 main =
   getLine >>= \x ->
-    putStrLn >>= \_ ->
+    putStrLn x >>= \_ ->
       return ()
 ```
 
@@ -2303,7 +2303,7 @@ Written in prefix form, it becomes a little bit more digestible.
 ```haskell
 main =
   (>>=) getLine (\x ->
-    (>>=) putStrLn (\_ ->
+    (>>=) (putStrLn x) (\_ ->
           return ()
     )
   )
@@ -2313,7 +2313,7 @@ Perhaps even removing the operator entirely might be more intuitive coming from
 other languages.
 
 ```haskell
-main = bind getLine (\x -> bind putStrLn (\_ -> return ()))
+main = bind getLine (\x -> bind (putStrLn x) (\_ -> return ()))
   where
     bind x y = x >>= y
 ```
@@ -2326,7 +2326,7 @@ with type inference. It is abstracted away from the user, but the ``(>>=)`` or
 dictionary argument (``$dMonad``) implicitly threaded around.
 
 ```haskell
-main $dMonad = bind $dMonad getLine (\x -> bind $dMonad putStrLn (\_ -> return $dMonad ()))
+main $dMonad = bind $dMonad getLine (\x -> bind $dMonad (putStrLn x) (\_ -> return $dMonad ()))
 ```
 
 Except in the case where the parameter of the monad class is unified ( through
@@ -2335,7 +2335,7 @@ dictionary (``$dMonadIO``) is instead spliced throughout.
 
 ```haskell
 main :: IO ()
-main = bind $dMonadIO getLine (\x -> bind $dMonadIO putStrLn (\_ -> return $dMonadIO ()))
+main = bind $dMonadIO getLine (\x -> bind $dMonadIO (putStrLn x) (\_ -> return $dMonadIO ()))
 ```
 
 Now, all of these transformations are trivial once we understand them, they're
