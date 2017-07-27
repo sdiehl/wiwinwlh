@@ -8992,7 +8992,7 @@ Graphics
 Diagrams
 --------
 
-Diagrams is a parser combinator library for generating vector images to SVG and a variety of other formats.
+Diagrams is a library for generating vector images to SVG and a variety of other formats.
 
 ~~~~ {.haskell include="src/23-graphics/diagrams.hs"}
 ~~~~
