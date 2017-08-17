@@ -7549,7 +7549,7 @@ cast x
 Of historical note is that writing our own Typeable classes is currently
 possible of GHC 7.6 but allows us to introduce dangerous behavior that can cause
 crashes, and shouldn't be done except by GHC itself. As of 7.8 GHC forbids
-hand-written Typeable instances. As of 7.10 ``-XAutoDeriveDataTypeable``  is
+hand-written Typeable instances. As of 7.10 ``-XAutoDeriveTypeable``  is
 enabled by default.
 
 See: [Typeable and Data in Haskell](http://chrisdone.com/posts/data-typeable)
