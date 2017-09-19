@@ -1,4 +1,4 @@
-% What I Wish I Knew When Learning Haskell (Version 2.3)
+% What I Wish I Knew When Learning Haskell (Version 2.4)
 % Stephen Diehl
 % March 2016
 
