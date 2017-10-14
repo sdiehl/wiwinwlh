@@ -13370,7 +13370,7 @@ Swift's main implementation is *swiftc*.
 Swift allows polymorphism by means of *parametric polymorphism* and *ad-hoc
 polymorphism* through through inheritance, interfaces, and reflection.
 
-Swift is *garbage collected*.
+Swift is not *garbage collected*, but uses static semantics to analyse life cycles of reference values at compile time. References are annotated as *weak* or *strong* to prevent reference cycles. Value types are copied on write.
 
 Swift is a *statically typed* language.
 
