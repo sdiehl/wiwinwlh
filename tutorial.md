@@ -3195,7 +3195,7 @@ Using just DuplicateRecordFields, projection is still not supported so the
 following will not work. OverloadedLabels fixes this to some extent.
 
 ```haskell
-test :: (Person, Animal, Vegetable)
+test :: (Int, Int, Int)
 test = (id (Person 1), id (Animal 2), id (Animal 3))
 ```
 
