@@ -5950,14 +5950,14 @@ Catamorphism   ``foldr :: (a -> b -> b) -> b -> [a] -> b``      Deconstructs a d
 Anamorphism    ``unfoldr :: (b -> Maybe (a, b)) -> b -> [a]``   Constructs a structure level by level
 
 ```haskell
--- | A fix-point type. 
+-- | A fix-point type.
 newtype Fix f = Fix { unFix :: f (Fix f) }
 
--- | Catamorphism or generic function fold. 
+-- | Catamorphism or generic function fold.
 cata :: Functor f => (f a -> a) -> (Fix f -> a)
 cata f = f . fmap (cata f) . unFix
 
--- | Anamorphism or generic function unfold. 
+-- | Anamorphism or generic function unfold.
 ana :: Functor f => (a -> f a) -> (a -> Fix f)
 ana f = Fix . fmap (ana f) . f
 ```
@@ -9409,7 +9409,7 @@ memory
 ByteArray
 
 ```haskell
-data Base 
+data Base
   = Base16            -- ^ similar to hexadecimal
   | Base32
   | Base64            -- ^ standard Base64
@@ -12873,7 +12873,7 @@ by ``a -> b`` and the behavior of ``g`` can written purely in terms of ``f a``.
 
 TODO
 
-See: 
+See:
 
 * [Reason Isomorphically](https://www.cs.ox.ac.uk/ralf.hinze/publications/WGP10.pdf)
 * [The Continuation Passing Transform and the Yoneda Embedding](https://golem.ph.utexas.edu/category/2008/01/the_continuation_passing_trans.html)
@@ -13612,7 +13612,7 @@ several of the highest profile websites.
 
 **Main difference**: PHP was designed in ad-hoc fashion to meet the needs of
 server side web development before the field was well-understood. The PHP
-runtime is "organic" and the language itself lacks disciple and rigor found in
+runtime is "organic" and the language itself lacks the discipline and rigor found in
 Haskell.
 
 PHP implementations include *php* and *hack*.
