@@ -1,4 +1,5 @@
-% What I Wish I Knew When Learning Haskell (Version 2.3)
+
+% What I Wish I Knew When Learning Haskell (Version 2.4)
 % Stephen Diehl
 % March 2016
 
@@ -637,7 +638,7 @@ integrate with the ``cabal`` build system. These packages are often left
 undocumented as well.
 
 For developers coming to Haskell from other language ecosystems that favor
-the former philosophy (e.g., Python, Javascript, Ruby), seeing  *thousands of
+the former philosophy (e.g., Python, JavaScript, Ruby), seeing  *thousands of
 libraries without the slightest hint of documentation or description of purpose*
 can be unnerving. It is an open question whether the current cultural state of
 Hackage is sustainable in light of these philosophical differences.
@@ -3195,7 +3196,7 @@ Using just DuplicateRecordFields, projection is still not supported so the
 following will not work. OverloadedLabels fixes this to some extent.
 
 ```haskell
-test :: (Person, Animal, Vegetable)
+test :: (Int, Int, Int)
 test = (id (Person 1), id (Animal 2), id (Animal 3))
 ```
 
@@ -5949,14 +5950,14 @@ Catamorphism   ``foldr :: (a -> b -> b) -> b -> [a] -> b``      Deconstructs a d
 Anamorphism    ``unfoldr :: (b -> Maybe (a, b)) -> b -> [a]``   Constructs a structure level by level
 
 ```haskell
--- | A fix-point type. 
+-- | A fix-point type.
 newtype Fix f = Fix { unFix :: f (Fix f) }
 
--- | Catamorphism or generic function fold. 
+-- | Catamorphism or generic function fold.
 cata :: Functor f => (f a -> a) -> (Fix f -> a)
 cata f = f . fmap (cata f) . unFix
 
--- | Anamorphism or generic function unfold. 
+-- | Anamorphism or generic function unfold.
 ana :: Functor f => (a -> f a) -> (a -> Fix f)
 ana f = Fix . fmap (ana f) . f
 ```
@@ -7549,7 +7550,7 @@ cast x
 Of historical note is that writing our own Typeable classes is currently
 possible of GHC 7.6 but allows us to introduce dangerous behavior that can cause
 crashes, and shouldn't be done except by GHC itself. As of 7.8 GHC forbids
-hand-written Typeable instances. As of 7.10 ``-XAutoDeriveDataTypeable``  is
+hand-written Typeable instances. As of 7.10 ``-XAutoDeriveTypeable``  is
 enabled by default.
 
 See: [Typeable and Data in Haskell](http://chrisdone.com/posts/data-typeable)
@@ -8992,7 +8993,7 @@ Graphics
 Diagrams
 --------
 
-Diagrams is a parser combinator library for generating vector images to SVG and a variety of other formats.
+Diagrams is a library for generating vector images to SVG and a variety of other formats.
 
 ~~~~ {.haskell include="src/23-graphics/diagrams.hs"}
 ~~~~
@@ -9408,7 +9409,7 @@ memory
 ByteArray
 
 ```haskell
-data Base 
+data Base
   = Base16            -- ^ similar to hexadecimal
   | Base32
   | Base64            -- ^ standard Base64
@@ -12890,7 +12891,7 @@ by ``a -> b`` and the behavior of ``g`` can written purely in terms of ``f a``.
 
 TODO
 
-See: 
+See:
 
 * [Reason Isomorphically](https://www.cs.ox.ac.uk/ralf.hinze/publications/WGP10.pdf)
 * [The Continuation Passing Transform and the Yoneda Embedding](https://golem.ph.utexas.edu/category/2008/01/the_continuation_passing_trans.html)
@@ -13199,14 +13200,14 @@ however have static tracking of memory allocations and lifetimes.
 Purescript
 ---------
 
-Purescript is a Haskell-like language that compiles into Javascript for
+Purescript is a Haskell-like language that compiles into JavaScript for
 evaluation within a web browser. Semantically it is very close to Haskell except
 that is uses a call-by-value model instead of Haksell's call-by-need. The type
 system is a superset of Haskell 2010 and includes ad-hoc polymorphism,
 parametric polymorphism, rank-n polymorphism, row-polymorphism, higher-kinded
 types and full algebraic data types.
 
-**Main difference**: Purescript targets Javascript in the browser, while GHC
+**Main difference**: Purescript targets JavaScript in the browser, while GHC
 Haskell is designed to work on top of the GHC managed runtime.
 
 Purescript's main implementation is *purescript*.
@@ -13221,10 +13222,10 @@ system embedded in the Eff monad.
 Elm
 ---
 
-Elm is a ML-like language that compiles into Javascript for evaluation within a
+Elm is a ML-like language that compiles into JavaScript for evaluation within a
 web browser.
 
-**Main difference**: Elm targets Javascript in the browser, while GHC Haskell is
+**Main difference**: Elm targets JavaScript in the browser, while GHC Haskell is
 designed to work on top of the GHC managed runtime.  Elm lacks any semblance of
 a modern ML type system features, and has no coherent story for overloading,
 modules or higher polymorphism.
@@ -13233,8 +13234,8 @@ Elm's main implementation is *elm*.
 
 Elm is a *statically typed* language.
 
-Elm targets Javascript and is "transpiled" to Javascript source code to be run
-exclusively in a browser or Javascript interpreter.
+Elm targets JavaScript and is "transpiled" to JavaScript source code to be run
+exclusively in a browser or JavaScript interpreter.
 
 Elm allows polymorphism by means of *parametric polymorphism*.
 
@@ -13388,7 +13389,7 @@ Swift's main implementation is *swiftc*.
 Swift allows polymorphism by means of *parametric polymorphism* and *ad-hoc
 polymorphism* through through inheritance, interfaces, and reflection.
 
-Swift is *garbage collected*.
+Swift is not *garbage collected*, but uses static semantics to analyse life cycles of reference values at compile time. References are annotated as *weak* or *strong* to prevent reference cycles. Value types are copied on write.
 
 Swift is a *statically typed* language.
 
@@ -13568,30 +13569,30 @@ Scala language *does not* have an effect system.
 
 Scala is statically *compiled* to Java Virtual Machine (JVM) bytecode.
 
-Javascript
+JavaScript
 ----------
 
 JavaScript is a high-level, dynamic, untyped, and interpreted programming
 language that was ubiquitous in web development during the 90s and 00s.
-Javascript is most kindly described as a language that "just happened" and an
+JavaScript is most kindly described as a language that "just happened" and an
 enduring testament to human capacity to route around problems.
 
-**Main difference**: Like many web technologies Javascript "just happened" and
-it's design was dominated by economic factors. Haskell was designed with some
+**Main difference**: Like many web technologies JavaScript "just happened" and
+its design was dominated by economic factors. Haskell was designed with some
 insight into the end result.
 
-Javascript's implementations include *NodeJS*, *V8* and *spidermoneky*.
+JavaScript's implementations include *NodeJS*, *V8* and *spidermoneky*.
 
-Javascript is a *unityped* language.
+JavaScript is a *unityped* language.
 
-Javascript is *interpreted*, tracing JIT specialization is common.
+JavaScript is *interpreted*, tracing JIT specialization is common.
 
-Javascript allows polymorphism by means of *unityping*.
+JavaScript allows polymorphism by means of *unityping*.
 
-Javascript internally refers to runtime value tags as *types*, which differs
+JavaScript internally refers to runtime value tags as *types*, which differs
 from the Haskell notion of types.
 
-The majority of Javascript implementations are garbage collected.
+The majority of JavaScript implementations are garbage collected.
 
 Kotlin
 ------
@@ -13629,7 +13630,7 @@ several of the highest profile websites.
 
 **Main difference**: PHP was designed in ad-hoc fashion to meet the needs of
 server side web development before the field was well-understood. The PHP
-runtime is "organic" and the language itself lacks disciple and rigor found in
+runtime is "organic" and the language itself lacks the discipline and rigor found in
 Haskell.
 
 PHP implementations include *php* and *hack*.
