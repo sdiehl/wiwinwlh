@@ -11996,34 +11996,6 @@ See:
 
 * [unbound-generics](https://github.com/lambdageek/unbound-generics)
 
-llvm-general
-------------
-
-LLVM is a library for generating machine code. The llvm-general bindings provide
-a way to model, compile and execute LLVM bytecode from within the Haskell
-runtime.
-
-~~~~ {.haskell include="src/30-languages/llvm-general.hs"}
-~~~~
-
-Generates the following textual LLVM IR which can them be executed using the JIT
-in the ``llvm-general`` package or passed to the various llvm commandline
-utilities.
-
-```llvm
-; ModuleID = 'example-llvm-module'
-
-define i8 @f(i8 %x){
-entry:
-  ret i8 %x
-}
-```
-
-See:
-
-* [Minimal Example of LLVM Haskell JIT](https://github.com/sdiehl/llvm-tutorial-standalone)
-* [Implementing a JIT Compiled Language with Haskell and LLVM](http://www.stephendiehl.com/llvm/)
-
 pretty
 ------------
 
