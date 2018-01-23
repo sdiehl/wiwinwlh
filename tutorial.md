@@ -1282,7 +1282,7 @@ it :: Num a => a
 it :: Num a => a
 ```
 
-This rule my be deactivated with the ``NoMonomorphicRestriction`` extension,
+This rule may be deactivated with the ``NoMonomorphicRestriction`` extension,
 see [below](#nomonomorphicrestriction).
 
 See: [Monomorphism Restriction](https://wiki.haskell.org/Monomorphism_restriction)
@@ -1441,7 +1441,7 @@ program automatically reloads and evaluates the code for errors and warnings.
 Haddock
 -------
 
-[Haddock](haskel://www.haskell.org/haddock/#Overview) is the automatic
+[Haddock](https://www.haskell.org/haddock/#Overview) is the automatic
 documentation generation tool for Haskell source code. It integrates with the
 usual ``cabal`` toolchain. In this section, we will explore how to document
 code so that Haddock can generate documentation successfully.
@@ -2865,7 +2865,7 @@ PartialTypeSignatures
 Normally a function is either given a full explicit type signature or none at
 all. The partial type signature extension allows something in between.
 
-Partial types may by used to avoid writing uninteresting pieces of the
+Partial types may be used to avoid writing uninteresting pieces of the
 signature, which can be convenient in development:
 
 ```haskell
@@ -3287,7 +3287,7 @@ Or on the version of the base library used.
 #endif
 ```
 
-It can also be abused to do terrible things like metaprogrammming with strings,
+It can also be abused to do terrible things like metaprogramming with strings,
 but please don't do this.
 
 Historical Extensions
@@ -3824,7 +3824,7 @@ To get work done you probably need.
 Custom Preludes
 ---------------
 
-The default Prelude can be disabled in it's entirety by twiddling the
+The default Prelude can be disabled in its entirety by twiddling the
 ``-XNoImplicitPrelude`` flag.
 
 ```haskell
@@ -5137,7 +5137,7 @@ of IO or ST.  The lifted-base provides generic control operations such as
 
 Monad base provides an abstraction over ``liftIO`` and other functions to
 explicitly lift into a "privileged" layer of the transformer stack. It's
-implemented a multiparamater typeclass with the "base" monad as the parameter b.
+implemented a multiparameter typeclass with the "base" monad as the parameter b.
 
 ```haskell
 -- | Lift a computation from the base monad
@@ -8063,7 +8063,7 @@ Float    fromRational id            truncate      truncate       truncate      t
 Int      fromIntegral fromIntegral  id            fromIntegral   fromIntegral  fromIntegral
 Word     fromIntegral fromIntegral  fromIntegral  id             fromIntegral  fromIntegral
 Integer  fromIntegral fromIntegral  fromIntegral  fromIntegral   id            fromIntegral
-Rational fromRatoinal fromRational  truncate      truncate       truncate      id
+Rational fromRational fromRational  truncate      truncate       truncate      id
 
 Integer
 -------
@@ -9072,7 +9072,7 @@ combinators. The simplest example builds on top of the builtin Parsec language d
 of most common lexical schemes.
 
 For instance we'll build on top of the empty language grammar on top of the
-haskellDef grammer that uses the Text token instead of string.
+haskellDef grammar that uses the Text token instead of string.
 
 ~~~~ {.haskell include="src/24-parsing/lexer_text.hs"}
 ~~~~
@@ -9221,7 +9221,7 @@ $ alex Lexer.x -o Lexer.hs
 $ happy Parser.y -o Parser.hs
 ```
 
-The generated modules are not human readable generally and unfortunatly error
+The generated modules are not human readable generally and unfortunately error
 messages are given in the Haskell source, not the Happy source.
 
 #### Lexer
@@ -11236,7 +11236,7 @@ closure is to be allocated that captures the variables explicitly mentioned.
 
 Thunks themselves are either reentrant (``\r``) or updatable (``\u``) indicating
 that the thunk and either yields a value to the stack or is allocated on the
-heap after the update frame is evaluated All subsequent entry's of the thunk
+heap after the update frame is evaluated. All subsequent entries of the thunk
 will yield the already-computed value without needing to redo the same work.
 
 A lambda form also indicates the *static reference table* a collection of
