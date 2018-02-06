@@ -5851,7 +5851,7 @@ Tree a = μ a. 1 + a * (List a)
        = 1 + a^2 + a^4 + a^6 + a^8 ...
 ```
 
-See: [Species and Functors and Types, Oh My!](http://www.cis.upenn.edu/~byorgey/papers/species-pearl.pdf)
+See: [Species and Functors and Types, Oh My!](http://dept.cs.williams.edu/~byorgey/pub/species-pearl.pdf)
 
 F-Algebras
 -----------
