@@ -78,6 +78,7 @@
   bottom: 0;
   height: 100%;
   overflow-y: auto;
+  will-change: transform;
   -webkit-overflow-scrolling: touch;
 }
 
