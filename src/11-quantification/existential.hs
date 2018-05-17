@@ -2,7 +2,11 @@
 {-# LANGUAGE RankNTypes #-}
 
 -- ∃ t. (t, t → t, t → String)
-data Box = forall a. Box a (a -> a) (a -> String)
+data Box = forall a. Box
+  { value  :: a
+  , update :: a -> a
+  , print  :: a -> String
+  }
 
 boxa :: Box
 boxa = Box 1 negate show

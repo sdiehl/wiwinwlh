@@ -5378,9 +5378,6 @@ data types and restrict the behavior that functions can use. Passing records
 around with existential variables allows a type to be "bundled" with a fixed set
 of functions that operate over its hidden internals.
 
-~~~~ {.haskell include="src/11-quantification/existential_records.hs"}
-~~~~
-
 Impredicative Types
 -------------------
 
