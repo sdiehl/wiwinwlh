@@ -9533,11 +9533,6 @@ function.
 * Scrypt
 * HKDF
 
-#### Padding
-
-~~~~ {.haskell include="src/32-cryptography/Padding.hs"}
-~~~~
-
 #### PBKDF2
 
 ~~~~ {.haskell include="src/32-cryptography/PBKDF2.hs"}
