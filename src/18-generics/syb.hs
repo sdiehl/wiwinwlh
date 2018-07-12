@@ -3,13 +3,13 @@
 import Data.Data
 import Data.Typeable
 import Data.Generics.Schemes
-import Data.Generics.Aliases (mkT)
+import Data.Generics.Aliases (mkT, extT)
 
 data MyTuple a = MyTuple a Float
   deriving (Data, Typeable, Show)
 
 exampleT :: Data a => MyTuple a -> MyTuple a
-exampleT = everywhere (mkT go1) . everywhere (mkT go2)
+exampleT = everywhere (mkT go1 `extT`  go2)
   where
     go1 :: Int -> Int
     go1 x = succ x
