@@ -13258,7 +13258,7 @@ requirements of high-performance numerical and scientific computing.
 **Main difference**: Julia is unityped and imperative, Haskell is statically
 typed.
 
-Julia's main implementation is *juliia*.
+Julia's main implementation is *julia*.
 
 Julia is a *unityped* language.
 
