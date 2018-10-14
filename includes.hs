@@ -30,6 +30,3 @@ main = runIOorExplode $ liftIO T.getContents
                     >>= liftIO . bottomUpM doHtml
                     >>= writeMarkdown wopts
                     >>= liftIO . T.putStrLn
-
--- TESTING THE PANDOC MONAD
--- pandocMonadTest0 = runIOorExplode $ lookupEnv @PandocIO "NIX_GHC" >>= liftIO . print
