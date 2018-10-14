@@ -1,8 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
--- includes.hs
 import Text.Pandoc
 import Text.Pandoc.Error
+import qualified Data.Text    as T
+import qualified Data.Text.IO as T
+import Control.Monad.IO.Class
 
 doInclude :: Block -> IO Block
 doInclude cb@(CodeBlock (id, classes, namevals) contents) =
@@ -18,12 +20,16 @@ doHtml cb@(CodeBlock (id, classes, namevals) contents) =
        Nothing    -> return cb
 doHtml x = return x
 
-main :: IO ()
-main = getContents >>= bottomUpM doInclude . readMd def
-                   >>= bottomUpM doHtml
-                   >>= putStrLn . writeMarkdown def
+ropts = def { readerExtensions = pandocExtensions }
+wopts = def { writerExtensions = pandocExtensions }
 
-readMd :: ReaderOptions -> String -> Pandoc
-readMd ropt str = case readMarkdown ropt str of
-  Right doc -> doc
-  Left err  -> error $ show err
+main :: IO ()
+main = runIOorExplode $ liftIO T.getContents
+                    >>= readMarkdown ropts
+                    >>= liftIO . bottomUpM doInclude
+                    >>= liftIO . bottomUpM doHtml
+                    >>= writeMarkdown wopts
+                    >>= liftIO . T.putStrLn
+
+-- TESTING THE PANDOC MONAD
+-- pandocMonadTest0 = runIOorExplode $ lookupEnv @PandocIO "NIX_GHC" >>= liftIO . print
