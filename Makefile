@@ -34,3 +34,21 @@ includes: includes.hs
 
 clean:
 	-rm $(CHAPTERS) $(HTML)
+
+# pandoc executable 'includes' is rather large
+clean-all:
+	rm -rf $(CHAPTERS) $(HTML) includes
+
+# NIX BUILD
+# Enter nix shell with 'make run-shell' first (then 'make all')
+
+.PHONY : run-shell
+run-shell : shell.nix
+ifndef NIX_GHC
+	nix-shell
+else
+	$(error Already in GHC shell!)
+endif
+
+shell.nix : wiwinwlh.cabal
+	cabal2nix --shell  . > shell.nix
