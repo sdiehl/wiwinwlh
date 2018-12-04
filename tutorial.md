@@ -6840,7 +6840,7 @@ This is an advanced section, knowledge of kind data kinds is not typically
 necessary to write Haskell.
 </div>
 
-The ``-XDataKinds`` extension allows us to use refer to constructors at the
+The ``-XDataKinds`` extension allows us to refer to constructors at the
 value level and the type level.  Consider a simple sum type:
 
 ```haskell
@@ -6876,8 +6876,8 @@ type Bar = 'Bar
 type Baz = 'Baz
 ```
 
-Combining this with type families we see we can write meaningful, meaningful
-type-level functions by lifting types to the kind level.
+Combining this with type families we see we can write meaningful, type-level
+functions by lifting types to the kind level.
 
 ~~~~ {.haskell include="src/17-promotion/typefamily.hs"}
 ~~~~
