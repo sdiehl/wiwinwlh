@@ -5121,7 +5121,7 @@ do-notation and if-then-else syntax by providing alternative definitions local t
 ~~~~ {.haskell include="src/10-advanced-monads/indexed.hs"}
 ~~~~
 
-See: [Fun with Indexed monads](http://www.cl.cam.ac.uk/~dao29/ixmonad/ixmonad-fita14.pdf)
+See: [Fun with Indexed monads](https://github.com/dorchard/effect-monad/raw/master/docs/ixmonad-fita14.pdf)
 
 
 lifted-base
