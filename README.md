@@ -87,7 +87,7 @@ $ firefox tutorial.html
 License
 -------
 
-Stephen Diehl (2013-2017)
+Stephen Diehl (2013-2019)
 
 No rights reserved. The person who associated a work with this deed has dedicated the work to the public
 domain by waiving all of his or her rights to the work worldwide under copyright law, including all related
