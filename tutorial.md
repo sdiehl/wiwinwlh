@@ -1460,7 +1460,7 @@ Multiline comments are also possible:
 ```haskell
 -- | Multiline documentation for the function
 -- f with multiple arguments.
-fmap :: Functor f =>
+fmap :: Functor f
      => (a -> b)  -- ^ function
      -> f a       -- ^ input
      -> f b       -- ^ output
