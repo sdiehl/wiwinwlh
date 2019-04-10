@@ -1038,7 +1038,7 @@ within that function is *non-exhaustive*. In other words, the function does not
 implement appropriate handling of all valid inputs. Instead of yielding a value,
 such a function will halt from an incomplete match.
 
-Partial functions from non-exhaustively are a controversial subject, and
+Partial functions from non-exhaustivity are a controversial subject, and
 frequent use of non-exhaustive patterns is considered a dangerous code smell.
 However, the complete removal of non-exhaustive patterns from the language
 would itself be too restrictive and forbid too many valid programs.
