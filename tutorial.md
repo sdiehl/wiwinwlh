@@ -2444,7 +2444,7 @@ Or equivalently:
 It's useful to remember that transformers compose *outside-in* but are *unrolled
 inside out*.
 
-See: [Monad Transformers: Step-By-Step](http://catamorph.de/publications/2004-10-01-monad-transformers.html)
+See: [Monad Transformers: Step-By-Step](https://page.mi.fu-berlin.de/scravy/realworldhaskell/materialien/monad-transformers-step-by-step.pdf)
 
 Basics
 ------
