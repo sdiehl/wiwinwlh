@@ -2736,10 +2736,10 @@ error:
 λ: bar 1.1
 <interactive>:2:5: error:
     • No instance for (Fractional Integer)
-      arising from the literal ‘1.0’
-    • In the first argument of ‘bar’, namely ‘1.0’
-      In the expression: bar 1.0
-      In an equation for ‘it’: it = bar 1.0
+      arising from the literal ‘1.1’
+    • In the first argument of ‘bar’, namely ‘1.1’
+      In the expression: bar 1.1
+      In an equation for ‘it’: it = bar 1.1
 ```
 
 The problem is that GHC has inferred an overly specific type:
