@@ -9417,9 +9417,6 @@ convertToBase :: (ByteArrayAccess bin, ByteArray bout) => Base -> bin -> bout
 convertFromBase :: (ByteArrayAccess bin, ByteArray bout) => Base -> bin -> Either String bout
 ```
 
-entropy
--------
-
 cryptonite
 ----------
 
@@ -9447,38 +9444,7 @@ mathematical algorithm that maps data of arbitrary size to a bit string of a
 fixed size (a hash function) which is designed to also be a one-way function,
 that is, a function which is infeasible to invert.
 
-* SHA1
-* SHA2
-* MD5
-* **Keccak**
-* Ripemd
-* Whirlpool
-
-#### MD5
-
-<div class="alert alert-danger">
-MD5 is a deprecated hash algorithm that has practical known collision attacks
-</div>
-
-MD5 is a deprecated cryptographic hash function. It produces a 128-bit message
-digest and has practical known collision attacks.
-
-~~~~ {.haskell include="src/32-cryptography/MD5.hs"}
-~~~~
-
-#### SHA1
-
-<div class="alert alert-danger">
-NIST has deprecated SHA-1 in favor of the SHA-2 variants. Cryptanalysis of SHA-1
-has demonstrated that it is vulnerable to practical collision attacks
-</div>
-
-#### SipHash
-
-~~~~ {.haskell include="src/32-cryptography/SipHash.hs"}
-~~~~
-
-#### Keccak
+#### SHA3
 
 ~~~~ {.haskell include="src/32-cryptography/Keccak.hs"}
 ~~~~
@@ -9489,14 +9455,6 @@ SHA-256 is a cryptographic hash function from the SHA-2 family and is
 standardized by NIST. It produces a 256-bit message digest.
 
 ~~~~ {.haskell include="src/32-cryptography/SHA.hs"}
-~~~~
-
-#### Whirlpool
-
-Whirlpool is a cryptographic hash function that is part of ISO/IEC 10118-3:2004.
-It produces a 512-bit message digest.
-
-~~~~ {.haskell include="src/32-cryptography/Whirlpool.hs"}
 ~~~~
 
 #### RIPEMD160
@@ -9586,25 +9544,6 @@ calculate the shared secret.
 
 ~~~~ {.haskell include="src/32-cryptography/Secp256k1.hs"}
 ~~~~
-
-x509
-----
-
-X.509 is an ITU-T standard for a *public key infrastructure*. X.509v3 is defined
-in RFC5280 X.509 certificates are commonly used in protocols like *TLS*.
-
-<hr/>
-
-Compression
-============
-
-lz4
----
-
-zlib
-----
-
-<hr/>
 
 Date and Time
 =============
