@@ -4376,7 +4376,7 @@ unpack :: ByteString -> String
 
 See:
 
-* [Bytestring: Bits and Pieces](https://www.fpcomplete.com/school/to-infinity-and-beyond/pick-of-the-week/bytestring-bits-and-pieces)
+* [Bytestring: Bits and Pieces](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/bytestring-bits-and-pieces)
 * [ByteString](http://hackage.haskell.org/package/bytestring-0.10.4.0/docs/Data-ByteString.html)
 
 utf8-string
