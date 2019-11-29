@@ -9457,99 +9457,13 @@ standardized by NIST. It produces a 256-bit message digest.
 ~~~~ {.haskell include="src/32-cryptography/SHA.hs"}
 ~~~~
 
-#### RIPEMD160
-
-RIPEMD160 is a cryptographic hash function that is part of ISO/IEC 10118-3:2004.
-It produces a 160-bit message digest.
-
-~~~~ {.haskell include="src/32-cryptography/RIPEMD.hs"}
-~~~~
-
-**MAC**
-
-A keyed-hash message authentication code (HMAC) is a specific type of message
-authentication code (MAC) involving a cryptographic hash function (hence the
-'H') in combination with a secret cryptographic key. As with any MAC, it may be
-used to simultaneously verify both the data integrity and the authentication of
-a message.
-
-* **HMAC**
-* Poly1305
-
-#### HMAC
-
-~~~~ {.haskell include="src/32-cryptography/HMAC.hs"}
-~~~~
-
-**Key Derivation Function**
-
-A key derivation function (KDF) derives one or more secret keys from a secret
-value such as a master key, a password, or a passphrase using a pseudo-random
-function.
-
-* PBKDF2
-* Scrypt
-* HKDF
-
-#### PBKDF2
-
-~~~~ {.haskell include="src/32-cryptography/PBKDF2.hs"}
-~~~~
-
-**Public Key Cryptography**
-
-Asymmetric cryptography, also known as public key cryptography, uses public and
-private keys to encrypt and decrypt data. The keys are simply large numbers that
-have been paired together but are not identical (asymmetric). One key in the
-pair can be shared with everyone; it is called the public key. The other key in
-the pair is kept secret; it is called the private key. Either of the keys can be
-used to encrypt a message; the opposite key from the one used to encrypt the
-message is used for decryption.
-
-* RSA
-* Curve25519
-* Diffie Hellman (DH)
-* Elliptic Curve Diffie Hellman (ECDH)
-* Digital Signature Algorithm (DSA)
-* Edwards-curve Digital Signature Algorithm (ECDSA)
-* Edwards-curve 448 (Ed448)
-
-#### Curve25519
-
-Curve25519 is a state-of-the-art Diffie-Hellman function suitable for a wide
-variety of applications.
-
-Given a user's 32-byte secret key, Curve25519 computes the user's 32-byte public
-key. Given the user's 32-byte secret key and another user's 32-byte public key,
-Curve25519 computes a 32-byte secret shared by the two users. This secret can
-then be used to authenticate and encrypt messages between the two users.
-
-~~~~ {.haskell include="src/32-cryptography/Curve25519.hs"}
-~~~~
-
-#### Secp256k1
-
-Secp256k1 is a common elliptic curve using a Koblitz curve and provably random
-parameters. 
-
-ECDH is used for the purposes of key agreement. Suppose two people, Alice and
-Bob, wish to exchange a secret key with each other. Alice will generate a
-private key $d_A$ and a public key $Q_A=d_A G$ (where $G$ is the generator for
-the curve).  Similarly Bob has his private key $d_B$ and a public key $Q_B=d_B G$.
-If Bob sends his public key to Alice then she can calculate $d_A Q_B=d_A d_B G$.
-Similarly if Alice sends her public key to Bob, then he can calculate $d_b Q_A =
-d_A d_B G$. The shared secret is the x co-ordinate of the calculated point $d_Ad
-B G$. Any eavesdropper would only know $Q_A$ and $Q_B$, and would be unable to
-calculate the shared secret.
-
-~~~~ {.haskell include="src/32-cryptography/Secp256k1.hs"}
-~~~~
-
 Date and Time
 =============
 
 hourglass
 ---------
+
+TODO
 
 Data Formats
 =============
