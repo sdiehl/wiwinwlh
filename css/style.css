@@ -242,7 +242,7 @@ ul.sections > li > div {
 .alert {
     padding: 5px 15px;
     margin-bottom: 15px;
-    bakground: #eee;
+    background: #eee;
 }
 .alert a {
   color: inherit;

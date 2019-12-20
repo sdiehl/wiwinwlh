@@ -11,7 +11,7 @@ poly x y z = (f x y, f x z)
 mono :: forall a b c. a -> b -> c -> (a, a)
 mono x y z = (f x y, f x z)
   where
-    -- b is not implictly universally quantified because it is in scope
+    -- b is not implicitly universally quantified because it is in scope
     f :: a -> b -> a
     f x' _ = x'
 
