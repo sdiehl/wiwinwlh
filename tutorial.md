@@ -24,156 +24,15 @@ PDF Version
 
 **[PDF Version](http://dev.stephendiehl.com/hask/tutorial.pdf)**
 
-Changelog
----------
-
-**2.4**
-
-* Alternate Preludes (Updated)
-* NumDecimals extension
-* utf8-string
-* foundation
-* base64-bytestring
-* safe-exceptions
-* recrusion-schemes (Updated)
-* Data types a la carte
-* Coercible
-* generics-sop
-* Z3
-* Time complexity for data structures
-* Fingertree
-* Vault
-* Cryptography section
-* cryptonite
-* entropy
-* memory
-* Compression section
-* lz4
-* zlib
-* Date & Time section
-* hourglass
-* Servant
-* Names for Free
-* Abstract Binding Trees
-* de Bruijn Indices
-* wl-pprint-text (Updated)
-* pretty-show
-* Adjunctions
-* Cartesian Closed Categories
-* Monoidal Categories
-* New langauge comparisons (Koitlin, Lua, etc)
-
-**2.3**
-
-* Stack
-* Stackage
-* ghcid
-* Nix (Removed)
-* Aeson (Updated)
-* Language Extensions (Updated)
-* Type Holes (Updated)
-* Partial Type Signatures
-* Pattern Synonyms (Updated)
-* Unboxed Types (Updated)
-* Vim Integration (Updated)
-* Emacs Integration (Updated)
-* Strict Language Extension
-* Injective Type Families
-* Custom Type Errors
-* Language Comparisons
-* Recursive Do
-* Applicative Do
-* LiquidHaskell
-* Cpp
-* Minimal Pragma
-* Typeclass Extensions
-* ExtendedDefaultRules
-* mmorph
-* integer-gmp
-* Static Pointers
-* spoon
-* monad-control
-* monad-base
-* postgresql-simple
-* hedis
-* happy/alex
-* configurator
-* string-conv
-* resource-pool
-* resourcet
-* optparse-applicative
-* hastache
-* silently
-* Mulitiline Strings
-* git-embed
-* Coercible
-* -fdefer-type-errors
-
-**2.2**
-
-Sections that have had been added or seen large changes:
-
-* Irrefutable Patterns
-* Hackage
-* Exhaustiveness
-* Stacktraces
-* Laziness
-* Skolem Capture
-* Foreign Function Pointers
-* Attoparsec Parser
-* Inline Cmm
-* PrimMonad
-* Specialization
-* unbound-generics
-* Editor Integration
-* EKG
-* Nix
-* Haddock
-* Corecursion
-* Category
-* Arrows
-* Bifunctors
-* ExceptT
-* hint / mueval
-* Roles
-* Higher Kinds
-* Kind Polymorphism
-* Numeric Tower
-* SAT Solvers
-* Graph
-* Sparks
-* Threadscope
-* Generic Parsers
-* GHC Block Diagram
-* GHC Debug Flags
-* Core
-* Inliner
-* Unboxed Types
-* Runtime Memory Representation
-* ghc-heapview
-* STG
-* Worker/Wrapper
-* Z-Encoding
-* Cmm
-* Runtime Optimizations
-* RTS Profiling
-* Algebraic Relations
-
-<hr/>
-
 Basics
 ======
 
 Cabal
 -----
 
-<div class="alert alert-success">
-Historically Cabal had a component known as ``cabal-install`` that has largely been
-replaced by [Stack](#stack). The following use of Cabal sandboxes is left for
-historical reasons and can often be replaced by modern tools.
-</div>
-
-[Cabal](https://www.haskell.org/cabal/) is the build system for Haskell.
+[Cabal](https://www.haskell.org/cabal/) is the build system for Haskell.  Cabal
+is also the standard build tool for Haskell source supported by GHC. Cabal can
+be used simultaneously with Stack or standalone with cabal new-build.
 
 For example, to install the [parsec](http://hackage.haskell.org/package/parsec)
 package to your system from [Hackage](#hackage), the upstream source of Haskell
@@ -210,34 +69,6 @@ $ cabal configure
 
 A ``.cabal`` file will be created with the configuration options for our new
 project.
-
-The latest feature of ``cabal`` is the addition of
-[Sandboxes](http://coldwa.st/e/blog/2013-08-20-Cabal-sandbox.html), ( in
-cabal > 1.18 ) which are self contained environments of Haskell packages
-separate from the global package index stored in the ``./.cabal-sandbox`` of our
-project's root. To create a new ``sandbox`` for our ``cabal`` project, run:
-
-```bash
-$ cabal sandbox init
-```
-
-Additionally, the ``sandbox`` can be torn down:
-
-```bash
-$ cabal sandbox delete
-```
-
-When in the working directory of a project with a ``sandbox`` that has a configuration
-already set up, invoking ``cabal`` commands alters the behaviour of cabal itself. For
-instance, the ``cabal install`` command will alter only the install to the local
-package index, not the global configuration.
-
-To install the dependencies from the ``.cabal`` file into the newly created
-``sandbox``, run:
-
-```bash
-$ cabal install --only-dependencies
-```
 
 Dependencies can also be built in parallel by passing ``-j<n>`` where ``n`` is
 the number of concurrent builds.
@@ -303,14 +134,14 @@ Test-Suite test
       mylibrary == 0.1
 ```
 
-To run an "executable" for a project under the ``cabal`` ``sandbox``:
+To run an "executable" for a project under the ``cabal``.
 
 ```bash
 $ cabal run
 $ cabal run <name> # when there are several executables in a project
 ```
 
-To load the "library" into a [GHCi](#ghci) shell under ``cabal`` ``sandbox``:
+To load the "library" into a [GHCi](#ghci) shell under ``cabal``.
 
 ```bash
 $ cabal repl
@@ -340,10 +171,9 @@ $ cabal test <name>
 ```
 
 Moreover, arbitrary shell commands can be invoked with the
-[GHC](https://www.haskell.org/ghc/) environmental variables set up for the
-``sandbox``. Quite common is to invoke a new shell with this command such that
-the ``ghc`` and ``ghci`` commands use the ``sandbox``. ( They don't by default,
-which is a common source of frustration. ).
+[GHC](https://www.haskell.org/ghc/) environmental variables set up command.
+Quite common is to invoke a new shell with this command such that
+the ``ghc`` and ``ghci`` commands use the package environment.
 
 ```bash
 $ cabal exec
@@ -390,44 +220,8 @@ constraints: mtl ==2.2.1,
              transformers ==0.4.1.0
 ```
 
-Using the ``cabal repl`` and ``cabal run`` commands is preferable, but sometimes
-we'd like to manually perform their equivalents at the shell. Several useful
-aliases rely on shell directory expansion to find the package database in the
-current working directory and launch GHC with the appropriate flags:
-
-```bash
-alias ghc-sandbox="ghc -no-user-package-db -package-db .cabal-sandbox/*-packages.conf.d"
-alias ghci-sandbox="ghci -no-user-package-db -package-db .cabal-sandbox/*-packages.conf.d"
-alias runhaskell-sandbox="runhaskell -no-user-package-db -package-db .cabal-sandbox/*-packages.conf.d"
-```
-
-There is also a zsh script to show the sandbox status of the current working
-directory in our shell:
-
-```bash
-function cabal_sandbox_info() {
-    cabal_files=(*.cabal(N))
-    if [ $#cabal_files -gt 0 ]; then
-        if [ -f cabal.sandbox.config ]; then
-            echo "%{$fg[green]%}sandboxed%{$reset_color%}"
-        else
-            echo "%{$fg[red]%}not sandboxed%{$reset_color%}"
-        fi
-    fi
-}
-
-RPROMPT="\$(cabal_sandbox_info) $RPROMPT"
-```
-
 The ``cabal`` configuration is stored in ``$HOME/.cabal/config`` and contains
-various options including credential information for Hackage upload. One
-addition to configuration is to completely disallow the installation of packages
-outside of sandboxes to prevent accidental collisions.
-
-```perl
--- Don't allow global install of packages.
-require-sandbox: True
-```
+various options including credential information for Hackage upload.
 
 A library can also be compiled with runtime profiling information enabled. More
 on this is discussed in the section on [Concurrency](#concurrency) and
@@ -451,21 +245,38 @@ libraries should be available at this local link:
 
 [/usr/share/doc/ghc-doc/html/libraries/index.html](file:///usr/share/doc/ghc-doc/html/libraries/index.html)
 
-
 See:
 
-* [An Introduction to Cabal Sandboxes](http://coldwa.st/e/blog/2013-08-20-Cabal-sandbox.html)
-* [Storage and Identification of Cabalized Packages](http://www.vex.net/~trebla/haskell/sicp.xhtml)
+* [Cabal User Guide](https://www.haskell.org/cabal/users-guide/)
+
+Cabal New-Build
+---------------
+
+```perl
+  new-build         Compile targets within the project.
+  new-configure     Add extra project configuration
+  new-repl          Open an interactive session for the given component.
+  new-run           Run an executable.
+  new-test          Run test-suites
+  new-bench         Run benchmarks
+  new-freeze        Freeze dependencies.
+  new-haddock       Build Haddock documentation
+  new-exec          Give a command access to the store.
+  new-update        Updates list of known packages.
+  new-install       Install packages.
+  new-clean         Clean the package store and remove temporary files.
+  new-sdist         Generate a source distribution file (.tar.gz).
+```
 
 Stack
 -----
 
 [Stack](http://docs.haskellstack.org/en/stable/README/) is a new approach to
-Haskell package structure that emerged in 2015. Instead of using a rolling
-build like ``cabal-install``,  ``stack`` breaks up sets of packages into
-release blocks that guarantee internal compatibility between sets of packages.
-The package solver for ``stack`` uses a different, more robust strategy for
-resolving dependencies than ``cabal-install`` has historically used.
+Haskell package structure that emerged in 2015. Instead of using a rolling build
+like ``cabal-install``,  ``stack`` breaks up sets of packages into release
+blocks that guarantee internal compatibility between sets of packages.  The
+package solver for ``stack`` uses a different strategy for resolving
+dependencies than ``cabal-install`` has historically used.
 
 <div class="alert alert-success">
 Contrary to much misinformation, **Stack does not replace [Cabal](#cabal) as
@@ -479,12 +290,10 @@ resolution of their dependencies.
 
 #### Install
 
-To install ``stack`` on Ubuntu Linux, run:
+To install ``stack`` on Linux, run:
 
 ```bash
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 575159689BEFB442                             # get fp complete key
-echo 'deb http://download.fpcomplete.com/ubuntu trusty main'|sudo tee /etc/apt/sources.list.d/fpco.list    # add appropriate source repo
-sudo apt-get update && sudo apt-get install stack -y
+curl -sSL https://get.haskellstack.org/ | sh
 ```
 
 For other operating systems, see [the official install
@@ -8247,15 +8056,6 @@ See:
 * [cvc4](http://cvc4.cs.nyu.edu/web/)
 * [z3](http://z3.codeplex.com/)
 
-Z3
---
-
-TODO
-
-See: [z3](https://hackage.haskell.org/package/z3)
-
-</hr>
-
 Data Structures
 ===============
 
@@ -8563,15 +8363,6 @@ Fingertree
 TODO
 
 See: [fingertree](https://hackage.haskell.org/package/fingertree)
-
-Vault
------
-
-TODO
-
-See: [vault](https://hackage.haskell.org/package/vault)
-
-<hr/>
 
 FFI
 ===
