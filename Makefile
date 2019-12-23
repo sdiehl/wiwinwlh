@@ -3,6 +3,7 @@ IFORMAT = markdown
 TEMPLATE = resources/page.tmpl
 LTEMPLATE = resources/page.latex
 ETEMPLATE = resources/page.epubt
+LFLAGS = --top-level-division=chapter -V documentclass=book
 FLAGS = --standalone \
 				--toc \
 				--toc-depth=2 \
@@ -30,7 +31,7 @@ includes: includes.hs
 	| $(PANDOC) -f $(IFORMAT) -t epub $(FLAGS) -o $@
 
 %.pdf: %.md includes
-	./includes < $< | $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --latex-engine=xelatex $(FLAGS) -o $@
+	./includes < $< | $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) -o $@
 
 clean:
 	-rm $(CHAPTERS) $(HTML)

@@ -1,10 +1,10 @@
 % What I Wish I Knew When Learning Haskell (Version 2.5)
 % Stephen Diehl
-% March 2016
+% January 2020
 
 Stephen Diehl (<a class="author" href="https://twitter.com/smdiehl">@smdiehl</a> )
 
-This is the fourth draft of this document.
+This is the fifth draft of this document.
 
 #### License
 
@@ -25,6 +25,16 @@ PDF Version
 
 Basics
 ======
+
+What is Haskell?
+----------------
+
+TODO
+
+GHC
+---
+
+TODO
 
 Cabal
 -----
@@ -361,6 +371,78 @@ graphviz, then piped again into your favorite image viewer:
 ```bash
 $ stack dot --external | dot -Tpng | feh -
 ```
+
+HPack
+-----
+
+TODO
+
+Base
+----
+
+The base library is split across 
+
+* Control
+* Data
+* Debug
+* Foreign
+* GHC
+* Numeric
+* Prelude
+* System
+* Text
+* Type
+* Unsafe
+
+Prelude
+-------
+
+The Prelude is the default standard module. The Prelude is imported by default into all
+Haskell modules unless either there is an explicit import statement for it, or
+the NoImplicitPrelude extension is enabled.
+
+The Prelude exports several hundred symbols that are the default datatypes and
+functions for libraries that use the GHC-issued prelude. Many libraries these
+days do not use the standard prelude.
+
+Boot Libraries
+--------------
+
+GHC itself ships with a variety of libraries that are neccessary to bootstrap
+the compiler and compile itself.
+
+* array
+* base
+* binary
+* bytestring
+* Cabal
+* containers
+* deepseq
+* directory
+* dist-haddock
+* filepath
+* ghc-boot
+* ghc-boot-th
+* ghc-compact
+* ghc-heap
+* ghci
+* ghc-prim
+* haskeline
+* hpc
+* integer-gmp
+* libiserv
+* mtl
+* parsec
+* pretty
+* process
+* stm
+* template-haskell
+* terminfo
+* text
+* time
+* transformers
+* unix
+* xhtml
 
 Flags
 -----
@@ -975,7 +1057,7 @@ which can be used to perform arbitrary print statements outside of the IO monad.
 
 <div class="alert alert-danger">
 Trace uses ``unsafePerformIO`` under the hood and should **not** be used in
-stable code.
+production code.
 </div>
 
 In addition to the ``trace`` function, several monadic ``trace`` variants are
@@ -1245,6 +1327,26 @@ When a Haskell module is loaded into ``ghcid``, the code is evaluated in order
 to provide the user with any errors or warnings that would happen at compile
 time. When the developer edits and saves code loaded into ``ghcid``, the
 program automatically reloads and evaluates the code for errors and warnings.
+
+Weeder
+------
+
+TODO
+
+HLint
+-----
+
+TODO
+
+Stylish-haskell
+---------------
+
+TODO
+
+Ormolu
+------
+
+TODO
 
 Haddock
 -------
@@ -2485,7 +2587,7 @@ do type system research will have a very different interpretation of Haskell
 
 <extensions></extensions>
 
-See: [GHC Extension Reference](http://www.haskell.org/ghc/docs/7.8.2/html/users_guide/flag-reference.html#idp14615552)
+See: [GHC Extension Reference](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html)
 
 The Benign
 ----------
@@ -2493,7 +2595,9 @@ The Benign
 It's not obvious which extensions are the most common but it's fairly safe to
 say that these extensions are benign and are safely used extensively:
 
+* NoImplicitPrelude
 * OverloadedStrings
+* LambdaCase
 * FlexibleContexts
 * FlexibleInstances
 * GeneralizedNewtypeDeriving
@@ -2504,6 +2608,8 @@ say that these extensions are benign and are safely used extensively:
 * GADTs
 * BangPatterns
 * DeriveGeneric
+* DeriveAnyClass
+* DerivingStrategies
 * ScopedTypeVariables
 
 The Dangerous
@@ -2512,15 +2618,15 @@ The Dangerous
 GHC's typechecker sometimes just casually tells us to enable language extensions when it can't solve certain
 problems. These include:
 
+* AllowAmbigiousTypes
 * DatatypeContexts
 * OverlappingInstances
 * IncoherentInstances
 * ImpredicativeTypes
-* AllowAmbigiousTypes
 
-These almost always indicate a design flaw and shouldn't be turned on to remedy the error at hand, as
-much as GHC might suggest otherwise!
-
+Unless you know what you're doing, these extensions almost always indicate a
+design flaw and shouldn't be turned on to remedy the error at hand, as much as
+GHC might suggest otherwise!
 
 NoMonomorphismRestriction
 -------------------------
@@ -2979,9 +3085,6 @@ an instance declaration for the type with no explicitly-defined methods. If
 the typeclass implements a default for each method then this will be
 well-defined and give rise to an automatic instances.
 
-StaticPointers
---------------
-
 DuplicateRecordFields
 ---------------------
 
@@ -3097,6 +3200,26 @@ Or on the version of the base library used.
 
 It can also be abused to do terrible things like metaprogramming with strings,
 but please don't do this.
+
+TypeApplications
+----------------
+
+TODO
+
+DerivingVia
+-----------
+
+TODO
+
+UndecidableSuperClasses
+-----------------------
+
+TODO
+
+DerivingStrategies
+-------------------
+
+TODO
 
 Historical Extensions
 ---------------------
@@ -3606,27 +3729,27 @@ implicit import of the whole namespace.
 import qualified Prelude as P
 ```
 
-What Should be in Base
-----------------------
+What Should be in Prelude
+--------------------------
 
-To get work done you probably need.
+To get work done on industrial projects you probably need the following
+libraries:
 
 <div class="alert alert-success">
-* async
-* bytestring
-* containers
-* mtl
-* stm
 * text
-* transformers
+* containers
 * unordered-containers
+* mtl
+* transformers
 * vector
 * filepath
 * directory
 * process
-* unix
-* deepseq
+* bytestring
 * optparse-applicative
+* stm
+* async
+* unix
 </div>
 
 Custom Preludes
@@ -3667,6 +3790,20 @@ project is compiled without the implicit Prelude. Several packages have arisen
 that supply much of the same functionality in a way that appeals to more modern
 design principles.
 
+Preludes
+--------
+
+There are many approaches to custom preludes:
+
+* [rio]
+* [protolude]
+* [base-prelude]
+* [relude]
+* [foundation]
+* [rebase]
+* [classy-prelude]
+* [basic-prelude]
+
 Protolude
 ---------
 
@@ -3680,13 +3817,6 @@ writing modern Haskell and is compatible with existing code.
 
 import Protolude
 ```
-
-Other examples for alternative Preludes include (your mileage may vary with these):
-
-* [base-prelude](http://hackage.haskell.org/package/base-prelude)
-* [basic-prelude](http://hackage.haskell.org/package/basic-prelude)
-* [classy-prelude](http://hackage.haskell.org/package/classy-prelude)
-* [Other Preludes](https://hackage.haskell.org/packages/#cat:Prelude)
 
 Partial Functions
 -----------------
@@ -3958,31 +4088,6 @@ data Tree a = Node a [Tree a]
 
 See: [Typeclassopedia](http://wiki.haskell.org/Typeclassopedia)
 
-Corecursion
------------
-
-```haskell
-unfoldr :: (b -> Maybe (a, b)) -> b -> [a]
-```
-
-A recursive function consumes data and eventually terminates, a corecursive
-function generates data and **coterminates**. A corecursive function is said to be
-*productive* if it can always evaluate more of the resulting value in bounded time.
-
-```haskell
-import Data.List
-
-f :: Int -> Maybe (Int, Int)
-f 0 = Nothing
-f x = Just (x, x-1)
-
-rev :: [Int]
-rev = unfoldr f 10
-
-fibs :: [Int]
-fibs = unfoldr (\(a,b) -> Just (a,(b,a+b))) (0,1)
-```
-
 split
 -----
 
@@ -4048,6 +4153,10 @@ Variant                   Module
 <b>strict bytestring</b>  Data.ByteString
 <b>lazy bytestring</b>    Data.ByteString.Lazy
 
+Escaping Text
+--------------
+
+Haskell uses C-style single-character escape codes
 
 #### Conversions
 
@@ -4232,6 +4341,11 @@ form.
 
 ~~~~ {.haskell include="src/07-text-bytestring/convert.hs"}
 ~~~~
+
+Regex
+-----
+
+TODO
 
 <hr/>
 
@@ -9068,11 +9182,9 @@ Cryptography
 cryptonite
 ----------
 
-**Ciphers**
-
-Symmetric-key algorithms are algorithms for cryptography that use the same
-cryptographic keys for both encryption of plaintext and decryption of
-ciphertext.
+Cryptonite is the standard Haskell cryptography library. It provides support for
+hash functions, elliptic curve cryptography, ciphers, one time passwords and
+safe memory handling.
 
 * AES
 * Blowfish
@@ -9084,7 +9196,7 @@ ciphertext.
 * Salsa
 * TripleDES
 
-**Hash**
+**Hashing**
 
 A cryptographic hash function is a special class of hash function that has
 certain properties which make it suitable for use in cryptography. It is a
@@ -9122,6 +9234,25 @@ convertToBase :: (ByteArrayAccess bin, ByteArray bout) => Base -> bin -> bout
 convertFromBase :: (ByteArrayAccess bin, ByteArray bout) => Base -> bin -> Either String bout
 ```
 
+galois-field
+------------
+
+TODO
+
+elliptic-curve
+--------------
+
+TODO
+
+pairing
+-------
+
+TODO
+
+arithmetic-circuits
+-------------------
+
+TODO
 
 Date and Time
 =============
@@ -12526,6 +12657,8 @@ polymorphism* through typeclasses.
 
 Haskell is *pure* and statically tracks effects.
 
+Haskell has a *managed runtime*.
+
 Haskell employs *lazy evaluation* by default using *call-by-need*.
 
 Haskell's package manager is cabal-install or stack.
@@ -12840,6 +12973,8 @@ Erlang is *impure* by default and does not statically track effects.
 
 Elixir
 ------
+
+TODO
 
 Java
 ------
@@ -13160,13 +13295,25 @@ The majority of PHP implementations are garbage collected.
 Perl
 ----
 
+TODO
+
 Lua
 ---
+
+TODO
 
 <hr/>
 
 Code
 ====
+
+All code is available from this Github repository. This code is dedicated to the
+public domain. You can copy, modify, distribute and perform the work, even for
+commercial purposes, all without asking permission.
+
+**https://github.com/sdiehl/wiwinwlh**
+
+Chapters:
 
 * [01-basics/            ](https://github.com/sdiehl/wiwinwlh/tree/master/src/01-basics/)
 * [02-monads/            ](https://github.com/sdiehl/wiwinwlh/tree/master/src/02-monads/)
