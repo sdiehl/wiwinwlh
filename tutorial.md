@@ -1,5 +1,4 @@
-
-% What I Wish I Knew When Learning Haskell (Version 2.4)
+% What I Wish I Knew When Learning Haskell (Version 2.5)
 % Stephen Diehl
 % March 2016
 
@@ -4006,24 +4005,6 @@ iterateUntilM :: Monad m => (a -> Bool) -> (a -> m a) -> a -> m a
 whileJust :: Monad m => m (Maybe a) -> (a -> m b) -> m [b]
 ```
 
-Foundation
-----------
-
-TODO
-
-~~~~ {.haskell include="src/06-prelude/foundation.hs"}
-~~~~
-
-**Strings and Bytearrays**
-
-**Container Interface**
-
-**Numerical Tower**
-
-See: [Foundation](https://github.com/haskell-foundation/foundation)
-
-<hr/>
-
 Strings
 =======
 
@@ -4661,13 +4642,6 @@ The ``spoon`` function evaluates its argument to head normal form, while
 See:
 
 * [Spoon](https://hackage.haskell.org/package/spoon)
-
-</hr>
-
-safe-exceptions
----------------
-
-TODO
 
 <hr/>
 
@@ -6348,35 +6322,6 @@ See:
 * [Roles](https://ghc.haskell.org/trac/ghc/wiki/Roles)
 * [Roles: A New Feature of GHC](http://typesandkinds.wordpress.com/2013/08/15/roles-a-new-feature-of-ghc/)
 
-Monotraversable
----------------
-
-Using type families, mono-traversable generalizes the notion of Functor,
-Foldable, and Traversable to include both monomorphic and polymorphic types.
-
-```haskell
-omap :: MonoFunctor mono => (Element mono -> Element mono) -> mono -> mono
-
-otraverse :: (Applicative f, MonoTraversable mono)
-          => (Element mono -> f (Element mono)) -> mono -> f mono
-
-ofoldMap :: (Monoid m, MonoFoldable mono)
-         => (Element mono -> m) -> mono -> m
-ofoldl' :: MonoFoldable mono
-        => (a -> Element mono -> a) -> a -> mono -> a
-ofoldr :: MonoFoldable mono
-        => (Element mono -> b -> b) -> b -> mono -> b
-```
-
-For example the text type normally does not admit any of these
-type-classes since, but now we can write down the instances that model the
-interface of Foldable and Traversable.
-
-~~~~ {.haskell include="src/16-type-families/mono.hs"}
-~~~~
-
-See: [From Semigroups to Monads](http://fundeps.com/tables/FromSemigroupToMonads.pdf)
-
 NonEmpty
 --------
 
@@ -6751,6 +6696,8 @@ See: [Type-Level Literals](http://www.haskell.org/ghc/docs/7.8.2/html/users_guid
 Typelevel Strings
 -----------------
 
+TODO
+
 Custom Errors
 -------------
 
@@ -7059,21 +7006,6 @@ type family a && b where
   a    && a    = False
 ```
 
-Promoted Symbols
-----------------
-
-~~~~ {.haskell include="src/17-promotion/hasfield.hs"}
-~~~~
-
-Since record is fundamentally no different from the tuple we can also do the same kind of construction over
-record field names.
-
-~~~~ {.haskell include="src/17-promotion/typelevel_fields.hs"}
-~~~~
-
-Notably this approach is mostly just all boilerplate class instantiation which could be abstracted away using
-TemplateHaskell or a Generic deriving.
-
 HLists
 ------
 
@@ -7095,7 +7027,7 @@ then derive the Show instance.
 ~~~~
 
 Typelevel Dictionaries
---------------
+----------------------
 
 Much of this discussion of promotion begs the question whether we can create data structures at the type-level
 to store information at compile-time. For example a type-level association list can be used to model a map
@@ -7524,31 +7456,6 @@ example2 :: Int
 example2 = numHoles (Just 3)
 -- 1
 ```
-
-Syb
----
-
-Using the interface provided by the Data we can retrieve the information we need
-to, at runtime, inspect the types of expressions and rewrite them, collect
-terms, and find subterms matching specific predicates.
-
-```haskell
-everywhere :: (forall a. Data a => a -> a) -> forall a. Data a => a -> a
-everywhereM :: Monad m => GenericM m -> GenericM m
-somewhere :: MonadPlus m => GenericM m -> GenericM m
-listify :: Typeable r => (r -> Bool) -> GenericQ [r]
-everything :: (r -> r -> r) -> GenericQ r -> GenericQ r
-```
-
-For example consider we have some custom collection of datatypes for which we
-want to write generic transformations that transform numerical subexpressions
-according to set of rewrite rules. We can use ``syb`` to write the
-transformation rules quite succinctly.
-
-~~~~ {.haskell include="src/18-generics/syb.hs"}
-~~~~
-
-* [Data.Generics.Schemes](https://hackage.haskell.org/package/syb-0.6/docs/Data-Generics-Schemes.html)
 
 Generic
 -------
@@ -8890,39 +8797,6 @@ Lam "i" (Lam "x" (Var "x"))
 Lam "s" (Lam "f" (Lam "g" (Lam "x" (App (App (Var "f") (Var "x")) (App (Var "g") (Var "x"))))))
 ```
 
-Generic Parsing
----------------
-
-Previously we defined generic operations for pretty printing and this begs the
-question of whether we can write a parser on top of Generics. The answer is
-generally yes, so long as there is a direct mapping between the specific lexemes
-and sum and products types. Consider the simplest case where we just read off
-the names of the constructors using the regular Generics machinery and then
-build a Parsec parser terms of them.
-
-~~~~ {.haskell include="src/24-parsing/generics.hs"}
-~~~~
-
-```haskell
-λ: parseTest parseMusician "Bach"
-Bach
-
-λ: parseTest parseScientist "Feynman"
-Feynman
-```
-
-With a little more work and an outer wrapper, this example an easily
-be extended to automate parsing of a simple recursive type.
-
-~~~~ {.haskell include="src/24-parsing/recursive-generics.hs"}
-~~~~
-
-```haskell
-λ: parseTest expr "(App (Plus (Lit 1) (Var n)) (App (Plus (Lit 5) (Lit 5)) (Plus (Lit 6) (Lit 6))))"
-App (Plus (Lit 1) (Var "n")) (App (Plus (Lit 5) (Lit 5)) (Plus (Lit 6) (Lit 6)))
-```
-
-
 Attoparsec
 ----------
 
@@ -9191,23 +9065,6 @@ See: [Conduit Overview](https://www.fpcomplete.com/user/snoyberg/library-documen
 Cryptography
 ============
 
-memory
--------
-
-ByteArray
-
-```haskell
-data Base
-  = Base16            -- ^ similar to hexadecimal
-  | Base32
-  | Base64            -- ^ standard Base64
-  | Base64URLUnpadded -- ^ unpadded URL-safe Base64
-  | Base64OpenBSD     -- ^ Base64 as used in OpenBSD password encoding (such as bcrypt)
-
-convertToBase :: (ByteArrayAccess bin, ByteArray bout) => Base -> bin -> bout
-convertFromBase :: (ByteArrayAccess bin, ByteArray bout) => Base -> bin -> Either String bout
-```
-
 cryptonite
 ----------
 
@@ -9247,6 +9104,24 @@ standardized by NIST. It produces a 256-bit message digest.
 
 ~~~~ {.haskell include="src/32-cryptography/SHA.hs"}
 ~~~~
+
+memory
+------
+
+ByteArray
+
+```haskell
+data Base
+  = Base16            -- ^ similar to hexadecimal
+  | Base32
+  | Base64            -- ^ standard Base64
+  | Base64URLUnpadded -- ^ unpadded URL-safe Base64
+  | Base64OpenBSD     -- ^ Base64 as used in OpenBSD password encoding (such as bcrypt)
+
+convertToBase :: (ByteArrayAccess bin, ByteArray bout) => Base -> bin -> bout
+convertFromBase :: (ByteArrayAccess bin, ByteArray bout) => Base -> bin -> Either String bout
+```
+
 
 Date and Time
 =============
@@ -9611,6 +9486,8 @@ A collection of useful related resources can be found on the Scotty wiki: [Scott
 
 Servant
 -------
+
+TODO
 
 Hastache
 --------
@@ -10074,9 +9951,15 @@ Types
 
 **StgSyn**
 
-TODO
-
--->
+- StgApp
+- StgLit
+- StgConApp
+- StgOpApp
+- StgLam
+- StgCase
+- StgLet
+- StgLetNoEscape
+- StgTick
 
 Core
 ----
@@ -11398,8 +11281,8 @@ Cmm Runtime:
 * [Updates.cmm](https://github.com/ghc/ghc/blob/master/rts/Updates.cmm)
 * [Precompiled Closures ( Autogenerated Output )](https://gist.github.com/sdiehl/e5c9daab7a6d1da0ede7)
 
-Optimization Hacks
-------------------
+GHC Optimisations
+-----------------
 
 #### Tables Next to Code
 
@@ -11632,10 +11515,45 @@ See:
 
 * [unbound-generics](https://github.com/lambdageek/unbound-generics)
 
-pretty
-------------
+Pretty Printers
+---------------
 
-Pretty printer combinators compose logic to print strings.
+There are many many many pretty printing libraries for Haskell. 
+
+**Wadler-Leijen Style**
+
+* pretty
+* wl-pprint
+* wl-pprint-text
+* wl-pprint-ansiterm
+* wl-pprint-terminfo
+* wl-pprint-annotated
+* wl-pprint-console
+* ansi-pretty
+* ansi-terminal
+* ansi-wl-pprint
+
+**Modern**
+
+* prettyprinter
+* prettyprinter-ansi-terminal
+* prettyprinter-compat-annotated-wl-pprint
+* prettyprinter-compat-ansi-wl-pprint
+* prettyprinter-compat-wl-pprint 
+* prettyprinter-convert-ansi-wl-pprint 
+
+**Specialised**
+
+* layout
+* aeson-pretty
+
+pretty
+------
+
+Pretty is the first Wadler-Leijen style combinator library, it exposes a simple
+set of primitives to print Haskell datatypes to legacy strings pro
+grammatically. You probably don't want to use this library but it inspired most
+of the ones that followed after.
 
               Combinators
 -----------   ------------
@@ -11676,7 +11594,7 @@ See:
 * [The Design of a Pretty-printing Library](http://belle.sourceforge.net/doc/hughes95design.pdf)
 
 wl-pprint-text
--------------------
+--------------
 
 ``wl-pprint-text`` is a Wadler-style pretty printing library that uses Text
 builder objects for efficient generation under the hood. It exposes effectively
@@ -11700,7 +11618,15 @@ See:
 pretty-show
 -----------
 
-TODO
+Pretty-show is a Haskell library that renders Show instances in a prettier way.
+It exposes functions which are drop in replacements for show and print.
+
+```haskell
+ppShow :: Show a => a -> String
+pPrint :: Show a => a -> IO ()
+```
+
+See [pretty-show](https://hackage.haskell.org/package/pretty-show-1.9.5/docs/Text-Show-Pretty.html)
 
 Haskeline
 ---------
@@ -11716,7 +11642,7 @@ getInputLine :: String -> InputT IO (Maybe String)
 ~~~~
 
 Repline
----------
+-------
 
 Certain sets of tasks in building command line REPL interfaces are so common
 that is becomes useful to abstract them out into a library. While haskeline
@@ -12495,24 +12421,6 @@ have some a higher order polymorphic function ``g`` that when given a function
 of type ``a -> b`` yields ``f b`` then the behavior ``g`` is entirely determined
 by ``a -> b`` and the behavior of ``g`` can written purely in terms of ``f a``.
 
-**Continuation Passing**
-
-TODO
-
-See:
-
-* [Reason Isomorphically](https://www.cs.ox.ac.uk/ralf.hinze/publications/WGP10.pdf)
-* [The Continuation Passing Transform and the Yoneda Embedding](https://golem.ph.utexas.edu/category/2008/01/the_continuation_passing_trans.html)
-* [Yoneda is CPS](https://github.com/manzyuk/blog/blob/master/yoneda-embedding-is-cps.org)
-
-**Double-negated principle of excluded middle**
-
-TODO
-
-See:
-
-* [Reverse Engineering Machines with the Yoneda Lemma](http://blog.sigfpe.com/2006/11/yoneda-lemma.html)
-
 Kleisli Category
 ----------------
 
@@ -12549,11 +12457,6 @@ Just >=> f ≡ f
 f >=> Just ≡ f
 ```
 
-Adjunctions
------------
-
-TODO
-
 Cartesian Closed Categories
 ---------------------------
 
@@ -12562,7 +12465,7 @@ TODO
 Monoidal Categories
 -------------------
 
-In a symmetric monoidal closed category, like lambda calculus
+TODO
 
 Resources
 ---------
