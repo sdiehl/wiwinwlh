@@ -3,13 +3,10 @@ IFORMAT = markdown
 TEMPLATE = resources/page.tmpl
 LTEMPLATE = resources/page.latex
 ETEMPLATE = resources/page.epubt
+FLAGS = --standalone --toc --toc-depth=2 --highlight-style pygments
 LFLAGS = --top-level-division=chapter -V documentclass=book
-FLAGS = --standalone \
-				--toc \
-				--toc-depth=2 \
-				--highlight-style pygments \
-				-c css/style.css \
-				-c css/layout.css
+HFLAGS = -c css/style.css -c css/layout.css
+EFLAGS = 
 GHC=ghc
 
 HTML = tutorial.html
@@ -19,16 +16,16 @@ HTML = tutorial.html
 all: $(HTML)
 
 includes: includes.hs
-	$(GHC) --make $< ; \
+	$(GHC) --make $<
 
 %.html: %.md includes
 	./includes < $<  \
-	| $(PANDOC) --template $(TEMPLATE) -s -f $(IFORMAT) -t html $(FLAGS) \
+	| $(PANDOC) --template $(TEMPLATE) -s -f $(IFORMAT) -t html $(FLAGS) $(HFLAGS) \
 	| sed '/<extensions>/r extensions.html' > $@
 
 %.epub: %.md includes
 	(cat $(ETEMPLATE); ./includes < $<) \
-	| $(PANDOC) -f $(IFORMAT) -t epub $(FLAGS) -o $@
+	| $(PANDOC) -f $(IFORMAT) -t epub $(FLAGS) $(EFLAGS) -o $@
 
 %.pdf: %.md includes
 	./includes < $< | $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) -o $@
