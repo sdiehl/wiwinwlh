@@ -9,6 +9,6 @@ dist/
 includes
 *.html
 *.epub
+*.pdf
 *.agdai
 .stack-work
-tutorial.pdf
