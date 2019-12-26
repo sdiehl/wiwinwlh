@@ -9897,13 +9897,12 @@ Flag                   Action
 ``-ddump-asm``         The final assembly generated.
 ``-ddump-llvm``        The final LLVM IR generated.
 
-<!--
-
 GHC Api
 -------
 
-GHC is effectively just a very large (and quirky) Haskell library that
-transforms Haskell source code into executable code.
+GHC can be used as a library to manipulate and transform Haskell source code
+into executable code. It consists of many functions, the primary drivers in the
+pipeline are outlined below.
 
 ```haskell
 -- Parse a module.
@@ -9918,6 +9917,16 @@ desugarModule :: GhcMonad m => TypecheckedModule -> m DesugaredModule
 -- Generated ModIface and Generated Code
 loadModule :: (TypecheckedMod mod, GhcMonad m) => mod -> m mod
 ```
+
+The output of these functions consists of four main data structures:
+
+* ParsedModule
+* TypecheckedModule
+* DesugaredModule
+* CoreModule
+
+GHC itself can be used as a library just as any other library. The example below
+compiles a simple source module "B" that contains no code.
 
 ```haskell
 import GHC
@@ -9956,45 +9965,8 @@ main = do
    putStrLn $ showSDoc ( ppr res )
 ```
 
-Artifacts
+Outputable
 ----------
-
-* ParsedModule
-* TypecheckedModule
-* DesugaredModule
-* CoreModule
-
-Located
--------
-
-Frontend syntax in GHC carries position information along with it that can be
-used
-
-```haskell
-data GenLocated l e = L l e
-type Located e = GenLocated SrcSpan e
-```
-
-```haskell
-unLoc :: GenLocated l e -> e
-unLoc (L _ e) = e
-
-getLoc :: GenLocated l e -> l
-getLoc (L l _) = l
-
-noLoc :: e -> Located e
-noLoc e = L noSrcSpan e
-```
-
-```haskell
-instance Functor (GenLocated l) where
-  fmap f (L l e) = L l (f e)
-```
-
-```haskell
-srcSpanStart :: SrcSpan -> SrcLoc
-srcSpanEnd :: SrcSpan -> SrcLoc
-```
 
 ```haskell
 showSDoc :: DynFlags -> SDoc -> String
@@ -10006,7 +9978,7 @@ showGhc :: (GHC.Outputable a) => a -> String
 showGhc = GHC.showPpr GHC.unsafeGlobalDynFlags
 ```
 
-* [Outputable](https://downloads.haskell.org/~ghc/7.10.3/docs/html/libraries/ghc-7.10.3/Outputable.html)
+* [Outputable](https://hackage.haskell.org/package/ghc-8.6.5/docs/Outputable.html)
 
 Types
 -----
