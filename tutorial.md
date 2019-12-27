@@ -29,12 +29,74 @@ Basics
 What is Haskell?
 ----------------
 
-TODO
-
 GHC
 ---
 
-TODO
+GHC is the Glorious Glasgow Haskell Compiler originally written in 1989. GHC is
+a massive compiler supports a wide variety of extensions. GHC's runtime is
+written in C and uses machinery from GCC infrastructure for it's native code
+generator and can also use LLVM for it's native code generation.
+
+GHC is supported on the following architectures:
+
+* Linux x86
+* Linux x86_64
+* Linux PowerPC
+* NetBSD x86
+* OpenBSD x86
+* FreeBSD x86
+* MacOS X Intel
+* MacOS X PowerPC
+* Windows x86_64
+
+GHC itself depends on the following Linux packages.
+
+* build-essential
+* libgmp-dev
+* libffi-dev
+* libncurses-dev
+* libtinfo5
+
+ghcup
+-----
+
+GHC can be installed on Linux and Mac with
+[ghcup](https://www.haskell.org/ghcup/) by running the following command:
+
+```bash
+$ curl https://get-ghcup.haskell.org -sSf | sh
+```
+
+This can be used to manage multiple version of GHC installed locally.
+
+```bash
+$ ghcup install 8.6.5
+$ ghcup install 8.4.4
+```
+
+To select which version of GHC is available on the PATH use the `set` command.
+
+```bash
+$ ghcup set 8.8.1
+```
+
+This can also be used to install cabal.
+
+```bash
+$ ghcup install-cabal
+```
+
+To modify your shell to include ghc and cabal.
+
+```bash
+$ source ~/.ghcup/env
+```
+
+Or permanently add the following to your `.bashrc` or `.zshrc` file:
+
+```bash
+export PATH="~/.ghcup/bin:$PATH"
+```
 
 Cabal
 -----
@@ -262,30 +324,23 @@ Cabal New-Build
 ---------------
 
 ```perl
-  new-build         Compile targets within the project.
-  new-configure     Add extra project configuration
-  new-repl          Open an interactive session for the given component.
-  new-run           Run an executable.
-  new-test          Run test-suites
-  new-bench         Run benchmarks
-  new-freeze        Freeze dependencies.
-  new-haddock       Build Haddock documentation
-  new-exec          Give a command access to the store.
-  new-update        Updates list of known packages.
-  new-install       Install packages.
-  new-clean         Clean the package store and remove temporary files.
-  new-sdist         Generate a source distribution file (.tar.gz).
+  v2-build          Compile targets within the project.
+  v2-configure      Add extra project configuration
+  v2-repl           Open an interactive session for the given component.
+  v2-run            Run an executable.
+  v2-test           Run test-suites
+  v2-bench          Run benchmarks
+  v2-freeze         Freeze dependencies.
+  v2-haddock        Build Haddock documentation
+  v2-exec           Give a command access to the store.
+  v2-update         Updates list of known packages.
+  v2-install        Install packages.
+  v2-clean          Clean the package store and remove temporary files.
+  v2-sdist          Generate a source distribution file (.tar.gz).
 ```
 
 Stack
 -----
-
-[Stack](http://docs.haskellstack.org/en/stable/README/) is a new approach to
-Haskell package structure that emerged in 2015. Instead of using a rolling build
-like ``cabal-install``,  ``stack`` breaks up sets of packages into release
-blocks that guarantee internal compatibility between sets of packages.  The
-package solver for ``stack`` uses a different strategy for resolving
-dependencies than ``cabal-install`` has historically used.
 
 <div class="alert alert-success">
 Contrary to much misinformation, **Stack does not replace [Cabal](#cabal) as
@@ -294,6 +349,13 @@ hood](http://docs.haskellstack.org/en/stable/faq/#what-is-the-relationship-betwe
 Stack simply streamlines integration with third-party packages and the
 resolution of their dependencies.
 </div>
+
+[Stack](http://docs.haskellstack.org/en/stable/README/) is a new approach to
+Haskell package structure that emerged in 2015. Instead of using a rolling build
+like ``cabal-install``,  ``stack`` breaks up sets of packages into release
+blocks that guarantee internal compatibility between sets of packages.  The
+package solver for ``stack`` uses a different strategy for resolving
+dependencies than ``cabal-install`` has historically used.
 
 </hr>
 
@@ -8472,8 +8534,6 @@ Hello from Haskell, here's a number passed between runtimes:
 Back inside of C again.
 ```
 
-<!--
-
 Calling Haskell from C
 ----------------------
 
@@ -8526,8 +8586,6 @@ int main( int argc, char *argv[] )
   example();
 }
 ```
-
--->
 
 <hr/>
 
