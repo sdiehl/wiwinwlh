@@ -2690,6 +2690,36 @@ Unless you know what you're doing, these extensions almost always indicate a
 design flaw and shouldn't be turned on to remedy the error at hand, as much as
 GHC might suggest otherwise!
 
+The Advanced
+------------
+
+* PolyKinds
+* DataKinds
+* DerivingVia
+* GADTs
+* RankNTypes
+* ExistentialQuantification
+* TypeFamilies
+* TypeInType
+* TypeOperators
+* TypeApplications
+* UndecidableInstances
+
+The Lowlevel
+------------
+
+* BangPatterns
+* CApiFFI
+* Strict
+* StrictData
+* RoleAnnotations
+* ForeignFunctionInterface
+* InterruptibleFFI
+* MagicHash
+* UnboxedSums
+* UnboxedTuples
+* UnliftedFFITypes
+
 NoMonomorphismRestriction
 -------------------------
 
@@ -10405,6 +10435,22 @@ throughout the program which would be undesirable.
 See:
 
 * [Secrets of the Glasgow Haskell Compiler inliner](https://research.microsoft.com/en-us/um/people/simonpj/Papers/inlining/inline.pdf)
+
+Primops
+-------
+
+GHC has many primitive operations that are intrinsics built into the compiler.
+These functions operate over unboxed (MagicHash) types.
+
+```haskell
+(+#)        :: Int# -> Int# -> Int#
+gtChar#     :: Char# -> Char# -> Int#
+byteSwap64# :: Word# -> Word#
+```
+
+TODO
+
+See [ghc-prim](https://hackage.haskell.org/package/ghc-prim-0.5.3/docs/GHC-Prim.html)
 
 Rewrite Rules
 -------------
