@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+echo -n "01-basics .. "
+cd 01-basics && bash ci && cd ..
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "02-monads .. "
+cd 02-monads && bash ci && cd ..
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "03-transformers .. "
+cd 03-monad-transformers && bash ci && cd ..
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "04-extensions .. "
+cd 04-extensions && bash ci && cd ..
+echo -e "\e[1;32mOK\e[0m"

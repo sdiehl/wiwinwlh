@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+stack exec ghc -- -e ":q" --interactive duplicate_fields.hs
+#stack exec ghc -- -e ":q" --interactive newtype.hs
+stack exec ghc -- -e ":q" --interactive newtype_deriving.hs
+stack exec ghc -- -e ":q" --interactive overloaded_labels.hs
+stack exec ghc -- -e ":q" --interactive transformer.hs

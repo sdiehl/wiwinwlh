@@ -12,3 +12,4 @@ includes
 *.pdf
 *.agdai
 .stack-work
+dist-newstyle
