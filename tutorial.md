@@ -4,8 +4,6 @@
 
 Stephen Diehl (<a class="author" href="https://twitter.com/smdiehl">@smdiehl</a> )
 
-This is the fifth draft of this document.
-
 #### License
 
 This code and text are dedicated to the public domain. You can copy, modify,
@@ -17,19 +15,31 @@ book or Haskell musical production as you see fit. The Markdown and Haskell
 source is [available on
 Github](https://github.com/sdiehl/wiwinwlh/tree/master/src). Pull requests are
 always accepted for changes and additional content. This is a living document.
+The only way this document will stay up to date is through community patches and
+[pull requests]((https://github.com/sdiehl/wiwinwlh).
 
-PDF Version
------------
+Version
+-------
 
-**[PDF Version](http://dev.stephendiehl.com/hask/tutorial.pdf)**
-**[EPUB Version](http://dev.stephendiehl.com/hask/tutorial.epub)**
-**[Kindle Version](http://dev.stephendiehl.com/hask/tutorial.mobi)**
+This is the fifth major draft of this document since 2009.
+
+* **[HTML Version](http://dev.stephendiehl.com/hask/index.html)**
+* **[PDF Version](http://dev.stephendiehl.com/hask/tutorial.pdf)**
+* **[EPUB Version](http://dev.stephendiehl.com/hask/tutorial.epub)**
+* **[Kindle Version](http://dev.stephendiehl.com/hask/tutorial.mobi)**
 
 Basics
 ======
 
 What is Haskell?
 ----------------
+
+At it's heart Haskell is a lazy, functional, statically-typed programming
+language with advanced type system features such as higher-rank, higher-kinded
+parametric polymorphism, monadic effects, generalized algebraic data types,
+ad-hoc polymorphism through type classes, associated type families, and more.
+Haskell explores the design space of modeling effect systems and advanced
+type-level programming more than any other general purpose language.
 
 GHC
 ---
@@ -100,6 +110,69 @@ Or permanently add the following to your `.bashrc` or `.zshrc` file:
 export PATH="~/.ghcup/bin:$PATH"
 ```
 
+Project Structure
+-----------------
+
+A typical project hosted on Github or Gitlab will have the following file
+structure:
+
+```bash
+.
+├── app            # Executable entry-point
+│   └── Main.hs    # Main-is file
+├── src            # Executable entry-point
+│   └── Lib.hs     # Exposed module
+├── test           # Test entry-point
+│   └── Spec.hs    # Main-is file
+├── ChangeLog.md   # extra-source-files
+├── LICENSE        # extra-source-files
+├── README.md      # extra-source-files
+├── package.yaml   # hpack configuration
+├── Setup.hs
+├── simple.cabal   # cabal configuration generated from hpack
+├── stack.yaml     # stack configuration
+├── .hlint.yaml    # hlint configuration
+└── .ghci          # ghci configuration
+```
+
+More complex projects consisting of multiple projects will have use a multiple
+projects like above but nested in subfolders with a `cabal.project` or
+`stack.yaml` in the root in the root.
+
+```bash
+.
+├── lib-core            # component1
+├── lib-http            # component2
+├── lib-utils           # component3
+├── stack.yaml          # stack project configuration
+└── cabal.project       # cabal project configuration
+```
+
+*cabal.project*
+
+```cabal
+packages: ./lib-core/
+          ./lib-http
+          ./lib-utils
+```
+
+*stack.yaml*
+
+```yaml
+resolver: lts-14.0
+packages:
+- 'lib-core'
+- 'lib-http'
+- 'lib-utils'
+
+extra-package-dbs: []
+```
+
+Local Packages
+--------------
+
+TODO
+
 Cabal
 -----
 
@@ -166,8 +239,7 @@ exports the ``main`` function running the executable logic of
 the application. Every module in the package must be listed in one of
 ``other-modules``, ``exposed-modules`` or ``main-is`` fields.
 
-
-```bash
+```cabal
 name:               mylibrary
 version:            0.1
 cabal-version:      >= 1.10
@@ -326,44 +398,63 @@ Cabal New-Build
 ---------------
 
 ```perl
-  v2-build          Compile targets within the project.
-  v2-configure      Add extra project configuration
-  v2-repl           Open an interactive session for the given component.
-  v2-run            Run an executable.
-  v2-test           Run test-suites
-  v2-bench          Run benchmarks
-  v2-freeze         Freeze dependencies.
-  v2-haddock        Build Haddock documentation
-  v2-exec           Give a command access to the store.
-  v2-update         Updates list of known packages.
-  v2-install        Install packages.
-  v2-clean          Clean the package store and remove temporary files.
-  v2-sdist          Generate a source distribution file (.tar.gz).
+new-build          Compile targets within the project.
+new-configure      Add extra project configuration
+new-repl           Open an interactive session for the given component.
+new-run            Run an executable.
+new-test           Run test-suites
+new-bench          Run benchmarks
+new-freeze         Freeze dependencies.
+new-haddock        Build Haddock documentation
+new-exec           Give a command access to the store.
+new-update         Updates list of known packages.
+new-install        Install packages.
+new-clean          Clean the package store and remove temporary files.
+new-sdist          Generate a source distribution file (.tar.gz).
+```
+
+Version Bounds
+--------------
+
+```text
+base                >= 4.6  && <4.14,
+array               >= 0.4  && <0.6,
+ghc-prim            >= 0.3  && <0.6,
+async               >= 2.0  && <2.3,
+deepseq             >= 1.3  && <1.5,
+containers          >= 0.5  && <0.7,
+hashable            >= 1.2  && <1.4,
+transformers        >= 0.2  && <0.6,
+text                >= 1.2  && <1.3,
+stm                 >= 2.4  && <2.6,
+bytestring          >= 0.10 && <0.11,
+mtl                 >= 2.1  && <2.3,
+mtl-compat          >= 0.2  && <0.3,
+transformers-compat >= 0.4  && <0.7
+```
+
+```text
+if !impl(ghc >= 8.0)
+  Build-Depends: fail >= 4.9 && <4.10
 ```
 
 Stack
 -----
 
-<div class="alert alert-success">
-Contrary to much misinformation, **Stack does not replace [Cabal](#cabal) as
-the build system** and [uses it under the
-hood](http://docs.haskellstack.org/en/stable/faq/#what-is-the-relationship-between-stack-and-cabal).
-Stack simply streamlines integration with third-party packages and the
-resolution of their dependencies.
-</div>
-
-[Stack](http://docs.haskellstack.org/en/stable/README/) is a new approach to
-Haskell package structure that emerged in 2015. Instead of using a rolling build
-like ``cabal-install``,  ``stack`` breaks up sets of packages into release
-blocks that guarantee internal compatibility between sets of packages.  The
-package solver for ``stack`` uses a different strategy for resolving
-dependencies than ``cabal-install`` has historically used.
+[Stack](http://docs.haskellstack.org/en/stable/README/) is a alternative
+approach to Haskell package structure that emerged in 2015. Instead of using a
+rolling build like [Cabal], stack breaks up sets of packages into release blocks
+that guarantee internal compatibility between sets of packages.  The package
+solver for stack uses a different strategy for resolving dependencies than
+cabal-install has historically used and combines this with a centralised build
+server called [Stackage] which continuously tests the set of packages in a
+resolver to ensure they build against each other.
 
 </hr>
 
 #### Install
 
-To install ``stack`` on Linux, run:
+To install ``stack`` on Linux or Mac, run:
 
 ```bash
 curl -sSL https://get.haskellstack.org/ | sh
@@ -502,6 +593,13 @@ The base library is split across several modules.
 * GHC
 * Unsafe
 
+There have been several large changes to Base over the years which have resulted
+in breaking changes that means older versions of base are not compatible.
+
+* Monad Applicative Proposal (AMP)
+* MonadFail Proposal (MFP)
+* Semigroup Monoid Proposal (SMP)
+
 Prelude
 -------
 
@@ -615,6 +713,11 @@ Similarly, if the library **predates the
 [text](http://hackage.haskell.org/package/text) library** (released circa
 2007), it probably should be avoided in production code. The way we write
 Haskell has changed drastically since the early days.
+
+Stackage
+-------
+
+TODO
 
 GHCi
 ----
@@ -738,6 +841,9 @@ it :: Prelude.Integer
 "hello ghci"
 ```
 
+.ghci.conf
+----------
+
 The configuration for the GHCi shell can be customized globally by defining a
 ``ghci.conf`` in ``$HOME/.ghc/`` or in the current working directory as
 ``./.ghci.conf``.
@@ -762,12 +868,36 @@ Data.Traversable fmapDefault :: Traversable t => (a -> b) -> t a -> t b
 Prelude fmap :: Functor f => (a -> b) -> f a -> f b
 ```
 
-For reasons of sexiness, it is desirable to set your GHC prompt to a ``λ`` or a
-``λΠ``. Only if you're into that lifestyle, though.
+It is common community tradition set the prompt to a colored ``λ``:
 
 ```haskell
-:set prompt "λ: "
-:set prompt "ΠΣ: "
+:set prompt "\ESC[38;5;208m\STXλ>\ESC[m\STX "
+```
+
+GHC can also be coerced into giving slightly better error messages:
+
+```haskell
+-- Better errors
+:set -ferror-spans -freverse-errors -fprint-expanded-synonyms
+```
+
+GHCi can also a pretty printing library to format all output which is often much
+easier to read:
+
+```haskell
+:set -ignore-package pretty-simple -package pretty-simple
+:def! pretty \ _ -> pure ":set -interactive-print Text.Pretty.Simple.pPrint"
+:pretty
+```
+
+And the default prelude can also be disabled as swapped for something more
+sensible:
+
+```haskell
+:seti -XNoImplicitPrelude
+:seti -XFlexibleContexts 
+:seti -XOverloadedStrings
+import Protolude
 ```
 
 #### GHCi Performance
@@ -800,35 +930,75 @@ disabling code generation entirely makes reloading code almost instantaneous:
 ```
 
 Editor Integration
----------------
+------------------
 
 Haskell has a variety of editor tools that can be used to provide interactive
 development feedback and functionality such as querying types of subexpressions,
 linting, type checking, and code completion.
 
-Several prepackaged setups exist to expedite the process of setting up many of
-the programmer editors for Haskell development. In particular,
-using ``ghc-mod`` can remarkably improve programmer efficiency and productivity
-because [the project](http://www.mew.org/~kazu/proj/ghc-mod/en/) attempts to
-implement features common to modern IDEs.
+https://github.com/haskell/haskell-ide-engine
 
 **Vim**
 
-* [haskell-vim-now](https://github.com/begriffs/haskell-vim-now)
-* [Vim and Haskell in 2016](http://www.stephendiehl.com/posts/vim_2016.html)
+* https://github.com/haskell/haskell-ide-engine#using-hie-with-vim-or-neovim
+* https://github.com/sdiehl/vim-ormolu
 
 **Emacs**
 
-* [Chris Done's Emacs Config](https://github.com/chrisdone/chrisdone-emacs)
-* [Haskell Development From Emacs](http://tim.dysinger.net/posts/2014-02-18-haskell-with-emacs.html)
-* [Structured Haskell Mode](https://github.com/chrisdone/structured-haskell-mode)
+* https://github.com/haskell/haskell-mode
+* https://github.com/haskell/haskell-ide-engine#using-hie-with-emacs
+* https://github.com/vyorkin/ormolu.el
 
-**Atom**
+**VSCode**
 
-* [language-haskell plugin](https://atom.io/packages/language-haskell)
-* [ide-haskell plugin](https://atom.io/packages/ide-haskell)
+* https://github.com/haskell/haskell-ide-engine#using-hie-with-vs-code
+* https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell
+* https://marketplace.visualstudio.com/items?itemName=ndmitchell.haskell-ghcid
+* https://marketplace.visualstudio.com/items?itemName=alanz.vscode-hie-server
+* https://marketplace.visualstudio.com/items?itemName=hoovercj.haskell-linter
+* https://marketplace.visualstudio.com/items?itemName=DigitalAssetHoldingsLLC.ghcide
+* https://marketplace.visualstudio.com/items?itemName=sjurmillidahl.ormolu-vscode
 
+Docker Images
+-------------
 
+* https://hub.docker.com/r/fpco/haskell/
+* https://hub.docker.com/_/haskell/
+
+```docker
+FROM fpco/stack-build:lts-14.0
+```
+
+```docker
+FROM haskell:8.8.1
+```
+
+Linux Packages
+-------------
+
+TODO
+
+https://downloads.haskell.org/~debian/
+https://launchpad.net/~hvr/+archive/ubuntu/ghc
+
+```bash
+$ sudo add-apt-repository -y ppa:hvr/ghc
+$ sudo apt-get update
+$ sudo apt-get install -y cabal-install-3.0 ghc-8.8.1
+```
+
+Continuous Integration
+----------------------
+
+[Travis CI with Cabal](https://github.com/haskell-CI/haskell-ci/blob/master/.travis.yml)
+[Travis CI with Stack](https://docs.haskellstack.org/en/stable/travis_ci/)
+
+See [haskell-ci]((https://github.com/haskell-CI/haskell-ci)
+
+Records
+-------
+
+TODO
 
 Bottoms
 -------
@@ -1247,12 +1417,11 @@ see [below](#nomonomorphicrestriction).
 See: [Monomorphism Restriction](https://wiki.haskell.org/Monomorphism_restriction)
 
 
-Type Holes / Pattern Wildcards
-------------------------------
+Type Holes
+----------
 
-Since the release of GHC 7.8, type holes, or pattern wildcards, allow
-underscores as stand-ins for actual values. They may be used either in
-declarations or in type signatures.
+Since the release of GHC 7.8, type holes allow underscores as stand-ins for
+actual values. They may be used either in declarations or in type signatures.
 
 Type holes are useful in debugging of incomplete programs. By placing an
 underscore on any value on the right hand-side of a declaration,
@@ -1563,6 +1732,24 @@ prune            Omits definitions with no annotations.
 
 <hr/>
 
+Nix
+---
+
+TODO
+
+```nix
+{ pkgs ? import <nixpkgs> {}
+}:
+pkgs.haskellPackages.developPackage {
+  root = ./.;
+}
+```
+
+Bazel
+------
+
+TODO
+
 Monads
 ======
 
@@ -1584,7 +1771,6 @@ Instead, I suggest a path to enlightenment:
 In other words, the only path to understanding monads is to read the fine
 source, fire up GHC, and write some code. Analogies and metaphors will not lead
 to understanding.
-
 
 Monadic Myths
 -------------
@@ -1614,9 +1800,9 @@ arity described in the typeclass definition:
 
 ```haskell
 class Monad m where
-  return :: a -> m a                    -- N.B. 'm' refers to a type constructor
-                                        -- (e.g., Maybe, Either, etc.) that
-                                        -- implements the Monad typeclass
+  return :: a -> m a    -- N.B. 'm' refers to a type constructor
+                        -- (e.g., Maybe, Either, etc.) that
+                        -- implements the Monad typeclass
 
   (>>=)  :: m a -> (a -> m b) -> m b
 ```
@@ -2224,6 +2410,11 @@ A simple implementation of the State monad takes only a few lines:
 ~~~~ {.haskell include="src/02-monads/state_impl.hs"}
 ~~~~
 
+Except Monad
+------------
+
+TODO
+
 Monad Tutorials
 ---------------
 
@@ -2631,18 +2822,27 @@ See: [mmorph](https://hackage.haskell.org/package/mmorph)
 Language Extensions
 ===================
 
+Philosophy
+----------
+
+Haskell takes a drastically different approach to language design than most
+other languages as a result of being the synthesis of input from industrial and
+academic users. GHC allows the core language itself to be extended with a vast
+range of opt-in flags which change the semantics of the language on a per-module
+or per-project basis. While this does add a lot of complexity at first, it adds
+a level of power and flexibility for the language to evolve at a pace that is
+unrivaled in the programming language design.
+
+Categories
+----------
+
 It's important to distinguish between different categories of language
 extensions *general* and *specialized*.
 
 The inherent problem with classifying the extensions into the general and
 specialized categories is that it's a subjective classification. Haskellers who
 do type system research will have a very different interpretation of Haskell
-  than people who do web programming. As such this is a conservative assessment,
-  as an arbitrary baseline let's consider ``FlexibleInstances`` and
-  ``OverloadedStrings`` "everyday" while ``GADTs`` and ``TypeFamilies`` are
-  "specialized".
-
-**Key**
+than people who do web programming. We will use the following classifications:
 
 * *Benign* implies both that importing the extension won't change the semantics of
   the module if not used and that enabling it makes it no easier to shoot
@@ -2656,7 +2856,7 @@ do type system research will have a very different interpretation of Haskell
 
 <extensions></extensions>
 
-See: [GHC Extension Reference](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/glasgow_exts.html)
+See: [GHC Extension Reference](https://ghc.gitlab.haskell.org/ghc/doc/users_guide/lang.html)
 
 The Benign
 ----------
@@ -2675,30 +2875,18 @@ say that these extensions are benign and are safely used extensively:
 * FunctionalDependencies
 * NoMonomorphismRestriction
 * GADTs
-* BangPatterns
+* [BangPatterns]
 * DeriveGeneric
 * DeriveAnyClass
 * DerivingStrategies
 * ScopedTypeVariables
 
-The Dangerous
--------------
-
-GHC's typechecker sometimes just casually tells us to enable language extensions when it can't solve certain
-problems. These include:
-
-* AllowAmbigiousTypes
-* DatatypeContexts
-* OverlappingInstances
-* IncoherentInstances
-* ImpredicativeTypes
-
-Unless you know what you're doing, these extensions almost always indicate a
-design flaw and shouldn't be turned on to remedy the error at hand, as much as
-GHC might suggest otherwise!
-
 The Advanced
 ------------
+
+These extensions are typically used by advanced projects that push the limits of
+what is possible with Haskell to enforce complex invariants and very type-safe
+APIs.
 
 * PolyKinds
 * DataKinds
@@ -2715,17 +2903,37 @@ The Advanced
 The Lowlevel
 ------------
 
-* BangPatterns
-* CApiFFI
-* Strict
-* StrictData
-* RoleAnnotations
-* ForeignFunctionInterface
-* InterruptibleFFI
-* MagicHash
-* UnboxedSums
-* UnboxedTuples
-* UnliftedFFITypes
+These extensions are typically used by low-level libraries that are striving for
+optimal performance or need to integrate with foreign functions and native code.
+Most of these are used to manipulate base machine types and interface directly
+with the low-level byte representations of data structures.
+
+* [CPP](CPP)
+* [BangPatterns]
+* [CApiFFI](CPP)
+* [Strict]
+* [StrictData]
+* [RoleAnnotations](Roles)
+* [ForeignFunctionInterface](FFI)
+* [InterruptibleFFI](FFI)
+* [UnliftedFFITypes](FFI)
+* [MagicHash](Primops)
+* [UnboxedSums](Unboxed Types)
+* [UnboxedTuples](Unboxed Types)
+
+The Dangerous
+-------------
+
+GHC's typechecker sometimes just casually tells us to enable language extensions
+when it can't solve certain problems. Unless you know what you're doing, these
+extensions almost always indicate a design flaw and shouldn't be turned on to
+remedy the error at hand, as much as GHC might suggest otherwise!
+
+* AllowAmbigiousTypes
+* DatatypeContexts
+* [OverlappingInstances](OverlappingInstances)
+* [IncoherentInstances](IncoherentInstances)
+* [ImpredicativeTypes](Impredicative Types)
 
 NoMonomorphismRestriction
 -------------------------
@@ -3281,7 +3489,7 @@ To demarcate code based on the operating system compiled on.
   -- Windows specific logic
 # else
 # ifdef OS_Mac
-  -- Macintosh specific logic
+  -- Mac specific logic
 # else
   -- Other operating systems
 # endif
@@ -3383,6 +3591,95 @@ definition must be defined). Comma indicates logical ``AND`` where both sides
 Compiling the ``-Wmissing-methods`` will warn when a instance is defined that
 does not meet the minimal criterion.
 
+BangPatterns
+------------
+
+The extension ``BangPatterns`` allows an alternative syntax to force arguments
+to functions to be wrapped in seq. A bang operator on an arguments forces its
+evaluation to weak head normal form before performing the pattern match. This
+can be used to keep specific arguments evaluated throughout recursion instead of
+creating a giant chain of thunks.
+
+```haskell
+{-# LANGUAGE BangPatterns #-}
+
+sum :: Num a => [a] -> a
+sum = go 0
+  where
+    go !acc (x:xs) = go (acc + x) xs
+    go  acc []     = acc
+```
+
+This is desugared into code effectively equivalent to the following:
+
+```haskell
+sum :: Num a => [a] -> a
+sum = go 0
+  where
+    go acc _ | acc `seq` False = undefined
+    go acc (x:xs)              = go (acc + x) xs
+    go acc []                  = acc
+```
+
+Function application to seq'd arguments is common enough that it has a special
+operator.
+
+```haskell
+($!) :: (a -> b) -> a -> b
+f $! x  = let !vx = x in f vx
+```
+
+StrictData 
+----------
+
+As of GHC 8.0 strictness annotations can be applied to all definitions in a
+module automatically. In previous versions it was necessary to definitions via
+explicit syntactic annotations at all sites.
+
+Enabling StrictData makes constructor fields strict by default on any module it
+is enabled on.
+
+```haskell
+{-# LANGUAGE StrictData #-}
+
+data Employee = Employee
+  { name :: T.Text
+  , age :: Int
+  }
+```
+
+Is equivalent to:
+
+```haskell
+data Employee = Employee
+  { name :: !T.Text
+  , age :: !Int
+  }
+```
+
+Strict
+------
+
+Strict implies ``-XStrictData`` and extends strictness annotations to all
+arguments of functions.
+
+```haskell
+f x y = x + y
+```
+
+Is equivalent to the following function declaration with explicit bang patterns:
+
+```haskell
+f !x !y = x + y
+```
+
+On a module-level this effectively makes Haskell a call-by-value language with
+some caveats. All arguments to functions are now explicitly evaluated and all
+data in constructors within this module are in head normal form by construction.
+However there are some subtle points to this that are better explained in the
+language guide.
+
+* [Strict Extensions](https://downloads.haskell.org/~ghc/master/users-guide//glasgow_exts.html?highlight=typefamilydependencies#strict-by-default-pattern-bindings)
 
 FlexibleInstances
 -------------------
@@ -3637,97 +3934,6 @@ not required.
 Of important note is that GHCi runs without any optimizations applied so the
 same program that performs poorly in GHCi may not have the same performance
 characteristics when compiled with GHC.
-
-Strictness Annotations
-----------------------
-
-The extension ``BangPatterns`` allows an alternative syntax to force arguments
-to functions to be wrapped in seq. A bang operator on an arguments forces its
-evaluation to weak head normal form before performing the pattern match. This
-can be used to keep specific arguments evaluated throughout recursion instead of
-creating a giant chain of thunks.
-
-```haskell
-{-# LANGUAGE BangPatterns #-}
-
-sum :: Num a => [a] -> a
-sum = go 0
-  where
-    go !acc (x:xs) = go (acc + x) xs
-    go  acc []     = acc
-```
-
-This is desugared into code effectively equivalent to the following:
-
-```haskell
-sum :: Num a => [a] -> a
-sum = go 0
-  where
-    go acc _ | acc `seq` False = undefined
-    go acc (x:xs)              = go (acc + x) xs
-    go acc []                  = acc
-```
-
-Function application to seq'd arguments is common enough that it has a special
-operator.
-
-```haskell
-($!) :: (a -> b) -> a -> b
-f $! x  = let !vx = x in f vx
-```
-
-Strict Haskell
---------------
-
-As of GHC 8.0 strictness annotations can be applied to all definitions in a
-module automatically. In previous versions it was necessary to definitions via
-explicit syntactic annotations at all sites.
-
-#### StrictData
-
-Enabling StrictData makes constructor fields strict by default on any module it
-is enabled on.
-
-```haskell
-{-# LANGUAGE StrictData #-}
-
-data Employee = Employee
-  { name :: T.Text
-  , age :: Int
-  }
-```
-
-Is equivalent to:
-
-```haskell
-data Employee = Employee
-  { name :: !T.Text
-  , age :: !Int
-  }
-```
-
-#### Strict
-
-Strict implies ``-XStrictData`` and extends strictness annotations to all
-arguments of functions.
-
-```haskell
-f x y = x + y
-```
-
-Is equivalent to the following function declaration with explicit bang patterns:
-
-```haskell
-f !x !y = x + y
-```
-
-On a module-level this effectively makes Haskell a call-by-value language with
-some caveats. All arguments to functions are now explicitly evaluated and all
-data in constructors within this module are in head normal form by construction.
-However there are some subtle points to this that are better explained in the
-language guide.
-
-* [Strict Extensions](https://downloads.haskell.org/~ghc/master/users-guide//glasgow_exts.html?highlight=typefamilydependencies#strict-by-default-pattern-bindings)
 
 Deepseq
 -------
@@ -4584,6 +4790,11 @@ branches.
 Arrows
 ------
 
+<div class="alert alert-danger">
+In practice arrow are not often used in modern Haskell and are often considered
+a code smell.
+</div>
+
 A category is an algebraic structure that includes a notion of an identity and a
 composition operation that is associative and preserves identities.
 
@@ -4953,7 +5164,6 @@ add x y k = k (x + y)
 ~~~~ {.haskell include="src/10-advanced-monads/cont_impl.hs"}
 ~~~~
 
-* [Wikibooks: Continuation Passing Style](http://en.wikibooks.org/wiki/Haskell/Continuation_passing_style)
 * [MonadCont Under the Hood](https://wiki.haskell.org/MonadCont_under_the_hood)
 
 MonadPlus
@@ -4995,6 +5205,11 @@ msum = asum
 
 ~~~~ {.haskell include="src/10-advanced-monads/monadplus.hs"}
 ~~~~
+
+Backtracking Monads
+-------------------
+
+TODO
 
 ~~~~ {.haskell include="src/10-advanced-monads/logict.hs"}
 ~~~~
