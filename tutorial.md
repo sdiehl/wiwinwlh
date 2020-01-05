@@ -16,7 +16,7 @@ source is [available on
 Github](https://github.com/sdiehl/wiwinwlh/tree/master/src). Pull requests are
 always accepted for changes and additional content. This is a living document.
 The only way this document will stay up to date is through community patches and
-[pull requests]((https://github.com/sdiehl/wiwinwlh).
+[pull requests](https://github.com/sdiehl/wiwinwlh).
 
 Version
 -------
@@ -40,6 +40,51 @@ parametric polymorphism, monadic effects, generalized algebraic data types,
 ad-hoc polymorphism through type classes, associated type families, and more.
 Haskell explores the design space of modeling effect systems and advanced
 type-level programming more than any other general purpose language.
+
+Haskell is a singular language in that is still a organic community effort that
+is driven from the userbase instead of by corporate influences. While there are
+some Haskell companies and consultancies, most are fairly small and none have an
+outsized influence on the language the way langauges; in contrast to ecosystems
+like Java and Go where Oracle and Google dominate all development. Haskell is
+also driven by a synthesis between multiple disciplines of academic computer
+science and industrial users who both contribute to the language ecosystem.
+
+Originally Haskell was designed as an ML dialect language that grew out of an
+older language Miranda. The GHC commitee was formed in the 90s to pursue
+building a research vehicle for lazy programming languages. This was a
+particularly in-vogue research topic that attracted some very talented
+people who eventually laid the foundation for modern Haskell.
+
+Throughout the last 20 years Haskell has grown into a very mature compiler with
+a fledgling ecosystem that is constantly reinventing itself and looking to
+further a set of research goals that define the community. Although laziness was
+originally the major research goal, this has largely become a quirky artifict
+that most users of the language are uninterested in generlaly.  In modern times
+the major themes of Haskell community are:
+
+* A vehicle for type system research
+* Experimentation in the design space of typed effect systems
+* Algebraic structures as a method of program synthesis
+* Referential transparency as a core language feature
+* Embedded domain specific languages
+* Experimentation toward practical dependent types
+* Stronger encoding of invariants through type-level programming
+* Efficient functional compiler design
+* Alternative models of parallel and concurrent programming
+
+Although these are the major research goals, Haskell is a fully general purpose
+language and has been used in everything from cryptoanalysis for the NSA to
+driving firmware in garbage trucks and everything in-between. Haskell has a
+thriving ecosystem of industrial applications in web development, compiler
+design, machine learning, financial services, FPGA development, algorithmic
+trading, numerical computing, cryptography research, and cybersecurity.
+
+Haskell as an ecosystem is one that is purely organic, it takes decades to
+evolve, makes mistakes and is not driven by any one ideology or belief about the
+purpose of functional programming. This makes Haskell programming simultaneously
+frustrating and exciting; and therein lies the fun that has been the
+intellectual siren song that has drawn many talented programmers to dabble in
+this beautiful language at some point in their lives.
 
 GHC
 ---
@@ -71,6 +116,11 @@ GHC itself depends on the following Linux packages.
 
 ghcup
 -----
+
+There are two major packages that need to be installed to use Haskell:
+
+* ghc
+* cabal-install
 
 GHC can be installed on Linux and Mac with
 [ghcup](https://www.haskell.org/ghcup/) by running the following command:
@@ -385,11 +435,6 @@ directory.
 documentation: True
 ```
 
-If GHC is currently installed, the documentation for the Prelude and Base
-libraries should be available at this local link:
-
-[/usr/share/doc/ghc-doc/html/libraries/index.html](file:///usr/share/doc/ghc-doc/html/libraries/index.html)
-
 See:
 
 * [Cabal User Guide](https://www.haskell.org/cabal/users-guide/)
@@ -536,6 +581,15 @@ $ stack dot --external | dot -Tpng | feh -
 HPack
 -----
 
+HPack is an alternative package description language that uses a structured YAML
+format to generate Cabal files. Hpack succeeds in DRYing (Don't Repeat Yourself)
+several sections of cabal files that are often quite repetative across large
+projects. Hpack uses a `package.yaml` file which the command line tool `hpack`
+generates whenever the project is built. Hpack can be integrated into Stack and
+will generate cabal files whenever `stack build` is invoked. 
+
+A small `package.yaml` file might look something like the following:
+
 ```yaml
 name        : example
 version     : 0.1.0
@@ -585,19 +639,22 @@ tests:
 Base
 ----
 
-The base library is split across several modules.
+GHC itself ships with a variety of core libraries that are loaded into all
+Haskell projects. The most foundational of these is `base` which forms the
+foundation for all Haskell code. The base library is split across several
+modules.
 
-* Prelude
-* Data
-* Control
-* Debug
-* Foreign
-* Numeric
-* System
-* Text
-* Type
-* GHC
-* Unsafe
+* *Prelude* - The default namespace imported in every module.
+* *Data*    - The simple data structures wired into the language
+* *Control* - Control flow functions
+* *Foreign* - Foreign function interface
+* *Numeric* - Numeric tower and arithmetic operations
+* *System*  - System operations for Linux/Mac/Windows
+* *Text*    - Basic [String] types.
+* *Type*    - Typelevel operations
+* *GHC*     - GHC Internals
+* *Debug*   - Debug functions
+* *Unsafe*  - Unsafe "backdoor" operations
 
 There have been several large changes to Base over the years which have resulted
 in breaking changes that means older versions of base are not compatible.
@@ -609,16 +666,25 @@ in breaking changes that means older versions of base are not compatible.
 Prelude
 -------
 
-The Prelude is the default standard module. The Prelude is imported by default into all
-Haskell modules unless either there is an explicit import statement for it, or
-the NoImplicitPrelude extension is enabled.
+The Prelude is the default standard module. The Prelude is imported by default
+into all Haskell modules unless either there is an explicit import statement for
+it, or the NoImplicitPrelude extension is enabled.
 
 The Prelude exports several hundred symbols that are the default datatypes and
-functions for libraries that use the GHC-issued prelude. Many libraries these
-days do not use the standard prelude.
+functions for libraries that use the GHC-issued prelude. Although the Prelude is
+the default import many libraries these days do not use the standard prelude
+chosing instead to roll a customm one on a per-project basis or use a off-the
+shelf prelude from Hackage.
+
+The Prelude contains common datatype and classes such as [List], [Monad](Monads),
+[Maybe] and most simple associated functions for manipulating these structures.
+These are the msot foundational programming constructs in Haskell.
 
 Flags
 -----
+
+GHC has a wide variety of flags that can be passed to configure different
+behavior in the compiler.
 
 Enabling [GHC](https://www.haskell.org/ghc) [compiler
 flags](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/flag-reference.html)
@@ -651,8 +717,6 @@ Any of these flags can be added to the ``ghc-options`` section of a
 project's ``.cabal`` file. For example:
 
 ```perl
-library mylib
-
   ghc-options:
     -fwarn-tabs
     -fwarn-unused-imports
@@ -671,34 +735,32 @@ on GHC internals.
 Hackage
 -------
 
-[Hackage](http://hackage.haskell.org/) is the upstream source of
-[Free](://www.fsf.org/about/what-is-free-software) and/or [Open
-Source](https://opensource.org/) Haskell packages. With Haskell's continuing
-evolution, Hackage has become many things to developers, but there seem to be
-two dominant philosophies of uploaded libraries.
+[Hackage](http://hackage.haskell.org/) is the upstream source of open source
+Haskell packages. With Haskell's continuing evolution, Hackage has become many
+things to developers, but there seem to be two dominant philosophies of uploaded
+libraries.
 
 **Reusable Code / Building Blocks**
 
 In the first philosophy, libraries exist as reliable, community-supported
 building blocks for constructing higher level functionality on top of a common,
 stable edifice. In development communities where this method is the dominant
-philosophy, the author(s) of libraries have written them as a means of packaging
+philosophy, the authors of libraries have written them as a means of packaging
 up their understanding of a problem domain so that others can build on their
 understanding and expertise.
 
 **A Staging Area / Request for Comments**
 
 In contrast to the previous method of packaging, a common philosophy in the
-Haskell community is that Hackage is a place to upload experimental libraries
-as a means of getting community feedback and making the code publicly available.
+Haskell community is that Hackage is a place to upload experimental libraries as
+a means of getting community feedback and making the code publicly available.
 Library author(s) often rationalize putting these kind of libraries up
 undocumented, often without indication of what the library actually does, by
 simply stating that they intend to tear the code down and rewrite it later. This
-approach unfortunately means a lot of Hackage namespace has become polluted
-with dead-end, bit-rotting code. Sometimes packages are also uploaded purely for
-internal use within an organisation, to accompany a paper, or just to
-integrate with the ``cabal`` build system. These packages are often left
-undocumented as well.
+approach unfortunately means a lot of Hackage namespace has become polluted with
+dead-end, bit-rotting code. Sometimes packages are also uploaded purely for
+internal use within an organisation, to accompany a paper. These packages are
+often left undocumented as well.
 
 For developers coming to Haskell from other language ecosystems that favor
 the former philosophy (e.g., Python, JavaScript, Ruby), seeing  *thousands of
@@ -713,12 +775,12 @@ Hackage that are highly curated by many people.
 
 As a general rule, if the Haddock documentation for the library does not have
 a **minimal worked example**, it is usually safe to assume that it is an
-RFC-style library and probably should be avoided in production-grade code.
+RFC-style library and probably should be avoided for production code.
 
 Similarly, if the library **predates the
-[text](http://hackage.haskell.org/package/text) library** (released circa
-2007), it probably should be avoided in production code. The way we write
-Haskell has changed drastically since the early days.
+[text](http://hackage.haskell.org/package/text) library** (released circa 2010),
+it probably should be avoided in production code. The way we write Haskell has
+changed drastically since the early days.
 
 Stackage
 -------
@@ -732,17 +794,19 @@ GHCi
 [GHC](https://www.haskell.org/GHC) compiler. GHCi is where we will spend
 most of our time in every day development.
 
-Command    Shortcut   Action
----------  ---------  --------------------------
-`:reload`  `:r`       Code reload
-`:type`    `:t`       Type inspection
-`:kind`    `:k`       Kind inspection
-`:info`    `:i`       Information
-`:print`   `:p`       Print the expression
-`:edit`    `:e`       Load file in system editor
-`:load`    `:l`       Set the active Main module in the REPL
-`:add`     `:ad`      Load a file into the REPL namespace
-`:browse`  `:bro`     Browse all available symbols in the REPL namespace
+Command      Shortcut   Action
+-----------  ---------  --------------------------
+`:reload`    `:r`       Code reload
+`:type`      `:t`       Type inspection
+`:kind`      `:k`       Kind inspection
+`:info`      `:i`       Information
+`:print`     `:p`       Print the expression
+`:edit`      `:e`       Load file in system editor
+`:load`      `:l`       Set the active Main module in the REPL
+`:module`    `:m`       Add modules to imports
+`:add`       `:ad`      Load a file into the REPL namespace
+`:instances` `:in`      Show instances of a typeclass
+`:browse`    `:bro`     Browse all available symbols in the REPL namespace
 
 The introspection commands are an essential part of debugging and interacting
 with Haskell code:
@@ -940,52 +1004,68 @@ Editor Integration
 
 Haskell has a variety of editor tools that can be used to provide interactive
 development feedback and functionality such as querying types of subexpressions,
-linting, type checking, and code completion.
-
-https://github.com/haskell/haskell-ide-engine
+linting, type checking, and code completion. These are largely provided by the
+[haskell-ide-engine](https://github.com/haskell/haskell-ide-engine) which serves
+as an editor agnostic backend that interfaces with GHC and Cabal to query code.
 
 **Vim**
 
-* https://github.com/haskell/haskell-ide-engine#using-hie-with-vim-or-neovim
-* https://github.com/sdiehl/vim-ormolu
+* [haskell-ide-engine](https://github.com/haskell/haskell-ide-engine#using-hie-with-vim-or-neovim)
+* [vim-ormolu](https://github.com/sdiehl/vim-ormolu)
+* [haskell-vim](https://github.com/neovimhaskell/haskell-vim)
 
 **Emacs**
 
-* https://github.com/haskell/haskell-mode
-* https://github.com/haskell/haskell-ide-engine#using-hie-with-emacs
-* https://github.com/vyorkin/ormolu.el
+* [haskell-mode](https://github.com/haskell/haskell-mode)
+* [haskell-ide-engine](https://github.com/haskell/haskell-ide-engine#using-hie-with-emacs)
+* [ormolu.el](https://github.com/vyorkin/ormolu.el)
 
 **VSCode**
 
-* https://github.com/haskell/haskell-ide-engine#using-hie-with-vs-code
-* https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell
-* https://marketplace.visualstudio.com/items?itemName=ndmitchell.haskell-ghcid
-* https://marketplace.visualstudio.com/items?itemName=alanz.vscode-hie-server
-* https://marketplace.visualstudio.com/items?itemName=hoovercj.haskell-linter
-* https://marketplace.visualstudio.com/items?itemName=DigitalAssetHoldingsLLC.ghcide
-* https://marketplace.visualstudio.com/items?itemName=sjurmillidahl.ormolu-vscode
+* [haskell-ide-engine](https://github.com/haskell/haskell-ide-engine#using-hie-with-vs-code)
+* [language-haskell](https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell)
+* [ghcid](https://marketplace.visualstudio.com/items?itemName=ndmitchell.haskell-ghcid)
+* [hie-server](https://marketplace.visualstudio.com/items?itemName=alanz.vscode-hie-server)
+* [hlint](https://marketplace.visualstudio.com/items?itemName=hoovercj.haskell-linter)
+* [ghcide](https://marketplace.visualstudio.com/items?itemName=DigitalAssetHoldingsLLC.ghcide)
+* [ormolu-vscode](https://marketplace.visualstudio.com/items?itemName=sjurmillidahl.ormolu-vscode)
 
 Docker Images
 -------------
 
-* https://hub.docker.com/r/fpco/haskell/
-* https://hub.docker.com/_/haskell/
+Haskell has stable Docker images that widely used for deployments across
+Kubernetes and Docker enviornments. The two Dockerhub repositories of note are:
 
-```docker
-FROM fpco/stack-build:lts-14.0
-```
+* [Official Haskell Images](https://hub.docker.com/_/haskell/)
+* [Stack LTS Images](https://hub.docker.com/r/fpco/haskell/)
+
+To import the official Haskell images with `ghc` and `cabal-install` include the
+following preamble in your Dockerfile with your desired GHC version.
 
 ```docker
 FROM haskell:8.8.1
 ```
 
+To import the stack images include the following preamble in your Dockerfile
+with your desired Stack resolver replaced.
+
+```docker
+FROM fpco/stack-build:lts-14.0
+```
+
+
 Linux Packages
 -------------
 
-TODO
+There are several upstream packages for Linux packages which are released by GHC
+development. The key ones of note for Linux are:
 
-[Debian Packages](https://downloads.haskell.org/~debian/)
-[Debian PPA](https://launchpad.net/~hvr/+archive/ubuntu/ghc)
+* [Debian Packages](https://downloads.haskell.org/~debian/)
+* [Debian PPA](https://launchpad.net/~hvr/+archive/ubuntu/ghc)
+
+Inside of scripting and operations tools it is common to to install the
+following apt repositories to install the signed GHC and cabal-install binaries
+if using Cabal as the primary build system.
 
 ```bash
 $ sudo add-apt-repository -y ppa:hvr/ghc
@@ -993,19 +1073,57 @@ $ sudo apt-get update
 $ sudo apt-get install -y cabal-install-3.0 ghc-8.8.1
 ```
 
+It is not advisable to use a Linux system package manager to manage Haskell
+dependencies. Although this can be done in practice it is better to use Cabal or
+Stack to build locally isolated builds to avoid incompatabilities.
+
 Continuous Integration
 ----------------------
 
-[Travis CI with Cabal](https://github.com/haskell-CI/haskell-ci/blob/master/.travis.yml)
-[Travis CI with Stack](https://docs.haskellstack.org/en/stable/travis_ci/)
+These days it is quite common to use cloud hosted continuous integration systems
+to test code from version control systems. There are many community contributed
+build script for different service providers:
 
-[Circle CI with Cabal]
-[Circle CI with Stack]
+* [Travis CI with Cabal](https://github.com/haskell-CI/haskell-ci/blob/master/.travis.yml)
+* [Travis CI with Stack](https://docs.haskellstack.org/en/stable/travis_ci/)
 
-[Github Actions with Cabal]
-[Github Actions with Stack]
+* [Circle CI with Cabal]
+* [Circle CI with Stack]
+ 
+* [Github Actions with Cabal]
+* [Github Actions with Stack]
 
-See [haskell-ci]((https://github.com/haskell-CI/haskell-ci)
+See also the official [haskell-ci]((https://github.com/haskell-CI/haskell-ci)
+repository.
+
+Names
+-----
+
+Names in Haskell exist within a specific namespace. Names are either unqualified
+of the form.
+
+```haskell
+nub
+```
+
+Or qualified by the module in which they come from.
+
+```haskell
+Data.List.nub
+```
+
+The major namespaces are described below with their naming convetions:
+
+Namespace      Convention
+-------------  ----------
+Modules        Uppercase
+Typeclasses    Uppercase
+Datatypes      Uppercase
+Constructors   Uppercase
+Synonyms       Uppercase
+Type Families  Uppercase
+Functions      Lowercase
+Variables      Lowercase
 
 Modules
 -------
@@ -1014,21 +1132,41 @@ A module consists of a set of imports and exports and when compiled generates an
 interface which is linked against other Haskell modules. A module may reexport
 symbols from other modules.
 
+```haskell
+module MyModule (myExport1, myExport2) where
+
+import OtherModule (myImport1, myImport2)
+```
+
 Modules dependency graphs optionally may by cyclic (i.e. they import symbols
 from each other) through the use of a boot file, but this is often best avoided
 if at all possible.
+
+A import of all symbols into the local namespace.
+
+```haskell
+import Data.List
+```
+
+A import of select symbols into the local namespace:
 
 ```haskell
 import Data.List (nub, sort)  
 ```
 
+A import into the global namespace masking a symbol:
+
 ```haskell
 import Data.List hiding (nub)  
 ```
 
+A qualified import of `Data.Map` namespace into the local namespace.
+
 ```haskell
 import qualified Data.Map  
 ```
+
+A qualified import of `Data.Map` reassigned to `M` into the local namespace.
 
 ```haskell
 import qualified Data.Map as M  
@@ -1042,8 +1180,121 @@ import qualified Data.Map as M
 import qualified Data.Map.Strict as M  
 ```
 
+A main module is a special module which reserves the name `Main` and has a
+mandatory export of type ``IO ()`` which is invoked when the executable is run..
+This is the entry point from the sytem into a Haskell program.
+
+```haskell
+module Main where
+main = print "Hello World!"
+```
+
+Functions 
+---------
+
+Functions are the central construction in Haskell. A function `f` of two
+arguments `x` and `y` can be defined in a single line as a left and and right
+and side of an equation:
+
+```haskell
+f x y = x + y
+```
+
+This simply defines a function named `f` of two arguments and on the right hand
+side adds and yields the result. A function of two arguments need not
+neccessarily be applied to two arguments. The result of only applying a single
+argument is to yield another function which applies the second argument when it
+is given. For example we can define an `add` function and subsequently a `inc`
+function which simply adds 1 to a given value.
+
+```haskell
+add x y = x + y
+inc = add 1
+```
+
+In addition to named functions Haskell also has "anonymous" lambda functions
+denoted with a backslash. The following functions:
+
+```haskell
+id x = x
+```
+
+are identical
+
+```haskell
+id = \x -> x
+```
+
+Functions may themselvews take other functions as arguments. These functions are
+called *higher-order functions*. For example the following function applies a
+given argument `f` which is itelf a function to a value x twice.
+
+```haskell
+applyTwice f x = f (f x)  
+```
+
+Type Signatures
+---------------
+
+```haskell
+f :: Integer -> Integer -> Integer
+f x y = x + y
+```
+
+```haskell
+add :: Integer -> Integer -> Integer
+add x y = x + y
+
+inc :: Integer -> Integer
+inc = add 1
+```
+
+```haskell
+id :: a -> a
+id x = x
+```
+
+```haskell
+id :: a -> a
+id = \x -> x
+```
+
+```haskell
+applyTwice :: (a -> a) -> a -> a  
+applyTwice f x = f (f x)  
+```
+
+
+```haskell
+add :: Num a => a -> a -> a
+add x y = x + y
+```
+
+Constraints
+Type variables
+Explicit annotations
+
+Currying
+--------
+
+TODO
+
 Algebraic Datatypes
 -------------------
+
+TODO
+
+Recursive types
+
+Pattern Matching
+-----------------
+
+TODO
+
+Toplevel vs case statements
+
+Typeclasses
+-----------
 
 TODO
 
@@ -2877,6 +3128,13 @@ So we can generalize an existing transformer to lift an IO layer onto it.
 
 See: [mmorph](https://hackage.haskell.org/package/mmorph)
 
+Effect Systems
+--------------
+
+* fused-effects
+* polysemy
+* eff
+
 <hr/>
 
 Language Extensions
@@ -3185,7 +3443,7 @@ ApplicativeDo
 -------------
 
 By default GHC desugars do-notation to use implicit invocations of bind and
-return.
+return. With normal monad sugar the following...
 
 ```haskell
 test :: Monad m => m (a, b, c)
@@ -3196,7 +3454,7 @@ test = do
   return (a, b, c)
 ```
 
-Desugars into:
+... desugars into:
 
 ```haskell
 test :: Monad m => m (a, b, c)
@@ -3209,6 +3467,17 @@ f >>= \a ->
 
 With ``ApplicativeDo`` this instead desugars into use of applicative combinators
 and a laxer Applicative constraint.
+
+```haskell
+test :: Applicative m => m (a, b, c)
+test = do
+  a <- f
+  b <- g
+  c <- h
+  return (a, b, c)
+```
+
+Which is equivalent to the traditional notation.
 
 ```haskell
 test :: Applicative m => m (a, b, c)
@@ -3429,11 +3698,20 @@ pattern Elt = [a]
 DeriveFunctor
 -------------
 
+Many instances of functor over datatypes with simple single parameters and
+trivial constructors are simply the result of trivially applying a functions
+over the single constructor's argument. GHC can derive this boilerplace
+automatically in deriving clauses if DeriveFunctor is enabled.
+
 ~~~~ {.haskell include="src/04-extensions/derive_functor.hs"}
 ~~~~
 
 DeriveTraversable
 -----------------
+
+Many instances of traversable over datatypes with simple single parameters and
+trivial constructors have mechanical traversable instances that GHC can derive
+automatically.
 
 ~~~~ {.haskell include="src/04-extensions/derive_traversable.hs"}
 ~~~~
@@ -4211,36 +4489,6 @@ read :: Read a => String -> a
 (!!) :: [a] -> Int -> a
 ```
 
-Safe
-----
-
-The Prelude has total variants of the historical partial functions (i.e. ``Text.Read.readMaybe``)in some
-cases, but often these are found in the various utility libraries like ``safe``.
-
-The total versions provided fall into three cases:
-
-* ``May``  - return Nothing when the function is not defined for the inputs
-* ``Def``  - provide a default value when the function is not defined for the inputs
-* ``Note`` - call ``error`` with a custom error message when the function is not defined for the inputs. This
-  is not safe, but slightly easier to debug!
-
-```haskell
--- Total
-headMay :: [a] -> Maybe a
-readMay :: Read a => String -> Maybe a
-atMay :: [a] -> Int -> Maybe a
-
--- Total
-headDef :: a -> [a] -> a
-readDef :: Read a => a -> String -> a
-atDef   :: a -> [a] -> Int -> a
-
--- Partial
-headNote :: String -> [a] -> a
-readNote :: Read a => String -> String -> a
-atNote   :: String -> [a] -> Int -> a
-```
-
 A list of partial functions in the default prelude:
 
 * error
@@ -4268,6 +4516,36 @@ A list of partial functions in the default prelude:
 * toEnum
 * genericIndex
 * (!)
+
+Replacing Partiality
+--------------------
+
+The Prelude has total variants of the historical partial functions (i.e. ``Text.Read.readMaybe``)in some
+cases, but often these are found in the various replacement preludes
+
+The total versions provided fall into three cases:
+
+* ``May``  - return Nothing when the function is not defined for the inputs
+* ``Def``  - provide a default value when the function is not defined for the inputs
+* ``Note`` - call ``error`` with a custom error message when the function is not defined for the inputs. This
+  is not safe, but slightly easier to debug!
+
+```haskell
+-- Total
+headMay :: [a] -> Maybe a
+readMay :: Read a => String -> Maybe a
+atMay :: [a] -> Int -> Maybe a
+
+-- Total
+headDef :: a -> [a] -> a
+readDef :: Read a => a -> String -> a
+atDef   :: a -> [a] -> Int -> a
+
+-- Partial
+headNote :: String -> [a] -> a
+readNote :: Read a => String -> String -> a
+atNote   :: String -> [a] -> Int -> a
+```
 
 Boolean Blindness
 ------------------
@@ -9432,6 +9710,15 @@ $ happy Parser.y -o Parser.hs
 The generated modules are not human readable generally and unfortunately error
 messages are given in the Haskell source, not the Happy source.
 
+Happy and Alex can be integrated into a cabal file simply by including the
+`Parser.y` and `Lexer.x` files inside of the exposed modules and adding them to
+the build-tools pragma.
+
+```perl
+exposed-modules: Parser, Lexer
+build-tools: alex , happy
+```
+
 #### Lexer
 
 For instance we could define a little toy lexer with a custom set of tokens.
@@ -9452,6 +9739,8 @@ terms
     : term                   { [$1] }
     | term terms             { $1 : $2 }
 ```
+
+An example parser module:
 
 ~~~~ {.haskell include="src/24-parsing/happy/Parser.y"}
 ~~~~
@@ -10222,6 +10511,11 @@ This yields the result set:
     }
 ]
 ```
+
+Sqlite
+------
+
+TODO
 
 Redis
 -----
@@ -12284,8 +12578,8 @@ This is an advanced section, knowledge of TemplateHaskell is not typically
 necessary to write Haskell.
 </div>
 
-Perils of Metaprogramming
--------------------------
+Metaprogramming
+---------------
 
 Template Haskell is a very powerful set of abstractions, some might say **too**
 powerful. It effectively allows us to run arbitrary code at compile-time to
