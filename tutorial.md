@@ -22,6 +22,8 @@ PDF Version
 -----------
 
 **[PDF Version](http://dev.stephendiehl.com/hask/tutorial.pdf)**
+**[EPUB Version](http://dev.stephendiehl.com/hask/tutorial.epub)**
+**[Kindle Version](http://dev.stephendiehl.com/hask/tutorial.mobi)**
 
 Basics
 ======
@@ -437,23 +439,67 @@ $ stack dot --external | dot -Tpng | feh -
 HPack
 -----
 
-TODO
+```yaml
+name        : example
+version     : 0.1.0
+synopsis    : My fabulous library
+description : My fabulous library
+maintainer  : John Doe
+github      : john/example
+category    : Development
+
+ghc-options: -Wall
+
+dependencies:
+  - base >= 4.9 && < 5
+  - protolude
+  - deepseq
+  - directory
+  - filepath
+  - text
+  - containers
+  - unordered-containers
+  - aeson
+  - pretty-simple
+
+library:
+  source-dirs: src
+  exposed-modules:
+    - Example
+
+executable:
+  main: Main.hs
+  source-dirs: exe
+  dependencies:
+    - example
+
+tests:
+  spec:
+    main: Test.hs
+    source-dirs:
+      - test
+      - src
+    dependencies:
+      - example
+      - tasty
+      - tasty-hunit
+```
 
 Base
 ----
 
-The base library is split across 
+The base library is split across several modules.
 
-* Control
+* Prelude
 * Data
+* Control
 * Debug
 * Foreign
-* GHC
 * Numeric
-* Prelude
 * System
 * Text
 * Type
+* GHC
 * Unsafe
 
 Prelude
@@ -466,45 +512,6 @@ the NoImplicitPrelude extension is enabled.
 The Prelude exports several hundred symbols that are the default datatypes and
 functions for libraries that use the GHC-issued prelude. Many libraries these
 days do not use the standard prelude.
-
-Boot Libraries
---------------
-
-GHC itself ships with a variety of libraries that are neccessary to bootstrap
-the compiler and compile itself.
-
-* array
-* base
-* binary
-* bytestring
-* Cabal
-* containers
-* deepseq
-* directory
-* dist-haddock
-* filepath
-* ghc-boot
-* ghc-boot-th
-* ghc-compact
-* ghc-heap
-* ghci
-* ghc-prim
-* haskeline
-* hpc
-* integer-gmp
-* libiserv
-* mtl
-* parsec
-* pretty
-* process
-* stm
-* template-haskell
-* terminfo
-* text
-* time
-* transformers
-* unix
-* xhtml
 
 Flags
 -----
@@ -10475,6 +10482,45 @@ TODO
 
 * [List Fusion](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/rewrite-rules.html)
 
+Boot Libraries
+--------------
+
+GHC itself ships with a variety of libraries that are necessary to bootstrap
+the compiler and compile itself.
+
+* array
+* base
+* binary
+* bytestring
+* Cabal
+* containers
+* deepseq
+* directory
+* dist-haddock
+* filepath
+* ghc-boot
+* ghc-boot-th
+* ghc-compact
+* ghc-heap
+* ghci
+* ghc-prim
+* haskeline
+* hpc
+* integer-gmp
+* libiserv
+* mtl
+* parsec
+* pretty
+* process
+* stm
+* template-haskell
+* terminfo
+* text
+* time
+* transformers
+* unix
+* xhtml
+
 Dictionaries
 ------------
 
@@ -12429,10 +12475,66 @@ throughout functional programming, and once we recognize them we can abstract
 over them. For instance a monoid is a combination of a unit and a single
 associative operation over a set of values.
 
+You will often see this notation in tuple form. Where a set `S` will be enriched
+with a variety of elements and operations that are closed over that set. For
+example:
+
 Structure Notation
 --------- ---------
-Monoid    $(M, •)$
-Monad     $(T, \mu, \eta)$
+Monoid    $(S, •)$
+Monad     $(S, \mu, \eta)$
+
+```haskell
+commutative :: Eq a => (b -> b -> a) -> b -> b -> Bool
+commutative op x y  =  x `op` y == y `op` x
+
+associative :: Eq a => (a -> a -> a) -> a -> a -> a -> Bool
+associative op x y z  =  (x `op` y) `op` z == x `op` (y `op` z)
+
+annihilation :: Eq a => (a -> a -> a) -> a -> a -> Bool
+annihilation op e x = op x e == e && op e x == e
+
+leftIdentity :: Eq a => (b -> a -> a) -> b -> a -> Bool
+leftIdentity op y x  =  y `op` x == x
+
+rightIdentity :: Eq a => (a -> b -> a) -> b -> a -> Bool
+rightIdentity op y x  =  x `op` y == x
+
+identity :: Eq a => (a -> a -> a) -> a -> a -> Bool
+identity op x y  =  leftIdentity op x y &&  rightIdentity op x y
+
+leftZero :: Eq a => (a -> a -> a) -> a -> a -> Bool
+leftZero  =  flip . rightIdentity
+
+rightZero :: Eq a => (a -> a -> a) -> a -> a -> Bool
+rightZero  =  flip . leftIdentity
+
+zero :: Eq a => (a -> a -> a) -> a -> a -> Bool
+zero op x y  =  leftZero op x y  &&  rightZero op x y
+
+leftInverse :: Eq a => (b -> b -> a) -> (b -> b) -> a -> b -> Bool
+leftInverse op inv y x  =  inv x `op` x == y
+
+rightInverse :: Eq a => (b -> b -> a) -> (b -> b) -> a -> b -> Bool
+rightInverse op inv y x  =  x `op` inv x == y
+
+inverse :: Eq a => (b -> b -> a) -> (b -> b) -> a -> b -> Bool
+inverse op inv y x  =  leftInverse op inv y x && rightInverse op inv y x
+
+leftDistributive :: Eq a => (a -> b -> a) -> (a -> a -> a) -> b -> a -> a -> Bool
+leftDistributive ( # ) op x y z  =  (y `op` z) # x == (y # x) `op` (z # x)
+
+rightDistributive :: Eq a => (b -> a -> a) -> (a -> a -> a) -> b -> a -> a -> Bool
+rightDistributive ( # ) op x y z  =  x # (y `op` z) == (x # y) `op` (x # z)
+
+distributivity :: Eq a => (a -> a -> a) -> (a -> a -> a) -> a -> a -> a -> Bool
+distributivity op op' x y z = op (op' x y) z == op' (op x z) (op y z)
+                           && op x (op' y z) == op' (op x y) (op x z)
+
+homomorphism :: Eq a =>
+   (b -> a) -> (b -> b -> b) -> (a -> a -> a) -> b -> b -> Bool
+homomorphism f op0 op1 x y  =  f (x `op0` y) == f x `op1` f y
+```
 
 Categories
 ----------
@@ -12594,40 +12696,6 @@ transformations.
 
 See: [You Could Have Defined Natural Transformations](http://blog.sigfpe.com/2008/05/you-could-have-defined-natural.html)
 
-Yoneda Lemma
-------------
-
-The Yoneda lemma is an elementary, but deep result in Category theory. The
-Yoneda lemma states that for any functor ``F``, the types ``F a`` and ``∀ b. (a
--> b) -> F b`` are isomorphic.
-
-```haskell
-{-# LANGUAGE RankNTypes #-}
-
-embed :: Functor f => f a -> (forall b . (a -> b) -> f b)
-embed x f = fmap f x
-
-unembed :: Functor f => (forall b . (a -> b) -> f b) -> f a
-unembed f = f id
-```
-
-So that we have:
-
-```haskell
-embed . unembed ≡ id
-unembed . embed ≡ id
-```
-
-The most broad hand-wavy statement of the theorem is that an object in a
-category can be represented by the set of morphisms into it, and that the
-information about these morphisms alone sufficiently determines all properties
-of the object itself.
-
-In terms of Haskell types, given a fixed type ``a`` and a functor ``f``, if we
-have some a higher order polymorphic function ``g`` that when given a function
-of type ``a -> b`` yields ``f b`` then the behavior ``g`` is entirely determined
-by ``a -> b`` and the behavior of ``g`` can written purely in terms of ``f a``.
-
 Kleisli Category
 ----------------
 
@@ -12664,11 +12732,6 @@ Just >=> f ≡ f
 f >=> Just ≡ f
 ```
 
-Cartesian Closed Categories
----------------------------
-
-TODO
-
 Monoidal Categories
 -------------------
 
@@ -12676,6 +12739,8 @@ TODO
 
 Resources
 ---------
+
+If you so wish to study more category, there are many resources online.
 
 * [Category Theory, Awodey](http://www.amazon.com/Category-Theory-Oxford-Logic-Guides/dp/0199237182)
 * [Category Theory Foundations](https://www.youtube.com/watch?v=ZKmodCApZwk)
@@ -12695,9 +12760,6 @@ between them at the language level.
 
 No notion of "weak" or "strong" typing will be discussed because the terms have
 no universal meaning.
-
-No notion of "object-oriented" or "functional" paradigms will be discussed
-because the terms have no universal meaning.
 
 Haskell
 -------
@@ -13055,10 +13117,10 @@ TODO
 Java
 ------
 
-Java is a general purpose programming language. It is an object-oriented,
-concurrent language which is statically typed. It is one of the most frequently
-used languages in the industry, as well as a common language used in academia to
-teach the fundamentals of object oriented programming.
+Java is a general purpose programming language. It is an imperative language
+which is statically typed. It is one of the most frequently used languages in
+the industry, as well as a common language used in academia to teach the
+fundamentals of object oriented programming.
 
 **Main difference**: Java is an object-oriented language, compared to Haskell
 which is functional.
