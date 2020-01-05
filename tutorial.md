@@ -397,6 +397,8 @@ See:
 Cabal New-Build
 ---------------
 
+Nix-style Local Builds
+
 ```perl
 new-build          Compile targets within the project.
 new-configure      Add extra project configuration
@@ -416,7 +418,11 @@ new-sdist          Generate a source distribution file (.tar.gz).
 Version Bounds
 --------------
 
-```text
+All Haskell packages are supposed to following the [Package Versioning Policy](https://pvp.haskell.org/).
+
+![](https://pvp.haskell.org/pvp-decision-tree.svg)
+
+```perl
 base                >= 4.6  && <4.14,
 array               >= 0.4  && <0.6,
 ghc-prim            >= 0.3  && <0.6,
@@ -978,8 +984,8 @@ Linux Packages
 
 TODO
 
-https://downloads.haskell.org/~debian/
-https://launchpad.net/~hvr/+archive/ubuntu/ghc
+[Debian Packages](https://downloads.haskell.org/~debian/)
+[Debian PPA](https://launchpad.net/~hvr/+archive/ubuntu/ghc)
 
 ```bash
 $ sudo add-apt-repository -y ppa:hvr/ghc
@@ -993,10 +999,64 @@ Continuous Integration
 [Travis CI with Cabal](https://github.com/haskell-CI/haskell-ci/blob/master/.travis.yml)
 [Travis CI with Stack](https://docs.haskellstack.org/en/stable/travis_ci/)
 
+[Circle CI with Cabal]
+[Circle CI with Stack]
+
+[Github Actions with Cabal]
+[Github Actions with Stack]
+
 See [haskell-ci]((https://github.com/haskell-CI/haskell-ci)
+
+Modules
+-------
+
+A module consists of a set of imports and exports and when compiled generates an
+interface which is linked against other Haskell modules. A module may reexport
+symbols from other modules.
+
+Modules dependency graphs optionally may by cyclic (i.e. they import symbols
+from each other) through the use of a boot file, but this is often best avoided
+if at all possible.
+
+```haskell
+import Data.List (nub, sort)  
+```
+
+```haskell
+import Data.List hiding (nub)  
+```
+
+```haskell
+import qualified Data.Map  
+```
+
+```haskell
+import qualified Data.Map as M  
+```
+
+You may dump multiple modules into the same namespace so long as the symbols do
+not clash.
+
+```haskell
+import qualified Data.Map as M  
+import qualified Data.Map.Strict as M  
+```
+
+Algebraic Datatypes
+-------------------
+
+TODO
 
 Records
 -------
+
+Records in Haskell are fundamentally broken and there multiple philosophies
+about how to round around this issue.
+
+TODO RANT
+
+Newtypes
+--------
 
 TODO
 
@@ -1772,8 +1832,8 @@ In other words, the only path to understanding monads is to read the fine
 source, fire up GHC, and write some code. Analogies and metaphors will not lead
 to understanding.
 
-Monadic Myths
--------------
+Monad Myths
+-----------
 
 The following are all **false**:
 
@@ -1790,8 +1850,8 @@ The following are all **false**:
 
 See: [What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
 
-Monadic Methods
----------------
+Monad Methods
+-------------
 
 Monads are not complicated. They are implemented as a typeclass with two
 methods, ``return`` and ``(>>=)`` (pronounced "bind"). In order to implement
@@ -1833,8 +1893,8 @@ with types ``m a`` and ``m b`` respectively, while the infix returns a value of
 type ``m b``.  The actual implementation of (>>) says that when ``m`` is passed
 to ``(>>)`` with ``k`` on the right, the value ``k`` will always be returned.
 
-Laws
-----
+Monad Laws
+----------
 
 In addition to specific implementations of ``(>>=)`` and ``return``, all monad
 instances must satisfy three laws.
@@ -2870,16 +2930,16 @@ say that these extensions are benign and are safely used extensively:
 * FlexibleContexts
 * FlexibleInstances
 * GeneralizedNewtypeDeriving
-* TypeSynonymInstances
-* MultiParamTypeClasses
-* FunctionalDependencies
-* NoMonomorphismRestriction
-* GADTs
+* [TypeSynonymInstances]
+* [MultiParamTypeClasses](MultiParam Typeclasses)
+* [FunctionalDependencies](MultiParam Typeclasses)
+* [NoMonomorphismRestriction](Monomorphism Restriction)
+* [GADTs]
 * [BangPatterns]
-* DeriveGeneric
-* DeriveAnyClass
-* DerivingStrategies
-* ScopedTypeVariables
+* [DeriveGeneric]
+* [DeriveAnyClass]
+* [DerivingStrategies]
+* [ScopedTypeVariables](Scoped Type Variables)
 
 The Advanced
 ------------
@@ -3525,6 +3585,11 @@ TODO
 
 DerivingStrategies
 -------------------
+
+TODO
+
+TypeInType
+----------
 
 TODO
 
@@ -4176,6 +4241,34 @@ readNote :: Read a => String -> String -> a
 atNote   :: String -> [a] -> Int -> a
 ```
 
+A list of partial functions in the default prelude:
+
+* error
+* undefined
+* fail
+* head
+* init
+* tail
+* last
+* foldl
+* foldr
+* foldl'
+* foldr'
+* foldr1
+* foldl1
+* cycle
+* maximum
+* minimum
+* (!!)
+* sum
+* product
+* fromJust
+* read
+* reverse
+* toEnum
+* genericIndex
+* (!)
+
 Boolean Blindness
 ------------------
 
@@ -4583,20 +4676,6 @@ See:
 * [Bytestring: Bits and Pieces](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/bytestring-bits-and-pieces)
 * [ByteString](http://hackage.haskell.org/package/bytestring-0.10.4.0/docs/Data-ByteString.html)
 
-utf8-string
------------
-
-TODO
-
-See: [utf8-string](https://hackage.haskell.org/package/utf8-string)
-
-base64-bytestring
------------
-
-TODO
-
-See: [utf8-string](https://hackage.haskell.org/package/base64-bytestring)
-
 Printf
 ------
 
@@ -4604,6 +4683,11 @@ Haskell also has a variadic ``printf`` function in the style of C.
 
 ~~~~ {.haskell include="src/07-text-bytestring/printf.hs"}
 ~~~~
+
+Pretty Simple
+-------------
+
+TODO
 
 Overloaded Lists
 ----------------
@@ -5046,6 +5130,17 @@ See:
 
 * [Control.Monad.Except](https://hackage.haskell.org/package/mtl-2.2.1/docs/Control-Monad-Except.html)
 
+exceptions
+----------
+
+TODO
+
+* MonadThrow
+* MonadCatch
+* MonadMask
+
+https://hackage.haskell.org/package/exceptions
+
 spoon
 -----
 
@@ -5066,6 +5161,7 @@ The ``spoon`` function evaluates its argument to head normal form, while
 See:
 
 * [Spoon](https://hackage.haskell.org/package/spoon)
+
 
 <hr/>
 
@@ -5417,7 +5513,7 @@ Normally quantifiers are omitted in type signatures since in Haskell's vanilla
 surface language it is unambiguous to assume to that free type variables are
 universally quantified.
 
-Free theorems
+Free Theorems
 -------------
 
 A universally quantified type-variable actually implies quite a few rather deep
@@ -7687,6 +7783,198 @@ sections:
 * GHC.Generics
 * generics-sop
 
+Generic
+-------
+
+The most modern method of doing generic programming uses type families to
+achieve a better method of deriving the structural properties of arbitrary type
+classes.  Generic implements a typeclass with an associated type ``Rep`` (
+Representation ) together with a pair of functions that form a 2-sided inverse (
+isomorphism ) for converting to and from the associated type and the derived
+type in question.
+
+```haskell
+class Generic a where
+  type Rep a
+  from :: a -> Rep a
+  to :: Rep a -> a
+
+class Datatype d where
+  datatypeName :: t d f a -> String
+  moduleName :: t d f a -> String
+
+class Constructor c where
+  conName :: t c f a -> String
+```
+
+[GHC.Generics](https://www.haskell.org/ghc/docs/7.4.1/html/libraries/ghc-prim-0.2.0.0/GHC-Generics.html)
+defines a set of named types for modeling the various structural properties of
+types in available in Haskell.
+
+```haskell
+-- | Sums: encode choice between constructors
+infixr 5 :+:
+data (:+:) f g p = L1 (f p) | R1 (g p)
+
+-- | Products: encode multiple arguments to constructors
+infixr 6 :*:
+data (:*:) f g p = f p :*: g p
+
+-- | Tag for M1: datatype
+data D
+-- | Tag for M1: constructor
+data C
+
+-- | Constants, additional parameters and recursion of kind *
+newtype K1 i c p = K1 { unK1 :: c }
+
+-- | Meta-information (constructor names, etc.)
+newtype M1 i c f p = M1 { unM1 :: f p }
+
+-- | Type synonym for encoding meta-information for datatypes
+type D1 = M1 D
+
+-- | Type synonym for encoding meta-information for constructors
+type C1 = M1 C
+```
+
+Using the deriving mechanics GHC can generate this Generic instance for us
+mechanically, if we were to write it by hand for a simple type it might look
+like this:
+
+~~~~ {.haskell include="src/18-generics/generics.hs"}
+~~~~
+
+Use ``kind!`` in GHCi we can look at the type family ``Rep`` associated with a Generic instance.
+
+```haskell
+λ: :kind! Rep Animal
+Rep Animal :: * -> *
+= M1 D T_Animal (M1 C C_Dog U1 :+: M1 C C_Cat U1)
+
+λ: :kind! Rep ()
+Rep () :: * -> *
+= M1 D GHC.Generics.D1() (M1 C GHC.Generics.C1_0() U1)
+
+λ: :kind! Rep [()]
+Rep [()] :: * -> *
+= M1
+    D
+    GHC.Generics.D1[]
+    (M1 C GHC.Generics.C1_0[] U1
+     :+: M1
+           C
+           GHC.Generics.C1_1[]
+           (M1 S NoSelector (K1 R ()) :*: M1 S NoSelector (K1 R [()])))
+```
+
+Now the clever bit, instead writing our generic function over the datatype we
+instead write it over the Rep and then reify the result using ``from``. So for
+an equivalent version of Haskell's default ``Eq`` that instead uses generic
+deriving we could write:
+
+```haskell
+class GEq' f where
+  geq' :: f a -> f a -> Bool
+
+instance GEq' U1 where
+  geq' _ _ = True
+
+instance (GEq c) => GEq' (K1 i c) where
+  geq' (K1 a) (K1 b) = geq a b
+
+instance (GEq' a) => GEq' (M1 i c a) where
+  geq' (M1 a) (M1 b) = geq' a b
+
+-- Equality for sums.
+instance (GEq' a, GEq' b) => GEq' (a :+: b) where
+  geq' (L1 a) (L1 b) = geq' a b
+  geq' (R1 a) (R1 b) = geq' a b
+  geq' _      _      = False
+
+-- Equality for products.
+instance (GEq' a, GEq' b) => GEq' (a :*: b) where
+  geq' (a1 :*: b1) (a2 :*: b2) = geq' a1 a2 && geq' b1 b2
+```
+
+To accommodate the two methods of writing classes (generic-deriving or
+custom implementations) we can use the ``DefaultSignatures`` extension to allow the
+user to leave typeclass functions blank and defer to Generic or to define
+their own.
+
+```haskell
+{-# LANGUAGE DefaultSignatures #-}
+
+class GEq a where
+  geq :: a -> a -> Bool
+
+  default geq :: (Generic a, GEq' (Rep a)) => a -> a -> Bool
+  geq x y = geq' (from x) (from y)
+```
+
+Now anyone using our library need only derive Generic and create an empty
+instance of our typeclass instance without writing any boilerplate for ``GEq``.
+
+Here is a complete example for deriving equality generics:
+
+~~~~ {.haskell include="src/18-generics/generic_impl.hs"}
+~~~~
+
+See:
+
+* [Cooking Classes with Datatype Generic Programming](http://www.stephendiehl.com/posts/generics.html)
+* [Datatype-generic Programming in Haskell](http://www.andres-loeh.de/DGP-Intro.pdf)
+* [generic-deriving](http://hackage.haskell.org/package/generic-deriving-1.6.3)
+
+Generic Deriving
+----------------
+
+Using Generics many common libraries provide a mechanisms to derive common
+typeclass instances. Some real world examples:
+
+The [hashable](http://hackage.haskell.org/package/hashable) library allows us to
+derive hashing functions.
+
+~~~~ {.haskell include="src/18-generics/hashable.hs"}
+~~~~
+
+The [cereal](http://hackage.haskell.org/package/cereal-0.4.0.1) library allows
+us to automatically derive a binary representation.
+
+~~~~ {.haskell include="src/18-generics/cereal.hs"}
+~~~~
+
+The [aeson](http://hackage.haskell.org/package/aeson) library allows us to
+derive JSON representations for JSON instances.
+
+~~~~ {.haskell include="src/18-generics/derive_aeson.hs"}
+~~~~
+
+See: [A Generic Deriving Mechanism for Haskell](http://dreixel.net/research/pdf/gdmh.pdf)
+
+##### Higher Kinded Generics
+
+Using the same interface GHC.Generics provides a separate typeclass for
+higher-kinded generics.
+
+```haskell
+class Generic1 f where
+  type Rep1 f :: * -> *
+  from1  :: f a -> (Rep1 f) a
+  to1    :: (Rep1 f) a -> f a
+```
+
+So for instance ``Maybe`` has ``Rep1`` of the form:
+
+```haskell
+type instance Rep1 Maybe
+  = D1
+      GHC.Generics.D1Maybe
+      (C1 C1_0Maybe U1
+       :+: C1 C1_1Maybe (S1 NoSelector Par1))
+```
+
+
 Typeable
 --------
 
@@ -7884,202 +8172,6 @@ example2 :: Int
 example2 = numHoles (Just 3)
 -- 1
 ```
-
-Generic
--------
-
-The most modern method of doing generic programming uses type families to
-achieve a better method of deriving the structural properties of arbitrary type
-classes.  Generic implements a typeclass with an associated type ``Rep`` (
-Representation ) together with a pair of functions that form a 2-sided inverse (
-isomorphism ) for converting to and from the associated type and the derived
-type in question.
-
-```haskell
-class Generic a where
-  type Rep a
-  from :: a -> Rep a
-  to :: Rep a -> a
-
-class Datatype d where
-  datatypeName :: t d f a -> String
-  moduleName :: t d f a -> String
-
-class Constructor c where
-  conName :: t c f a -> String
-```
-
-[GHC.Generics](https://www.haskell.org/ghc/docs/7.4.1/html/libraries/ghc-prim-0.2.0.0/GHC-Generics.html)
-defines a set of named types for modeling the various structural properties of
-types in available in Haskell.
-
-```haskell
--- | Sums: encode choice between constructors
-infixr 5 :+:
-data (:+:) f g p = L1 (f p) | R1 (g p)
-
--- | Products: encode multiple arguments to constructors
-infixr 6 :*:
-data (:*:) f g p = f p :*: g p
-
--- | Tag for M1: datatype
-data D
--- | Tag for M1: constructor
-data C
-
--- | Constants, additional parameters and recursion of kind *
-newtype K1 i c p = K1 { unK1 :: c }
-
--- | Meta-information (constructor names, etc.)
-newtype M1 i c f p = M1 { unM1 :: f p }
-
--- | Type synonym for encoding meta-information for datatypes
-type D1 = M1 D
-
--- | Type synonym for encoding meta-information for constructors
-type C1 = M1 C
-```
-
-Using the deriving mechanics GHC can generate this Generic instance for us
-mechanically, if we were to write it by hand for a simple type it might look
-like this:
-
-~~~~ {.haskell include="src/18-generics/generics.hs"}
-~~~~
-
-Use ``kind!`` in GHCi we can look at the type family ``Rep`` associated with a Generic instance.
-
-```haskell
-λ: :kind! Rep Animal
-Rep Animal :: * -> *
-= M1 D T_Animal (M1 C C_Dog U1 :+: M1 C C_Cat U1)
-
-λ: :kind! Rep ()
-Rep () :: * -> *
-= M1 D GHC.Generics.D1() (M1 C GHC.Generics.C1_0() U1)
-
-λ: :kind! Rep [()]
-Rep [()] :: * -> *
-= M1
-    D
-    GHC.Generics.D1[]
-    (M1 C GHC.Generics.C1_0[] U1
-     :+: M1
-           C
-           GHC.Generics.C1_1[]
-           (M1 S NoSelector (K1 R ()) :*: M1 S NoSelector (K1 R [()])))
-```
-
-Now the clever bit, instead writing our generic function over the datatype we
-instead write it over the Rep and then reify the result using ``from``. So for
-an equivalent version of Haskell's default ``Eq`` that instead uses generic
-deriving we could write:
-
-```haskell
-class GEq' f where
-  geq' :: f a -> f a -> Bool
-
-instance GEq' U1 where
-  geq' _ _ = True
-
-instance (GEq c) => GEq' (K1 i c) where
-  geq' (K1 a) (K1 b) = geq a b
-
-instance (GEq' a) => GEq' (M1 i c a) where
-  geq' (M1 a) (M1 b) = geq' a b
-
--- Equality for sums.
-instance (GEq' a, GEq' b) => GEq' (a :+: b) where
-  geq' (L1 a) (L1 b) = geq' a b
-  geq' (R1 a) (R1 b) = geq' a b
-  geq' _      _      = False
-
--- Equality for products.
-instance (GEq' a, GEq' b) => GEq' (a :*: b) where
-  geq' (a1 :*: b1) (a2 :*: b2) = geq' a1 a2 && geq' b1 b2
-```
-
-To accommodate the two methods of writing classes (generic-deriving or
-custom implementations) we can use the ``DefaultSignatures`` extension to allow the
-user to leave typeclass functions blank and defer to Generic or to define
-their own.
-
-```haskell
-{-# LANGUAGE DefaultSignatures #-}
-
-class GEq a where
-  geq :: a -> a -> Bool
-
-  default geq :: (Generic a, GEq' (Rep a)) => a -> a -> Bool
-  geq x y = geq' (from x) (from y)
-```
-
-Now anyone using our library need only derive Generic and create an empty
-instance of our typeclass instance without writing any boilerplate for ``GEq``.
-
-Here is a complete example for deriving equality generics:
-
-~~~~ {.haskell include="src/18-generics/generic_impl.hs"}
-~~~~
-
-See:
-
-* [Cooking Classes with Datatype Generic Programming](http://www.stephendiehl.com/posts/generics.html)
-* [Datatype-generic Programming in Haskell](http://www.andres-loeh.de/DGP-Intro.pdf)
-* [generic-deriving](http://hackage.haskell.org/package/generic-deriving-1.6.3)
-
-Generic Deriving
-----------------
-
-Using Generics many common libraries provide a mechanisms to derive common
-typeclass instances. Some real world examples:
-
-The [hashable](http://hackage.haskell.org/package/hashable) library allows us to
-derive hashing functions.
-
-~~~~ {.haskell include="src/18-generics/hashable.hs"}
-~~~~
-
-The [cereal](http://hackage.haskell.org/package/cereal-0.4.0.1) library allows
-us to automatically derive a binary representation.
-
-~~~~ {.haskell include="src/18-generics/cereal.hs"}
-~~~~
-
-The [aeson](http://hackage.haskell.org/package/aeson) library allows us to
-derive JSON representations for JSON instances.
-
-~~~~ {.haskell include="src/18-generics/derive_aeson.hs"}
-~~~~
-
-See: [A Generic Deriving Mechanism for Haskell](http://dreixel.net/research/pdf/gdmh.pdf)
-
-##### Higher Kinded Generics
-
-Using the same interface GHC.Generics provides a separate typeclass for
-higher-kinded generics.
-
-```haskell
-class Generic1 f where
-  type Rep1 f :: * -> *
-  from1  :: f a -> (Rep1 f) a
-  to1    :: (Rep1 f) a -> f a
-```
-
-So for instance ``Maybe`` has ``Rep1`` of the form:
-
-```haskell
-type instance Rep1 Maybe
-  = D1
-      GHC.Generics.D1Maybe
-      (C1 C1_0Maybe U1
-       :+: C1 C1_1Maybe (S1 NoSelector Par1))
-```
-
-generics-sop
-------------
-
-TODO
 
 Uniplate
 --------
@@ -8944,6 +9036,36 @@ example f x y = runEval $ do
   return (a, b)
 ```
 
+Threads
+-------
+
+TODO
+
+IORef
+-----
+
+TODO
+
+MVars
+-----
+
+TODO
+
+TVar
+----
+
+TODO
+
+Chans
+-----
+
+TODO
+
+Semaphores
+----------
+
+TODO
+
 Threadscope
 -----------
 
@@ -9493,18 +9615,14 @@ cryptonite
 ----------
 
 Cryptonite is the standard Haskell cryptography library. It provides support for
-hash functions, elliptic curve cryptography, ciphers, one time passwords and
-safe memory handling.
+hash functions, elliptic curve cryptography, ciphers, one time passwords,
+entropy generation and safe memory handling.
 
 * AES
-* Blowfish
-* Camellia
-* ChaCha
-* ChaChaPoly1305
-* **DES**
-* **RC4**
-* Salsa
-* TripleDES
+* Ed25519
+* Curve25519
+* Blake2
+* Argon2
 
 **Hashing**
 
@@ -9566,6 +9684,11 @@ TODO
 
 Date and Time
 =============
+
+time
+----
+
+TODO
 
 hourglass
 ---------
@@ -9876,6 +9999,11 @@ most flexible is the [HTTP library](https://hackage.haskell.org/package/HTTP).
 ~~~~ {.haskell include="src/27-web/http.hs"}
 ~~~~
 
+Req
+---
+
+TODO
+
 Blaze
 -----
 
@@ -9926,6 +10054,16 @@ apply for monads may break down or fail with error terms.
 A collection of useful related resources can be found on the Scotty wiki: [Scotty Tutorials & Examples](https://github.com/scotty-web/scotty/wiki)
 
 Servant
+-------
+
+TODO
+
+Swagger
+-------
+
+TODO
+
+GraphQL
 -------
 
 TODO
@@ -10274,6 +10412,16 @@ main = do
    res <- example
    putStrLn $ showSDoc ( ppr res )
 ```
+
+Abstract Syntax Tree
+--------------------
+
+TODO
+
+Parser
+------
+
+TODO
 
 Outputable
 ----------
@@ -12015,8 +12163,8 @@ There are many many many pretty printing libraries for Haskell.
 * layout
 * aeson-pretty
 
-pretty
-------
+prettyprinter
+-------------
 
 Pretty is the first Wadler-Leijen style combinator library, it exposes a simple
 set of primitives to print Haskell datatypes to legacy strings pro
@@ -12056,32 +12204,6 @@ Adding the following to your ghci.conf can be useful for working with deeply nes
 import Text.Show.Pretty (ppShow)
 let pprint x = putStrLn $ ppShow x
 ```
-
-See:
-
-* [The Design of a Pretty-printing Library](http://belle.sourceforge.net/doc/hughes95design.pdf)
-
-wl-pprint-text
---------------
-
-``wl-pprint-text`` is a Wadler-style pretty printing library that uses Text
-builder objects for efficient generation under the hood. It exposes effectively
-the same interface as the String-based ``pretty`` library but is much more
-performant.
-
-##### Combinators
-
-```haskell
-renderPretty :: Float -> Int -> Doc -> SimpleDoc
-renderCompact :: Doc -> SimpleDoc
-renderOneLine :: Doc -> SimpleDoc
-```
-
-See:
-
-#### Monadic API
-
-* [wl-pprint-text](https://hackage.haskell.org/package/wl-pprint-text)
 
 pretty-show
 -----------
