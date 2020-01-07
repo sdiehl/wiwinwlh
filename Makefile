@@ -15,8 +15,6 @@ HTML = tutorial.html
 EPUB = tutorial.epub
 PDF = tutorial.pdf
 
-# Check if sandbox exists. If it does, then use it instead.
-
 all: $(HTML) $(EPUB) $(PDF)
 html: $(HTML)
 pdf: $(PDF)

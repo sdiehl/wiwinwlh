@@ -73,7 +73,7 @@ the major themes of Haskell community are:
 * Alternative models of parallel and concurrent programming
 
 Although these are the major research goals, Haskell is a fully general purpose
-language and has been used in everything from cryptoanalysis for the NSA to
+language and has been used in everything from cryptoanalysis for the DOD to
 driving firmware in garbage trucks and everything in-between. Haskell has a
 thriving ecosystem of industrial applications in web development, compiler
 design, machine learning, financial services, FPGA development, algorithmic
@@ -1342,6 +1342,11 @@ Typeclasses
 
 TODO
 
+Side Effects
+------------
+
+Contrary 
+
 Records
 -------
 
@@ -2090,6 +2095,8 @@ prune            Omits definitions with no annotations.
 Nix
 ---
 
+cabal2nix
+
 TODO
 
 ```nix
@@ -2102,6 +2109,8 @@ pkgs.haskellPackages.developPackage {
 
 Bazel
 ------
+
+[rules_haskell](https://github.com/tweag/rules_haskell)
 
 TODO
 
@@ -2765,13 +2774,8 @@ A simple implementation of the State monad takes only a few lines:
 ~~~~ {.haskell include="src/02-monads/state_impl.hs"}
 ~~~~
 
-Except Monad
-------------
-
-TODO
-
-Monad Tutorials
----------------
+Why are monads confusing?
+-------------------------
 
 So many monad tutorials have been written that it begs the question: what makes
 monads so difficult when first learning Haskell? I hypothesize there are three
@@ -3765,6 +3769,68 @@ DeriveFoldable
 
 DeriveGeneric
 -------------
+
+Data types in Haskell can derived by GHC with the DeriveGenerics extension
+whicch is able to define the entire structure of the Generic instance and
+associated type families musically. See [Generics] for more details on what
+these types mean.
+
+For example the simple custom List type:
+
+```haskell
+{-# LANGUAGE DeriveGeneric #-}
+
+import GHC.Generics
+
+data List a 
+  = Cons a (List a) 
+  | Nil deriving
+  (Generic)
+```
+
+Will generate the following dynamic instance
+
+```haskell
+instance Generic (List a) where
+
+  type
+    Rep (List a) =
+      D1
+        ('MetaData "List" "Ghci3" "MyModule" 'False)
+        ( C1
+            ('MetaCons "Cons" 'PrefixI 'False)
+            ( S1
+                ( 'MetaSel
+                    'Nothing
+                    'NoSourceUnpackedness
+                    'NoSourceStrictness
+                    'DecidedLazy
+                )
+                (Rec0 a)
+                :*: S1
+                      ( 'MetaSel
+                          'Nothing
+                          'NoSourceUnpackedness
+                          'NoSourceStrictness
+                          'DecidedLazy
+                      )
+                      (Rec0 (List a))
+            )
+            :+: C1 ('MetaCons "Nil" 'PrefixI 'False) U1
+        )
+
+  from x =
+    M1
+      ( case x of
+          Cons g1 g2 -> L1 (M1 ((:*:) (M1 (K1 g1)) (M1 (K1 g2))))
+          Nil -> R1 (M1 U1)
+      )
+
+  to (M1 x) =
+    case x of
+      (L1 (M1 ((:*:) (M1 (K1 g1)) (M1 (K1 g2))))) -> Cons g1 g2
+      (R1 (M1 U1)) -> Nil
+```
 
 DeriveAnyClass
 --------------
