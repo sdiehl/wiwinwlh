@@ -465,6 +465,16 @@ Version Bounds
 
 All Haskell packages are supposed to following the [Package Versioning Policy](https://pvp.haskell.org/).
 
+```haskell
+-- The package version.  See the Haskell package versioning policy (PVP)
+-- for standards guiding when and how versions should be incremented.
+-- https://pvp.haskell.org
+-- PVP summary:      +-+------- breaking API changes
+--                   | | +----- non-breaking API additions
+--                   | | | +--- code changes with no API change
+version:             0.1.0.0
+```
+
 ![](https://pvp.haskell.org/pvp-decision-tree.svg)
 
 ```perl
@@ -679,6 +689,21 @@ shelf prelude from Hackage.
 The Prelude contains common datatype and classes such as [List], [Monad](Monads),
 [Maybe] and most simple associated functions for manipulating these structures.
 These are the msot foundational programming constructs in Haskell.
+
+Modern Haskell
+--------------
+
+There are two official language standards:
+
+* Haskell98
+* Haskell2010
+
+And then there is so called *Modern Haskell* which is not an official languae
+standard but is an ambigious term to denoate the emerging way most Haskellers
+program with new versions of GHC. This varies with programmers.
+
+Modern Haskell is defined by at least some use of type-level programming,
+flexible typeclasses and [Language Extensions].
 
 Flags
 -----
@@ -1233,6 +1258,7 @@ given argument `f` which is itelf a function to a value x twice.
 applyTwice f x = f (f x)  
 ```
 
+
 Type Signatures
 ---------------
 
@@ -1292,6 +1318,24 @@ Pattern Matching
 TODO
 
 Toplevel vs case statements
+
+Functions may also invoke themselves. This is known as recursion.
+
+```haskell
+fib :: Integer -> Integer
+fib 0 = 0
+fib 1 = 1
+fib n = fib (n-1) + fib (n-2)
+```
+
+Operators
+---------
+
+Operators have a precdence
+Operators are just functions.
+Infix, prefix and postfix.
+
+Operators written within parens are written like traditional functions.
 
 Typeclasses
 -----------
@@ -4441,16 +4485,26 @@ design principles.
 Preludes
 --------
 
-There are many approaches to custom preludes:
+There are many approaches to custom preludes. The most widely used ones are
+all available on Hackage.
 
-* [rio]
-* [protolude]
-* [base-prelude]
-* [relude]
-* [foundation]
-* [rebase]
-* [classy-prelude]
-* [basic-prelude]
+* [protolude](http://hackage.haskell.org/package/protolude)
+* [rio](http://hackage.haskell.org/package/rio)
+* [base-prelude](http://hackage.haskell.org/package/base-prelude)
+* [relude](http://hackage.haskell.org/package/relude)
+* [foundation](http://hackage.haskell.org/package/foundation)
+* [rebase](http://hackage.haskell.org/package/rebase)
+* [classy-prelude](http://hackage.haskell.org/package/classy-prelude)
+* [basic-prelude](http://hackage.haskell.org/package/basic-prelude)
+
+Different preludes take different approaches to defining what the Haskell
+standard library should be. Some are interoperable with existing code and others
+require a "all-in" approach that creates a ecosystem around it. Some projects
+are more community efforts and others are developed by consulting companies or
+industrial users wishing to standardise their commercial code.
+
+In Modern Haskell there are many different perspectives on Prelude design and
+the degree to which more advanced ideas should be used.
 
 Protolude
 ---------
@@ -4458,13 +4512,19 @@ Protolude
 Protolude is a minimalist Prelude which provides many sensible defaults for
 writing modern Haskell and is compatible with existing code.
 
-* [protolude](http://hackage.haskell.org/package/protolude)
 
 ```haskell
 {-# LANGUAGE NoImplicitPrelude #-}
 
 import Protolude
 ```
+
+Protolude is one of the more conservative preludes and is developed by the
+author of this document.
+
+See: 
+  * [Protolude Hackage](http://hackage.haskell.org/package/protolude)
+  * [Protolude Github](https://www.github.com/protolude/protolude)
 
 Partial Functions
 -----------------
@@ -6527,9 +6587,10 @@ This is an advanced section, and is not typically necessary to write Haskell.
 </div>
 
 Name
------          ---------------------------------                -----------------
-Catamorphism   ``foldr :: (a -> b -> b) -> b -> [a] -> b``      Deconstructs a data structure
-Anamorphism    ``unfoldr :: (b -> Maybe (a, b)) -> b -> [a]``   Constructs a structure level by level
+-----          ---------------------------------                            -----------------
+Catamorphism   ``foldr :: (a -> b -> b) -> b -> [a] -> b``                  Deconstructs a data structure
+Anamorphism    ``unfoldr :: (b -> Maybe (a, b)) -> b -> [a]``               Constructs a structure level by level
+Hylomorphism   ``hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b``   
 
 ```haskell
 -- | A fix-point type.
@@ -11123,19 +11184,41 @@ Rewrite Rules
 This is an advanced section, and is not typically necessary to write Haskell.
 </div>
 
-TODO
+Consider the composition of two fmaps. This operation maps a function `g` over a
+list `xs` and then maps a function `f` over the resulting list. This results in
+two full traversals of a list of length n.
 
-* [Using Rules](https://wiki.haskell.org/GHC/Using_rules)
-* [Rewrite Rules](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/rewrite-rules.html)
+```haskell
+map f (map g xs)
+```
 
-Fusion
-------
+This is equivalent to the following more efficient form which applies the
+composition of f and g over the list elementwise resulting in a single iteration
+of the list instead. For large lists this will be vastly more efficient.
 
-<div class="alert alert-danger">
-This is an advanced section, and is not typically necessary to write Haskell.
-</div>
+```haskell
+map (f.g) xs
+```
 
-TODO
+GHC is a clever compiler and allows us to write custom rules to transform the
+AST of our programs at compile time in order to do these kind of optimisations.
+These are called fusion rules and many high-performance libraries make use of
+them to generate more optimal code.
+
+By adding a `RULES` pragma to a module where `map` is defined we can tell GHC to
+rewrite all cases of double map to their more optimal form across *all* modules
+that use this definition. Rule are applied during the optimiser pass in GHC
+compilation.
+
+```haskell
+{-# RULES     "map/map"    forall f g xs.  map f (map g xs) = map (f.g) xs #-}
+```
+
+It is important to note that these rewrite rules must be syntactically valid
+Haskell, but GHC makes no guarantees that they are semantically valid. One could
+very easily introduce a rewrite rule that introduces subtle bugs by redefining
+functions nonsensically and GHC will happily rewrite away. Be careful when doing
+these kind of optimisations.
 
 * [List Fusion](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/rewrite-rules.html)
 
