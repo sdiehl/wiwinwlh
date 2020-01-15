@@ -3,6 +3,7 @@ IFORMAT = markdown
 TEMPLATE = resources/page.tmpl
 LTEMPLATE = resources/page.latex
 ETEMPLATE = resources/page.epubt
+UNICODE_MAP = resources/unicodemapping.tex
 FLAGS = --standalone \
 				--toc \
 				--toc-depth=2 \
@@ -12,10 +13,11 @@ FLAGS = --standalone \
 GHC=ghc
 
 HTML = tutorial.html
+PDF = tutorial.pdf
 
 # Check if sandbox exists. If it does, then use it instead.
 
-all: $(HTML)
+all: $(HTML) $(PDF)
 
 includes: includes.hs
 	$(GHC) --make $< ; \
@@ -30,14 +32,14 @@ includes: includes.hs
 	| $(PANDOC) -f $(IFORMAT) -t epub $(FLAGS) -o $@
 
 %.pdf: %.md includes
-	./includes < $< | $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --latex-engine=xelatex $(FLAGS) -o $@
+	./includes < $< | $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) -o $@
 
 clean:
-	-rm $(CHAPTERS) $(HTML)
+	-rm $(CHAPTERS) $(HTML) $(PDF)
 
 # pandoc executable 'includes' is rather large
 clean-all:
-	rm -rf $(CHAPTERS) $(HTML) includes
+	rm -rf $(CHAPTERS) $(HTML) $(PDF) includes
 
 # NIX BUILD
 # Enter nix shell with 'make run-shell' first (then 'make all')

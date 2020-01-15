@@ -6,6 +6,7 @@ let
     inherit (texlive)
       scheme-small
       xetex
+      newunicodechar
       ;
   };
   fontsConf = makeFontsConf {
