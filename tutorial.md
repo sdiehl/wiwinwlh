@@ -90,11 +90,15 @@ GHC
 ---
 
 GHC is the Glorious Glasgow Haskell Compiler originally written in 1989. GHC is
-a massive compiler supports a wide variety of extensions. GHC's runtime is
-written in C and uses machinery from GCC infrastructure for it's native code
-generator and can also use LLVM for it's native code generation.
+a massive compiler supports a wide variety of extensions. GHC is the de facto
+standard for Hsakell compilers. There are a few other compilers that have
+existed but they either are quite limited or have bit rotted over the years. GHC
+is also the only reference implementation for the Haskell language and defines
+what "Haskell" is by it's implementation.
 
-GHC is supported on the following architectures:
+GHC's runtime is written in C and uses machinery from GCC infrastructure for
+it's native code generator and can also use LLVM for it's native code
+generation. GHC is supported on the following architectures:
 
 * Linux x86
 * Linux x86_64
@@ -1345,13 +1349,26 @@ TODO
 Side Effects
 ------------
 
-Contrary 
+Contrary to many misconceptions, side effects are integral part of Haskell
+programming. Haskell although takes a different approach to effectful
+programming and has varies models of modeling these effects within the type
+system. These range from using [Monads] to building [algebraic models](Effect
+Systems) of effects that draw clear lines between effectful code and pure code.
+The idea of reasoning about where effects can and cannot exist is one of the key
+idea of Haskell, *NOT the idea of trying to avoid side effects*.
+
+Indeed the simplest Hello World program in Haskell is quite simply:
+
+```haskell
+main :: IO ()
+main = print "Hello World"
+```
 
 Records
 -------
 
 Records in Haskell are fundamentally broken and there multiple philosophies
-about how to round around this issue.
+about how to route around this issue.
 
 TODO RANT
 
@@ -4589,8 +4606,8 @@ Protolude is one of the more conservative preludes and is developed by the
 author of this document.
 
 See: 
-  * [Protolude Hackage](http://hackage.haskell.org/package/protolude)
-  * [Protolude Github](https://www.github.com/protolude/protolude)
+* [Protolude Hackage](http://hackage.haskell.org/package/protolude)
+* [Protolude Github](https://www.github.com/protolude/protolude)
 
 Partial Functions
 -----------------
@@ -9196,6 +9213,8 @@ TODO
 
 See: [fingertree](https://hackage.haskell.org/package/fingertree)
 
+<hr/>
+
 FFI
 ===
 
@@ -9335,6 +9354,16 @@ int main( int argc, char *argv[] )
   example();
 }
 ```
+
+hsc2hs
+------
+
+TODO
+
+c2hs
+----
+
+TODO
 
 <hr/>
 
