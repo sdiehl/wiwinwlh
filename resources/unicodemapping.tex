@@ -1,0 +1,14 @@
+\newcommand{\sbullet}{%
+  \texorpdfstring{\textsbullet}{\textbullet}%
+}
+\DeclareRobustCommand{\textsbullet}{%
+  \unskip~\,\begin{picture}(1,1)(0,-3)\circle*{3}\end{picture}\ %
+}
+\usepackage{newunicodechar}
+\newunicodechar{⊥}{\ensuremath{\bot}}
+\newunicodechar{⊤}{\ensuremath{\top}}
+\newunicodechar{∨}{\ensuremath{\vee}}
+\newunicodechar{∧}{\ensuremath{\wedge}}
+\newunicodechar{⇒}{\ensuremath{\Rightarrow}}
+\newunicodechar{•}{\ensuremath{\sbullet}}
+\newunicodechar{λ}{\ensuremath{\lambda}}

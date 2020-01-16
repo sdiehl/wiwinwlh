@@ -6,6 +6,8 @@ HTEMPLATE = resources/page.tmpl
 LTEMPLATE = resources/page.latex
 ETEMPLATE = resources/page.epubt
 
+UNICODE_MAP = resources/unicodemapping.tex
+
 FLAGS = --standalone --toc --toc-depth=2 --highlight-style pygments
 LFLAGS = --top-level-division=chapter -V documentclass=book
 HFLAGS = -c css/style.css -c css/layout.css
@@ -33,7 +35,7 @@ includes: includes.hs
 	| $(PANDOC) -f $(IFORMAT) -t epub $(FLAGS) $(EFLAGS) -o $@
 
 %.pdf: %.md includes
-	./includes < $< | $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) -o $@
+	./includes < $< | $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) -o $@
 
 clean:
 	-rm -f $(CHAPTERS) $(HTML) $(PDF) $(EPUB)
