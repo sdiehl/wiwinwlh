@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {}, compiler ? "ghc865" }: with pkgs;
+{ pkgs ? import <nixpkgs> {}, compiler ? "ghc843" }: with pkgs;
 let
   ghcWithDeps = pkgs.haskell.packages.${compiler}.ghcWithPackages
     ( ps: with ps; [ base pandoc containers ] );
