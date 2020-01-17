@@ -1040,8 +1040,8 @@ as an editor agnostic backend that interfaces with GHC and Cabal to query code.
 **Vim**
 
 * [haskell-ide-engine](https://github.com/haskell/haskell-ide-engine#using-hie-with-vim-or-neovim)
-* [vim-ormolu](https://github.com/sdiehl/vim-ormolu)
 * [haskell-vim](https://github.com/neovimhaskell/haskell-vim)
+* [vim-ormolu](https://github.com/sdiehl/vim-ormolu)
 
 **Emacs**
 
@@ -1953,15 +1953,56 @@ HLint
 
 TODO
 
-Stylish-haskell
----------------
-
-TODO
-
 Ormolu
 ------
 
-TODO
+Ormolu is an opinionated Haskell source formatter that produces a canonical way
+of rendering Haskell abstract syntax tree to text. This ensures that code shared
+amongst teams and checked into version control conforms to a single universal
+standard for whitespace and lexeme placing. This is similar to tools in other
+languages such as `go fmt`.
+
+For example running `ormolu example.hs --inplace` on the following module:
+
+```haskell
+module Unformatted
+  (a,b)
+where
+
+a :: Int
+a =  42
+
+b :: Int
+b = a+ a
+```
+
+Will rerender the file as:
+
+```haskell
+module Unformatted
+  ( a,
+    b,
+  )
+where
+
+a :: Int
+a = 42
+
+b :: Int
+b = a + a
+```
+
+Ormolu can be installed via a variety of mechanisms.
+
+```bash
+$ stack install ormolu --resolver=lts-14.14   # via stack
+$ cabal new-install ormolu --installdir=/home/user/.local/bin # via cabal
+$ nix-build -A ormolu   # via nix
+```
+
+See:
+
+* [ormolu](https://github.com/tweag/ormolu)
 
 Haddock
 -------
@@ -2169,7 +2210,9 @@ The following are all **false**:
 * Monads require knowing abstract mathematics.
 * Monads are unique to Haskell.
 
-See: [What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
+See: 
+
+* [What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
 
 Monad Methods
 -------------
@@ -2296,7 +2339,9 @@ through the bind operation into the function ``g``.
 
 ```
 
-See: [Monad Laws](http://wiki.haskell.org/Monad_laws)
+See: 
+
+* [Monad Laws](http://wiki.haskell.org/Monad_laws)
 
 Do Notation
 -----------
@@ -2387,8 +2432,9 @@ In the do-notation, the [monad laws](#laws) from above are equivalently written:
         g b
 ```
 
-See: [Haskell 2010: Do Expressions](http://www.haskell.org/onlinereport/haskell2010/haskellch3.html#x8-470003.14)
+See: 
 
+* [Haskell 2010: Do Expressions](http://www.haskell.org/onlinereport/haskell2010/haskellch3.html#x8-470003.14)
 
 Maybe
 -----
@@ -2625,7 +2671,9 @@ main :: IO ()
 main = putStrLn "What is your name: " >> (getLine >>= (\name -> putStrLn name))
 ```
 
-See: [Haskell 2010: Basic/Input Output](http://www.haskell.org/onlinereport/haskell2010/haskellch7.html)
+See: 
+
+* [Haskell 2010: Basic/Input Output](http://www.haskell.org/onlinereport/haskell2010/haskellch7.html)
 
 What's the point?
 ----------------
@@ -2719,7 +2767,9 @@ abstractions that work for all current and future implementations. If you want a
 motivating reason for understanding monads, this is it! These insights are the
 essence of what I wish I knew about monads looking back.
 
-See: [Control.Monad](http://hackage.haskell.org/package/base-4.9.0.0/docs/Control-Monad.html#g:4)
+See: 
+
+* [Control.Monad](http://hackage.haskell.org/package/base-4.9.0.0/docs/Control-Monad.html#g:4)
 
 Reader Monad
 ------------
@@ -2893,9 +2943,12 @@ understanding of points (1), (2), and (3) and then trip on the simple fact that
 monads are the first example of a Haskell construct that is the confluence of
 all three.
 
-See: [Monad Tutorial Fallacy](http://byorgey.wordpress.com/2009/01/12/abstraction-intuition-and-the-monad-tutorial-fallacy/)
+See: 
+
+* [Monad Tutorial Fallacy](http://byorgey.wordpress.com/2009/01/12/abstraction-intuition-and-the-monad-tutorial-fallacy/)
 
 <hr/>
+
 
 Monad Transformers
 ==================
@@ -2990,7 +3043,9 @@ Or equivalently:
 It's useful to remember that transformers compose *outside-in* but are *unrolled
 inside out*.
 
-See: [Monad Transformers: Step-By-Step](https://page.mi.fu-berlin.de/scravy/realworldhaskell/materialien/monad-transformers-step-by-step.pdf)
+See: 
+
+* [Monad Transformers: Step-By-Step](https://page.mi.fu-berlin.de/scravy/realworldhaskell/materialien/monad-transformers-step-by-step.pdf)
 
 Basics
 ------
@@ -3191,7 +3246,9 @@ So we can generalize an existing transformer to lift an IO layer onto it.
 ~~~~ {.haskell include="src/10-advanced-monads/mmorph.hs"}
 ~~~~
 
-See: [mmorph](https://hackage.haskell.org/package/mmorph)
+See: 
+
+* [mmorph](https://hackage.haskell.org/package/mmorph)
 
 Effect Systems
 --------------
@@ -3199,6 +3256,16 @@ Effect Systems
 * fused-effects
 * polysemy
 * eff
+
+TODO
+
+Polysemy
+--------
+
+TODO
+
+~~~~ {.haskell include="src/03-monad-transformers/polysemy.hs"}
+~~~~
 
 <hr/>
 
