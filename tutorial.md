@@ -4,7 +4,18 @@
 
 Stephen Diehl (<a class="author" href="https://twitter.com/smdiehl">@smdiehl</a> )
 
-#### License
+Version
+-------
+
+This is the fifth major draft of this document since 2009.
+
+* **[HTML Version](http://dev.stephendiehl.com/hask/index.html)**
+* **[PDF Version](http://dev.stephendiehl.com/hask/tutorial.pdf)**
+* **[EPUB Version](http://dev.stephendiehl.com/hask/tutorial.epub)**
+* **[Kindle Version](http://dev.stephendiehl.com/hask/tutorial.mobi)**
+
+License
+--------
 
 This code and text are dedicated to the public domain. You can copy, modify,
 distribute and perform the work, even for commercial purposes, all without
@@ -15,18 +26,8 @@ book or Haskell musical production as you see fit. The Markdown and Haskell
 source is [available on
 Github](https://github.com/sdiehl/wiwinwlh/tree/master/src). Pull requests are
 always accepted for changes and additional content. This is a living document.
-The only way this document will stay up to date is through community patches and
-[pull requests](https://github.com/sdiehl/wiwinwlh).
-
-Version
--------
-
-This is the fifth major draft of this document since 2009.
-
-* **[HTML Version](http://dev.stephendiehl.com/hask/index.html)**
-* **[PDF Version](http://dev.stephendiehl.com/hask/tutorial.pdf)**
-* **[EPUB Version](http://dev.stephendiehl.com/hask/tutorial.epub)**
-* **[Kindle Version](http://dev.stephendiehl.com/hask/tutorial.mobi)**
+The only way this document will stay up to date is through the kindness of
+readers like you and community patches and [pull requests](https://github.com/sdiehl/wiwinwlh) on Github.
 
 Basics
 ======
@@ -600,7 +601,7 @@ format to generate Cabal files. Hpack succeeds in DRYing (Don't Repeat Yourself)
 several sections of cabal files that are often quite repetative across large
 projects. Hpack uses a `package.yaml` file which the command line tool `hpack`
 generates whenever the project is built. Hpack can be integrated into Stack and
-will generate cabal files whenever `stack build` is invoked. 
+will generate cabal files whenever `stack build` is invoked.
 
 A small `package.yaml` file might look something like the following:
 
@@ -994,7 +995,7 @@ sensible:
 
 ```haskell
 :seti -XNoImplicitPrelude
-:seti -XFlexibleContexts 
+:seti -XFlexibleContexts
 :seti -XOverloadedStrings
 import Protolude
 ```
@@ -1115,12 +1116,10 @@ build script for different service providers:
 
 * [Travis CI with Cabal](https://github.com/haskell-CI/haskell-ci/blob/master/.travis.yml)
 * [Travis CI with Stack](https://docs.haskellstack.org/en/stable/travis_ci/)
-
-* [Circle CI with Cabal]
-* [Circle CI with Stack]
- 
-* [Github Actions with Cabal]
-* [Github Actions with Stack]
+* [Circle CI with Cabal]()
+* [Circle CI with Stack]()
+* [Github Actions with Cabal]()
+* [Github Actions with Stack]()
 
 See also the official [haskell-ci]((https://github.com/haskell-CI/haskell-ci)
 repository.
@@ -1180,33 +1179,33 @@ import Data.List
 A import of select symbols into the local namespace:
 
 ```haskell
-import Data.List (nub, sort)  
+import Data.List (nub, sort)
 ```
 
 A import into the global namespace masking a symbol:
 
 ```haskell
-import Data.List hiding (nub)  
+import Data.List hiding (nub)
 ```
 
 A qualified import of `Data.Map` namespace into the local namespace.
 
 ```haskell
-import qualified Data.Map  
+import qualified Data.Map
 ```
 
 A qualified import of `Data.Map` reassigned to `M` into the local namespace.
 
 ```haskell
-import qualified Data.Map as M  
+import qualified Data.Map as M
 ```
 
 You may dump multiple modules into the same namespace so long as the symbols do
 not clash.
 
 ```haskell
-import qualified Data.Map as M  
-import qualified Data.Map.Strict as M  
+import qualified Data.Map as M
+import qualified Data.Map.Strict as M
 ```
 
 A main module is a special module which reserves the name `Main` and has a
@@ -1218,7 +1217,7 @@ module Main where
 main = print "Hello World!"
 ```
 
-Functions 
+Functions
 ---------
 
 Functions are the central construction in Haskell. A function `f` of two
@@ -1259,7 +1258,7 @@ called *higher-order functions*. For example the following function applies a
 given argument `f` which is itelf a function to a value x twice.
 
 ```haskell
-applyTwice f x = f (f x)  
+applyTwice f x = f (f x)
 ```
 
 
@@ -1290,8 +1289,8 @@ id = \x -> x
 ```
 
 ```haskell
-applyTwice :: (a -> a) -> a -> a  
-applyTwice f x = f (f x)  
+applyTwice :: (a -> a) -> a -> a
+applyTwice f x = f (f x)
 ```
 
 
@@ -2210,7 +2209,7 @@ The following are all **false**:
 * Monads require knowing abstract mathematics.
 * Monads are unique to Haskell.
 
-See: 
+See:
 
 * [What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
 
@@ -2339,7 +2338,7 @@ through the bind operation into the function ``g``.
 
 ```
 
-See: 
+See:
 
 * [Monad Laws](http://wiki.haskell.org/Monad_laws)
 
@@ -2432,7 +2431,7 @@ In the do-notation, the [monad laws](#laws) from above are equivalently written:
         g b
 ```
 
-See: 
+See:
 
 * [Haskell 2010: Do Expressions](http://www.haskell.org/onlinereport/haskell2010/haskellch3.html#x8-470003.14)
 
@@ -2671,7 +2670,7 @@ main :: IO ()
 main = putStrLn "What is your name: " >> (getLine >>= (\name -> putStrLn name))
 ```
 
-See: 
+See:
 
 * [Haskell 2010: Basic/Input Output](http://www.haskell.org/onlinereport/haskell2010/haskellch7.html)
 
@@ -2767,7 +2766,7 @@ abstractions that work for all current and future implementations. If you want a
 motivating reason for understanding monads, this is it! These insights are the
 essence of what I wish I knew about monads looking back.
 
-See: 
+See:
 
 * [Control.Monad](http://hackage.haskell.org/package/base-4.9.0.0/docs/Control-Monad.html#g:4)
 
@@ -2943,7 +2942,7 @@ understanding of points (1), (2), and (3) and then trip on the simple fact that
 monads are the first example of a Haskell construct that is the confluence of
 all three.
 
-See: 
+See:
 
 * [Monad Tutorial Fallacy](http://byorgey.wordpress.com/2009/01/12/abstraction-intuition-and-the-monad-tutorial-fallacy/)
 
@@ -3043,7 +3042,7 @@ Or equivalently:
 It's useful to remember that transformers compose *outside-in* but are *unrolled
 inside out*.
 
-See: 
+See:
 
 * [Monad Transformers: Step-By-Step](https://page.mi.fu-berlin.de/scravy/realworldhaskell/materialien/monad-transformers-step-by-step.pdf)
 
@@ -3246,7 +3245,7 @@ So we can generalize an existing transformer to lift an IO layer onto it.
 ~~~~ {.haskell include="src/10-advanced-monads/mmorph.hs"}
 ~~~~
 
-See: 
+See:
 
 * [mmorph](https://hackage.haskell.org/package/mmorph)
 
@@ -3338,14 +3337,14 @@ These extensions are typically used by advanced projects that push the limits of
 what is possible with Haskell to enforce complex invariants and very type-safe
 APIs.
 
-* PolyKinds
-* DataKinds
+* [PolyKinds](Promotion)
+* [DataKinds](Promotion)
 * DerivingVia
-* GADTs
+* [GADTs]
 * RankNTypes
 * ExistentialQuantification
-* TypeFamilies
-* TypeInType
+* [TypeFamilies](Type Families)
+* [TypeInType]
 * TypeOperators
 * TypeApplications
 * UndecidableInstances
@@ -3866,8 +3865,8 @@ For example the simple custom List type:
 
 import GHC.Generics
 
-data List a 
-  = Cons a (List a) 
+data List a
+  = Cons a (List a)
   | Nil deriving
   (Generic)
 ```
@@ -4166,7 +4165,7 @@ operator.
 f $! x  = let !vx = x in f vx
 ```
 
-StrictData 
+StrictData
 ----------
 
 As of GHC 8.0 strictness annotations can be applied to all definitions in a
@@ -4672,7 +4671,8 @@ import Protolude
 Protolude is one of the more conservative preludes and is developed by the
 author of this document.
 
-See: 
+See:
+
 * [Protolude Hackage](http://hackage.haskell.org/package/protolude)
 * [Protolude Github](https://www.github.com/protolude/protolude)
 
@@ -6740,7 +6740,7 @@ Name
 -----          ---------------------------------                            -----------------
 Catamorphism   ``foldr :: (a -> b -> b) -> b -> [a] -> b``                  Deconstructs a data structure
 Anamorphism    ``unfoldr :: (b -> Maybe (a, b)) -> b -> [a]``               Constructs a structure level by level
-Hylomorphism   ``hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b``   
+Hylomorphism   ``hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b``  Hylomorphism
 
 ```haskell
 -- | A fix-point type.
@@ -10617,18 +10617,18 @@ extension of the SQL standard. Consider the following tables specified in DDL.
 
 ```sql
 CREATE TABLE "books" (
-	"id" integer NOT NULL,
-	"title" text NOT NULL,
-	"author_id" integer,
-	"subject_id" integer,
-	Constraint "books_id_pkey" Primary Key ("id")
+        "id" integer NOT NULL,
+        "title" text NOT NULL,
+        "author_id" integer,
+        "subject_id" integer,
+        Constraint "books_id_pkey" Primary Key ("id")
 );
 
 CREATE TABLE "authors" (
-	"id" integer NOT NULL,
-	"last_name" text,
-	"first_name" text,
-	Constraint "authors_pkey" Primary Key ("id")
+        "id" integer NOT NULL,
+        "last_name" text,
+        "first_name" text,
+        Constraint "authors_pkey" Primary Key ("id")
 );
 ```
 
@@ -10862,7 +10862,7 @@ Flag                   Action
 ``-ddump-asm``         The final assembly generated.
 ``-ddump-llvm``        The final LLVM IR generated.
 
-GHC Api
+GHC API
 -------
 
 GHC can be used as a library to manipulate and transform Haskell source code
@@ -10930,6 +10930,101 @@ main = do
    putStrLn $ showSDoc ( ppr res )
 ```
 
+DynFlags
+--------
+
+The internal compiler state of GHC is largely driven from a set of many
+configuration flags known as DynFlags. These flags are largely divided into four
+categories:
+
+* Dump Flags
+* Warning Flags
+* Extension Flags
+* General Flags
+
+These are flags are set via the following modifier functions:
+
+```haskell
+dopt_set :: DynFlags -> DumpFlag -> DynFlags
+wopt_set :: DynFlags -> WarningFlag -> DynFlags
+xopt_set :: DynFlags -> Extension -> DynFlags
+gopt_set :: DynFlags -> GeneralFlag -> DynFlags
+```
+
+See:
+
+* [DynFlags](https://hackage.haskell.org/package/ghc-8.6.5/docs/DynFlags.html)
+
+Package Databases
+-----------------
+
+A package is a library of Haskell modules known to the compiler.  Compilation of
+a Haskell module through Cabal uses a directory structure known as a package
+database. This directory is named `package.conf.d`, and contains a file for each
+package used for compiling a module and is combined with a binary cache of
+package's cabal data in `package.cache`.
+
+When Cabal operates it stores the active package database in the environment
+variable: `GHC_PACKAGE_PATH`
+
+To see which packages are currently available, use the ghc-pkg list command:
+
+```bash
+$ ghc-pkg list
+/home/sdiehl/.ghcup/ghc/8.6.5/lib/ghc-8.6.5/package.conf.d
+    Cabal-2.4.0.1
+    array-0.5.3.0
+    base-4.12.0.0
+    binary-0.8.6.0
+    bytestring-0.10.8.2
+    containers-0.6.0.1
+    deepseq-1.4.4.0
+    directory-1.3.3.0
+    filepath-1.4.2.1
+    ghc-8.6.5
+    ghc-boot-8.6.5
+    ghc-boot-th-8.6.5
+    ghc-compact-0.1.0.0
+    ghc-heap-8.6.5
+    ghc-prim-0.5.3
+    ghci-8.6.5
+    haskeline-0.7.4.3
+    hpc-0.6.0.3
+    integer-gmp-1.0.2.0
+    libiserv-8.6.3
+    mtl-2.2.2
+    parsec-3.1.13.0
+    pretty-1.1.3.6
+    process-1.6.5.0
+    rts-1.0
+    stm-2.5.0.0
+    template-haskell-2.14.0.0
+    terminfo-0.4.1.2
+    text-1.2.3.1
+    time-1.8.0.2
+    transformers-0.5.6.2
+    unix-2.7.2.2
+    xhtml-3000.2.2.1
+```
+
+The package database can be queried for specific metadata of the cabal files
+associated with each package. For example to query the version of base library
+currently used for compilation we can query from the `ghc-pkg` command:
+
+```bash
+$ ghc-pkg field base version           
+version: 4.12.0.0
+
+$ ghc-pkg field rts license      
+license: BSD-3-Clause
+
+$ ghc-pkg field haskeline exposed-modules
+exposed-modules:
+    System.Console.Haskeline System.Console.Haskeline.Completion
+    System.Console.Haskeline.History System.Console.Haskeline.IO
+    System.Console.Haskeline.MonadException
+```
+
 Abstract Syntax Tree
 --------------------
 
@@ -10943,9 +11038,24 @@ TODO
 Outputable
 ----------
 
+GHC internally use a pretty printer class for rendering it's core structures out
+to text. This is based on the Wadler-Leijen style and uses a `Ouptutable` class
+as its interface:
+
+```haskell
+class Outputable a where
+  ppr :: a -> SDoc
+  pprPrec :: Rational -> a -> SDoc
+```
+
+The primary renderer for SDoc types is `showSDoc` which takes as argument a set
+of DynFlags which determine how the structure are printed.
+
 ```haskell
 showSDoc :: DynFlags -> SDoc -> String
 ```
+
+We can also cheat and use a unsafe show which uses a dummy set of DynFlags.
 
 ```haskell
 -- | Show a GHC.Outputable structure
@@ -10953,12 +11063,21 @@ showGhc :: (GHC.Outputable a) => a -> String
 showGhc = GHC.showPpr GHC.unsafeGlobalDynFlags
 ```
 
+See:
+
 * [Outputable](https://hackage.haskell.org/package/ghc-8.6.5/docs/Outputable.html)
 
 Types
 -----
 
+GHC has many datatypes but several of them are central data structures that are
+the core datatypes that are manipulated during compilation. These are divided
+into six core categories.
+
 **Monads**
+
+The GHC monads which encapsulate the compiler driver pipeline and statefully
+hold the interactions between the user and the internal compiler phases.
 
 * GHC
 * P
@@ -12673,7 +12792,7 @@ See:
 Pretty Printers
 ---------------
 
-There are many many many pretty printing libraries for Haskell. 
+There are many many many pretty printing libraries for Haskell.
 
 **Wadler-Leijen Style**
 
@@ -12694,8 +12813,8 @@ There are many many many pretty printing libraries for Haskell.
 * prettyprinter-ansi-terminal
 * prettyprinter-compat-annotated-wl-pprint
 * prettyprinter-compat-ansi-wl-pprint
-* prettyprinter-compat-wl-pprint 
-* prettyprinter-convert-ansi-wl-pprint 
+* prettyprinter-compat-wl-pprint
+* prettyprinter-convert-ansi-wl-pprint
 
 **Specialised**
 
