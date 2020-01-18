@@ -74,9 +74,9 @@ the major themes of Haskell community are:
 * Alternative models of parallel and concurrent programming
 
 Although these are the major research goals, Haskell is a fully general purpose
-language and has been used in everything from cryptoanalysis for the DOD to
-driving firmware in garbage trucks and everything in-between. Haskell has a
-thriving ecosystem of industrial applications in web development, compiler
+language and has been used in everything from cryptoanalysis for the defense
+sector to driving firmware in garbage trucks and everything in-between. Haskell
+has a thriving ecosystem of industrial applications in web development, compiler
 design, machine learning, financial services, FPGA development, algorithmic
 trading, numerical computing, cryptography research, and cybersecurity.
 
@@ -1500,11 +1500,11 @@ This function could not be well-typed without the bottom.
 
 It is rare to see these partial functions thrown around carelessly in production
 code because they cause the program to halt. The preferred method for handling
-exceptions is to combine the use of safe variants provided in
-``Data.Maybe`` with the usual fold functions ``maybe`` and ``either``.
+exceptions is to combine the use of safe variants provided in ``Data.Maybe``
+with the usual fold functions ``maybe`` and ``either``.
 
-Another method is to use pattern matching, as shown in ``listToMaybe``, a
-safer version of ``head`` described below:
+Another method is to use pattern matching, as shown in ``listToMaybe``, a safer
+version of ``head`` described below:
 
 ```haskell
 listToMaybe :: [a] -> Maybe a
@@ -1620,9 +1620,9 @@ Stack Traces
 With [runtime profiling
 enabled](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/profiling.html),
 [GHC](https://www.haskell.org/ghc/) can also print a stack trace when a
-diverging bottom term (error, undefined) is hit. This action, though, requires
-a special flag and profiling to be enabled, both of which are disabled by
-default. So, for example:
+diverging bottom term (error, undefined) is hit. This action, though, requires a
+special flag and profiling to be enabled, both of which are disabled by default.
+So, for example:
 
 ~~~~ {.haskell include="src/01-basics/stacktrace.hs"}
 ~~~~
@@ -1790,7 +1790,9 @@ it :: Num a => a
 This rule may be deactivated with the ``NoMonomorphicRestriction`` extension,
 see [below](#nomonomorphicrestriction).
 
-See: [Monomorphism Restriction](https://wiki.haskell.org/Monomorphism_restriction)
+See: 
+
+* [Monomorphism Restriction](https://wiki.haskell.org/Monomorphism_restriction)
 
 
 Type Holes
@@ -1893,8 +1895,6 @@ typedhole.hs:3:10: Warning:
     In the type signature for ‘succ'’: _ -> _ -> _
 ```
 
-
-
 Deferred Type Errors
 --------------------
 
@@ -1942,15 +1942,41 @@ to provide the user with any errors or warnings that would happen at compile
 time. When the developer edits and saves code loaded into ``ghcid``, the
 program automatically reloads and evaluates the code for errors and warnings.
 
-Weeder
-------
-
-TODO
-
 HLint
 -----
 
-TODO
+Hlint is a source linter for Haskell that provides a variety of hints on code
+improvements. It can be customised and configured with custom rules and on a
+per-project basis. HLint is configured through a `hlint.yaml` file placed in the
+root of a project. To generate the default configuration run:
+
+```bash
+hlint --default > .hlint.yaml
+```
+
+Custom errors can be added to this file which will suggest custom changes of
+code from the left hand side match to the right hand side replacement:
+
+```yaml
+error: {lhs: "foo ", rhs: bar x}
+```
+
+HLint's default is to warn on all possible failures. These can be disabled
+globally by adding ignore pragmas.
+
+```yaml
+ignore: {name: Use let}
+```
+
+Or within specific modules by specifying `within` option.
+
+```yaml
+ignore: {name: Use let, within: MyModule}
+```
+
+See:
+
+* https://github.com/ndmitchell/hlint
 
 Ormolu
 ------
@@ -14437,8 +14463,8 @@ TODO
 
 <hr/>
 
-Code
-====
+Source Code
+===========
 
 All code is available from this Github repository. This code is dedicated to the
 public domain. You can copy, modify, distribute and perform the work, even for
