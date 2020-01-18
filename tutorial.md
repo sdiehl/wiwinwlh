@@ -15,7 +15,7 @@ This is the fifth major draft of this document since 2009.
 * **[Kindle Version](http://dev.stephendiehl.com/hask/tutorial.mobi)**
 
 License
---------
+-------
 
 This code and text are dedicated to the public domain. You can copy, modify,
 distribute and perform the work, even for commercial purposes, all without
@@ -28,6 +28,17 @@ Github](https://github.com/sdiehl/wiwinwlh/tree/master/src). Pull requests are
 always accepted for changes and additional content. This is a living document.
 The only way this document will stay up to date is through the kindness of
 readers like you and community patches and [pull requests](https://github.com/sdiehl/wiwinwlh) on Github.
+
+Author
+------
+
+This text is authored and edited by Stephen Diehl.
+
+* Web: www.stephendiehl.com
+* Twitter: https://twitter.com/smdiehl
+* Github: https://github.com/sdiehl
+
+<hr/>
 
 Basics
 ======
@@ -1790,7 +1801,7 @@ it :: Num a => a
 This rule may be deactivated with the ``NoMonomorphicRestriction`` extension,
 see [below](#nomonomorphicrestriction).
 
-See: 
+See:
 
 * [Monomorphism Restriction](https://wiki.haskell.org/Monomorphism_restriction)
 
@@ -5022,8 +5033,12 @@ iterateUntilM :: Monad m => (a -> Bool) -> (a -> m a) -> a -> m a
 whileJust :: Monad m => m (Maybe a) -> (a -> m b) -> m [b]
 ```
 
+<hr/>
+
 Strings
 =======
+
+The string situation in Haskell is not great.
 
 String
 ------
@@ -6835,7 +6850,7 @@ See:
 * [hint](http://hackage.haskell.org/package/mueval)
 * [mueval](http://hackage.haskell.org/package/mueval)
 
-</hr>
+<hr/>
 
 Testing
 =======
@@ -10794,6 +10809,12 @@ simple key-value store wrapped around the Map type.
 ~~~~ {.haskell include="src/28-databases/acid.hs"}
 ~~~~
 
+Selda
+-----
+
+TODO
+
+
 <hr/>
 
 GHC
@@ -11038,10 +11059,10 @@ associated with each package. For example to query the version of base library
 currently used for compilation we can query from the `ghc-pkg` command:
 
 ```bash
-$ ghc-pkg field base version           
+$ ghc-pkg field base version
 version: 4.12.0.0
 
-$ ghc-pkg field rts license      
+$ ghc-pkg field rts license
 license: BSD-3-Clause
 
 $ ghc-pkg field haskeline exposed-modules
@@ -12958,6 +12979,52 @@ See:
 
 * [repline](https://github.com/sdiehl/repline)
 
+LLVM
+----
+
+Haskell has a rich set of LLVM bindings that can generate LLVM and JIT dynamic
+code from inside of the Haskell runtime. This is especially useful for building
+custom programming languages and compilers which need native performance. The
+`llvm-hs` library is the de-factor standard for compiler construction in
+Haskell. The `llvm-hs` library is split across two modules:
+
+* llvm-hs-pure - Pure Haskell datatypes
+* llvm-hs - Bindings to C++ framework for optimisation and JIT
+
+The `llvm-hs` bindings allow us to construct LLVM abstract syntax tree by
+manipulating a variety of Haskell datatypes. These datatypes all can be
+serialised to the C++ bindings to construct the 
+
+~~~~ {.haskell include="src/30-languages/llvm-hs.hs"}
+~~~~
+
+This will generate the following LLVM module which can be pretty printed out:
+
+```llvm
+; ModuleID = 'basic'
+source_filename = "<string>"
+
+define i32 @add(i32 %a, i32 %b) {
+entry:
+  %result = add i32 %a, %b
+  ret i32 %result
+}
+```
+
+An alternative interface uses an IRBuilder monad which interactively constructs
+up the LLVM AST using monadic combinators.
+
+~~~~ {.haskell include="src/30-languages/llvm-irbuilder.hs"}
+~~~~
+
+See:
+
+* [llvm-hs](https://hackage.haskell.org/package/llvm-hs)
+* [llvm-hs-pure](https://hackage.haskell.org/package/llvm-hs-pure)
+* [llvm-hs-examples](https://github.com/llvm-hs/llvm-hs-examples)
+* [Kaleidoscope Tutorial](http://www.stephendiehl.com/llvm)
+* [llvm-hs Github](https://github.com/llvm-hs)
+
 </hr>
 
 Template Haskell
@@ -13062,6 +13129,9 @@ Func
 In this example we just spliced in the anti-quoted Haskell string in the printf statement, but we can pass
 many other values to and from the quoted expressions including identifiers, numbers, and other quoted
 expressions which implement the ``Lift`` type class.
+
+GPU Kernels
+-----------
 
 For example now if we wanted programmatically generate the source for a CUDA kernel to run on a GPU we can
 switch over the CUDA C dialect to emit the C code.

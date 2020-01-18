@@ -1,5 +1,19 @@
 \documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$babel-lang$,$endif$$if(papersize)$$papersize$paper,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
-\usepackage[top=1cm, bottom=1.5cm, left=1.5cm, right=1.5cm]{geometry}
+\usepackage{geometry}
+\geometry{
+	a4paper,
+	total={21.59cm,27.94cm},
+	top=2.8cm,
+	bottom=2.1cm,
+	inner=1.91cm,
+	outer=6.68cm,
+        % For pdf
+        left=1.5cm, 
+        right=1.5cm,
+        % For printing
+	%marginparwidth=4cm,
+	%marginparsep=0.8cm
+}
 $if(fontfamily)$
 \usepackage[$for(fontfamilyoptions)$$fontfamilyoptions$$sep$,$endfor$]{$fontfamily$}
 $else$
