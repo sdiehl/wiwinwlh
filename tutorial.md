@@ -1132,8 +1132,9 @@ build script for different service providers:
 * [Github Actions with Cabal]()
 * [Github Actions with Stack]()
 
-See also the official [haskell-ci]((https://github.com/haskell-CI/haskell-ci)
-repository.
+See also the official CI `repository:
+
+* [haskell-ci](https://github.com/haskell-CI/haskell-ci)
 
 Names
 -----
@@ -1969,7 +1970,7 @@ Custom errors can be added to this file which will suggest custom changes of
 code from the left hand side match to the right hand side replacement:
 
 ```yaml
-error: {lhs: "foo ", rhs: bar x}
+error: {lhs: "foo x", rhs: bar x}
 ```
 
 HLint's default is to warn on all possible failures. These can be disabled
@@ -5084,6 +5085,21 @@ Escaping Text
 --------------
 
 Haskell uses C-style single-character escape codes
+
+Escape	Unicode	Character
+------  ------- ----------------------
+\\0	U+0000	null character
+\\a	U+0007	alert
+\\b	U+0008	backspace
+\\f	U+000C	form feed
+\\n	U+000A	newline (line feed)
+\\r	U+000D	carriage return
+\\t	U+0009	horizontal tab
+\\v	U+000B	vertical tab
+\\"	U+0022	double quote
+\\&	n/a	empty string
+\\'	U+0027	single quote
+\\\\	U+005C	backslash
 
 #### Conversions
 
@@ -11075,12 +11091,52 @@ exposed-modules:
 Abstract Syntax Tree
 --------------------
 
-TODO
+```haskell
+data GenLocated l e = L l e
+  deriving (Eq, Ord, Data, Functor, Foldable, Traversable)
+
+type Located = GenLocated SrcSpan
+```
+
+* [HsExpr](https://hackage.haskell.org/package/ghc-8.6.5/docs/HsExpr.html#t:HsExpr)
 
 Parser
 ------
 
-TODO
+* parseModule 
+* parseSignature 
+* parseImport 
+* parseStatement 
+* parseDeclaration 
+* parseExpression 
+* parsePattern 
+* parseTypeSignature
+* parseStmt
+* parseIdentifier
+* parseType
+* parseBackpack
+
+```yacc
+%monad { P } { >>= } { return }
+%lexer { (lexer True) } { L _ ITeof }
+%tokentype { (Located Token) }
+```
+
+```haskell
+runParser :: DynFlags -> String -> P a -> ParseResult a
+runParser flags str parser = unP parser parseState
+where
+  filename = "<interactive>"
+  location = mkRealSrcLoc (mkFastString filename) 1 1
+  buffer = stringToStringBuffer str
+  parseState = mkPState flags buffer location
+```
+
+See:
+
+* [GHC Lexer.x](https://github.com/ghc/ghc/blob/master/compiler/parser/Lexer.x)
+* [GHC Parser.y](https://github.com/ghc/ghc/blob/master/compiler/parser/Parser.y)
+* [ghc-lib-parser](https://hackage.haskell.org/package/ghc-lib-parser)
 
 Outputable
 ----------
@@ -11170,9 +11226,9 @@ hold the interactions between the user and the internal compiler phases.
 * DataConRep
 * SrcLoc
 * SrcSpan
-* Located
+* Located - Source code location newtype wrapper for AST
 * GhcException
-* Token
+* Token - Alex lexer tokens
 
 **HsSyn**
 
@@ -12800,7 +12856,7 @@ MAIN        MAIN                     42           0    0.0    0.7   100.0  100.0
 
 </hr>
 
-Languages
+Compilers
 =========
 
 Binder Libraries
