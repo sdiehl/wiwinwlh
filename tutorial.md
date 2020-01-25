@@ -8339,15 +8339,7 @@ variety of tasks that consist largely of boilerplate code generation such as:
 * Equality
 * Serialization
 * Ordering
-* Traversal
-
-These are achieved through several tools and techniques outlined in the next few
-sections:
-
-* Typeable / Dynamic
-* Scrap Your Boilerplate
-* GHC.Generics
-* generics-sop
+* Traversals
 
 Generic
 -------
@@ -9637,6 +9629,14 @@ TODO
 Chans
 -----
 
+```haskell
+data Chan a
+
+newChan :: IO (Chan a)
+readChan :: Chan a -> IO a
+writeChan :: Chan a -> a -> IO ()
+```
+
 TODO
 
 Semaphores
@@ -10228,14 +10228,27 @@ standardized by NIST. It produces a 256-bit message digest.
 Password Hashing
 ----------------
 
+* Blake2
+* Argon2
+
+
 Curve25519 Diffie-Hellman
 -------------------------
+
+~~~~ {.haskell include="src/32-cryptography/Curve25519.hs"}
+~~~~
 
 Ed25519 EdDSA
 -------------
 
-* Blake2
-* Argon2
+~~~~ {.haskell include="src/32-cryptography/Ed25519.hs"}
+~~~~
+
+Merkle Trees
+------------
+
+~~~~ {.haskell include="src/32-cryptography/Merkle.hs"}
+~~~~
 
 Secure Memory Handling
 ----------------------
