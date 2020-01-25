@@ -1278,6 +1278,27 @@ Type Signatures
 ---------------
 
 ```haskell
+myFunction x y = x ^ 2 + y ^ 2
+     ^     ^ ^   ^^^^^^^^^^^^^
+     |     | |   |
+     |     | |   +-- function body
+     |     | +------ second argument
+     |     +-------- first argument 
+     +-------------- function
+```
+
+
+```haskell
+myFunction :: Int -> Int -> Int
+     ^          ^     ^    ^^^^^
+     |          |     |    |
+     |          |     |    +- return type
+     |          |     +------ second argument
+     |          +------------ first argument 
+     +----------------------- function
+```
+
+```haskell
 f :: Integer -> Integer -> Integer
 f x y = x + y
 ```
