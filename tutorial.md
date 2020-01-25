@@ -2,8 +2,6 @@
 % Stephen Diehl
 % January 2020
 
-Stephen Diehl (<a class="author" href="https://twitter.com/smdiehl">@smdiehl</a> )
-
 Version
 -------
 
@@ -3598,7 +3596,7 @@ Partial types may be used to avoid writing uninteresting pieces of the
 signature, which can be convenient in development:
 
 ```haskell
-{-# OPTIONS -XPartialTypeSignatures #-}
+{-# LANGUAGE PartialTypeSignatures #-}
 
 triple :: Int -> _
 triple i = (i,i,i)
@@ -3607,8 +3605,9 @@ triple i = (i,i,i)
 If the `-Wpartial-type-signatures` GHC option is set, partial types will still
 trigger warnings.
 
-See: [Partial Type Signatures](https://ghc.haskell.org/trac/ghc/wiki/PartialTypeSignatures)
+See: 
 
+* [Partial Type Signatures](https://ghc.haskell.org/trac/ghc/wiki/PartialTypeSignatures)
 
 RecursiveDo
 -----------
@@ -10208,13 +10207,8 @@ Cryptonite is the standard Haskell cryptography library. It provides support for
 hash functions, elliptic curve cryptography, ciphers, one time passwords,
 entropy generation and safe memory handling.
 
-* AES
-* Ed25519
-* Curve25519
-* Blake2
-* Argon2
-
-**Hashing**
+SHA Hashing
+-----------
 
 A cryptographic hash function is a special class of hash function that has
 certain properties which make it suitable for use in cryptography. It is a
@@ -10222,21 +10216,29 @@ mathematical algorithm that maps data of arbitrary size to a bit string of a
 fixed size (a hash function) which is designed to also be a one-way function,
 that is, a function which is infeasible to invert.
 
-#### SHA3
-
-~~~~ {.haskell include="src/32-cryptography/Keccak.hs"}
-~~~~
-
-#### SHA256
-
 SHA-256 is a cryptographic hash function from the SHA-2 family and is
 standardized by NIST. It produces a 256-bit message digest.
 
 ~~~~ {.haskell include="src/32-cryptography/SHA.hs"}
 ~~~~
 
-memory
-------
+~~~~ {.haskell include="src/32-cryptography/Keccak.hs"}
+~~~~
+
+Password Hashing
+----------------
+
+Curve25519 Diffie-Hellman
+-------------------------
+
+Ed25519 EdDSA
+-------------
+
+* Blake2
+* Argon2
+
+Secure Memory Handling
+----------------------
 
 ByteArray
 
@@ -10252,25 +10254,31 @@ convertToBase :: (ByteArrayAccess bin, ByteArray bout) => Base -> bin -> bout
 convertFromBase :: (ByteArrayAccess bin, ByteArray bout) => Base -> bin -> Either String bout
 ```
 
-galois-field
-------------
+AES Ciphers
+-----------
 
 TODO
 
-elliptic-curve
---------------
+Galois Fields
+-------------
 
 TODO
 
-pairing
--------
+Elliptic Curves
+---------------
 
 TODO
 
-arithmetic-circuits
--------------------
+Pairing Cryptography
+--------------------
 
 TODO
+
+zkSNARKs
+--------
+
+TODO
+
 
 Date and Time
 =============

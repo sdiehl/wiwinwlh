@@ -26,12 +26,18 @@
 \usepackage{amssymb,amsmath}
 \usepackage{framed}
 \usepackage{fancyvrb}
+\usepackage{catchfile}
+
+% Syntax Higlighting
 \usepackage{listings}
+
+\usepackage{resources/haskell}
+
 \lstset{
   language=haskell,
   frame=ltb,
   framerule=0pt,
-  xleftmargin=2pt,
+  xleftmargin=15pt,
   framexleftmargin=16pt,
   framextopmargin=25pt,
   framexbottommargin=25pt, 
@@ -64,9 +70,6 @@
 
 \urlstyle{same}
 
-$if(highlighting-macros)$
-$highlighting-macros$
-$endif$
 $if(tables)$
 \usepackage{longtable,booktabs}
 $endif$
@@ -147,25 +150,31 @@ $endfor$
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{titlepage}
-  \definecolor{titlepagecolor}{HTML}{8A1C0A}
+  \definecolor{titlepagecolor}{HTML}{FDF6E3}
   \definecolor{namecolor}{cmyk}{1,.50,0,.10} 
   \pagecolor{titlepagecolor}
-  \color{white}
 
   \vspace*{\stretch{1.0}}
   \begin{center}
      \Huge\textbf{What I Wish I Knew When Learning Haskell}\\
-     \large\textit{Stephen Diehl}
+     \vspace*{\stretch{0.5}}
+     \Large\textit{Stephen Diehl}
   \end{center}
   \vspace*{\stretch{2.0}}
 
   \begin{figure}
       \centering
-      \includegraphics[height=3in,width=3in]{img/Haskell-Logo.ps}
+      \includegraphics[height=3in,width=3in]{img/cover.ps}
   \end{figure}
 
 \end{titlepage}
 \pagecolor{white}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\textbf{Date}: \today \\
+\textbf{Git Commit:} \texttt{\input{.git/ORIG_HEAD}}
+
+\newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 $if(abstract)$
