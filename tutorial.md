@@ -9506,11 +9506,15 @@ TODO
 Concurrency
 ===========
 
-The definitive reference on concurrency and parallelism in Haskell is Simon
-Marlow's text.  This will section will just gloss over these topics because they
-are far better explained in this book.
+GHC Haskell has an extremely advanced parallel runtime that embraces several
+different models of concurrency to adapt to adapt to needs for different
+domains. Unlike other languages Haskell does not have any Global Interpreter
+Lock or equivalent. Haskell code can be executed in a multi-threaded context and
+have shared mutable state and communication channels between threads.
 
-See: [Parallel and Concurrent Programming in Haskell](http://chimera.labs.oreilly.com/books/1230000000929)
+A thread in Haskell is created by forking off from the main process using the
+`forkIO` command. This is performed within the IO monad and yields a ThreadId
+which can be used to communicate with the new thread.
 
 ```haskell
 forkIO :: IO () -> IO ThreadId
@@ -9522,7 +9526,10 @@ on the platform and are much cheaper than a pthread in C. Calling forkIO
 purity in Haskell also guarantees that a thread can almost always be terminated
 even in the middle of a computation without concern.
 
-See: [The Scheduler](https://ghc.haskell.org/trac/ghc/wiki/Commentary/Rts/Scheduler#TheScheduler)
+See: 
+
+* [The Scheduler](https://ghc.haskell.org/trac/ghc/wiki/Commentary/Rts/Scheduler#TheScheduler)
+* [Parallel and Concurrent Programming in Haskell](http://chimera.labs.oreilly.com/books/1230000000929)
 
 Sparks
 ------
@@ -10228,21 +10235,68 @@ standardized by NIST. It produces a 256-bit message digest.
 Password Hashing
 ----------------
 
-* Blake2
-* Argon2
+Modern applications should use one of either the Blake2 or Argon2 hashing
+algorithms for storing passwords in a database as part of an authentication
+workflow. 
 
+To use Argon2:
+
+~~~~ {.haskell include="src/32-cryptography/Argon.hs"}
+~~~~
+
+To use Blake2:
+
+~~~~ {.haskell include="src/32-cryptography/Blake2.hs"}
+~~~~
 
 Curve25519 Diffie-Hellman
 -------------------------
 
+Curve25519 is widely used Diffie-Hellman function suitable for a wide variety of
+applications. Private and public keys using Curve25519 are 32 bytes each.
+Elliptic curve Diffie-Hellman in which two parties can exchange their public
+keys in the clear and generate a shared secret which can be used to share
+information across a secure channel.
+
+A private key is a large integral value is multiplied by the base point on the
+curve to generate the public key. Going to backwards from a public key requires
+one to solve the elliptic curve discrete logarithm which is believed to be
+computationally infeasible.
+
+```haskell
+generateSecretKey :: MonadRandom m => m SecretKey
+toPublic :: SecretKey -> PublicKey
+```
+
+Diffie-Hellman key exchange be performed by executing the function `dh over the
+private and public keys for Alice and Bob.
+
+```haskell
+dh :: PublicKey -> SecretKey -> DhSecret
+```
+
+An example is shown below:
+
 ~~~~ {.haskell include="src/32-cryptography/Curve25519.hs"}
 ~~~~
+
+See:
+
+* [curve25519](https://cr.yp.to/ecdh.html)
 
 Ed25519 EdDSA
 -------------
 
+EdDSA is a digital signature scheme based on Schnorr signature using the twisted
+Edwards curve Ed25519 and SHA-512 (SHA-2). It generates succinct (64 byte)
+signatures and has fast verification times.
+
 ~~~~ {.haskell include="src/32-cryptography/Ed25519.hs"}
 ~~~~
+
+See Also:
+
+* [ed25519](https://ed25519.cr.yp.to/)
 
 Merkle Trees
 ------------
@@ -13024,12 +13078,19 @@ See [pretty-show](https://hackage.haskell.org/package/pretty-show-1.9.5/docs/Tex
 Haskeline
 ---------
 
-Haskeline is cross-platform readline support which plays nice with GHCi as well.
+Haskeline is a Haskell library exposing cross-platform readline. It provides a
+monad which can take user input from the command line and allow the user to edit
+and go back forth on a line of input as well simple tab completion.
 
 ```haskell
+data InputT m a
+
 runInputT :: Settings IO -> InputT IO a -> IO a
 getInputLine :: String -> InputT IO (Maybe String)
+outputStrLn :: MonadIO m => String -> InputT m ()
 ```
+
+A simple example of usage is shown below:
 
 ~~~~ {.haskell include="src/30-languages/haskelline.hs"}
 ~~~~
@@ -13083,15 +13144,23 @@ LLVM
 Haskell has a rich set of LLVM bindings that can generate LLVM and JIT dynamic
 code from inside of the Haskell runtime. This is especially useful for building
 custom programming languages and compilers which need native performance. The
-`llvm-hs` library is the de-factor standard for compiler construction in
-Haskell. The `llvm-hs` library is split across two modules:
+llvm-hs library is the de-factor standard for compiler construction in
+Haskell. 
 
-* llvm-hs-pure - Pure Haskell datatypes
-* llvm-hs - Bindings to C++ framework for optimisation and JIT
+We can link effectively to the LLVM bindings which provide an efficient JIT
+which can generate fast code from runtime. These can serve as the backend to an
+interpreter, generating fast SIMD operations for lineaer algebra, or compiling
+dataflow representations of neural networks into code as fast as C from dynamic
+descriptions of logic in Haskell.
 
-The `llvm-hs` bindings allow us to construct LLVM abstract syntax tree by
+The llvm-hs library is split across two modules:
+
+* ``llvm-hs-pure`` - Pure Haskell datatypes
+* ``llvm-hs` `- Bindings to C++ framework for optimisation and JIT
+
+The llvm-hs`bindings allow us to construct LLVM abstract syntax tree by
 manipulating a variety of Haskell datatypes. These datatypes all can be
-serialised to the C++ bindings to construct the 
+serialised to the C++ bindings to construct the LLVM module's syntax tree.
 
 ~~~~ {.haskell include="src/30-languages/llvm-hs.hs"}
 ~~~~
@@ -13573,28 +13642,26 @@ See: [git-embed](https://hackage.haskell.org/package/git-embed)
 Categories
 ==========
 
-<div class="alert alert-danger">
-This is an advanced section, knowledge of category theory is not typically
-necessary to write Haskell.
-</div>
+Do I need to Learn Category Theory?
+-----------------------------------
 
-Alas we come to the topic of category theory. Some might say all discussion of
-Haskell eventually leads here at one point or another.
+Short answer: <b>No</b>. Very little of category theory is applicable to writing
+real-world Haskell. A few (read as less than 10) or so Haskellers espouse
+philosophies about it being an inspiration for certain abstractions.
 
-Nevertheless the overall importance of category theory in the context of Haskell
-has been somewhat overstated and unfortunately mystified to some extent. The
-reality is that amount of category theory which is directly applicable to
-Haskell roughly amounts to a subset of the first chapter of any undergraduate
-text. And even then, *no actual knowledge of category theory is required to use
-Haskell at all*.
-
-Algebraic Relations
--------------------
+The long answer: It is not necessary to learn, but so few things in life are.
+Learning new topics and ways of thinking about problems only enrich your
+thinking and give you new ways of thinking about code and abstractions. Category
+theory is never going to help you write a web application better but it may give
+you insights into problems that algebraic in nature.
 
 Grossly speaking category theory is not terribly important to Haskell
 programming, and although some libraries derive some inspiration from the
 subject; most do not. What is more important is a general understanding of
 equational reasoning and a familiarity with various algebraic relations.
+
+Abstract Algebra
+----------------
 
 Certain relations show up so frequently we typically refer to their properties
 by name ( often drawn from an equivalent abstract algebra concept ). Consider a
@@ -13667,6 +13734,8 @@ associative operation over a set of values.
 You will often see this notation in tuple form. Where a set `S` will be enriched
 with a variety of elements and operations that are closed over that set. For
 example:
+
+Carrier 
 
 Structure Notation
 --------- ---------

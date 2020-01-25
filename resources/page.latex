@@ -60,6 +60,10 @@
   morecomment=[l]\%,
 }
 
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd{\chapter}{\newpage \newpage}{}{}{}
+
 \usepackage[utf8]{inputenc}
 \usepackage{ifxetex,ifluatex}
 \usepackage{fontspec}
