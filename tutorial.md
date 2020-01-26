@@ -10767,12 +10767,14 @@ And again we get a nice typed ADT as a result.
 Network & Web Programming
 =========================
 
-There is a common meme that it is impossible to build web applications in
-Haskell. This is really not the case and the ecosystem provides a wide variety
-of tools and frameworks for building modern web services. That said, although
+There is a common meme that it is impossible to build web CRUD applications in
+Haskell. This absolutely false and the ecosystem provides a wide variety of
+tools and frameworks for building modern web services. That said, although
 Haskell has web frameworks the userbase of these libraries is several orders of
 magnitude less than common tools like PHP and Wordpress and as such are not
-close to the level of polish, documentation, or 
+close to the level of polish, documentation, or userbase. Put simply you won't
+be able to muddle your way through building a Haskell web application by copying
+and pasting code from Stackoverflow.
 
 Building web applications in Haskell is always a balance between the power and
 flexibility of the Haskell way of building software vs the use of ease of other
@@ -10799,15 +10801,22 @@ There are three large Haskell web frameworks:
 
 **Yesod**
 
-TODO
+Yesod is a large featureful ecosystem built on lots of metaprogramming using
+Template Haskell. There is a excellent documentation and a book on building real
+world applications. This style of metaprogramming to build applications will
+either appeal to you or it won't.
 
 **Scotty**
 
 TODO
 
+See: [Scotty]
+
 **Servant**
 
 TODO
+
+See: [Servant]
 
 **Snap**
 
