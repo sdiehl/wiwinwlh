@@ -5863,6 +5863,48 @@ msum = asum
 ~~~~ {.haskell include="src/10-advanced-monads/monadplus.hs"}
 ~~~~
 
+MonadFail
+---------
+
+Before the great awakening, Monads used to be defined as the following class.
+
+```haskell
+class  Monad m  where
+    (>>=)   :: m a -> (a -> m b) -> m b
+    (>>)    :: m a -> m b -> m b
+    return  :: a -> m a
+    fail    :: String -> m a
+
+    m >> k  =  m >>= \_ -> k
+    fail s  = error s
+```
+
+This was eventually deemed not to be an great design and in particular the
+`fail` function was a misplaced lawless entity that would generate bottoms. It
+was also necessary to define `fail` for all monads, even those without a notion
+of failure. This was considered quite ugly and eventually a breaking change to
+base (landed in 4.9) was added which split out `MonadFail` into a separate class
+where it belonged.
+
+```haskell
+class Monad m => MonadFail m where
+    fail :: String -> m a
+```
+
+Some of the common instances of MonadFail are shown below:
+
+```haskell
+instance MonadFail Maybe where
+    fail _ = Nothing
+
+instance MonadFail [] where
+    {-# INLINE fail #-}
+    fail _ = []
+
+instance MonadFail IO where
+    fail = failIO
+```
+
 Backtracking Monads
 -------------------
 
