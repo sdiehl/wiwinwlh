@@ -5115,20 +5115,20 @@ Escaping Text
 
 Haskell uses C-style single-character escape codes
 
-Escape	Unicode	Character
+Escape  Unicode Character
 ------  ------- ----------------------
-\\0	U+0000	null character
-\\a	U+0007	alert
-\\b	U+0008	backspace
-\\f	U+000C	form feed
-\\n	U+000A	newline (line feed)
-\\r	U+000D	carriage return
-\\t	U+0009	horizontal tab
-\\v	U+000B	vertical tab
-\\"	U+0022	double quote
-\\&	n/a	empty string
-\\'	U+0027	single quote
-\\\\	U+005C	backslash
+\\n     U+000A  newline
+\\0     U+0000  null character
+\\&     n/a     empty string
+\\'     U+0027  single quote
+\\\\    U+005C  backslash
+\\a     U+0007  alert
+\\b     U+0008  backspace
+\\f     U+000C  form feed
+\\r     U+000D  carriage return
+\\t     U+0009  horizontal tab
+\\v     U+000B  vertical tab
+\\"     U+0022  double quote
 
 #### Conversions
 
