@@ -9924,6 +9924,18 @@ Lam "i" (Lam "x" (Var "x"))
 Lam "s" (Lam "f" (Lam "g" (Lam "x" (App (App (Var "f") (Var "x")) (App (Var "g") (Var "x"))))))
 ```
 
+Megaparsec
+----------
+
+Megaparsec can work with the several input streams.
+
+* Text (strict and lazy)
+* ByteString (strict and lazy)
+* String = [Char]
+
+~~~~ {.haskell include="src/24-parsing/megaparsec.hs"}
+~~~~
+
 Attoparsec
 ----------
 
@@ -12983,12 +12995,37 @@ MAIN        MAIN                     42           0    0.0    0.7   100.0  100.0
 Compilers
 =========
 
-Binder Libraries
-----------------
+Haskell is widely regarded as being a best in class for the construction of
+compilers and there are many examples of programming languages that were
+bootstrapped on Haskell.
 
-* [Names for Free](https://nicolaspouillard.fr/publis/names-for-free.pdf)
-* Abstract Binding Trees
-* du Bruijn Indicies
+Compiler development largely consists of a process of transforming one graph
+representation of a program or abstract syntax tree into simpler graph
+representations while preserving the semantics of the languages. Many of these
+operations can be written quite concisely using Haskell's pattern matching
+machinery.
+
+Haskell itself also has a rich academic tradition and an enormous number of
+academic papers will use Haskell as the implementation language used to describe
+a typechecker, parser or other novel compiler idea.
+
+In addition the Hackage ecosystem has a wide variety of modules that many
+individuals have abstracted out of their own compilers into reusable components.
+These are broadly divided into several categories:
+
+* **Binder libraries** - Libraries for manipulating lambda calculus terms and
+  perform capture-avoiding substitution, alpha renaming and beta reduction.
+* **Name generation** - Generation of fresh names for use in compiler passes
+  which need to generates names which don't clash with each other.
+* **Code Generators** - Libraries for emitting LLVM or other assembly
+  representations at the end of the compiler.
+* **Source Generators** - Libraries for emitting textual syntax of another
+  language used for doing source-to-source translations.
+* **Graph Analysis** - Libraries for doing control flow analysis.
+* **Pretty Printers** - Libraries for turning abstract syntax trees into textual
+  forms.
+* **Parser Generators** - Libraries for generating parsers and lexers from
+  higher-level syntax descriptions.
 
 unbound
 -------
