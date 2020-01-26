@@ -65,7 +65,7 @@ building a research vehicle for lazy programming languages. This was a
 particularly in-vogue research topic that attracted some very talented
 people who eventually laid the foundation for modern Haskell.
 
-Throughout the last 20 years Haskell has grown into a very mature compiler with
+Throughout the last 30 years Haskell has grown into a very mature compiler with
 a fledgling ecosystem that is constantly reinventing itself and looking to
 further a set of research goals that define the community. Although laziness was
 originally the major research goal, this has largely become a quirky artifict
@@ -2303,9 +2303,10 @@ pkgs.haskellPackages.developPackage {
 Bazel
 ------
 
+TODO
+
 [rules_haskell](https://github.com/tweag/rules_haskell)
 
-TODO
 
 Monads
 ======
@@ -3390,9 +3391,6 @@ Effect Systems
 
 * fused-effects
 * polysemy
-* eff
-
-TODO
 
 Polysemy
 --------
@@ -3401,6 +3399,11 @@ TODO
 
 ~~~~ {.haskell include="src/03-monad-transformers/polysemy.hs"}
 ~~~~
+
+Fused Effects
+-------------
+
+TODO
 
 <hr/>
 
@@ -3453,12 +3456,12 @@ The Benign
 It's not obvious which extensions are the most common but it's fairly safe to
 say that these extensions are benign and are safely used extensively:
 
-* NoImplicitPrelude
-* OverloadedStrings
-* LambdaCase
-* FlexibleContexts
-* FlexibleInstances
-* GeneralizedNewtypeDeriving
+* [NoImplicitPrelude](Custom Preludes)
+* [OverloadedStrings]
+* [LambdaCase]
+* [FlexibleContexts]
+* [FlexibleInstances]
+* [GeneralizedNewtypeDeriving](Newtype Deriving)
 * [TypeSynonymInstances]
 * [MultiParamTypeClasses](MultiParam Typeclasses)
 * [FunctionalDependencies](MultiParam Typeclasses)
@@ -3625,8 +3628,8 @@ on, and cannot be switched off.
 
 See: [Monomorphism Restriction](#monomorphism-restriction)
 
-Safe
-----
+Unsafe Functions
+----------------
 
 As everyone eventually finds out there are several functions within the
 implementation of GHC ( not the Haskell language ) that can be used to subvert
@@ -3647,11 +3650,17 @@ out with Haskell there are no legitimate reason to use these functions at all,
 period.
 </div>
 
+Safe Haskell
+------------
+
+TODO
+
 The Safe Haskell language extensions allow us to restrict the use of unsafe
 language features using ``-XSafe`` which restricts the import of modules which
 are themselves marked as Safe. It also forbids the use of certain language
 extensions (``-XTemplateHaskell``) which can be used to produce unsafe code. The
-primary use case of these extensions is security auditing.
+primary use case of these extensions is security auditing of codebases for
+compliance purposes.
 
 ```haskell
 {-# LANGUAGE Safe #-}
@@ -4074,6 +4083,8 @@ instance Generic (List a) where
 DeriveAnyClass
 --------------
 
+TODO
+
 With ``-XDeriveAnyClass`` we can derive any class. The deriving logic generates
 an instance declaration for the type with no explicitly-defined methods. If
 the typeclass implements a default for each method then this will be
@@ -4202,6 +4213,8 @@ resort.
 
 TypeApplications
 ----------------
+
+TODO
 
 ~~~~ {.haskell include="src/04-extensions/application.hs"}
 ~~~~
@@ -4382,11 +4395,15 @@ language guide.
 FlexibleInstances
 -------------------
 
+TODO
+
 ~~~~ {.haskell include="src/04-extensions/flexinstances.hs"}
 ~~~~
 
 FlexibleContexts
 -------------------
+
+TODO
 
 ~~~~ {.haskell include="src/04-extensions/flexcontexts.hs"}
 ~~~~
@@ -4432,6 +4449,8 @@ There is also an incoherent instance.
 
 TypeSynonymInstances
 -------------------
+
+TODO
 
 ~~~~ {.haskell include="src/04-extensions/synonym.hs"}
 ~~~~
@@ -4699,7 +4718,7 @@ Prelude
 What to Avoid?
 --------------
 
-Haskell being a 25 year old language has witnessed several revolutions in the
+Haskell being a 30 year old language has witnessed several revolutions in the
 way we structure and compose functional programs. Yet as a result several
 portions of the Prelude still reflect old schools of thought that simply can't
 be removed without breaking significant parts of the ecosystem.
@@ -5239,7 +5258,8 @@ Data.Text.Lazy        toStrict   id              encodeUtf8       encodeUtf8
 Data.ByteString       decodeUtf8 decodeUtf8      id               fromStrict
 Data.ByteString.Lazy  decodeUtf8 decodeUtf8      toStrict         id
 
-#### Overloaded Strings
+OverloadedStrings
+-----------------
 
 With the ``-XOverloadedStrings`` extension string literals can be overloaded
 without the need for explicit packing and can be written as string literals in
@@ -10069,11 +10089,17 @@ Lam "s" (Lam "f" (Lam "g" (Lam "x" (App (App (Var "f") (Var "x")) (App (Var "g")
 Megaparsec
 ----------
 
-Megaparsec can work with the several input streams.
+Megaparsec is a generalisation of parsec which can work with the several input streams.
 
 * Text (strict and lazy)
 * ByteString (strict and lazy)
 * String = [Char]
+
+Megaparsec is an expanded and optimised form of parsec which can be used to
+write much larger complex parsers with custom lexers and Clang-style error
+message handling.
+
+An example below for the lambda calculus is quite concise:
 
 ~~~~ {.haskell include="src/24-parsing/megaparsec.hs"}
 ~~~~
@@ -10156,8 +10182,9 @@ for Haskell's grammar.
 1. Lexer.x
 1. Parser.y
 
-Running the standalone commands will generate the Haskell source for the
-modules.
+Running the standalone commands will generate will take Alex/Happy source files from
+stdin and generate and output Haskell module. Alex and Happy files can contain
+arbitrary Haskell code that can be escaped to the output.
 
 ```bash
 $ alex Lexer.x -o Lexer.hs
@@ -10165,7 +10192,33 @@ $ happy Parser.y -o Parser.hs
 ```
 
 The generated modules are not human readable generally and unfortunately error
-messages are given in the Haskell source, not the Happy source.
+messages are given in the Haskell source, not the Happy source. Anything
+enclosed in braces is interpreted as literal Haskell while the code outside the
+braces is interpeted as parser grammar.
+
+```yacc
+{
+
+-- This is Haskell 
+module Parser where
+
+}
+
+-- This is Happy
+%tokentype { Lexeme Token }
+%error { parseError }
+
+%monad { Parse }
+
+{
+
+-- This is Haskell again
+parseExpr :: String -> Either String [Expr]
+parseExpr input = 
+  let tokenStream = scanTokens input in
+  runExcept (expr tokenStream)
+}
+```
 
 Happy and Alex can be integrated into a cabal file simply by including the
 `Parser.y` and `Lexer.x` files inside of the exposed modules and adding them to
@@ -10457,6 +10510,8 @@ Merkle Trees
 Secure Memory Handling
 ----------------------
 
+TODO
+
 ByteArray
 
 ```haskell
@@ -10559,11 +10614,6 @@ Date and Time
 
 time
 ----
-
-TODO
-
-hourglass
----------
 
 TODO
 
@@ -11480,10 +11530,21 @@ exposed-modules:
     System.Console.Haskeline.MonadException
 ```
 
-HIE-Bios
+HIE Bios
 --------
 
-TODO
+A session is fully specified by a set GHC dynflags that are needed to compile a
+module. Typically when the compiler is invoked by Cabal these are all generated
+during compilation time. These flags contain the entire transitive dependency
+graph of the module, the language extensions and the file system locations of
+all paths. Given the bifucation of many of these tools setting up the GHC
+environment from inside of libraries has been non-trivial in the past. HIE-bios
+is a new library which can read package metadata from Cabal and Stack files and
+dynamically set up the appropriate session for a project.
+
+This is particularly useful for projects that require access to the internal
+compiler artifacts or do static analysis on top of Haskell code. An example of
+setting a compiler session from a cradle is shown bellow:
 
 ~~~~ {.haskell include="src/29-ghc/hie.hs"}
 ~~~~
