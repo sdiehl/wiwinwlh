@@ -5295,7 +5295,12 @@ instance IsList [a] where
 Regex
 -----
 
-TODO
+`regex-tdfa` implements POSIX extended regular expressions. These can operate
+over any of the major string types and with OverloadedStrings enabled allows you
+to write well-typed regex expressions as strings.
+
+~~~~ {.haskell include="src/07-text-bytestring/regex.hs"}
+~~~~
 
 <hr/>
 
@@ -10408,8 +10413,10 @@ Coordinate systems:
 * Projective:
 
 ```haskell
-type Fr = Prime 7237005577332262213973186563042994240857116359379907606001950938285454250989
-type Fq = Prime 57896044618658097711785492504343953926634992332820282019728792003956564819949
+type Fr = Prime 
+  7237005577332262213973186563042994240857116359379907606001950938285454250989
+type Fq = Prime 
+  57896044618658097711785492504343953926634992332820282019728792003956564819949
 type PA = Point Edwards Affine Ed25519 Fq Fr
 type PP = Point Edwards Projective Ed25519 Fq Fr
 ```
@@ -10420,8 +10427,31 @@ type PP = Point Edwards Projective Ed25519 Fq Fr
 Pairing Cryptography
 --------------------
 
+Cryptographic pairings are a novel technique that allows us to construct
+bilinear mappings of the form:
+
+$$
+e: \mathbb{G}_1 \times \mathbb{G}_2 \rightarrow \mathbb{G}_T
+$$
+
+These are bilinear over group addition and multiplication.
+
+* $e(g_1+g_2,h) = e(g_1,h) e(g_2, h)$
+* $e(g,h_1+h_2) = e(g, h_1) e(g, h_2)$
+
+There are many types of pairings that can be computed. The `pairing` library
+implements the Ate pairing over several elliptic curve groups including the
+Barreto-Naehrig family and the BLS12-381 curve. These types of pairings are
+used qquite frequently in modern cryptographic protocols such as the construction
+of zkSNARKs.
+
 ~~~~ {.haskell include="src/32-cryptography/Pairing.hs"}
 ~~~~
+
+See
+
+* [Pairing](https://github.com/adjoint-io/pairing)
+* [Optimal Ate Pairing](https://tools.ietf.org/html/draft-kato-optimal-ate-pairings-00)
 
 zkSNARKs
 --------
@@ -10737,6 +10767,52 @@ And again we get a nice typed ADT as a result.
 Network & Web Programming
 =========================
 
+There is a common meme that it is impossible to build web applications in
+Haskell. This is really not the case and the ecosystem provides a wide variety
+of tools and frameworks for building modern web services. That said, although
+Haskell has web frameworks the userbase of these libraries is several orders of
+magnitude less than common tools like PHP and Wordpress and as such are not
+close to the level of polish, documentation, or 
+
+Building web applications in Haskell is always a balance between the power and
+flexibility of the Haskell way of building software vs the use of ease of other
+ecosystems based on dynamically typed languages. 
+
+Web packages can mostly be broken down into several categories:
+
+* **Web servers** - Services that handle the TCP level of content delivery and
+  protocol servicing.
+* **Request libraries** -  Libraries for issuing HTTP requests to other servers.
+* **Templating Libraries** - Libraries to generate HTML from interpolating strings.
+* **HTML Generation** - Libraries to generate HTML from Haskell datatypes.
+* **Form Handling & Validation** - Libraries for handling form input and
+  serialisation and validating data against a given schema and constraint sets.
+* **Web Frameworks** - Frameworks for constructing RESTful services and handling
+  the lifecycle of HTTP requests within a business logic framework.
+* **Database Mapping** - ORM and database libraries to work with database models
+  and serialise data to web services. See [Databases].
+
+Frameworks
+----------
+
+There are three large Haskell web frameworks:
+
+**Yesod**
+
+TODO
+
+**Scotty**
+
+TODO
+
+**Servant**
+
+TODO
+
+**Snap**
+
+TODO
+
 HTTP
 ----
 
@@ -10748,6 +10824,14 @@ most flexible is the [HTTP library](https://hackage.haskell.org/package/HTTP).
 
 Req
 ---
+
+Req is a modern HTTP request library that provides a simple monad for executing
+batches of HTTP requests to servers. It integrates closely with the Aeson
+library for JSON handling and exposes a type safe API to prevent the mixing of
+invalid requests and payload types.
+
+~~~~ {.haskell include="src/27-web/req.hs"}
+~~~~
 
 TODO
 
@@ -14118,7 +14202,6 @@ If you so wish to study more category, there are many resources online.
 * [Category Theory, Awodey](http://www.amazon.com/Category-Theory-Oxford-Logic-Guides/dp/0199237182)
 * [Category Theory Foundations](https://www.youtube.com/watch?v=ZKmodCApZwk)
 * [Category Theory for Programmers](https://www.youtube.com/watch?v=I8LbkfSSR58&list=PLbgaMIhjbmEnaH_LTkxLI7FMa2HsnawM_)
-* [The Catsters](http://www.youtube.com/user/TheCatsters)
 
 <hr/>
 
