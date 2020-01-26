@@ -10839,6 +10839,28 @@ batches of HTTP requests to servers. It integrates closely with the Aeson
 library for JSON handling and exposes a type safe API to prevent the mixing of
 invalid requests and payload types.
 
+The two toplevel functions of note are `req` and `runReq` which run inside of a
+`Req` monad which holds the socket state.
+
+```haskell
+runReq :: MonadIO m => HttpConfig -> Req a -> m a
+req
+  :: ( MonadHttp    m
+     , HttpMethod   method
+     , HttpBody     body
+     , HttpResponse response
+     , HttpBodyAllowed (AllowsBody method) (ProvidesBody body) )
+  => method            -- ^ HTTP method
+  -> Url scheme        -- ^ 'Url'—location of resource
+  -> body              -- ^ Body of the request
+  -> Proxy response    -- ^ A hint how to interpret response
+  -> Option scheme     -- ^ Collection of optional parameters
+  -> m response        -- ^ Response
+```
+
+A end to end example can include serialising and de serialising requests to and
+from JSON from RESTful services.
+
 ~~~~ {.haskell include="src/27-web/req.hs"}
 ~~~~
 
@@ -10868,10 +10890,13 @@ Haskell data structures and HTML representation.
 Warp
 ----
 
-Warp is a efficient web server, it's the backend request engine behind several of
-popular Haskell web frameworks. The internals have been finely tuned to utilize
-Haskell's concurrent runtime and is capable of handling a great deal of
-concurrent requests.
+Warp is a efficient massively concurrent web server, it is the backend server
+behind several of popular Haskell web frameworks. The internals have been finely
+tuned to utilize Haskell's concurrent runtime and is capable of handling a great
+deal of concurrent requests.
+
+For example we can construct a simple web service while simply returns a 200
+status code with a ByteString which is flushed to the socket.
 
 ~~~~ {.haskell include="src/27-web/warp.hs"}
 ~~~~
@@ -13169,6 +13194,10 @@ These are broadly divided into several categories:
   forms.
 * **Parser Generators** - Libraries for generating parsers and lexers from
   higher-level syntax descriptions.
+* **Traversal Utilities** - Libraries for writing traversal and rewrite systems
+  across AST types.
+* **REPL Generators** - Libraries fo building command line interfaces for
+  Read-Eval-Print loops.
 
 unbound
 -------
@@ -13853,15 +13882,16 @@ Categories
 Do I need to Learn Category Theory?
 -----------------------------------
 
-Short answer: <b>No</b>. Very little of category theory is applicable to writing
-real-world Haskell. A few (read as less than 10) or so Haskellers espouse
-philosophies about it being an inspiration for certain abstractions.
+Short answer: <b>No</b>. Most of the idea of category aren't really applicable
+to writing Haskell.
 
 The long answer: It is not necessary to learn, but so few things in life are.
 Learning new topics and ways of thinking about problems only enrich your
 thinking and give you new ways of thinking about code and abstractions. Category
 theory is never going to help you write a web application better but it may give
-you insights into problems that algebraic in nature.
+you insights into problems that algebraic in nature.  A few (read as less than
+10) or so Haskellers espouse philosophies about it being an inspiration for
+certain abstractions.
 
 Grossly speaking category theory is not terribly important to Haskell
 programming, and although some libraries derive some inspiration from the
@@ -13872,40 +13902,163 @@ Abstract Algebra
 ----------------
 
 Certain relations show up so frequently we typically refer to their properties
-by name ( often drawn from an equivalent abstract algebra concept ). Consider a
-binary operation ``a `op` b`` and a unary operation ``f``.
+by name ( often drawn from an equivalent abstract algebra concept ).
+
+* **Sets**
+* **Binary Operations**
+* **Unary Operations**
+* **Constants**
+* **Relations**
+
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
+```
 
 **Associativity**
+
+Math:
+
+$$
+a \times (b \times c) = (a \times b) \times c
+$$
+
+Haskell:
 
 ```haskell
 a `op` (b `op` c) = (a `op` b) `op` c
 ```
 
+Haskell Predicate:
+
+```haskell
+associative :: Eq a => (a -> a -> a) -> a -> a -> a -> Bool
+associative op x y z  =  (x `op` y) `op` z == x `op` (y `op` z)
+```
+
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
+```
+
 **Commutativity**
+
+Math:
+
+$$
+a \times b = b \times a
+$$
 
 ```haskell
 a `op` b = b `op` a
 ```
 
+```haskell
+commutative :: Eq a => (b -> b -> a) -> b -> b -> Bool
+commutative op x y  =  x `op` y == y `op` x
+```
+
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
+```
+
 **Units**
+
+Math:
+
+$$
+a \times e = a
+$$
+
+$$
+1 \times a = a
+$$
+
+Haskell:
 
 ```haskell
 a `op` e = a
 e `op` a = a
 ```
 
+Haskell Predicates:
+
+```haskell
+leftIdentity :: Eq a => (b -> a -> a) -> b -> a -> Bool
+leftIdentity op y x  =  y `op` x == x
+
+rightIdentity :: Eq a => (a -> b -> a) -> b -> a -> Bool
+rightIdentity op y x  =  x `op` y == x
+
+identity :: Eq a => (a -> a -> a) -> a -> a -> Bool
+identity op x y  =  leftIdentity op x y &&  rightIdentity op x y
+```
+
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
+```
+
 **Inversion**
+
+Math:
+
+$$
+a^{-1} \times a = e
+$$
+
+$$
+a \times a^{-1} = e
+$$
+
+Haskell:
 
 ```haskell
 (inv a) `op` a = e
 a `op` (inv a) = e
 ```
 
+Haskell Predicates:
+
+```haskell
+leftInverse :: Eq a => (b -> b -> a) -> (b -> b) -> a -> b -> Bool
+leftInverse op inv y x  =  inv x `op` x == y
+
+rightInverse :: Eq a => (b -> b -> a) -> (b -> b) -> a -> b -> Bool
+rightInverse op inv y x  =  x `op` inv x == y
+
+inverse :: Eq a => (b -> b -> a) -> (b -> b) -> a -> b -> Bool
+inverse op inv y x  =  leftInverse op inv y x && rightInverse op inv y x
+```
+
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
+```
+
 **Zeros**
+
+Math:
+
+Haskell
 
 ```haskell
 a `op` e = e
 e `op` a = e
+```
+
+Haskell Predicates:
+
+```haskell
+leftZero :: Eq a => (a -> a -> a) -> a -> a -> Bool
+leftZero  =  flip . rightIdentity
+
+rightZero :: Eq a => (a -> a -> a) -> a -> a -> Bool
+rightZero  =  flip . leftIdentity
+
+zero :: Eq a => (a -> a -> a) -> a -> a -> Bool
+zero op x y  =  leftZero op x y  &&  rightZero op x y
+```
+
+
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
 ```
 
 **Linearity**
@@ -13914,30 +14067,83 @@ e `op` a = e
 f (x `op` y) = f x `op` f y
 ```
 
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
+```
+
 **Idempotency**
 
 ```haskell
 f (f x) = f x
 ```
 
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
+```
+
 **Distributivity**
+
+Math:
+
+$$
+a \times (b + c) = (a \times b) + (a \times c)
+$$
+
+$$
+(b + c) \times a = (b \times a) + (c \times a)
+$$
+
+Haskell:
 
 ```haskell
 a `f` (b `g` c) = (a `f` b) `g` (a `f` c)
 (b `g` c) `f` a = (b `f` a) `g` (c `f` a)
 ```
 
+Haskell Predicates:
+
+```haskell
+leftDistributive :: Eq a => (a -> b -> a) -> (a -> a -> a) -> b -> a -> a -> Bool
+leftDistributive ( # ) op x y z  =  (y `op` z) # x == (y # x) `op` (z # x)
+
+rightDistributive :: Eq a => (b -> a -> a) -> (a -> a -> a) -> b -> a -> a -> Bool
+rightDistributive ( # ) op x y z  =  x # (y `op` z) == (x # y) `op` (x # z)
+
+distributivity :: Eq a => (a -> a -> a) -> (a -> a -> a) -> a -> a -> a -> Bool
+distributivity op op' x y z = op (op' x y) z == op' (op x z) (op y z)
+                           && op x (op' y z) == op' (op x y) (op x z)
+```
+
+
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
+```
+
 **Anticommutativity**
+
+Math:
+
+TODO
+
+Haskell:
 
 ```haskell
 a `op` b = inv (b `op` a)
 ```
 
-And of course combinations of these properties over multiple functions gives
-rise to higher order systems of relations that occur over and over again
-throughout functional programming, and once we recognize them we can abstract
-over them. For instance a monoid is a combination of a unit and a single
-associative operation over a set of values.
+Haskell Predicates:
+
+TODO
+
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
+```
+
+Combinations of these properties over multiple functions gives rise to higher
+order systems of relations that occur over and over again throughout functional
+programming, and once we recognize them we can abstract over them. For instance
+a monoid is a combination of a unit and a single associative operation over a
+set of values.
 
 You will often see this notation in tuple form. Where a set `S` will be enriched
 with a variety of elements and operations that are closed over that set. For
@@ -13951,51 +14157,8 @@ Monoid    $(S, •)$
 Monad     $(S, \mu, \eta)$
 
 ```haskell
-commutative :: Eq a => (b -> b -> a) -> b -> b -> Bool
-commutative op x y  =  x `op` y == y `op` x
-
-associative :: Eq a => (a -> a -> a) -> a -> a -> a -> Bool
-associative op x y z  =  (x `op` y) `op` z == x `op` (y `op` z)
-
 annihilation :: Eq a => (a -> a -> a) -> a -> a -> Bool
 annihilation op e x = op x e == e && op e x == e
-
-leftIdentity :: Eq a => (b -> a -> a) -> b -> a -> Bool
-leftIdentity op y x  =  y `op` x == x
-
-rightIdentity :: Eq a => (a -> b -> a) -> b -> a -> Bool
-rightIdentity op y x  =  x `op` y == x
-
-identity :: Eq a => (a -> a -> a) -> a -> a -> Bool
-identity op x y  =  leftIdentity op x y &&  rightIdentity op x y
-
-leftZero :: Eq a => (a -> a -> a) -> a -> a -> Bool
-leftZero  =  flip . rightIdentity
-
-rightZero :: Eq a => (a -> a -> a) -> a -> a -> Bool
-rightZero  =  flip . leftIdentity
-
-zero :: Eq a => (a -> a -> a) -> a -> a -> Bool
-zero op x y  =  leftZero op x y  &&  rightZero op x y
-
-leftInverse :: Eq a => (b -> b -> a) -> (b -> b) -> a -> b -> Bool
-leftInverse op inv y x  =  inv x `op` x == y
-
-rightInverse :: Eq a => (b -> b -> a) -> (b -> b) -> a -> b -> Bool
-rightInverse op inv y x  =  x `op` inv x == y
-
-inverse :: Eq a => (b -> b -> a) -> (b -> b) -> a -> b -> Bool
-inverse op inv y x  =  leftInverse op inv y x && rightInverse op inv y x
-
-leftDistributive :: Eq a => (a -> b -> a) -> (a -> a -> a) -> b -> a -> a -> Bool
-leftDistributive ( # ) op x y z  =  (y `op` z) # x == (y # x) `op` (z # x)
-
-rightDistributive :: Eq a => (b -> a -> a) -> (a -> a -> a) -> b -> a -> a -> Bool
-rightDistributive ( # ) op x y z  =  x # (y `op` z) == (x # y) `op` (x # z)
-
-distributivity :: Eq a => (a -> a -> a) -> (a -> a -> a) -> a -> a -> a -> Bool
-distributivity op op' x y z = op (op' x y) z == op' (op x z) (op y z)
-                           && op x (op' y z) == op' (op x y) (op x z)
 
 homomorphism :: Eq a =>
    (b -> a) -> (b -> b -> b) -> (a -> a -> a) -> b -> b -> Bool
