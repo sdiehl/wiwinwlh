@@ -3889,8 +3889,7 @@ DeriveFunctor
 
 Many instances of functor over datatypes with simple single parameters and
 trivial constructors are simply the result of trivially applying a functions
-over the single constructor's argument. GHC can derive this boilerplace
-automatically in deriving clauses if DeriveFunctor is enabled.
+over the single constructor's argument. GHC can derive this boilerplace automatically in deriving clauses if DeriveFunctor is enabled.
 
 ~~~~ {.haskell include="src/04-extensions/derive_functor.hs"}
 ~~~~
@@ -4044,6 +4043,9 @@ main = do
   print (#foo (MkT True False))
 ```
 
+This is also used in more advanced libraries like [Selda] which do object
+relational mapping between Haskell datatype fields and database columns.
+
 See:
 
 * [OverloadedRecordFields revived](http://www.well-typed.com/blog/2015/03/overloadedrecordfields-revived/)
@@ -4094,13 +4096,16 @@ Or on the version of the base library used.
 #endif
 ```
 
-It can also be abused to do terrible things like metaprogramming with strings,
-but please don't do this.
+One can also use the CPP to emit Haskell source at compile-time. This is used in
+some libraries which have massive boiler plate obligations. This can be abused
+quite easily and doing this kind of compile-time string-munging is a last
+resort.
 
 TypeApplications
 ----------------
 
-TODO
+~~~~ {.haskell include="src/04-extensions/application.hs"}
+~~~~
 
 DerivingVia
 -----------
@@ -10324,12 +10329,18 @@ convertFromBase :: (ByteArrayAccess bin, ByteArray bout) => Base -> bin -> Eithe
 AES Ciphers
 -----------
 
-TODO
+~~~~ {.haskell include="src/32-cryptography/AES.hs"}
+~~~~
 
 Galois Fields
 -------------
 
-TODO
+Many modern cryptographic protocols require the use of finite field arithmetic.
+Finite fields are algebraic structures that have algebraic field structure
+(addition, multiplication, division) and closure 
+
+~~~~ {.haskell include="src/32-cryptography/Galois.hs"}
+~~~~
 
 Elliptic Curves
 ---------------
