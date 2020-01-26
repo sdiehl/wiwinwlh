@@ -11266,6 +11266,14 @@ exposed-modules:
     System.Console.Haskeline.MonadException
 ```
 
+HIE-Bios
+--------
+
+TODO
+
+~~~~ {.haskell include="src/29-ghc/hie.hs"}
+~~~~
+
 Abstract Syntax Tree
 --------------------
 
