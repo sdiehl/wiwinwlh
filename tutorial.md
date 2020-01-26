@@ -10342,15 +10342,41 @@ Finite fields are algebraic structures that have algebraic field structure
 ~~~~ {.haskell include="src/32-cryptography/Galois.hs"}
 ~~~~
 
+See:
+
+* [galois-field](https://hackage.haskell.org/package/galois-field)
+
 Elliptic Curves
 ---------------
 
-TODO
+Curve types:
+
+* Binary
+* Edwards
+* Montgomery
+* Weierstrass
+
+Coordinate systems:
+
+* Affine:
+* Jacobian:
+* Projective:
+
+```haskell
+type Fr = Prime 7237005577332262213973186563042994240857116359379907606001950938285454250989
+type Fq = Prime 57896044618658097711785492504343953926634992332820282019728792003956564819949
+type PA = Point Edwards Affine Ed25519 Fq Fr
+type PP = Point Edwards Projective Ed25519 Fq Fr
+```
+
+~~~~ {.haskell include="src/32-cryptography/ECC.hs"}
+~~~~
 
 Pairing Cryptography
 --------------------
 
-TODO
+~~~~ {.haskell include="src/32-cryptography/Pairing.hs"}
+~~~~
 
 zkSNARKs
 --------
