@@ -456,6 +456,8 @@ See:
 Cabal New-Build
 ---------------
 
+TODO
+
 Nix-style Local Builds
 
 ```perl
@@ -712,9 +714,13 @@ There are two official language standards:
 * Haskell98
 * Haskell2010
 
-And then there is so called *Modern Haskell* which is not an official languae
-standard but is an ambigious term to denoate the emerging way most Haskellers
-program with new versions of GHC. This varies with programmers.
+And then there what is colloquially referred to as *Modern Haskell* which is not
+an official language standard, but an ambiguous term to denote the emerging way
+most Haskellers program with new versions of GHC. The degree and language
+features that are included in modern Haskell is not well-defined and will vary
+between programmers. Some programmers prefer to stay quite close to the
+Haskell2010 standard and only include a few extensions while some go all out and
+attempt to do full dependent types in Haskell.
 
 Modern Haskell is defined by at least some use of type-level programming,
 flexible typeclasses and [Language Extensions].
@@ -1365,11 +1371,54 @@ fib n = fib (n-1) + fib (n-2)
 Operators
 ---------
 
-Operators have a precdence
-Operators are just functions.
-Infix, prefix and postfix.
+An operator is a function that can be applied using infix syntax or partially
+applied using a section. Operators can be defined to use any combination the
+special ASCII symbols or any unicode symbol.
 
-Operators written within parens are written like traditional functions.
+`!` `#` `%` `&` `*` `+` `.` `/` `<` `=` >` `?` `@` `\` `^` `|` `-` `~` `:`
+
+The following are reserved syntax and cannot be overloaded:
+
+`..` `:` `::` `=` `\` `|` `<-` `->` `@` `~` `=>`
+
+Operators are of one of three fixity classes.
+
+* Infix - Place between expressions
+* Prefix - Placed before expressions
+* Postfix - Placed after expressions. See [Postfix Operators].
+
+Expressions involving infix operators are disambiguated by the operator's fixity
+and precedence. Infix operators are either left or right associative. These
+denoted by fixity declarations of the operator `infixr` `infixl` and `infix`.
+The standard operators defined in the Prelude have the following precedence
+table.
+
+```haskell
+infixr 9  .
+infixr 8  ^, ^^, **
+infixl 7  *, /, `quot`, `rem`, `div`, `mod`
+infixl 6  +, -
+infixr 5  ++
+infix  4  ==, /=, <, <=, >=, >
+infixr 3  &&
+infixr 2  ||
+infixr 1  >>, >>=
+infixr 0  $, `seq`
+```
+
+Sections are written as `( op e )` or `( e op )`. For example:
+
+```haskell
+(+1) 3
+(1+) 3
+```
+
+Operators written within enclosed parens are applied like traditional functions.
+For example the following are equivalent:
+
+```haskell
+(+) x y   =   x + y
+```
 
 Typeclasses
 -----------
@@ -1385,13 +1434,24 @@ programming and has varies models of modeling these effects within the type
 system. These range from using [Monads] to building [algebraic models](Effect
 Systems) of effects that draw clear lines between effectful code and pure code.
 The idea of reasoning about where effects can and cannot exist is one of the key
-idea of Haskell, *NOT the idea of trying to avoid side effects*.
+idea of Haskell, **not the idea of trying to avoid side effects**.
 
 Indeed the simplest Hello World program in Haskell is quite simply:
 
 ```haskell
 main :: IO ()
 main = print "Hello World"
+```
+
+Other side effects can include reading from the terminal and prompting the user
+for input.
+
+```haskell
+main :: IO ()
+main = do
+  print "Enter a number"
+  n <- getLine
+  print ("You entered: " ++ n)
 ```
 
 Records
@@ -1405,7 +1465,26 @@ TODO RANT
 Newtypes
 --------
 
-TODO
+Newtypes are a form of zero-cost abstraction that allows developers to specify
+compile-time names for types which have the same underlying representation for
+which the developer wishes to expose a more restrictive interface. This allows
+the compiler to distinguish between different types which have
+representationally identical but semantically different.
+
+For instance velocity can be represented as a scalar quantity represent as a
+double but the user may not want to mix doubles with vector quantities. Newtypes
+allow us to distinguish between scalars and vectors at compile time so that no
+accidental calculations can occur.
+
+```haskell
+newtype Velocity = Velocity Double
+```
+
+Most importantly these newtypes disappear during compilation and the velocity
+type is represented simply as just a machine double with no overhead.
+
+See also the section on [Newtype Deriving] for a further discussion of tricks
+involved with handling newtypes.
 
 Bottoms
 -------
@@ -3723,6 +3802,22 @@ second = (True,)
 ```haskell
 f :: t -> t1 -> t2 -> t3 -> (t, (), t1, (), (), t2, t3)
 f = (,(),,(),(),,)
+```
+
+Postfix Operators
+-----------------
+
+The postfix operators extensions allows user-defined operators that are placed
+after expressions. For example we could define a postfix factorial function.
+
+```haskell
+{-# LANGUAGE PostfixOperators #-}
+
+(!) :: Integer -> Integer
+(!) n = product [1..n]
+
+example :: Integer
+example = (52!)
 ```
 
 MultiWayIf
@@ -10773,12 +10868,13 @@ tools and frameworks for building modern web services. That said, although
 Haskell has web frameworks the userbase of these libraries is several orders of
 magnitude less than common tools like PHP and Wordpress and as such are not
 close to the level of polish, documentation, or userbase. Put simply you won't
-be able to muddle your way through building a Haskell web application by copying
-and pasting code from Stackoverflow.
+be able to drunkenly muddle your way through building a Haskell web application
+by copying and pasting code from Stackoverflow.
 
 Building web applications in Haskell is always a balance between the power and
-flexibility of the Haskell way of building software vs the use of ease of other
-ecosystems based on dynamically typed languages. 
+flexibility of the type-driven way of building software versus the network
+effects of ecosystems based on dynamically typed languages with lower barriers
+to entry. 
 
 Web packages can mostly be broken down into several categories:
 
@@ -10887,6 +10983,11 @@ Haskell data structures and HTML representation.
 ~~~~ {.haskell include="src/27-web/blaze_instance.hs"}
 ~~~~
 
+Lucid
+-----
+
+TODO
+
 Warp
 ----
 
@@ -10916,22 +11017,8 @@ Of importance to note is the Blaze library used here overloads do-notation but
 is not itself a proper monad so the various laws and invariants that normally
 apply for monads may break down or fail with error terms.
 
-A collection of useful related resources can be found on the Scotty wiki: [Scotty Tutorials & Examples](https://github.com/scotty-web/scotty/wiki)
-
-Servant
--------
-
-TODO
-
-Swagger
--------
-
-TODO
-
-GraphQL
--------
-
-TODO
+A collection of useful related resources can be found on the Scotty wiki:
+[Scotty Tutorials & Examples](https://github.com/scotty-web/scotty/wiki)
 
 Hastache
 --------
@@ -10958,6 +11045,11 @@ The MuType and MuContext types can be parameterized by any monad or transformer
 that implements ``MonadIO``, not just IO.
 
 </hr>
+
+Servant
+-------
+
+TODO
 
 Databases
 =========
@@ -11091,7 +11183,8 @@ This yields the result set:
 Sqlite
 ------
 
-TODO
+~~~~ {.haskell include="src/28-databases/sqlite.hs"}
+~~~~
 
 Redis
 -----
@@ -11125,6 +11218,9 @@ Selda
 -----
 
 TODO
+
+~~~~ {.haskell include="src/28-databases/selda.hs"}
+~~~~
 
 
 <hr/>
