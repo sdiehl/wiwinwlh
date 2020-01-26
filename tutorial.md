@@ -1563,6 +1563,7 @@ the ``case`` expression, lacks a definition of what to do with a ``B``:
 
 ```haskell
 data F = A | B
+
 case x of
   A -> ()
 ```
@@ -1764,21 +1765,20 @@ See:
 
 * [xc flag](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/runtime-control.html#idp13041968)
 
-Trace
------
+Printf Tracing
+--------------
 
-Since Haskell is a [pure
-language](http://dev.stephendiehl.com/fun/000_introduction.html#functional-languages),
-it has the unique property that most code is introspectable on its own. As such,
-using [printf](https://www.codingunit.com/printf-format-specifiers-format-conversions-and-formatted-output)
-to display the state of the program at critical times throughout execution is
-often unnecessary because we can simply open [GHCi](#ghci) and test the
-function. Nevertheless, Haskell does come with an unsafe ``trace`` function
-which can be used to perform arbitrary print statements outside of the IO monad.
+Since Haskell is a  pure language it has the unique property that most code is
+introspectable on its own. As such, using printf to display the state of the
+program at critical times throughout execution is often unnecessary because we
+can simply open [GHCi] and test the function. Nevertheless, Haskell does come
+with an unsafe ``trace`` function which can be used to perform arbitrary print
+statements outside of the IO monad. You can place these statements wherever you
+like in your code without without IO restrictions. Logging of this sort is a
+"benign effect" since it is not observable.
 
 ~~~~ {.haskell include="src/01-basics/trace.hs"}
 ~~~~
-
 
 <div class="alert alert-danger">
 Trace uses ``unsafePerformIO`` under the hood and should **not** be used in
@@ -11552,6 +11552,8 @@ setting a compiler session from a cradle is shown bellow:
 Abstract Syntax Tree
 --------------------
 
+TODO
+
 ```haskell
 data GenLocated l e = L l e
   deriving (Eq, Ord, Data, Functor, Foldable, Traversable)
@@ -11563,6 +11565,8 @@ type Located = GenLocated SrcSpan
 
 Parser
 ------
+
+TODO
 
 * parseModule 
 * parseSignature 
@@ -13456,18 +13460,25 @@ import Text.Show.Pretty (ppShow)
 let pprint x = putStrLn $ ppShow x
 ```
 
-pretty-show
------------
+pretty-simple
+-------------
 
-Pretty-show is a Haskell library that renders Show instances in a prettier way.
-It exposes functions which are drop in replacements for show and print.
+pretty-simple is a Haskell library that renders Show instances in a prettier
+way.  It exposes functions which are drop in replacements for show and print.
 
 ```haskell
-ppShow :: Show a => a -> String
-pPrint :: Show a => a -> IO ()
+pPrint :: (MonadIO m, Show a) => a -> m ()
+pShow :: Show a => a -> Text
+pPrintNoColor :: (MonadIO m, Show a) => a -> m ()
 ```
 
-See [pretty-show](https://hackage.haskell.org/package/pretty-show-1.9.5/docs/Text-Show-Pretty.html)
+A simple example is shown below.
+
+~~~~ {.haskell include="src/30-languages/prettysimple.hs"}
+~~~~
+
+Pretty-simple can be used as the default GHCi printer as shown in the
+[.ghci.conf] section.
 
 Haskeline
 ---------
