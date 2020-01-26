@@ -5373,11 +5373,6 @@ Haskell also has a variadic ``printf`` function in the style of C.
 ~~~~ {.haskell include="src/07-text-bytestring/printf.hs"}
 ~~~~
 
-Pretty Simple
--------------
-
-TODO
-
 Overloaded Lists
 ----------------
 
@@ -7004,11 +6999,6 @@ An example of usage:
 See:
 
 * [recursion-schemes](http://hackage.haskell.org/package/recursion-schemes)
-
-Data types à la carte
-----------------------
-
-TODO
 
 Hint and Mueval
 ---------------
@@ -14366,8 +14356,8 @@ f' :: b -> a
 Such that:
 
 ```haskell
-f . f' = id
-f'. f  = id
+f  . f' = id
+f' . f  = id
 ```
 
 For example the types ``Either () a`` and ``Maybe a`` are isomorphic.
