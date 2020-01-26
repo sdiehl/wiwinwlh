@@ -1,5 +1,5 @@
 PANDOC = pandoc
-IFORMAT = markdown
+IFORMAT = markdown+raw_tex+raw_attribute
 GHC = ghc
 
 HTEMPLATE = resources/page.tmpl

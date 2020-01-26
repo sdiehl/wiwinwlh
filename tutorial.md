@@ -3362,6 +3362,10 @@ than people who do web programming. We will use the following classifications:
 
 <extensions></extensions>
 
+```{=latex}
+\csvautolongtable[respect all]{extensions.csv}
+```
+
 See: [GHC Extension Reference](https://ghc.gitlab.haskell.org/ghc/doc/users_guide/lang.html)
 
 The Benign
@@ -5286,19 +5290,6 @@ instance IsList [a] where
 ```
 
 ~~~~ {.haskell include="src/07-text-bytestring/overloadedlist.hs"}
-~~~~
-
-String Conversions
-------------------
-
-Playing "type-tetris" to convert between Strings explicitly can be frustrating,
-fortunately there are several packages that automate the conversion using
-typeclasses to automatically convert between any two common string
-representations automatically. We can then write generic comparison and
-concatenation operators that automatically convert types of operands to a like
-form.
-
-~~~~ {.haskell include="src/07-text-bytestring/convert.hs"}
 ~~~~
 
 Regex

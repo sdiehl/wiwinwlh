@@ -3,11 +3,6 @@ module Example where
 import Data.Curve.Edwards.Ed25519 as Ed25519
 import Protolude
 
--- type Fr = Prime 7237005577332262213973186563042994240857116359379907606001950938285454250989
--- type Fq = Prime 57896044618658097711785492504343953926634992332820282019728792003956564819949
--- type PA = Point Edwards Affine Ed25519 Fq Fr
--- type PP = Point Edwards Projective Ed25519 Fq Fr
-
 -- generate random affine ponit
 p1 :: Ed25519.PA
 p1 = Ed25519.gen
