@@ -1332,6 +1332,7 @@ over the years.
 
 The "ground types' you'll see are quite common 
 
+* `()` - The unit type
 * `Char` - ASCII Characters
 * `Bool` - Boolean values
 * `Int` - Machine integers
@@ -1571,7 +1572,20 @@ instance Equal Bool where
   equal False True  = False
 ```
 
-Over ordering values we would have:
+Over the unit type, the instance is trivial:
+
+```haskell
+instance Equal () where
+  equal () () = True
+```
+
+Over Ordering defined as
+
+```haskell
+data Ordering = LT | EQ | GT
+```
+
+we would have:
 
 ```haskell
 instance Equal Ordering where
@@ -1627,6 +1641,21 @@ frequently and defined over many prelude types:
   real values.
 * **RealFrac** - Provides an interface for rounding real values.
 * **RealFloat** - Provides an interface for working with IEE754 operations.
+
+Many of the default classes have instances that can be deriving automatically.
+After the definition of a datatype you can add a `deriving` clause which will
+generate the instances for this datatype automatically. This does not work
+universally but for many instances which have boiilerplate definitions GHC is
+quite clever and can save you from writing quite a bit of code by hand.
+
+For example for a custom list type.
+
+```haskell
+data List a
+  = Cons a (List a)
+  | Nil
+  deriving (Eq, Ord, Show)
+```
 
 Side Effects
 ------------
