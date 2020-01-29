@@ -22,9 +22,9 @@ Author
 
 This text is authored and edited by Stephen Diehl.
 
-* Web: www.stephendiehl.com
-* Twitter: https://twitter.com/smdiehl
-* Github: https://github.com/sdiehl
+* Web: [www.stephendiehl.com](www.stephendiehl.com)
+* Twitter: [https://twitter.com/smdiehl](https://twitter.com/smdiehl)
+* Github: [https://github.com/sdiehl](https://github.com/sdiehl)
 
 License
 -------
@@ -1326,9 +1326,9 @@ production but are likely to rapidly become so in the next decade.
 For now, the Haskell way of thinking it that a single static type is a bit too
 restrictive. And that it is easier to add dynamic components to a richly typed
 ambient language than the inverse way around.  Haskell's rich type system is
-based on lambda calculus known as System F (See [Rank-N Types]) and has a vast
-amount of extensions to support more type-level programming added to it over the
-years.
+based on lambda calculus known as Girard's System-F (See [Rank-N Types]) and has
+a vast amount of extensions to support more type-level programming added to it
+over the years.
 
 The "ground types' you'll see are quite common 
 
@@ -7086,15 +7086,23 @@ compose f g = f . unFix . g
 recursion-schemes
 -----------------
 
-<div class="alert alert-danger">
-This is an advanced section, and is not typically necessary to write Haskell.
-</div>
+Recursion schemes are a generally way of classifying a families of traversal
+algorithms that modify data structures recursively. Recursion schemes give rise
+to a rich set of algebraic structures which can be composed to devise all sorts
+of elaborate term rewrite systems. Most applications of recursion schemes occur
+in the context of graph rewriting or abstract syntax tree manipulation. 
 
-Name
------          ---------------------------------                            -----------------
-Catamorphism   ``foldr :: (a -> b -> b) -> b -> [a] -> b``                  Deconstructs a data structure
-Anamorphism    ``unfoldr :: (b -> Maybe (a, b)) -> b -> [a]``               Constructs a structure level by level
-Hylomorphism   ``hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b``  Hylomorphism
+Several basic recursion schemes form the foundation of these rules. These are
+called *Catamorphisms*, *Anamorphisms* and *Hylomorphisms*.
+
+Name           Type Signature                                              Description
+-----          ---------------------------------                           -----------------
+Catamorphism   ``cata :: (a -> b -> b) -> b -> [a] -> b``                  Deconstructs a data structure
+Anamorphism    ``ana :: (b -> Maybe (a, b)) -> b -> [a]``                  Constructs a structure level by level
+Hylomorphism   ``hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b`` Hylomorphism
+
+For Fix point type over a type `f :: * -> *` we can write down the recursion
+schemes as the following definitions:
 
 ```haskell
 -- | A fix-point type.
@@ -7107,10 +7115,32 @@ cata f = f . fmap (cata f) . unFix
 -- | Anamorphism or generic function unfold.
 ana :: Functor f => (a -> f a) -> (a -> Fix f)
 ana f = Fix . fmap (ana f) . f
+
+-- | Hylomorphism
+hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b
+hylo f g = h where h = f . fmap h . g
 ```
 
-The code from the F-algebra examples above is implemented in an off-the-shelf
-library called ``recursion-schemes``.
+
+A library called ``recursion-schemes`` implements these basic recursion schemes
+as well as whole family of higher-order combinators off the shelf. These are
+implemented in terms of two functions `Foldable` and `Unfoldable` which are
+extensions of a base functor type. For the `Fix` type above these functions
+expand into the following definitions:
+
+```haskell
+class Functor t => Foldable t where
+  project :: t -> t t
+  cata :: (t a -> a) -> t -> a
+  cata f = c where c = f . fmap c . project
+
+class Functor t => Unfoldable t where
+  embed :: t -> t t
+  ana :: (a -> Base t a) -> a -> t
+  ana g = a where a = embed . fmap a . g
+```
+
+Their use case is shown below:
 
 ~~~~ {.haskell include="src/14-interpreters/recursion_schemes.hs"}
 ~~~~
@@ -10147,6 +10177,14 @@ race :: IO a -> IO b -> IO (Either a b)
 Graphics
 ========
 
+Haskell does not have a robust graphic library ecosystem. There are two main
+libraries of note which.
+
+* **[Diagrams]** - A embedded domain specific languages for constructing vector
+  graphics.
+* **Gloss** - A wrapper for OpenGL bindings for building simple 2D and 3D
+  graphics and animations. 
+
 Diagrams
 --------
 
@@ -10813,8 +10851,20 @@ See
 zkSNARKs
 --------
 
-TODO
+zkSNARKS (zero knowledge succinct non-interactive arguments of knowledge) are a
+modern cryptographic construction that enable two parties called the *Prover*
+and *Verifier* to convince the verifier that a general computational statement
+is true without revealing anything else.
 
+Haskell has a variety of libraries for building zkSNARK protocols including
+libraries to build circuit representations of embedded domain specific languages
+and produce succinct pairing based zero knowledge proofs.
+
+* [arithmetic-circuits](https://github.com/adjoint-io/arithmetic-circuits)
+  Construction arithmetic circuits and Rank-1 constraint (R1CS) systems in
+  Haskell.
+* [zkp](https://github.com/adjoint-io/zkp) - Implementation of the Groth16
+  protocol in Haskell based on bilinear pairings.
 
 Date and Time
 =============
