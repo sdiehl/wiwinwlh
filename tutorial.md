@@ -12,20 +12,10 @@ This is the fifth major draft of this document since 2009.
 * **[EPUB Version](http://dev.stephendiehl.com/hask/tutorial.epub)**
 * **[Kindle Version](http://dev.stephendiehl.com/hask/tutorial.mobi)**
 
-License
--------
-
-This code and text are dedicated to the public domain. You can copy, modify,
-distribute and perform the work, even for commercial purposes, all without
-asking permission.
-
-You may copy and paste any code here verbatim into your codebase, wiki, blog,
-book or Haskell musical production as you see fit. The Markdown and Haskell
-source is [available on
-Github](https://github.com/sdiehl/wiwinwlh/tree/master/src). Pull requests are
-always accepted for changes and additional content. This is a living document.
-The only way this document will stay up to date is through the kindness of
-readers like you and community patches and [pull requests](https://github.com/sdiehl/wiwinwlh) on Github.
+Pull requests are always accepted for changes and additional content. This is a
+living document.  The only way this document will stay up to date is through the
+kindness of readers like you and community patches and [pull
+requests](https://github.com/sdiehl/wiwinwlh) on Github.
 
 Author
 ------
@@ -35,6 +25,26 @@ This text is authored and edited by Stephen Diehl.
 * Web: www.stephendiehl.com
 * Twitter: https://twitter.com/smdiehl
 * Github: https://github.com/sdiehl
+
+License
+-------
+
+Copyright © 2009-2020 Stephen Diehl
+
+This code included in the text is dedicated to the public domain.  You can copy,
+modify, distribute and perform the work, even for commercial purposes, all
+without asking permission.
+
+You may distribute this text in its full form freely, but may not reauthor or
+sublicense this work. Any reproductions of major portions of the text must
+include attribution.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 <hr/>
 
@@ -223,7 +233,7 @@ packages: ./lib-core/
 *stack.yaml*
 
 ```yaml
-resolver: lts-14.0
+resolver: lts-14.20
 packages:
 - 'lib-core'
 - 'lib-http'
@@ -510,7 +520,7 @@ mtl-compat          >= 0.2  && <0.3,
 transformers-compat >= 0.4  && <0.7
 ```
 
-```text
+```perl
 if !impl(ghc >= 8.0)
   Build-Depends: fail >= 4.9 && <4.10
 ```
@@ -549,10 +559,11 @@ of your existing project's ``cabal`` file by running:
 stack init
 ```
 
-An example ``stack.yaml`` file for [GHC](https://www.haskell.org/ghc) 7.10.3 would look like:
+An example ``stack.yaml`` file for [GHC](https://www.haskell.org/ghc) 8.8.1
+would look like:
 
 ```bash
-resolver: lts-7.12
+resolver: lts-14.20
 flags: {}
 extra-package-dbs: []
 packages: []
@@ -1276,10 +1287,72 @@ given argument `f` which is itelf a function to a value x twice.
 ```haskell
 applyTwice f x = f (f x)
 ```
+Types
+-----
 
+Typed functional programming is essential to the modern Haskell paradigm. But
+what are types precisely?
+
+The *syntax* of a programming language is described by the constructs that
+define its types, and its *semantics* is described by the interactions among
+those constructs. A type system overlays additional structure on top of the
+syntax that impose constraints on the formation of expressions in terms of based
+on the context in which they occur.
+
+Dynamic programming languages often confuse this terminology and bit and
+associate types with values at evaluation, whereas static languages associate
+types to expressions *before evaluation*. Indeed, dynamic languages are just a
+special case of static languages with a single static type.
+
+Static languages may optionally also push these types to the evaluation in the
+form of runtime type information.  Haskell fully has the capacity to do this
+(see [Dynamic]) but this style of programming is not idiomatic Haskell, instead
+the trend is to "make invalid states unrepresentable" at compile-time rather
+than performing massive amounts of runtime checks.
+
+Dynamic languages check these "types" at run-time, whereas static language check
+types at compile time. Dynamic languages are in a sense as statically typed as
+static languages, however they have a degenerate type system with only one type.
+
+Under this set of definitions, the endless debate and opposition between static
+and dynamic typing is really a shallow debate. The real question for programmers
+is not whether to have static typing, but which type system to embrace.
+
+On long time-scales the general trend of programming history has always been
+toward more typed languages and with richer types. Indeed Haskell's model
+itself will eventually become antiquated in favour of the next evolution of
+Dependent types. The next evolution of these type systems are not quite ready
+for full production but are likely to rapidly become so in the next decade.
+
+For now, the Haskell way of thinking it that a single static type is a bit too
+restrictive. And that it is easier to add dynamic components to a richly typed
+ambient language than the inverse way around.  Haskell's rich type system is
+based on lambda calculus known as System F (See [Rank-N Types]) and has a vast
+amount of extensions to support more type-level programming added to it over the
+years.
+
+The "ground types' you'll see are quite common 
+
+* `Char` - ASCII Characters
+* `Bool` - Boolean values
+* `Int` - Machine integers
+* `Integer` - GMP arbitrary precision integers
+* `Float` - Machine floating point values
+* `Double` - Machine double floating point values
+
+As well has parameterised types which are associated with common data structures
+such as lists and tuples.
+
+* `[a]` -- Homogeneous lists with elements of a type `a`
+* `(a,b)` -- Tuple with two elements of type `a` and `b`
+* `(a,b,c)` -- Tuple with three elements of type `a`, `b`, and `c`
 
 Type Signatures
 ---------------
+
+A toplevel Haskell function consists of two lines. The *value-level* definition
+which is a function name, followed by its arguments, followed by the function
+body which compute the value it yields.
 
 ```haskell
 myFunction x y = x ^ 2 + y ^ 2
@@ -1290,6 +1363,10 @@ myFunction x y = x ^ 2 + y ^ 2
      |     +-------- first argument 
      +-------------- function
 ```
+
+The *type-level* definition is the function name followed by the type of the
+arguments separated by arrows with the final term being the type of the function
+body which is the type of value yielded by the function itself.
 
 
 ```haskell
@@ -1302,10 +1379,15 @@ myFunction :: Int -> Int -> Int
      +----------------------- function
 ```
 
+A simple example of a function which adds to integers.
+
 ```haskell
 f :: Integer -> Integer -> Integer
 f x y = x + y
 ```
+
+And functions are capable of invoking other functions inside of their function
+bodies.
 
 ```haskell
 add :: Integer -> Integer -> Integer
@@ -1315,30 +1397,64 @@ inc :: Integer -> Integer
 inc = add 1
 ```
 
+The simplest function, called the *identity function* is the function which
+takes a single value and simply returns it back. This is an example of a
+polymorphic function since it can handle values of *any type*. The identity
+functions work just as well over strings as it can integers.
+
 ```haskell
 id :: a -> a
 id x = x
 ```
+
+This can alternatively be written in terms of an anonymous *lambda function*
+which is backslash following by a space separated list of arguments, followed by
+a function body.
 
 ```haskell
 id :: a -> a
 id = \x -> x
 ```
 
+One of the big ideas in functional programming is that functions are themselves
+first class values and can be passed to other functions as arguments themselves.
+For example the `applyTwice` function takes an argument `f` which is of type
+(`a -> a`) and applies that function over a given value `x` twice and yields the
+result. `applyTwice` is a higher-order function which transforms functions into
+other functions.
+
 ```haskell
 applyTwice :: (a -> a) -> a -> a
 applyTwice f x = f (f x)
 ```
 
+To the left of a type signature you will often see a big arrow `=>` which
+denotes a set of constraints over the type signature. Each of these constraints
+will be in uppercase and will normally mention at least one of the type
+variables on the right hand side of the arrow. These constraints can mean many
+things but in the simplest from they denote that a type variable has an
+implementation of a [Type Classes]. The `add` function below operate over any
+two similar values `x` and `y` which have a numerical interface for adding them
+together.
 
 ```haskell
-add :: Num a => a -> a -> a
+add :: (Num a) => a -> a -> a
 add x y = x + y
 ```
 
-Constraints
-Type variables
-Explicit annotations
+Type signatures can also appear at the value level in the form of *explicit type
+signatures* which are denoted in parentheses and have an explicit type
+ascription to a subexpression in the function body. 
+
+```haskell
+add1 :: Int -> Int
+add1 x = x + (1 :: Int)
+```
+
+These are sometimes needed to provide additional hints to the typechecker when
+specific terms are ambiguous to the typechecker or additional language
+extensions are enabled which don't have precise inference methods for deducing
+all type variables.
 
 Currying
 --------
@@ -1710,11 +1826,10 @@ programmer than cannot be manifest in the Haskell type system.
 Debugger
 --------
 
-Since [GHCi](#ghci) version 6.8.1, a built-in
+Since [GHCi] version 6.8.1, a built-in
 [debugger](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/ghci-debugger.html)
 has been available, although its use is somewhat rare. Debugging uncaught
-exceptions from bottoms or asynchronous exceptions is in similar style to
-debugging segfaults with gdb.
+exceptions from bottoms is similar style to debugging segfaults with gdb.
 
 ```haskell
 λ: :set -fbreak-on-exception       -- Sets option for evaluation to stop on exception
@@ -3484,7 +3599,7 @@ APIs.
 * [DataKinds](Promotion)
 * DerivingVia
 * [GADTs]
-* RankNTypes
+* RankN
 * ExistentialQuantification
 * [TypeFamilies](Type Families)
 * [TypeInType]
@@ -5706,10 +5821,20 @@ See: [Polyvariadic functions](http://okmij.org/ftp/Haskell/polyvariadic.html)
 Error Handling
 ==============
 
+Maybe
+-----
+
+TODO
+
+Either
+------
+
+TODO
+
 Control.Exception
 -----------------
 
-The low-level (and most dangerous) way to handle errors is to use the ``throw`` and ``catch`` functions which
+The most low-level way to handle errors is to use the ``throw`` and ``catch`` functions which
 allow us to throw extensible exceptions in pure code but catch the resulting exception within IO.  Of
 specific note is that return value of the ``throw`` inhabits all types. There's no reason to use this for
 custom code that doesn't use low-level system operations.
@@ -5740,6 +5865,12 @@ Exceptions
 The problem with the previous approach is having to rely on GHC's asynchronous exception handling inside of IO
 to handle basic operations. The ``exceptions`` provides the same API as ``Control.Exception`` but loosens the
 dependency on IO.
+
+TODO
+
+* MonadThrow
+* MonadCatch
+* MonadMask
 
 ~~~~ {.haskell include="src/09-errors/exceptions.hs"}
 ~~~~
@@ -5805,17 +5936,6 @@ instance MonadError e (Either e) where
 See:
 
 * [Control.Monad.Except](https://hackage.haskell.org/package/mtl-2.2.1/docs/Control-Monad-Except.html)
-
-exceptions
-----------
-
-TODO
-
-* MonadThrow
-* MonadCatch
-* MonadMask
-
-https://hackage.haskell.org/package/exceptions
 
 spoon
 -----
@@ -9072,11 +9192,54 @@ fromFloatDigits :: RealFloat a => a -> Scientific
 ~~~~ {.haskell include="src/19-numbers/scientific.hs"}
 ~~~~
 
+Polynomials
+-----------
+
+TODO
+
+Group Theory
+------------
+
+TODO
+
+Combinatorics 
+-------------
+
+TODO
+
+Number Theory
+-------------
+
+TODO
+
+Stochastic Calculus 
+-------------------
+
+TODO
+
+Differential Equations
+-----------------------
+
+TODO
+
+Runge-Kutta 
+
+
+Linear Algebra 
+--------------
+
+TODO
+
 Statistics
 ----------
 
 ~~~~ {.haskell include="src/19-numbers/stats.hs"}
 ~~~~
+
+Markov chain Monte Carlo
+------------------------
+
+TODO
 
 Constructive Reals
 ------------------
@@ -10999,8 +11162,6 @@ from JSON from RESTful services.
 
 ~~~~ {.haskell include="src/27-web/req.hs"}
 ~~~~
-
-TODO
 
 Blaze
 -----
@@ -15163,6 +15324,11 @@ JavaScript internally refers to runtime value tags as *types*, which differs
 from the Haskell notion of types.
 
 The majority of JavaScript implementations are garbage collected.
+
+TypeScript
+----------
+
+TODO
 
 Kotlin
 ------
