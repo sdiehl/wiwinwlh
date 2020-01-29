@@ -12402,7 +12402,10 @@ Primops
 -------
 
 GHC has many primitive operations that are intrinsics built into the compiler.
-These functions operate over unboxed (MagicHash) types.
+You can manually invoke these functions inside of optimised code which allows
+you to drop down to the same level of performance you can achieve in C or by
+hand-writing inline assembly.  These functions are intrinsics that are builtin
+to the compiler and operate over unboxed machines types.
 
 ```haskell
 (+#)        :: Int# -> Int# -> Int#
@@ -12410,9 +12413,33 @@ gtChar#     :: Char# -> Char# -> Int#
 byteSwap64# :: Word# -> Word#
 ```
 
-TODO
+Depending on the choice of code generator and CPU architecture these
+instructions will map to single CPU instructions oaver machines.
 
 See [ghc-prim](https://hackage.haskell.org/package/ghc-prim-0.5.3/docs/GHC-Prim.html)
+
+SIMD Intrinsics
+---------------
+
+GHC has intrstructions for generating code that use SIMD vector instructions.
+For example the following `<8xfloat>` and `<8xdouble>` are used internally by
+the following datatypes
+
+* `FloatX8#`
+* `DoubleX8#`
+
+And operations over these map to single CPU instructions that GHC can generate
+on CPU architectures that support it.
+
+```haskell
+-- Add two vectors element-wise.
+plusDoubleX8# :: DoubleX8# -> DoubleX8# -> DoubleX8#
+```
+
+Using the native SIMD instructions you can perform low-level vectorised
+operations over unboxed memory, typically found in numerical computing problems.
+
+See: [SIMD Operations](https://hackage.haskell.org/package/ghc-prim-0.5.3/docs/GHC-Prim.html#g:29)
 
 Rewrite Rules
 -------------
