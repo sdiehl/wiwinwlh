@@ -9363,15 +9363,18 @@ fromFloatDigits :: RealFloat a => a -> Scientific
 Polynomials
 -----------
 
-TODO
+The standard library for working with symbolic polynomials is the `poly`
+library. It exposes a interface for working with univariate polynomials which
+are backed by an efficient vector library. This allows us to efficiently
+manaipulate and perform arithmetic operations over univariate polynomails.
+
+For example we can instantiate symbolic polynomials, write recurrence rules and
+generators over them and factor them.
 
 ~~~~ {.haskell include="src/19-numbers/polynomial.hs"}
 ~~~~
 
-Group Theory
-------------
-
-TODO
+See: [cobinat](https://hackage.haskell.org/package/poly)
 
 Combinatorics 
 -------------
@@ -15828,3 +15831,4 @@ Chapters:
 * [31-template-haskell/  ](https://github.com/sdiehl/wiwinwlh/tree/master/src/31-template-haskell/)
 * [32-cryptography/      ](https://github.com/sdiehl/wiwinwlh/tree/master/src/32-cryptography)
 * [33-categories/        ](https://github.com/sdiehl/wiwinwlh/tree/master/src/33-categories/)
+* [34-time/              ](https://github.com/sdiehl/wiwinwlh/tree/master/src/34-time/)
