@@ -4565,7 +4565,13 @@ There is also an incoherent instance.
 TypeSynonymInstances
 -------------------
 
-TODO
+Normally type class definitions are restricted to be being defined only over
+fully expanded types with all type synonym indirections removed. Type synonyms
+introduce a "naming indirection" that can included in the instance search to
+allow you to write synonym instances for multiple synonyms which expand to
+concrete types.
+
+This is used quite often in modern Haskell.
 
 ~~~~ {.haskell include="src/04-extensions/synonym.hs"}
 ~~~~
@@ -4581,7 +4587,8 @@ evaluation, and there are nuanced arguments for having either paradigm be the
 default. Haskell takes a hybrid approach and allows strict evaluation when
 needed and uses laziness by default. Needless to say, we can always find
 examples where strict evaluation exhibits worse behavior than lazy evaluation
-and vice versa.
+and vice versa. These days Haskell can be both as lazy or as strict as you like,
+giving you options for however you prefer to program.
 
 The primary advantage of lazy evaluation in the large is that algorithms that
 operate over both unbounded and bounded data structures can inhabit the same
@@ -4594,15 +4601,10 @@ lazy vs strict processing often necessitates manifesting large intermediate
 structures in memory when such composition would "just work" in a lazy language.
 
 By virtue of Haskell being the only language to actually explore this point in
-the design space to the point of being industrial strength; knowledge about lazy
-evaluation is not widely absorbed into the collective programmer consciousness
-and can often be non-intuitive to the novice. This doesn't reflect on the model
-itself, merely on the need for more instruction material and research on
-optimizing lazy compilers.
-
-The paradox of Haskell is that it explores so many definably unique ideas (
-laziness, purity, typeclasses ) that it becomes difficult to separate out the
-discussion of any one from the gestalt of the whole implementation.
+the design space, knowledge about lazy evaluation is not widely absorbed into
+the collective programmer consciousness and can often be non-intuitive to the
+novice. Some time is often needed to fully grok how lazy evaluation works and
+how to wield it's great power and when to force strictness.
 
 See:
 
@@ -5418,6 +5420,13 @@ fluffy = "Fluffy"
 Import Conventions
 ------------------
 
+Since there are so many modules that provide string datatypes, and these modules
+are used ubiquitously, some conventions are often adopted to import these
+modules as specific agreed-upon qualified names. In many Haskell projects you
+will see the following social conventions used for distinguish text types.
+
+For datatypes:
+
 ```haskell
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
@@ -5427,14 +5436,26 @@ import qualified Data.ByteString.Char8 as C
 import qualified Data.ByteString.Lazy.Char8 as CL
 ```
 
+For IO operations:
+
 ```haskell
 import qualified Data.Text.IO as TIO
 import qualified Data.Text.Lazy.IO as TLIO
 ```
 
+For encoding operations:
+
 ```haskell
 import qualified Data.Text.Encoding as TE
 import qualified Data.Text.Lazy.Encoding as TLE
+```
+
+In addition many libraries and alternative preludes will define the following
+type synonyms:
+
+```haskell
+type LText = TL.Text
+type LByteString = BL.ByteString
 ```
 
 Text
@@ -10178,7 +10199,7 @@ Graphics
 ========
 
 Haskell does not have a robust graphic library ecosystem. There are two main
-libraries of note which.
+libraries of note:
 
 * **[Diagrams]** - A embedded domain specific languages for constructing vector
   graphics.
@@ -10861,7 +10882,7 @@ libraries to build circuit representations of embedded domain specific languages
 and produce succinct pairing based zero knowledge proofs.
 
 * [arithmetic-circuits](https://github.com/adjoint-io/arithmetic-circuits)
-  Construction arithmetic circuits and Rank-1 constraint (R1CS) systems in
+  Construction arithmetic circuits and Rank-1 constraint systems (R1CS) in
   Haskell.
 * [zkp](https://github.com/adjoint-io/zkp) - Implementation of the Groth16
   protocol in Haskell based on bilinear pairings.
@@ -10872,7 +10893,35 @@ Date and Time
 time
 ----
 
-TODO
+Haskell's datetime library is unambiguously called *time* it exposes six core
+data structure which hold temporal quantities of various precisions.
+
+* **Day** - Datetime triple of day, month, year in the Gregorian calendar system
+* **TimeOfDay** - A clock time measure in hours, minutes and seconds
+* **UTCTime** - A unix time measured in seconds since the Unix epoch.
+* **TimeZone** - A ISO8601 timezone
+* **LocalTime** - A Day and TimeOfDay combined into a aggregate type.
+* **ZonedTime** - A LocalTime combined with TimeZone.
+
+There are several delta types that correspond to changes in time measured in
+various units of days or seconds.
+
+* **NominalDiffTime** - Time delta measured in picoseconds.
+* **CalendarDiffDays** - Calendar delta measured in months and days offset.
+* **CalendarDiffTime** - Time difference measured in months and picoseconds.
+
+~~~~ {.haskell include="src/34-time/Time.hs"}
+~~~~
+
+ISO8601 
+-------
+
+The ISO standard for rendering and parsing datetimes can work with the default
+temporal datatypes. These work bidirectionally for both parsing and pretty
+printing. Simple use case is shown below:
+
+~~~~ {.haskell include="src/34-time/Strings.hs"}
+~~~~
 
 Data Formats
 =============
