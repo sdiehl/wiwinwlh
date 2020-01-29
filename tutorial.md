@@ -1470,6 +1470,8 @@ Algebraic Datatypes
 TODO
 
 Recursive types
+Constructors
+Datatypes with infix constructors
 
 Pattern Matching
 -----------------
@@ -1486,6 +1488,8 @@ fib 0 = 0
 fib 1 = 1
 fib n = fib (n-1) + fib (n-2)
 ```
+
+Pattern matching on lists
 
 Operators
 ---------
@@ -1542,7 +1546,87 @@ For example the following are equivalent:
 Typeclasses
 -----------
 
-TODO
+Typeclasses one of the core abstractions Haskell. Just as wrote polymorphic
+functions before which operating over all given types, we can use type classes
+which provide a form of bounded polymorphism which constrain type variables to a
+subset of types which implement a given class.
+
+For example we can define an equality class which allows us to define an
+overloaded notion of equality depending on the data structure provided.
+
+```haskell
+class Equal a where
+  equal :: a -> a -> Bool
+```
+
+Then we can define this typeclass over several different types. These
+definitions are called **typeclass instances**. For example over boolean values
+the equality typeclass would be defined as:
+
+```haskell
+instance Equal Bool where
+  equal True True   = True
+  equal False False = True
+  equal True False  = False
+  equal False True  = False
+```
+
+Over ordering values we would have:
+
+```haskell
+instance Equal Ordering where
+  equal LT LT = True
+  equal EQ EQ = True
+  equal GT GT = True
+  equal _ _   = False
+```
+
+For more complex data structures like lists we can write this instance
+recursively in terms of pattern matching on list elements to check their
+equality all the way down the spine of the list. This enforces that the
+underlying element of the list itself has a notion of equality, so we put this
+in the **typeclass context** which is written to the left of the fat arrow
+`=>`.
+
+```haskell
+instance (Equal a) => Equal [a] where
+  equal [] [] = True   -- Empty lists are equal
+  equal [] ys = False  -- Lists of unequal size are not equal
+  equal xs [] = False
+  equal (x:xs) (y:ys) = equal x y && equal xs ys
+```
+
+And for tuples we would check each element respectively. Note that this has two
+constraints in the context of the typeclass that both type variables `a` and `b`
+have to themselves have a Equal instance.
+
+```haskell
+instance (Equal a, Equal b) => Equal (a,b) where
+  equal (x0, x1) (y0, y1) = equal x0 y0 && equal x1 y1
+```
+
+The default prelude comes with a variety of typeclasses that are used
+frequently and defined over many prelude types:
+
+* **Num** - Provides a basic numerical interface for values with addition,
+  multiplication, subtraction, and negation.
+* **Eq** - Provides an interface for values that can be tested for equality.
+* **Ord** - Provides an interface for values that have an total ordering.
+* **Read** - Provides an interface for values that can be read from a string.
+* **Show** - Provides an interface for values that can be printed to a string.
+* **Enum** - Provides an interface for values that are enumerable to integers.
+* **Semigroup** - Provides an algebraic semigroup interface. See [Semigroup].
+* **Functor** - Provides an algebraic functor interface. See [Functors].
+* **Monad**  - Provides an algebraic monad interface. See [Monads].
+* **Category**  - Provides an algebraic category interface. See [Categories].
+* **Bounded** - Provides an interface for enumerable values with bounds.
+* **Integral** - Provides an interface for integral-like quantities. 
+* **Real** - Provides an interface for real-like quantities.
+* **Fractional** - Provides an interface for rational-like quantities.
+* **Floating** - Provides an interface for defining transcendental functions over
+  real values.
+* **RealFrac** - Provides an interface for rounding real values.
+* **RealFloat** - Provides an interface for working with IEE754 operations.
 
 Side Effects
 ------------
@@ -10887,8 +10971,8 @@ and produce succinct pairing based zero knowledge proofs.
 * [zkp](https://github.com/adjoint-io/zkp) - Implementation of the Groth16
   protocol in Haskell based on bilinear pairings.
 
-Date and Time
-=============
+Dates and Times
+===============
 
 time
 ----
