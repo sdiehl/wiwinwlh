@@ -9365,6 +9365,9 @@ Polynomials
 
 TODO
 
+~~~~ {.haskell include="src/19-numbers/polynomial.hs"}
+~~~~
+
 Group Theory
 ------------
 
