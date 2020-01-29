@@ -14538,7 +14538,8 @@ operations map three elements. Higher-level operations are usually not given
 specific names.
 
 Constants are specific elements of the set, that generalise values like 0 and 1
-which have specific properties in relation 
+which have specific laws in relation to the operations defined over the set.
+Several of the common algebraic laws are defined in the table below:
 
 ```{=latex}
 \noindent\rule{\textwidth}{1pt}
@@ -14802,12 +14803,14 @@ anticommutative inv op x y  =  x `op` y == inv (y `op` x)
 Math:
 
 $$
-f(x \times y) = f(x) \times f(y)
+f(x \times y) = f(x) + f(y)
 $$
 
 Haskell:
 
-f (a `op` b) = (f a) `op` (f b)
+```haskell
+f (a `op0` b) = (f a) `op1` (f b)
+```
 
 Haskell Predicates:
 
