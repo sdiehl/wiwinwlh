@@ -1316,13 +1316,12 @@ static languages, however they have a degenerate type system with only one type.
 
 Under this set of definitions, the endless debate and opposition between static
 and dynamic typing is really a shallow debate. The real question for programmers
-is not whether to have static typing, but which type system to embrace.
-
-On long time-scales the general trend of programming history has always been
-toward more typed languages and with richer types. Indeed Haskell's model
-itself will eventually become antiquated in favour of the next evolution of
-Dependent types. The next evolution of these type systems are not quite ready
-for full production but are likely to rapidly become so in the next decade.
+is not whether to have static typing, but **which type system to embrace**. On
+long time-scales the general trend of programming history has always been toward
+more typed languages and with richer types. Indeed, the Haskell model itself
+will eventually become antiquated in favour of the next evolution of *dependent
+types*.  The next evolution of these type systems are not quite ready for full
+production but are likely to rapidly become so in the next decade.
 
 For now, the Haskell way of thinking it that a single static type is a bit too
 restrictive. And that it is easier to add dynamic components to a richly typed
@@ -1346,6 +1345,10 @@ such as lists and tuples.
 * `[a]` -- Homogeneous lists with elements of a type `a`
 * `(a,b)` -- Tuple with two elements of type `a` and `b`
 * `(a,b,c)` -- Tuple with three elements of type `a`, `b`, and `c`
+
+The type system grows **quite** a bit from here, but these are the foundational
+types you'll first encounter. See the later chapters for all types off advanced
+features that can be optionally turned on.
 
 Type Signatures
 ---------------
@@ -2460,10 +2463,6 @@ The following are all **false**:
 * Monads are an embedded imperative language inside Haskell.
 * Monads require knowing abstract mathematics.
 * Monads are unique to Haskell.
-
-See:
-
-* [What a Monad Is Not](http://wiki.haskell.org/What_a_Monad_is_not)
 
 Monad Methods
 -------------
@@ -4050,7 +4049,8 @@ assignment. The syntax introduced is the ``{..}`` pattern selector.
 NamedFieldPuns
 ---------------
 
-Provides alternative syntax for accessing record fields in a pattern match.
+NamedFieldPuns provides alternative syntax for accessing record fields in a
+pattern match.
 
 ```haskell
 data D = D {a :: Int, b :: Int}
@@ -4766,6 +4766,11 @@ not required.
 Of important note is that GHCi runs without any optimizations applied so the
 same program that performs poorly in GHCi may not have the same performance
 characteristics when compiled with GHC.
+
+Lazy Spines
+-----------
+
+TODO
 
 Deepseq
 -------
@@ -6140,14 +6145,6 @@ instance MonadFail IO where
     fail = failIO
 ```
 
-Backtracking Monads
--------------------
-
-TODO
-
-~~~~ {.haskell include="src/10-advanced-monads/logict.hs"}
-~~~~
-
 MonadFix
 --------
 
@@ -6342,14 +6339,21 @@ Universal quantification the primary mechanism of encoding polymorphism in
 Haskell. The essence of universal quantification is that we can express
 functions which operate the same way for a set of types and whose function
 behavior is entirely determined *only* by the behavior of all types in this
-span.
+span. These are represented at the type-level by in the introduction of a
+universal quantifier (`forall` or `∀`) over a set of the type variables in the
+signature.
 
 ~~~~ {.haskell include="src/11-quantification/universal.hs"}
 ~~~~
 
 Normally quantifiers are omitted in type signatures since in Haskell's vanilla
 surface language it is unambiguous to assume to that free type variables are
-universally quantified.
+universally quantified. So the following two are equivalent:
+
+```haskell
+id :: forall a. a -> a
+id :: a -> a
+```
 
 Free Theorems
 -------------
@@ -6397,10 +6401,10 @@ t : t -> t     -- function types
 σ : ∀ a . t    -- type scheme
 ```
 
-In an implementation, the function ``generalize`` converts all type variables
-within the type into polymorphic type variables yielding a type scheme. The
-function ``instantiate`` maps a scheme to a type, but with any polymorphic
-variables converted into unbound type variables.
+In an type checker implementation, a *generalize* function converts all type
+variables within the type into polymorphic type variables yielding a type
+scheme. While a *instantiate* function maps a scheme to a type, but with any
+polymorphic variables converted into unbound type variables.
 
 Rank-N Types
 ------------
@@ -9205,17 +9209,42 @@ TODO
 Combinatorics 
 -------------
 
-TODO
+Combinat is the standard Haskell library for doing combinatorial calculations.
+It provides a variety of functions for computing:
+
+* [Permutations & Combinations](https://hackage.haskell.org/package/combinat-0.2.9.0/docs/Math-Combinat-Permutations.html)
+* [Braid Groups](https://hackage.haskell.org/package/combinat-0.2.9.0/docs/Math-Combinat-Groups-Braid.html)
+* [Integer Partitions](https://hackage.haskell.org/package/combinat-0.2.9.0/docs/Math-Combinat-Partitions-Integer.html)
+* [Young's Tableux](https://hackage.haskell.org/package/combinat-0.2.9.0/docs/Math-Combinat-Tableaux.html)
+* [Lattice Paths](https://hackage.haskell.org/package/combinat-0.2.9.0/docs/Math-Combinat-LatticePaths.html#t:LatticePath)
+
+See: [cobinat](https://hackage.haskell.org/package/combinat)
 
 Number Theory
 -------------
 
-TODO
+Arithmoi is the standard number theory library for Haskell. It provides
+functions for calculing common number theory operations used in combinators and
+cryptography applications in Haskell. Including:
+
+* [Modular square roots](https://hackage.haskell.org/package/arithmoi-0.10.0.0/docs/Math-NumberTheory-Moduli-Sqrt.html)
+* [Möbius Inversions](https://hackage.haskell.org/package/arithmoi-0.10.0.0/docs/Math-NumberTheory-MoebiusInversion.html)
+* [Primarily Testing](https://hackage.haskell.org/package/arithmoi-0.10.0.0/docs/Math-NumberTheory-Primes.html)
+* [Riemann Zeta Functions](https://hackage.haskell.org/package/arithmoi-0.10.0.0/docs/Math-NumberTheory-Zeta.html)
+* [Pollard's Rho Algorithm](https://hackage.haskell.org/package/arithmoi-0.10.0.0/docs/Math-NumberTheory-Moduli-DiscreteLogarithm.html)
+* [Jacobi symbols](https://hackage.haskell.org/package/arithmoi-0.10.0.0/docs/Math-NumberTheory-Moduli-Jacobi.html)
+
+See: [arithmoi](https://hackage.haskell.org/package/arithmoi)
 
 Stochastic Calculus 
 -------------------
 
-TODO
+`HQuantLib` provides a variety of functions for working with stochastic
+processes. This primarily applies to stochastic calculus applied to pricing
+financial products such as the Black-Scholes pricing engine and routines for
+calculating volatility smiles of options products.
+
+See: [HQuantLib](https://hackage.haskell.org/package/hquantlib)
 
 Differential Equations
 -----------------------
@@ -9652,15 +9681,6 @@ optimized for append/prepend operations and traversal.
 
 ~~~~ {.haskell include="src/20-data-structures/sequence.hs"}
 ~~~~
-
-Fingertree
-----------
-
-TODO
-
-See: [fingertree](https://hackage.haskell.org/package/fingertree)
-
-<hr/>
 
 FFI
 ===
@@ -10657,6 +10677,19 @@ See Also:
 Merkle Trees
 ------------
 
+Merkle trees are a type of authenticated data structure that consits of a
+sequence of data that is divided into an even number of partitions which are
+incrementally hashed in a binary tree, with each level of the tree hashing to
+produce the hash the next next level until the root of the tree is reached. The
+root hash is called the *Merkle root* and uniquely identifies the data included
+under it. Any change to the leaves, or any reorordering of the nodes will
+produce a different hash. 
+
+A merkle tree admits an efficient "proof of inclusion" where to produce evidence
+that a single node is included in the set can be done by simply tracing the
+roots of a single node up to the binary tree to the root. This is a logarithmic
+order set of hashes and is quite efficient. 
+
 ~~~~ {.haskell include="src/32-cryptography/Merkle.hs"}
 ~~~~
 
@@ -10702,18 +10735,35 @@ See:
 Elliptic Curves
 ---------------
 
-Curve types:
+Elliptic curves are a type of algebraic structure that are used heavily in
+cryptography. Most generally elliptic curves are families of curves to second
+order plan curves in two variables defined over finite fields. These elliptic
+curves admit a group construction over the curve points which has multiplication
+and addition. For finite fields with large order computing inversions is quite
+computationally difficult and gives rise to a trapdoor function which is easy to
+efficient to compute in one direction but difficult in reverse.
+
+There are many types of plane curves with different coefficients that can be
+defined. The widely studied groups are one of the four classes. These are
+defined in the `elliptic-curve` library as lifted datatypes  which are used at
+the type-level to distinguish curve operations.
 
 * Binary
 * Edwards
 * Montgomery
 * Weierstrass
 
-Coordinate systems:
+On top of these curves there is an additional degree of freedom in the choice of
+coordinate system used. There are many ways to interpret the Cartesian plane in
+terms of coordinates and some of these coordinate systems admit more efficient
+operations for multiplication and addition of points.
 
-* Affine:
-* Jacobian:
-* Projective:
+* Affine
+* Jacobian
+* Projective
+
+For example the common Ed25519 curve can be defined as the following group
+structure defined as a series of type-level constructions:
 
 ```haskell
 type Fr = Prime 
@@ -10724,8 +10774,12 @@ type PA = Point Edwards Affine Ed25519 Fq Fr
 type PP = Point Edwards Projective Ed25519 Fq Fr
 ```
 
+Operations on this can be executed by several type classes functions.
+
 ~~~~ {.haskell include="src/32-cryptography/ECC.hs"}
 ~~~~
+
+See: [elliptic-curve](https://hackage.haskell.org/package/elliptic-curve)
 
 Pairing Cryptography
 --------------------
