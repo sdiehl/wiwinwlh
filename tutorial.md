@@ -14255,21 +14255,20 @@ Categories
 Do I need to Learn Category Theory?
 -----------------------------------
 
-Short answer: <b>No</b>. Most of the idea of category aren't really applicable
-to writing Haskell.
+Short answer: <b>No</b>. Most of the idea of category theory aren't really
+applicable to writing Haskell.
 
-The long answer: It is not necessary to learn, but so few things in life are.
-Learning new topics and ways of thinking about problems only enrich your
-thinking and give you new ways of thinking about code and abstractions. Category
-theory is never going to help you write a web application better but it may give
-you insights into problems that algebraic in nature.  A few (read as less than
-10) or so Haskellers espouse philosophies about it being an inspiration for
-certain abstractions.
+The long answer: It is not strictly necessary to learn, but so few things in
+life are.  Learning new topics and ways of thinking about problems only enrich
+your thinking and give you new ways of thinking about code and abstractions.
+Category theory is never going to help you write a web application better but it
+may give you insights into problems that algebraic in nature.  A few (read as
+less than 10) or so Haskellers espouse philosophies about it being an
+inspiration for certain abstractions, but most do not.
 
-Grossly speaking category theory is not terribly important to Haskell
-programming, and although some libraries derive some inspiration from the
-subject; most do not. What is more important is a general understanding of
-equational reasoning and a familiarity with various algebraic relations.
+Some understanding of abstract algebra, conventions for discussing algebraic
+structures and equation reasoning with laws are essential to modern Haskell and
+we will discuss these leading up to some basic category theory.
 
 Abstract Algebra
 ----------------
@@ -14282,6 +14281,15 @@ by name ( often drawn from an equivalent abstract algebra concept ).
 * **Unary Operations**
 * **Constants**
 * **Relations**
+
+Binary operations are generalisations of operations like multiplication and
+addition. That map two elements of a set to another element of a set. Unary
+operations map an element of a set to a single element of a set. Ternary
+operations map three elements. Higher-level operations are usually not given
+specific names.
+
+Constants are specific elements of the set, that generalise values like 0 and 1
+which have specific properties in relation 
 
 ```{=latex}
 \noindent\rule{\textwidth}{1pt}
@@ -14342,7 +14350,7 @@ a \times e = a
 $$
 
 $$
-1 \times a = a
+e \times a = a
 $$
 
 Haskell:
@@ -14409,6 +14417,14 @@ inverse op inv y x  =  leftInverse op inv y x && rightInverse op inv y x
 
 Math:
 
+$$
+a \times 0 = 0
+$$
+
+$$
+0 \times a = 0
+$$
+
 Haskell
 
 ```haskell
@@ -14436,8 +14452,23 @@ zero op x y  =  leftZero op x y  &&  rightZero op x y
 
 **Linearity**
 
+Maths::
+
+$$
+f(x + y) = f(x) + f(y)
+$$
+
+Haskell:
+
 ```haskell
 f (x `op` y) = f x `op` f y
+```
+
+Haskell Predicates:
+
+```haskell
+linear :: Eq a => (a -> a) -> (a -> a -> a) -> a -> a -> Bool
+linear f (#) x y = f (x # y) == ((f x) # (f y))
 ```
 
 ```{=latex}
@@ -14496,7 +14527,9 @@ distributivity op op' x y z = op (op' x y) z == op' (op x z) (op y z)
 
 Math:
 
-TODO
+$$
+a \times b = (b \times a)^{-1}
+$$
 
 Haskell:
 
@@ -14506,7 +14539,34 @@ a `op` b = inv (b `op` a)
 
 Haskell Predicates:
 
-TODO
+```haskell
+anticommutative :: Eq a => (a -> a) -> (a -> a -> a) -> a -> a -> Bool
+anticommutative inv op x y  =  x `op` y == inv (y `op` x)
+```
+
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
+```
+
+**Homomorphisms**
+
+Math:
+
+$$
+f(x \times y) = f(x) \times f(y)
+$$
+
+Haskell:
+
+f (a `op` b) = (f a) `op` (f b)
+
+Haskell Predicates:
+
+```haskell
+homomorphism :: Eq a =>
+   (b -> a) -> (b -> b -> b) -> (a -> a -> a) -> b -> b -> Bool
+homomorphism f op0 op1 x y  =  f (x `op0` y) == f x `op1` f y
+```
 
 ```{=latex}
 \noindent\rule{\textwidth}{1pt}
@@ -14518,25 +14578,17 @@ programming, and once we recognize them we can abstract over them. For instance
 a monoid is a combination of a unit and a single associative operation over a
 set of values.
 
-You will often see this notation in tuple form. Where a set `S` will be enriched
-with a variety of elements and operations that are closed over that set. For
-example:
-
-Carrier 
+You will often see this notation in tuple form. Where a set `S` (called the
+**carrier**) will be enriched with a variety of operations and elements that are
+closed over that set. For example a semigroup is a set equipped with an associative
+closed binary operation. If you add an identity element `e` to the semigroup you
+get a monoid.
 
 Structure Notation
 --------- ---------
-Monoid    $(S, •)$
+Semigroup $(S, •)$
+Monoid    $(S, •, e)$
 Monad     $(S, \mu, \eta)$
-
-```haskell
-annihilation :: Eq a => (a -> a -> a) -> a -> a -> Bool
-annihilation op e x = op x e == e && op e x == e
-
-homomorphism :: Eq a =>
-   (b -> a) -> (b -> b -> b) -> (a -> a -> a) -> b -> b -> Bool
-homomorphism f op0 op1 x y  =  f (x `op0` y) == f x `op1` f y
-```
 
 Categories
 ----------
@@ -14544,10 +14596,22 @@ Categories
 The most basic structure is a category which is an algebraic structure of
 objects (``Obj``) and morphisms (``Hom``) with the structure that morphisms
 compose associatively and the existence of an identity morphism for each object.
+A category is defined entirely in terms of its:
 
-With kind polymorphism enabled we can write down the general category
-parameterized by a type variable "c" for category, and the instance ``Hask`` the
-category of Haskell types with functions between types as morphisms.
+* **Elements**
+* **Morphisms**
+* **Composition Operation**
+
+A morphism $f$ written as $f : x \rightarrow y$ an abstraction on the algebraic
+notion of homomorphisms. It is is an arrow between two objects in a category $x$
+and $y$ called the **domain** and **codomain** respectively. The set of all
+morphisms between two given elements $x$ and $y$ is called the **hom-set** and
+written $\text{Hom}(x,y)$.
+
+In Haskell, with kind polymorphism enabled we can write down the general
+category parameterized by a type variable "c" for category. This is the
+instance ``Hask`` the category of Haskell types with functions between types as
+morphisms.
 
 ~~~~ {.haskell include="src/33-categories/categories.hs"}
 ~~~~
@@ -14555,6 +14619,12 @@ category of Haskell types with functions between types as morphisms.
 Categories are interesting since they exhibit various composition properties and
 ways in which various elements in the category can be composed and rewritten
 while preserving several invariants about the program.
+
+Some annoying curmudgeons will sometimes pit nicks about this not being a "real
+category" because all Haskell values are potentially inhabited by a bottom type
+which violates several rules of composition. This is mostly silly nit-picking
+and for the sake of discussion we'll consider "ideal Haskell" which does not
+have this property.
 
 Isomorphisms
 ------------
@@ -14744,9 +14814,10 @@ Resources
 
 If you so wish to study more category, there are many resources online.
 
+* [Category Theory for Programmers PDF](https://github.com/hmemcpy/milewski-ctfp-pdf)
+* [Category Theory for Programmers Lectures](https://www.youtube.com/watch?v=I8LbkfSSR58&list=PLbgaMIhjbmEnaH_LTkxLI7FMa2HsnawM_)
 * [Category Theory, Awodey](http://www.amazon.com/Category-Theory-Oxford-Logic-Guides/dp/0199237182)
 * [Category Theory Foundations](https://www.youtube.com/watch?v=ZKmodCApZwk)
-* [Category Theory for Programmers](https://www.youtube.com/watch?v=I8LbkfSSR58&list=PLbgaMIhjbmEnaH_LTkxLI7FMa2HsnawM_)
 
 <hr/>
 
