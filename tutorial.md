@@ -13644,7 +13644,11 @@ See:
 Pretty Printers
 ---------------
 
-There are many many many pretty printing libraries for Haskell.
+Pretty is the first Wadler-Leijen style combinator library, it exposes a simple
+set of primitives to print Haskell datatypes to legacy strings pro
+grammatically. You probably don't want to use this library but it inspired most
+of the ones that followed after. There are many many many pretty printing
+libraries for Haskell.
 
 **Wadler-Leijen Style**
 
@@ -13673,13 +13677,22 @@ There are many many many pretty printing libraries for Haskell.
 * layout
 * aeson-pretty
 
+These days it is best to avoid the pretty printer and use the standard
+[prettyprinter] library which subsumes most of the features of these previsious
+libraries under one uniform API.
+
 prettyprinter
 -------------
 
-Pretty is the first Wadler-Leijen style combinator library, it exposes a simple
-set of primitives to print Haskell datatypes to legacy strings pro
-grammatically. You probably don't want to use this library but it inspired most
-of the ones that followed after.
+Pretty printer is a printer combinator library which allows us to write
+typeclasses over datatypes to render them to strings with arbitrary formatting.
+These kind of libraries show up everywhere where the default `Show` instance is
+insufficient for rendering.
+
+The base interface to these libraries is exposed as a `Pretty` class which
+monoidally composes a variety of documents together. The Monoid append operation
+simply concatenates two documents while a variety of higher level combinators
+add additional string elements into the language.
 
               Combinators
 -----------   ------------
@@ -13688,18 +13701,17 @@ of the ones that followed after.
 ``char``      Renders a character as a ``Doc``
 ``text``      Renders a string as a ``Doc``
 
-~~~~ {.haskell include="src/30-languages/pretty.hs"}
-~~~~
-
-The pretty printed form of the ``k`` combinator:
+For example the common pretty printed form of the lambda calculus ``k``
+combinator is:
 
 ```haskell
 \f g x . (f (g x))
 ```
 
-The ``Text.Show.Pretty`` library can be used to pretty print nested data structures in a more human readable
-form for any type that implements ``Show``.  For example a dump of the structure for the AST of SK combinator
-with ``ppShow``.
+The prettyprinter library can be used to pretty print nested data structures in
+a more human readable form for any type that implements ``Show``.  For example a
+dump of the structure for the AST of SK combinator with ``ppShow``.
+
 
 ```haskell
 App
@@ -13708,12 +13720,10 @@ App
   (Lam "x" (Lam "y" (Var "x")))
 ```
 
-Adding the following to your ghci.conf can be useful for working with deeply nested structures interactively.
+A full example of pretty printing the lambda calculus is shown below:
 
-```haskell
-import Text.Show.Pretty (ppShow)
-let pprint x = putStrLn $ ppShow x
-```
+~~~~ {.haskell include="src/30-languages/pretty.hs"}
+~~~~
 
 pretty-simple
 -------------
@@ -14817,6 +14827,16 @@ that, with a few caveats, polymorphic Haskell functions are natural
 transformations.
 
 See: [You Could Have Defined Natural Transformations](http://blog.sigfpe.com/2008/05/you-could-have-defined-natural.html)
+
+Commutative Diagrams
+--------------------
+
+TODO
+
+String Diagrams
+---------------
+
+TODO
 
 Kleisli Category
 ----------------
