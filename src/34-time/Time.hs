@@ -43,3 +43,9 @@ zone = getCurrentTimeZone
 -- Get current time with timezone attached
 zonetime :: IO ZonedTime
 zonetime = getZonedTime
+
+timer :: IO NominalDiffTime
+timer = do
+  start <- getCurrentTime
+  end <- getCurrentTime
+  pure (diffUTCTime end start)
