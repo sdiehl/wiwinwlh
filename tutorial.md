@@ -184,6 +184,22 @@ Or permanently add the following to your `.bashrc` or `.zshrc` file:
 export PATH="~/.ghcup/bin:$PATH"
 ```
 
+Package Managers
+----------------
+
+There are two major Haskell packaging tools: **Cabal** and **Stack**. Both take
+differing views on versioning schemes but can more or less interoperate at the
+package level. So, why are there two different package managers?
+
+The simplest explanation is that Haskell is an organic ecosystem with no central
+dictator, and as such different groups of people with different ideas about
+optimal packaging built around two different models. The economic interests of
+an organic community don't always result in open source convergence, however the
+ecosystem has seen both package managers reach much greater levels of stability
+as a result of collaboration. In this article I won't make a preference which
+system to use, this is best left up to the reader to experiment and use the
+system which best your or your company's needs.
+
 Project Structure
 -----------------
 
@@ -240,35 +256,6 @@ packages:
 - 'lib-utils'
 
 extra-package-dbs: []
-```
-
-Local Packages
---------------
-
-Both Stack and Cabal can handle local packages built the local filesystem,
-remote tarballs, or from Git repositories.
-
-Inside of the stack.yaml simply specify the git repository remote and the hash
-to pull.
-
-```yaml
-resolver: lts-14.20
-packages:
-  # From Git
-  - git: https://github.com/sdiehl/protolude.git
-    commit: f5c2bf64b147716472b039d30652846069f2fc70
-```
-
-In Cabal to add a remote create a `cabal.project` file and add your remote in
-the `source-repository-package` section.
-
-```yaml
-packages: .
-
-source-repository-package
-    type: git
-    location: https://github.com/hvr/HsYAML.git
-    tag: e70cf0c171c9a586b62b3f75d72f1591e4e6aaa1
 ```
 
 Cabal
@@ -420,7 +407,7 @@ the ``ghc`` and ``ghci`` commands use the package environment.
 
 ```bash
 $ cabal exec
-$ cabal exec sh # launch a shell with GHC sandbox path set.
+$ cabal exec sh
 ```
 
 The [haddock](#haddock) documentation can be generated for the local project by
@@ -440,15 +427,7 @@ $ cabal sdist
 $ cabal upload dist/mylibrary-0.1.tar.gz
 ```
 
-Sometimes you'd also like to add a library from a local project into
-a ``sandbox``. In this case, run the ``add-source`` command to bring the
-library into the ``sandbox`` from a local directory:
-
-```bash
-$ cabal sandbox add-source /path/to/project
-```
-
-The current state of a ``sandbox`` can be frozen with all current package
+The current state of a local build can be frozen with all current package
 constraints enumerated:
 
 ```bash
@@ -592,44 +571,90 @@ package version.
 └── tmp
 ```
 
+Local Packages
+--------------
+
+Both Stack and Cabal can handle local packages built the local filesystem,
+remote tarballs, or from Git repositories.
+
+Inside of the stack.yaml simply specify the git repository remote and the hash
+to pull.
+
+```yaml
+resolver: lts-14.20
+packages:
+  # From Git
+  - git: https://github.com/sdiehl/protolude.git
+    commit: f5c2bf64b147716472b039d30652846069f2fc70
+```
+
+In Cabal to add a remote create a `cabal.project` file and add your remote in
+the `source-repository-package` section.
+
+```yaml
+packages: .
+
+source-repository-package
+    type: git
+    location: https://github.com/hvr/HsYAML.git
+    tag: e70cf0c171c9a586b62b3f75d72f1591e4e6aaa1
+```
+
 Version Bounds
 --------------
 
-All Haskell packages are supposed to following the [Package Versioning Policy](https://pvp.haskell.org/).
+All Haskell packages are versioned and the numerical quantities in the version
+are supposed to following the [Package Versioning
+Policy](https://pvp.haskell.org/). 
+
+As packages evolve in time there are three numbers which monotonically increase
+depending on what has changed in the package.
+
+* Major version number
+* Minor version number
+* Patch version number
 
 ```haskell
--- The package version.  See the Haskell package versioning policy (PVP)
--- for standards guiding when and how versions should be incremented.
--- https://pvp.haskell.org
 -- PVP summary:      +-+------- breaking API changes
 --                   | | +----- non-breaking API additions
 --                   | | | +--- code changes with no API change
 version:             0.1.0.0
 ```
 
-![](https://pvp.haskell.org/pvp-decision-tree.svg)
+Every library's cabal file will have a packages dependencies section which will
+specify the external packages which the library depends on the allowed versions
+that it is known to build against. The convention is to put upper bounds to the
+next major unreleased version if the lower bound is using latest package.
 
 ```perl
-base                >= 4.6  && <4.14,
-array               >= 0.4  && <0.6,
-ghc-prim            >= 0.3  && <0.6,
-async               >= 2.0  && <2.3,
-deepseq             >= 1.3  && <1.5,
-containers          >= 0.5  && <0.7,
-hashable            >= 1.2  && <1.4,
-transformers        >= 0.2  && <0.6,
-text                >= 1.2  && <1.3,
-stm                 >= 2.4  && <2.6,
-bytestring          >= 0.10 && <0.11,
-mtl                 >= 2.1  && <2.3,
-mtl-compat          >= 0.2  && <0.3,
-transformers-compat >= 0.4  && <0.7
+build-depends:       
+  base                >= 4.6  && <4.14,
+  array               >= 0.4  && <0.6,
+  ghc-prim            >= 0.3  && <0.6,
+  async               >= 2.0  && <2.3,
+  deepseq             >= 1.3  && <1.5,
+  containers          >= 0.5  && <0.7,
+  hashable            >= 1.2  && <1.4,
+  transformers        >= 0.2  && <0.6,
+  text                >= 1.2  && <1.3,
+  stm                 >= 2.4  && <2.6,
+  bytestring          >= 0.10 && <0.11,
+  mtl                 >= 2.1  && <2.3,
+  mtl-compat          >= 0.2  && <0.3,
+  transformers-compat >= 0.4  && <0.7
 ```
+
+Individual lines in the version specification can be dependent on other
+variables in the cabal file.
 
 ```perl
 if !impl(ghc >= 8.0)
   Build-Depends: fail >= 4.9 && <4.10
 ```
+
+See:
+
+* [Package Versioning Policy](https://pvp.haskell.org/)
 
 Stack
 -----
@@ -939,15 +964,53 @@ As a general rule, if the Haddock documentation for the library does not have
 a **minimal worked example**, it is usually safe to assume that it is an
 RFC-style library and probably should be avoided for production code.
 
-Similarly, if the library **predates the
-[text](http://hackage.haskell.org/package/text) library** (released circa 2010),
-it probably should be avoided in production code. The way we write Haskell has
-changed drastically since the early days.
+There are several heuristics you can use to assess **Should I Use this Hackage
+Library**:
+
+* Check the **Uploaded** to see if the author has updated it in the last five
+  years.
+* Check the **Maintainer** email address, if the author has an academic email
+  address and has not uploaded a package in two or more years, it is safe to
+  assume that this is a *thesis projecet* and probably should not be used
+  industrially.
+* Check the **Modules** to see if the author has included toplevel Haddock
+  docstrings. If they author has not included any documentation then the library
+  is likely of low-quality and should not be used industrially.
+* Check the **Dependencies** for the bound on `base` package. If it doesn't
+  include the latest base included with the latest version of GHC then the code
+  is likely not actively maintained.
+* Check the reverse Hackage search to see if the package is used by other
+  libraries in the ecosystem. For example:
+  https://packdeps.haskellers.com/reverse/QuickCheck
+
+An example of a bitrotted package:
+
+**https://hackage.haskell.org/package/numeric-quest**
+
+An example of a well maintained package:
+
+**https://hackage.haskell.org/package/QuickCheck**
 
 Stackage
 -------
 
-TODO
+Stackage is an alternative packaging repository that is an opt-in repository
+which mirrors a subset of Hackage. Packages that are included in Stackage are
+built in a massive continuous integration process that checks to see that given
+versions link successfully against each other. This can give a higher degree of
+assurance that the bounds of a given resolver ensure compatibility.
+
+Stackage releases are built nightly and there are long-term stable (LTS) releases.
+Nightly resolvers have a date convention while LTS releases have a major and
+minor version. For example:
+
+* `lts-14.22`
+* `nightly-2020-01-30`
+
+See:
+
+* [Stackage](https://www.stackage.org/)
+* [Stackage FAQ](https://github.com/fpco/lts-haskell#readme)
 
 GHCi
 ----
@@ -14082,8 +14145,7 @@ resemble GHCi's default behavior.
 Trying it out. (``<TAB>`` indicates a user keypress )
 
 ```bash
-$ runhaskell Simple.hs
-# Or if in a sandbox: cabal exec runhaskell Simple.hs
+$ cabal run simple
 Welcome!
 >>> <TAB>
 kirk spock mccoy
