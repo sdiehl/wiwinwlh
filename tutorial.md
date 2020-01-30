@@ -1632,7 +1632,39 @@ all type variables.
 Currying
 --------
 
-TODO
+In other languages functions normally have an *arity* which prescribes the
+number of arguments a function can take. Some languages have fixed arity (like
+Fortran) others have flexible arity (like Python) where a variable of number of
+arguments can passed. Haskell has a very simple, all functions in Haskell take a
+single argument. Arguments can be applied until the function is *saturated* and
+computes the function body. For example the `add` function from above can be
+*partially applied* to produce `add1` function. 
+
+```haskell
+add :: Int -> Int -> Int
+add x y = x + y
+
+add1 :: Int -> Int
+add1 = add 1
+```
+
+Currying is the process of taking a function which takes two arguments and
+transforming it into a function which takes a tuple of arguments.
+
+```haskell
+curry :: ((a, b) -> c) -> a -> b -> c
+uncurry :: (a -> b -> c) -> (a, b) -> c
+```
+
+For example applied to the add function:
+
+```haskell
+uncurryAdd :: (Int, Int) -> Int
+uncurryAdd = uncurry add
+
+example :: Int
+example = uncurryAdd (1,2)
+```
 
 Algebraic Datatypes
 -------------------
