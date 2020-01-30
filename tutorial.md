@@ -245,7 +245,31 @@ extra-package-dbs: []
 Local Packages
 --------------
 
-TODO
+Both Stack and Cabal can handle local packages built the local filesystem,
+remote tarballs, or from Git repositories.
+
+Inside of the stack.yaml simply specify the git repository remote and the hash
+to pull.
+
+```yaml
+resolver: lts-14.20
+packages:
+  # From Git
+  - git: https://github.com/sdiehl/protolude.git
+    commit: f5c2bf64b147716472b039d30652846069f2fc70
+```
+
+In Cabal to add a remote create a `cabal.project` file and add your remote in
+the `source-repository-package` section.
+
+```yaml
+packages: .
+
+source-repository-package
+    type: git
+    location: https://github.com/hvr/HsYAML.git
+    tag: e70cf0c171c9a586b62b3f75d72f1591e4e6aaa1
+```
 
 Cabal
 -----
