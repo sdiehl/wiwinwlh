@@ -58,19 +58,21 @@ At it's heart Haskell is a lazy, functional, statically-typed programming
 language with advanced type system features such as higher-rank, higher-kinded
 parametric polymorphism, monadic effects, generalized algebraic data types,
 ad-hoc polymorphism through type classes, associated type families, and more.
-Haskell explores the design space of modeling effect systems and advanced
-type-level programming more than any other general purpose language.
+Haskell is an advanced programming language that pushes the frontiers of
+programming language design more so than any other general purpose language
+while still remaining practical for everyday use.
 
-Haskell is a singular language in that is still a organic community effort that
-is driven from the userbase instead of by corporate influences. While there are
-some Haskell companies and consultancies, most are fairly small and none have an
-outsized influence on the language the way langauges; in contrast to ecosystems
-like Java and Go where Oracle and Google dominate all development. Haskell is
-also driven by a synthesis between multiple disciplines of academic computer
-science and industrial users who both contribute to the language ecosystem.
+Haskell is a singular language in that is remains an organic community effort
+that is driven from the userbase instead of by corporate influences. While there
+are some Haskell companies and consultancies, most are fairly small and none
+have an outsized influence on the development of the language. This is stark
+contrast to ecosystems like Java and Go where Oracle and Google dominate all
+development. Haskell is also driven by a synthesis between multiple disciplines
+of academic computer science and industrial users who both contribute to the
+language ecosystem.
 
 Originally Haskell was designed as an ML dialect language that grew out of an
-older language Miranda. The GHC commitee was formed in the 90s to pursue
+older language Miranda. The GHC committee was formed in the 90s to pursue
 building a research vehicle for lazy programming languages. This was a
 particularly in-vogue research topic that attracted some very talented
 people who eventually laid the foundation for modern Haskell.
@@ -78,8 +80,8 @@ people who eventually laid the foundation for modern Haskell.
 Throughout the last 30 years Haskell has grown into a very mature compiler with
 a fledgling ecosystem that is constantly reinventing itself and looking to
 further a set of research goals that define the community. Although laziness was
-originally the major research goal, this has largely become a quirky artifict
-that most users of the language are uninterested in generlaly.  In modern times
+originally the major research goal, this has largely become a quirky artifact
+that most users of the language are generally uninterested in.  In modern times
 the major themes of Haskell community are:
 
 * A vehicle for type system research
@@ -115,6 +117,13 @@ standard for Hsakell compilers. There are a few other compilers that have
 existed but they either are quite limited or have bit rotted over the years. GHC
 is also the only reference implementation for the Haskell language and defines
 what "Haskell" is by it's implementation.
+
+GHC is run at the command line with the command `ghc`.
+
+```bash
+$ ghc --version
+The Glorious Glasgow Haskell Compilation System, version 8.8.1
+```
 
 GHC's runtime is written in C and uses machinery from GCC infrastructure for
 it's native code generator and can also use LLVM for it's native code
@@ -203,8 +212,8 @@ system which best your or your company's needs.
 Project Structure
 -----------------
 
-A typical project hosted on Github or Gitlab will have the following file
-structure:
+A typical Haskell project hosted on Github or Gitlab will have the following
+file structure:
 
 ```bash
 .
@@ -1836,7 +1845,7 @@ frequently and defined over many prelude types:
 * **Read** - Provides an interface for values that can be read from a string.
 * **Show** - Provides an interface for values that can be printed to a string.
 * **Enum** - Provides an interface for values that are enumerable to integers.
-* **Semigroup** - Provides an algebraic semigroup interface. See [Semigroup].
+* **Semigroup** - Provides an algebraic semigroup interface.
 * **Functor** - Provides an algebraic functor interface. See [Functors].
 * **Monad**  - Provides an algebraic monad interface. See [Monads].
 * **Category**  - Provides an algebraic category interface. See [Categories].
@@ -2722,29 +2731,6 @@ hide             Forces the module to be hidden from Haddock.
 prune            Omits definitions with no annotations.
 
 <hr/>
-
-Nix
----
-
-cabal2nix
-
-TODO
-
-```nix
-{ pkgs ? import <nixpkgs> {}
-}:
-pkgs.haskellPackages.developPackage {
-  root = ./.;
-}
-```
-
-Bazel
-------
-
-TODO
-
-[rules_haskell](https://github.com/tweag/rules_haskell)
-
 
 Monads
 ======
