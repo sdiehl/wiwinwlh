@@ -33,6 +33,7 @@ data Token
   | TokenEOF
   deriving (Eq,Show)
 
+scanTokens :: String -> [Token]
 scanTokens = alexScanTokens
 
 }

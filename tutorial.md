@@ -10115,16 +10115,6 @@ int main( int argc, char *argv[] )
 }
 ```
 
-hsc2hs
-------
-
-TODO
-
-c2hs
-----
-
-TODO
-
 <hr/>
 
 Concurrency
@@ -12641,38 +12631,38 @@ Boot Libraries
 GHC itself ships with a variety of libraries that are necessary to bootstrap
 the compiler and compile itself.
 
-* array
-* base
-* binary
-* bytestring
-* Cabal
-* containers
-* deepseq
-* directory
-* dist-haddock
-* filepath
-* ghc-boot
-* ghc-boot-th
-* ghc-compact
-* ghc-heap
-* ghci
-* ghc-prim
-* haskeline
-* hpc
-* integer-gmp
-* libiserv
-* mtl
-* parsec
-* pretty
-* process
-* stm
-* template-haskell
-* terminfo
-* text
-* time
-* transformers
-* unix
-* xhtml
+* **array** - Mutable and immutable array data structures.
+* **base** - The base library. See [Base].
+* **binary** - Binary serialisation to ByteStrings
+* **bytestring** - Unboxed arrays of bytes. 
+* **Cabal** - The Cabal build system.
+* **containers** - The default data structures.
+* **deepseq** - Deeply evaluate nested data structures.
+* **directory** - Directory and file traversal.
+* **dist-haddock** - Haddock build utilities.
+* **filepath** - File path manipulation.
+* **ghc-boot** - Shared datatypes for GHC package databases
+* **ghc-boot-th** - Shared datatypes for GHC and TemplateHaskell iserv
+* **ghc-compact** - GHC support for compact memory regions.
+* **ghc-heap** - C library for Haskell GC types.
+* **ghci** - GHCI interactive shell.
+* **ghc-prim** - GHC builtin primitive operations.
+* **haskeline** - Readline library.
+* **hpc** - Code coverage reporting.
+* **integer-gmp** - GMP integer datatypes for GHC.
+* **libiserv** - External interpreter for Template Haskell.
+* **mtl** - Monad transformers library.
+* **parsec** - Parser combinators.
+* **pretty** - Pretty printer.
+* **process** - Operating system process utilities.
+* **stm** - Software transaction memory.
+* **template-haskell** - Metaprogramming for GHC.
+* **terminfo** - System terminal information.
+* **text** - Unboxed arrays of Unicode characters.
+* **time** - System time.
+* **transformers** - Monad transformers library.
+* **unix** - Interactions with Linux operating system.
+* **xhtml** - HTML generation utilities.
 
 Dictionaries
 ------------
