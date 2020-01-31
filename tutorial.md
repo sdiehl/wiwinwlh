@@ -527,6 +527,7 @@ hierarchically about by the specific CPU architecture, GHC compiler version and
 package version.
 
 ```bash
+dist-newstyle
 ├── build
 │   └── x86_64-linux
 │       └── ghc-8.6.5

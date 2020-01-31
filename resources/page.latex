@@ -1,11 +1,13 @@
-\documentclass[$if(fontsize)$$fontsize$,$endif$$if(lang)$$babel-lang$,$endif$$if(papersize)$$papersize$paper,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{$documentclass$}
+\documentclass[10pt]{$documentclass$}
 \usepackage{geometry}
 \usepackage{resources/dtrt}
 \geometry{
-  a4paper,
-  total={21.59cm,27.94cm},
-  top=2.8cm,
-  bottom=2.1cm,
+  %a4paper,
+  %total={21.59cm,27.94cm},
+  %total={21cm,25cm},
+  papersize={21cm,25cm},
+  top=1.5cm,
+  bottom=1.5cm,
   inner=1.91cm,
   outer=6.68cm,
   % For pdf
@@ -26,6 +28,13 @@
 \usepackage{amssymb,amsmath}
 \usepackage{framed}
 \usepackage{fancyvrb}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\leftmark}
+
+\renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{#1}}{}}
 
 \usepackage{csvsimple}
 \usepackage{catchfile}
@@ -64,7 +73,7 @@
 
 \usepackage{etoolbox}
 \makeatletter
-\patchcmd{\chapter}{\newpage \newpage}{}{}{}
+%\patchcmd{\chapter}{\newpage \newpage}{}{}{}
 
 \usepackage[utf8]{inputenc}
 \usepackage{ifxetex,ifluatex}
@@ -72,7 +81,7 @@
 \setmainfont[Ligatures=Common,
     ItalicFont={Adobe Garamond Pro Italic}]
     {Adobe Garamond Pro}
-\setmonofont[Ligatures=NoCommon]{Source Code Pro}
+\setmonofont[Ligatures=NoCommon, Scale=0.8]{Source Code Pro}
 
 \urlstyle{same}
 
@@ -183,12 +192,6 @@ $endfor$
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-$if(abstract)$
-\begin{abstract}
-$abstract$
-\end{abstract}
-$endif$
-
 $for(include-before)$
 $include-before$
 
@@ -205,34 +208,11 @@ $endif$
 
 }
 $endif$
-$if(lot)$
-\listoftables
-$endif$
-$if(lof)$
-\listoffigures
-$endif$
 
 $body$
 
-$if(natbib)$
-$if(bibliography)$
-$if(biblio-title)$
-$if(book-class)$
-\renewcommand\bibname{$biblio-title$}
-$else$
-\renewcommand\refname{$biblio-title$}
-$endif$
-$endif$
-\bibliography{$for(bibliography)$$bibliography$$sep$,$endfor$}
-
-$endif$
-$endif$
-$if(biblatex)$
-\printbibliography$if(biblio-title)$[title=$biblio-title$]$endif$
-
-$endif$
 $for(include-after)$
 $include-after$
-
 $endfor$
+
 \end{document}
