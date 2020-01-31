@@ -32,7 +32,8 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[LE,RO]{\leftmark}
+\fancyhead[RE,LO]{\leftmark}
+\fancyhead[LE,RO]{\thepage}
 
 \renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{#1}}{}}
 
