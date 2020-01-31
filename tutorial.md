@@ -1480,21 +1480,26 @@ form of runtime type information.  Haskell fully has the capacity to do this
 the trend is to "make invalid states unrepresentable" at compile-time rather
 than performing massive amounts of runtime checks.
 
-Dynamic languages check these "types" at run-time, whereas static language check
-types at compile time. Dynamic languages are in a sense as statically typed as
-static languages, however they have a degenerate type system with only one type.
+Dynamically typed languages check these "types" at run-time, whereas static
+language check types at compile time. This overloaded use of the word type to
+refer to both the theoretical definition and the colloquial definition of
+runtime tags is a bit confusing. Dynamic languages are in a sense as statically
+typed as static languages, however they have a degenerate type system with only
+one type.  Dynamically typed languages are better referred to as *unityped*
+languages meaning they have a single static type.
 
 Under this set of definitions, the endless debate and opposition between static
-and dynamic typing is really a shallow debate. The real question for programmers
-is not whether to have static typing, but **which type system to embrace**. On
-long time-scales the general trend of programming history has always been toward
-more typed languages and with richer types. Indeed, the Haskell model itself
-will eventually become antiquated in favour of the next evolution of *dependent
-types*.  The next evolution of these type systems are not quite ready for full
-production but are likely to rapidly become so in the next decade.
+and dynamic typing is really shallow. The real question for programmers is not
+whether to have static typing, but **which type system to embrace**. On long
+time-scales the general trend of programming history has always been toward more
+richer more sophisticated type systems and away from unitype models. Indeed, the
+Haskell model itself will eventually become antiquated in favour of the next
+evolution of *dependent types*.  The next evolution of these type systems are
+not quite ready for full production but are likely to rapidly become so in the
+next decade.
 
-For now, the Haskell way of thinking it that a single static type is a bit too
-restrictive. And that it is easier to add dynamic components to a richly typed
+For now, the Haskell way of thinking it that a single unitype is too
+restrictive. It is simply easier to add dynamic components to a richly typed
 ambient language than the inverse way around.  Haskell's rich type system is
 based on lambda calculus known as Girard's System-F (See [Rank-N Types]) and has
 a vast amount of extensions to support more type-level programming added to it
@@ -6000,19 +6005,16 @@ instance Alternative [] where
 Just 5
 ```
 
-These instances show up very frequently in parsers where the alternative operator can model alternative parse
-branches.
+These instances show up very frequently in parsers where the alternative
+operator can model alternative parse branches.
 
 Arrows
 ------
 
-<div class="alert alert-danger">
-In practice arrow are not often used in modern Haskell and are often considered
-a code smell.
-</div>
-
 A category is an algebraic structure that includes a notion of an identity and a
-composition operation that is associative and preserves identities.
+composition operation that is associative and preserves identities.  In practice
+arrow are not often used in modern Haskell and are often considered a code
+smell.
 
 ```haskell
 class Category cat where
@@ -6664,9 +6666,7 @@ catch a handler = control $ \runInIO ->
 Quantification
 ==============
 
-<div class="alert alert-danger">
-This is an advanced section, and is not typically necessary to write Haskell.
-</div>
+TODO
 
 Universal Quantification
 ------------------------
@@ -6865,10 +6865,6 @@ of functions that operate over its hidden internals.
 
 Impredicative Types
 -------------------
-
-<div class="alert alert-danger">
-This is an advanced section, and is not typically necessary to write Haskell.
-</div>
 
 Although extremely brittle, GHC also has limited support for impredicative
 polymorphism which allows instantiating type variable with a polymorphic type.
@@ -7180,10 +7176,6 @@ See: [Fun with Phantom Types](http://www.researchgate.net/publication/228707929_
 Typelevel Operations
 -------------
 
-<div class="alert alert-danger">
-This is an advanced section, and is not typically necessary to write Haskell.
-</div>
-
 With a richer language for datatypes we can express terms that witness the
 relationship between terms in the constructors, for example we can now express a
 term which expresses propositional equality between two types.
@@ -7338,10 +7330,6 @@ See: [Species and Functors and Types, Oh My!](http://dept.cs.williams.edu/~byorg
 F-Algebras
 -----------
 
-<div class="alert alert-danger">
-This is an advanced section, and is not typically necessary to write Haskell.
-</div>
-
 The *initial algebra* approach differs from the final interpreter approach in
 that we now represent our terms as algebraic datatypes and the interpreter
 implements recursion and evaluation occurs through pattern matching.
@@ -7492,10 +7480,6 @@ See:
 
 Hint and Mueval
 ---------------
-
-<div class="alert alert-danger">
-This is an advanced section, and is not typically necessary to write Haskell.
-</div>
 
 GHC itself can actually interpret arbitrary Haskell source on the fly by
 hooking into the GHC's bytecode interpreter ( the same used for GHCi ). The hint
@@ -8004,10 +7988,6 @@ type instance F Char = Bool
 Roles
 -----
 
-<div class="alert alert-danger">
-This is an advanced section, and is not typically necessary to write Haskell.
-</div>
-
 Roles are a further level of specification for type variables parameters of
 datatypes.
 
@@ -8078,10 +8058,6 @@ head ~(a :| _) = a
 Manual Proofs
 -------------
 
-<div class="alert alert-danger">
-This is an advanced section, and is not typically necessary to write Haskell.
-</div>
-
 One of most deep results in computer science, the [Curry–Howard
 correspondence](https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence),
 is the relation that logical propositions can be modeled by types and
@@ -8148,10 +8124,6 @@ plus_suc (Succ n) m = cong (plus_suc n m)
 
 Constraint Kinds
 ----------------
-
-<div class="alert alert-danger">
-This is an advanced section, and is not typically necessary to write Haskell.
-</div>
 
 GHC's implementation also exposes the predicates that bound quantifiers in
 Haskell as types themselves, with the ``-XConstraintKinds`` extension enabled.
@@ -8249,12 +8221,6 @@ testCofree = (Cofree 1 (Just (Cofree 2 Nothing)))
 Kind Polymorphism
 -----------------
 
-<div class="alert alert-danger">
-This is an advanced section, knowledge of kind polymorphism is not typically
-necessary to write Haskell.
-</div>
-
-
 The regular value level function which takes a function and applies it to an
 argument is universally generalized over in the usual Hindley-Milner way.
 
@@ -8316,11 +8282,6 @@ unFlip (Flip x) = x
 
 Data Kinds
 ----------
-
-<div class="alert alert-danger">
-This is an advanced section, knowledge of kind data kinds is not typically
-necessary to write Haskell.
-</div>
 
 The ``-XDataKinds`` extension allows us to refer to constructors at the
 value level and the type level.  Consider a simple sum type:
@@ -8594,11 +8555,6 @@ Just [Int, Bool, Char] :: Maybe [*]
 Singleton Types
 ---------------
 
-<div class="alert alert-danger">
-This is an advanced section, knowledge of singletons is not typically necessary to
-write Haskell.
-</div>
-
 A singleton type is a type with a single value inhabitant. Singleton types can
 be constructed in a variety of ways using GADTs or with data families.
 
@@ -8698,10 +8654,6 @@ type family Sum (ns :: [Nat]) :: Nat where
 Kind Indexed Type Families
 --------------------------
 
-<div class="alert alert-danger">
-This is an advanced section, and is not typically necessary to write Haskell.
-</div>
-
 Just as typeclasses are normally indexed on types, type families can also be indexed on kinds with the kinds
 given as explicit kind signatures on type variables.
 
@@ -8736,10 +8688,6 @@ type family a && b where
 
 HLists
 ------
-
-<div class="alert alert-danger">
-This is an advanced section, and is not typically necessary to write Haskell.
-</div>
 
 A heterogeneous list is a cons list whose type statically encodes the ordered types of its values.
 
@@ -8786,10 +8734,6 @@ lookup function.
 
 Advanced Proofs
 ---------------
-
-<div class="alert alert-danger">
-This is an advanced section, and is not typically necessary to write Haskell.
-</div>
 
 Now that we have the length-indexed vector let's go write the reverse function, how hard could it be?
 
@@ -8892,10 +8836,6 @@ around the lack of dependent types.
 
 Liquid Haskell
 --------------
-
-<div class="alert alert-danger"> This is an advanced section, knowledge of
-LiquidHaskell is not typically necessary to write Haskell.
-</div>
 
 LiquidHaskell is an extension to GHC's typesystem that adds the capacity for
 refinement types using the annotation syntax. The type signatures of functions
@@ -10056,11 +9996,6 @@ optimized for append/prepend operations and traversal.
 
 FFI
 ===
-
-<div class="alert alert-danger">
-This is an advanced section, knowledge of FFI is not typically necessary to write
-Haskell.
-</div>
 
 Pure Functions
 --------------
@@ -11903,11 +11838,6 @@ TODO
 GHC
 ===
 
-<div class="alert alert-danger">
-This is a **very advanced** section, knowledge of GHC internals is rarely
-necessary.
-</div>
-
 Block Diagram
 -------------
 
@@ -12680,10 +12610,6 @@ See: [SIMD Operations](https://hackage.haskell.org/package/ghc-prim-0.5.3/docs/G
 
 Rewrite Rules
 -------------
-
-<div class="alert alert-danger">
-This is an advanced section, and is not typically necessary to write Haskell.
-</div>
 
 Consider the composition of two fmaps. This operation maps a function `g` over a
 list `xs` and then maps a function `f` over the resulting list. This results in
@@ -14263,10 +14189,7 @@ See:
 Template Haskell
 ================
 
-<div class="alert alert-danger">
-This is an advanced section, knowledge of TemplateHaskell is not typically
-necessary to write Haskell.
-</div>
+TODO
 
 Metaprogramming
 ---------------
@@ -14595,11 +14518,6 @@ templated expressions.
 Templated Type Families
 ----------------------
 
-<div class="alert alert-danger">
-This is an advanced section, knowledge of TemplateHaskell is not typically necessary to write
-Haskell.
-</div>
-
 Just like at the value-level we can construct type-level constructions by piecing together their AST.
 
 ```haskell
@@ -14639,11 +14557,6 @@ boilerplate, now it can stated very concisely.
 
 Templated Type Classes
 ----------------------
-
-<div class="alert alert-danger">
-This is an advanced section, knowledge of TemplateHaskell is not typically necessary to write
-Haskell.
-</div>
 
 Probably the most common use of Template Haskell is the automatic generation of type-class instances. Consider
 if we wanted to write a simple Pretty printing class for a flat data structure that derived the ppr method in

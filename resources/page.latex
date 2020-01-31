@@ -1,4 +1,4 @@
-\documentclass[10pt]{$documentclass$}
+\documentclass[10pt,openright]{$documentclass$}
 \usepackage{geometry}
 \usepackage{resources/dtrt}
 \geometry{
