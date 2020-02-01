@@ -29,6 +29,8 @@
 \usepackage{framed}
 \usepackage{fancyvrb}
 \usepackage{fancyhdr}
+\usepackage{graphicx}
+%\usepackage{pst-poker}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -85,11 +87,8 @@
 \setmonofont[Ligatures=NoCommon, Scale=0.8]{Source Code Pro}
 
 \urlstyle{same}
-
-$if(tables)$
 \usepackage{longtable,booktabs}
-$endif$
-$if(graphics)$
+
 \usepackage{graphicx,grffile}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -99,16 +98,7 @@ $if(graphics)$
 % margins by default, and it is still possible to overwrite the defaults
 % using explicit options in \includegraphics[width, height, ...]{}
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
-$endif$
-$if(links-as-notes)$
-% Make links footnotes instead of hotlinks:
-\renewcommand{\href}[2]{#2\footnote{\url{#1}}}
-$endif$
-$if(strikeout)$
-\usepackage[normalem]{ulem}
-% avoid problems with \sout in headers with hyperref:
-\pdfstringdefDisableCommands{\renewcommand{\sout}{}}
-$endif$
+
 $if(indent)$
 $else$
 \IfFileExists{parskip.sty}{%

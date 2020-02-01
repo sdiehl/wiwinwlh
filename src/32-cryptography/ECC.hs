@@ -3,7 +3,7 @@ module Example where
 import Data.Curve.Edwards.Ed25519 as Ed25519
 import Protolude
 
--- generate random affine ponit
+-- generate random affine point
 p1 :: Ed25519.PA
 p1 = Ed25519.gen
 

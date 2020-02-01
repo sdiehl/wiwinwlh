@@ -108,6 +108,32 @@ frustrating and exciting; and therein lies the fun that has been the
 intellectual siren song that has drawn many talented programmers to dabble in
 this beautiful language at some point in their lives.
 
+How to Read
+-----------
+
+This is a guide for non-Haskell software engineers who have an interest in
+Haskell. I presume you know some basics about how your operating system works,
+the shell, and the some fundamentals of other imperative programming languages.
+If you are a Python or Java software engineer with no experience with Haskell
+this is the "cliff notes" of Haskell for you. We'll delve into a little theory
+as needed to explain concepts but no more than necessary. All knowledge is
+derived from experience and only implementing Haskell logic for yourself will
+grant insight.
+
+There is no particular order to this guide, other than the first chapter which
+describes how to get set up with Haskell and use the foundational compiler and
+editor tooling. After that you are free to browse the chapters in any order.
+Most are divided into several sections which outline different concepts,
+language features or libraries. However, the general arc of this guide bends
+toward more complex topics in later chapters.
+
+As there is no ordering after the first chapter I will refer to concepts
+globally without introducing them first. If something doesn't make sense just
+skip it and move on. I strongly encourage you to play around with the source
+code modules for yourself. Haskell cannot be learned from an armchair, only from
+writing tons of code and interacting with compiler. GHC may seem like a cruel
+instructor at first, but in time most people grow to love it.
+
 GHC
 ---
 
@@ -201,13 +227,13 @@ differing views on versioning schemes but can more or less interoperate at the
 package level. So, why are there two different package managers?
 
 The simplest explanation is that Haskell is an organic ecosystem with no central
-dictator, and as such different groups of people with different ideas about
-optimal packaging built around two different models. The economic interests of
-an organic community don't always result in open source convergence, however the
-ecosystem has seen both package managers reach much greater levels of stability
-as a result of collaboration. In this article I won't make a preference which
-system to use, this is best left up to the reader to experiment and use the
-system which best your or your company's needs.
+authority, and as such different groups of people with different ideas and
+different economic interests about optimal packaging built around two different
+models. The interests of an organic community don't always result in open source
+convergence, however the ecosystem has seen both package managers reach much
+greater levels of stability as a result of collaboration. In this article I
+won't make a preference which system to use, this is best left up to the reader
+to experiment and use the system which best your or your company's needs.
 
 Project Structure
 -----------------
@@ -1268,30 +1294,6 @@ as an editor agnostic backend that interfaces with GHC and Cabal to query code.
 * [ghcide](https://marketplace.visualstudio.com/items?itemName=DigitalAssetHoldingsLLC.ghcide)
 * [ormolu-vscode](https://marketplace.visualstudio.com/items?itemName=sjurmillidahl.ormolu-vscode)
 
-Docker Images
--------------
-
-Haskell has stable Docker images that widely used for deployments across
-Kubernetes and Docker enviornments. The two Dockerhub repositories of note are:
-
-* [Official Haskell Images](https://hub.docker.com/_/haskell/)
-* [Stack LTS Images](https://hub.docker.com/r/fpco/haskell/)
-
-To import the official Haskell images with `ghc` and `cabal-install` include the
-following preamble in your Dockerfile with your desired GHC version.
-
-```docker
-FROM haskell:8.8.1
-```
-
-To import the stack images include the following preamble in your Dockerfile
-with your desired Stack resolver replaced.
-
-```docker
-FROM fpco/stack-build:lts-14.0
-```
-
-
 Linux Packages
 -------------
 
@@ -1315,24 +1317,6 @@ It is not advisable to use a Linux system package manager to manage Haskell
 dependencies. Although this can be done in practice it is better to use Cabal or
 Stack to build locally isolated builds to avoid incompatabilities.
 
-Continuous Integration
-----------------------
-
-These days it is quite common to use cloud hosted continuous integration systems
-to test code from version control systems. There are many community contributed
-build script for different service providers:
-
-* [Travis CI with Cabal](https://github.com/haskell-CI/haskell-ci/blob/master/.travis.yml)
-* [Travis CI with Stack](https://docs.haskellstack.org/en/stable/travis_ci/)
-* [Circle CI with Cabal]()
-* [Circle CI with Stack]()
-* [Github Actions with Cabal]()
-* [Github Actions with Stack]()
-
-See also the official CI `repository:
-
-* [haskell-ci](https://github.com/haskell-CI/haskell-ci)
-
 Names
 -----
 
@@ -1351,16 +1335,17 @@ Data.List.nub
 
 The major namespaces are described below with their naming convetions:
 
-Namespace      Convention
--------------  ----------
-Modules        Uppercase
-Typeclasses    Uppercase
-Datatypes      Uppercase
-Constructors   Uppercase
-Synonyms       Uppercase
-Type Families  Uppercase
-Functions      Lowercase
-Variables      Lowercase
+Namespace       Convention
+--------------  ----------
+Modules         Uppercase
+Functions       Lowercase
+Variables       Lowercase
+Type Variables  Lowercase
+Datatypes       Uppercase
+Constructors    Uppercase
+Typeclasses     Uppercase
+Synonyms        Uppercase
+Type Families   Uppercase
 
 Modules
 -------
@@ -1520,6 +1505,7 @@ The *ground types* you'll see are quite common
 
 * `()` - The unit type
 * `Char` - ASCII Characters
+* `Text` - Unicode strings
 * `Bool` - Boolean values
 * `Int` - Machine integers
 * `Integer` - GMP arbitrary precision integers
@@ -1686,6 +1672,41 @@ example = uncurryAdd (1,2)
 Algebraic Datatypes
 -------------------
 
+An sum type:
+
+
+```{=latex}
+```
+
+```haskell
+data Suit = Clubs | Diamonads | Hearts | Spades
+data Color = Red | Back
+data Value 
+  = Two
+  | Three
+  | Four
+  | Five
+  | Six
+  | Seven
+  | Eight
+  | Nine
+  | Ten 
+  | Jack
+  | Queen
+  | King
+  | Ace
+```
+
+An example of a record type. 
+
+```haskell
+data Card = Card
+  { suit  :: Suit
+  , color :: Color
+  , value :: Value
+  }
+```
+
 TODO
 
 Recursive types
@@ -1694,6 +1715,14 @@ Datatypes with infix constructors
 
 Pattern Matching
 -----------------
+
+The following pattern match brings the values of the record into scope of the
+function body.
+
+```haskell
+beats :: Card -> Card -> Bool
+beats (Card suite1 color1 value1) (Card suite2 color2 value2) = 
+```
 
 TODO
 
@@ -2532,6 +2561,47 @@ ignore: {name: Use let, within: MyModule}
 See:
 
 * https://github.com/ndmitchell/hlint
+
+Docker Images
+-------------
+
+Haskell has stable Docker images that widely used for deployments across
+Kubernetes and Docker enviornments. The two Dockerhub repositories of note are:
+
+* [Official Haskell Images](https://hub.docker.com/_/haskell/)
+* [Stack LTS Images](https://hub.docker.com/r/fpco/haskell/)
+
+To import the official Haskell images with `ghc` and `cabal-install` include the
+following preamble in your Dockerfile with your desired GHC version.
+
+```docker
+FROM haskell:8.8.1
+```
+
+To import the stack images include the following preamble in your Dockerfile
+with your desired Stack resolver replaced.
+
+```docker
+FROM fpco/stack-build:lts-14.0
+```
+
+Continuous Integration
+----------------------
+
+These days it is quite common to use cloud hosted continuous integration systems
+to test code from version control systems. There are many community contributed
+build script for different service providers:
+
+* [Travis CI with Cabal](https://github.com/haskell-CI/haskell-ci/blob/master/.travis.yml)
+* [Travis CI with Stack](https://docs.haskellstack.org/en/stable/travis_ci/)
+* [Circle CI with Cabal]()
+* [Circle CI with Stack]()
+* [Github Actions with Cabal]()
+* [Github Actions with Stack]()
+
+See also the official CI `repository:
+
+* [haskell-ci](https://github.com/haskell-CI/haskell-ci)
 
 Ormolu
 ------
@@ -4427,6 +4497,8 @@ automatically.
 
 DeriveFoldable
 --------------
+
+TODO
 
 DeriveGeneric
 -------------
@@ -9798,11 +9870,8 @@ Solution #1:
   d = 6 :: Integer
 This is the only solution.
 ```
-See:
 
-* [sbv](http://leventerkok.github.io/sbv/)
-* [cvc4](http://cvc4.cs.nyu.edu/web/)
-* [z3](http://z3.codeplex.com/)
+<hr/>
 
 Data Structures
 ===============
@@ -10409,9 +10478,6 @@ $ threadscope Example.eventlog
 ```
 
 ![](img/threadscope.png)
-
-See Simon Marlows's *Parallel and Concurrent Programming in Haskell* for a
-detailed guide on interpreting and profiling using Threadscope.
 
 See:
 
