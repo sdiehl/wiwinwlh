@@ -6165,8 +6165,7 @@ Control.Exception
 
 The most low-level way to handle errors is to use the ``throw`` and ``catch`` functions which
 allow us to throw extensible exceptions in pure code but catch the resulting exception within IO.  Of
-specific note is that return value of the ``throw`` inhabits all types. There's no reason to use this for
-custom code that doesn't use low-level system operations.
+specific note is that return value of the ``throw`` inhabits all types.
 
 ```haskell
 throw :: Exception e => e -> a
@@ -14643,7 +14642,7 @@ Several of the common algebraic laws are defined in the table below:
 
 **Associativity**
 
-Math:
+Equations:
 
 $$
 a \times (b \times c) = (a \times b) \times c
@@ -14668,15 +14667,19 @@ associative op x y z  =  (x `op` y) `op` z == x `op` (y `op` z)
 
 **Commutativity**
 
-Math:
+Equations:
 
 $$
 a \times b = b \times a
 $$
 
+Haskell:
+
 ```haskell
 a `op` b = b `op` a
 ```
+
+Haskell Predicates:
 
 ```haskell
 commutative :: Eq a => (b -> b -> a) -> b -> b -> Bool
@@ -14689,7 +14692,7 @@ commutative op x y  =  x `op` y == y `op` x
 
 **Units**
 
-Math:
+Equations:
 
 $$
 a \times e = a
@@ -14725,7 +14728,7 @@ identity op x y  =  leftIdentity op x y &&  rightIdentity op x y
 
 **Inversion**
 
-Math:
+Equations:
 
 $$
 a^{-1} \times a = e
@@ -14761,7 +14764,7 @@ inverse op inv y x  =  leftInverse op inv y x && rightInverse op inv y x
 
 **Zeros**
 
-Math:
+Equations:
 
 $$
 a \times 0 = 0
@@ -14798,7 +14801,7 @@ zero op x y  =  leftZero op x y  &&  rightZero op x y
 
 **Linearity**
 
-Maths::
+Equations:
 
 $$
 f(x + y) = f(x) + f(y)
@@ -14823,8 +14826,21 @@ linear f (#) x y = f (x # y) == ((f x) # (f y))
 
 **Idempotency**
 
+Equations:
+
+$$
+f(f(x)) = f(x)
+$$
+
 ```haskell
 f (f x) = f x
+```
+
+Haskell Predicates:
+
+```haskell
+idempotent :: Eq a => (a -> a) -> a -> Bool
+idempotent f x = f (f x)
 ```
 
 ```{=latex}
@@ -14833,7 +14849,7 @@ f (f x) = f x
 
 **Distributivity**
 
-Math:
+Equations:
 
 $$
 a \times (b + c) = (a \times b) + (a \times c)
@@ -14871,7 +14887,7 @@ distributivity op op' x y z = op (op' x y) z == op' (op x z) (op y z)
 
 **Anticommutativity**
 
-Math:
+Equations:
 
 $$
 a \times b = (b \times a)^{-1}
@@ -14896,7 +14912,7 @@ anticommutative inv op x y  =  x `op` y == inv (y `op` x)
 
 **Homomorphisms**
 
-Math:
+Equations:
 
 $$
 f(x \times y) = f(x) + f(y)
