@@ -116,7 +116,7 @@ a massive compiler supports a wide variety of extensions. GHC is the de facto
 standard for Hsakell compilers. There are a few other compilers that have
 existed but they either are quite limited or have bit rotted over the years. GHC
 is also the only reference implementation for the Haskell language and defines
-what "Haskell" is by it's implementation.
+what Haskell the language is by its implementation.
 
 GHC is run at the command line with the command `ghc`.
 
@@ -247,15 +247,17 @@ projects like above but nested in subfolders with a `cabal.project` or
 └── cabal.project       # cabal project configuration
 ```
 
-*cabal.project*
+An example Cabal project `cabal.project1` for the above multi-component library
+repository would look like:
 
-```cabal
+```yaml
 packages: ./lib-core/
           ./lib-http
           ./lib-utils
 ```
 
-*stack.yaml*
+While an example Stack project `stack.yaml` for the above multi-component library
+repository would be:
 
 ```yaml
 resolver: lts-14.20
@@ -323,17 +325,17 @@ executables can be defined, but only one library. In addition, there is a specia
 form of executable entry point ``Test-Suite``, which defines an interface for
 invoking unit tests from ``cabal``.
 
-For a library, the ``exposed-modules`` field in the ``.cabal`` file indicates
+For a **library**, the ``exposed-modules`` field in the ``.cabal`` file indicates
 which modules within the package structure will be publicly visible when the
 package is installed. These modules are the user-facing APIs that we wish to
 expose to downstream consumers.
 
-For an executable, the ``main-is`` field indicates the module that
+For an **executable**`, the ``main-is`` field indicates the module that
 exports the ``main`` function running the executable logic of
 the application. Every module in the package must be listed in one of
 ``other-modules``, ``exposed-modules`` or ``main-is`` fields.
 
-```cabal
+```yaml
 name:               mylibrary
 version:            0.1
 cabal-version:      >= 1.10
@@ -499,7 +501,7 @@ and the v2 indicating the new-build system.
 
 The new build commands are listed below:
 
-```shell
+```bash
 new-build          Compile targets within the project.
 new-configure      Add extra project configuration
 new-repl           Open an interactive session for the given component.
@@ -1158,7 +1160,8 @@ For example, we can add a command to use the
 install ``hoogle``:
 
 ```bash
-cabal install hoogle
+$ cabal install hoogle
+$ stack install hoogle
 ```
 
 Then, we can enable the search functionality  by adding a command to
@@ -1446,8 +1449,8 @@ add x y = x + y
 inc = add 1
 ```
 
-In addition to named functions Haskell also has "anonymous" lambda functions
-denoted with a backslash. The following functions:
+In addition to named functions Haskell also has anonymous lambda functions
+denoted with a backslash. For example the identity function:
 
 ```haskell
 id x = x
@@ -1480,8 +1483,7 @@ on the context in which they occur.
 
 Dynamic programming languages often confuse this terminology and bit and
 associate types with values at evaluation, whereas static languages associate
-types to expressions *before evaluation*. Indeed, dynamic languages are just a
-special case of static languages with a single static type.
+types to expressions *before evaluation*.
 
 Static languages may optionally also push these types to the evaluation in the
 form of runtime type information.  Haskell fully has the capacity to do this
@@ -1499,7 +1501,7 @@ languages meaning they have a single static type.
 
 Under this set of definitions, the endless debate and opposition between static
 and dynamic typing is really shallow. The real question for programmers is not
-whether to have static typing, but **which type system to embrace**. On long
+whether to have static typing, but *which type system to use*. On long
 time-scales the general trend of programming history has always been toward more
 richer more sophisticated type systems and away from unitype models. Indeed, the
 Haskell model itself will eventually become antiquated in favour of the next
@@ -1514,7 +1516,7 @@ based on lambda calculus known as Girard's System-F (See [Rank-N Types]) and has
 a vast amount of extensions to support more type-level programming added to it
 over the years.
 
-The "ground types' you'll see are quite common 
+The *ground types* you'll see are quite common 
 
 * `()` - The unit type
 * `Char` - ASCII Characters
@@ -2207,10 +2209,6 @@ It is best to run this code without optimizations applied ``-O0`` so as to
 preserve the original call stack as represented in the source. With
 optimizations applied, GHC will rearrange the program in rather drastic ways,
 resulting in what may be an entirely different call stack.
-
-See:
-
-* [xc flag](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/runtime-control.html#idp13041968)
 
 Printf Tracing
 --------------
@@ -3499,12 +3497,7 @@ understanding of points (1), (2), and (3) and then trip on the simple fact that
 monads are the first example of a Haskell construct that is the confluence of
 all three.
 
-See:
-
-* [Monad Tutorial Fallacy](http://byorgey.wordpress.com/2009/01/12/abstraction-intuition-and-the-monad-tutorial-fallacy/)
-
 <hr/>
-
 
 Monad Transformers
 ==================
@@ -14617,14 +14610,20 @@ we will discuss these leading up to some basic category theory.
 Abstract Algebra
 ----------------
 
-Certain relations show up so frequently we typically refer to their properties
-by name ( often drawn from an equivalent abstract algebra concept ).
+Algebraic taught at higher levels generalises notions of arithmetic to operate
+over more generic structures than simple numbers. These structures are called
+**sets** and are a very broad notion of generic way describing groups of
+mathematical objects that can be equated and grouped. Over these sets we can
+define ways of combining and operating over elements of the set. These
+generalised notions of arithmetic are described in terms of and **operations**.
+Operations which take elements of a set to the same set are said to be
+**closed** in the set. When discussing operations we use the conventions:
 
-* **Sets**
-* **Binary Operations**
-* **Unary Operations**
-* **Constants**
-* **Relations**
+* **Properties** - Predicate attached to values and operations over a set.
+* **Binary Operations** - Operations which map two elements.
+* **Unary Operations** - Operations which map a single elements.
+* **Constants** - Specific values with specific properties in a set.
+* **Relations** - Pairings of elements in a set.
 
 Binary operations are generalisations of operations like multiplication and
 addition. That map two elements of a set to another element of a set. Unary
@@ -14635,6 +14634,10 @@ specific names.
 Constants are specific elements of the set, that generalise values like 0 and 1
 which have specific laws in relation to the operations defined over the set.
 Several of the common algebraic laws are defined in the table below:
+
+Certain properties show up so frequently we typically refer to their properties
+by an algebraic term. These terms are drawn from an equivalent abstract algebra
+concept.
 
 ```{=latex}
 \noindent\rule{\textwidth}{1pt}

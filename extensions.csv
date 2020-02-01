@@ -14,7 +14,9 @@ DeriveDataTypeable         , ✓      ,            ,                , General   
 DeriveFoldable             , ✓      ,            ,                , General     , Generic Programming   
 DeriveFunctor              , ✓      ,            ,                , General     , Generic Programming   
 DeriveGeneric              , ✓      ,            ,                , General     , Generic Programming   
+DerivingStrategies         , ✓      ,            ,                , General     , Generic Programming   
 DeriveTraversable          , ✓      ,            ,                , General     , Generic Programming   
+DerivingVia                , ✓      ,            ,                , General     , Generic Programming   
 DisambiguateRecordFields   , ✓      ,            , ✓              , Specialized , Syntax Extension      
 DoRec                      ,        , ✓          , ✓              , Specialized , Syntax Extension      
 EmptyCase                  ,        ,            ,                , Specialized , Syntax Extension      
@@ -82,6 +84,7 @@ Trustworthy                ,        ,            ,                , Specialized 
 TupleSections              , ✓      ,            ,                , General     , Syntax Extension      
 TypeFamilies               ,        ,            ,                , Specialized , Typelevel Programming 
 TypeHoles                  , ✓      ,            ,                , General     , Interactive Typing    
+TypeInType                 ,        ,            ,                , Specialized , TypeInType
 TypeOperators              ,        ,            ,                , Specialized , Typelevel Programming 
 TypeSynonymInstances       , ✓      ,            ,                , General     , Typeclass Extension   
 UnboxedTuples              ,        ,            ,                , Specialized , FFI                   
