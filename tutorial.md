@@ -2728,6 +2728,29 @@ show-extensions  Annotates the documentation with the language extensions used.
 hide             Forces the module to be hidden from Haddock.
 prune            Omits definitions with no annotations.
 
+Unsafe Functions
+----------------
+
+As everyone eventually finds out there are several functions within the
+implementation of GHC ( not the Haskell language ) that can be used to subvert
+the type-system, they are marked with the prefix ``unsafe``.  These functions
+exist only for when one can manually prove the soundness of an expression but
+can't express this property in the type-system or externalities to Haskell.
+
+```haskell
+unsafeCoerce :: a -> b
+unsafePerformIO :: IO a -> a
+```
+
+<div class="alert alert-danger">
+Using these functions to subvert the Haskell typesystem will cause all measure
+of undefined behavior with unimaginable pain and suffering, and are <span
+style="font-weight: bold">strongly discouraged</span>. When initially starting
+out with Haskell there are no legitimate reason to use these functions at all,
+period.
+</div>
+
+
 <hr/>
 
 Monads
@@ -3834,11 +3857,11 @@ or per-project basis. While this does add a lot of complexity at first, it adds
 a level of power and flexibility for the language to evolve at a pace that is
 unrivaled in the programming language design.
 
-Categories
-----------
+Classes
+--------
 
-It's important to distinguish between different categories of language
-extensions *general* and *specialized*.
+It's important to distinguish between different classes of language
+extensions: *general* and *specialized*.
 
 The inherent problem with classifying the extensions into the general and
 specialized categories is that it's a subjective classification. Haskellers who
@@ -4041,32 +4064,8 @@ on, and cannot be switched off.
 
 See: [Monomorphism Restriction](#monomorphism-restriction)
 
-Unsafe Functions
-----------------
-
-As everyone eventually finds out there are several functions within the
-implementation of GHC ( not the Haskell language ) that can be used to subvert
-the type-system, they are marked with the prefix ``unsafe``.  These functions
-exist only for when one can manually prove the soundness of an expression but
-can't express this property in the type-system or externalities to Haskell.
-
-```haskell
-unsafeCoerce :: a -> b
-unsafePerformIO :: IO a -> a
-```
-
-<div class="alert alert-danger">
-Using these functions to subvert the Haskell typesystem will cause all measure
-of undefined behavior with unimaginable pain and suffering, and are <span
-style="font-weight: bold">strongly discouraged</span>. When initially starting
-out with Haskell there are no legitimate reason to use these functions at all,
-period.
-</div>
-
 Safe Haskell
 ------------
-
-TODO
 
 The Safe Haskell language extensions allow us to restrict the use of unsafe
 language features using ``-XSafe`` which restricts the import of modules which
@@ -4676,6 +4675,64 @@ become deprecated in favor of others. Others are just considered misfeatures.
 Type Classes
 ============
 
+Typeclasses are the bread and butter of abstractions in Haskell, and even out of
+the box in Haskell 98 they are quite powerful. However classes have grown quite
+a few extensions, additional syntax and enhancements over the years to augment
+their utility. 
+
+```haskell
+--        +-----+------------------ Typeclass Context
+--        |     |           +------ Typeclass Head
+--        |     |           |
+--    ^^^^^^^^^^^^^^^     ^^^^^^^^^^^
+class (Ctx1 a, Ctx2 b) => MyClass a b where
+  method1 :: a -> b
+--        |
+--        +------------------------ Typeclass Method
+```
+
+Instance Search
+---------------
+
+Whenever a typeclass method is invoked at a callsite, GHC will perform an
+instance search over all available instances defined for the given typeclass
+associated with the method. This instance search is quite similar to backward
+chaining in logic programming languages. The search is performed during
+compilation after all types in all modules are known as is performed *globally*
+across all modules and all packages available to be linked. The instance search
+can either result in no instances, a single instance or multiple instances which
+satisfy the conditions of the call site.
+
+Orphan Instances
+----------------
+
+Normally typeclass definitions are restricted to be defined in one of two
+places:
+
+1. In the same module as the declaration of the datatype in the instance head.
+2. In the same module as the class declaration.
+
+These two restrictions restrict the instance search space to a system where a
+solution (if it exists) can always be found. If we allowed instances to be
+defined in any modules then we could potentially have multiple class instances
+defined in multiple modules and search would be ambiguous. 
+
+This restriction can however be disabled with the `-fno-warn-orphans` flag.
+
+```haskell
+{-# OPTIONS_GHC -fno-warn-orphans #-}
+```
+
+This will allow you to define orphan instances in the current module. But beware
+this will make the instance search contingent on your import list and may result
+in clashes in your codebase where the linker will fail because there are
+multiple modules which define the same instance head. 
+
+When used appropriately this however can be way to route around the fact that
+upstream modules may define datatypes that you use, but not define the instances
+for other downstream libraries that you also use. You can then write these
+instances for your codebase without modifying either upstream library.
+
 Minimal Annotations
 -------------------
 
@@ -4716,95 +4773,19 @@ definition must be defined). Comma indicates logical ``AND`` where both sides
 Compiling the ``-Wmissing-methods`` will warn when a instance is defined that
 does not meet the minimal criterion.
 
-BangPatterns
-------------
+TypeSynonymInstances
+-------------------
 
-The extension ``BangPatterns`` allows an alternative syntax to force arguments
-to functions to be wrapped in seq. A bang operator on an arguments forces its
-evaluation to weak head normal form before performing the pattern match. This
-can be used to keep specific arguments evaluated throughout recursion instead of
-creating a giant chain of thunks.
+Normally type class definitions are restricted to be being defined only over
+fully expanded types with all type synonym indirections removed. Type synonyms
+introduce a "naming indirection" that can included in the instance search to
+allow you to write synonym instances for multiple synonyms which expand to
+concrete types.
 
-```haskell
-{-# LANGUAGE BangPatterns #-}
+This is used quite often in modern Haskell.
 
-sum :: Num a => [a] -> a
-sum = go 0
-  where
-    go !acc (x:xs) = go (acc + x) xs
-    go  acc []     = acc
-```
-
-This is desugared into code effectively equivalent to the following:
-
-```haskell
-sum :: Num a => [a] -> a
-sum = go 0
-  where
-    go acc _ | acc `seq` False = undefined
-    go acc (x:xs)              = go (acc + x) xs
-    go acc []                  = acc
-```
-
-Function application to seq'd arguments is common enough that it has a special
-operator.
-
-```haskell
-($!) :: (a -> b) -> a -> b
-f $! x  = let !vx = x in f vx
-```
-
-StrictData
-----------
-
-As of GHC 8.0 strictness annotations can be applied to all definitions in a
-module automatically. In previous versions it was necessary to definitions via
-explicit syntactic annotations at all sites.
-
-Enabling StrictData makes constructor fields strict by default on any module it
-is enabled on.
-
-```haskell
-{-# LANGUAGE StrictData #-}
-
-data Employee = Employee
-  { name :: T.Text
-  , age :: Int
-  }
-```
-
-Is equivalent to:
-
-```haskell
-data Employee = Employee
-  { name :: !T.Text
-  , age :: !Int
-  }
-```
-
-Strict
-------
-
-Strict implies ``-XStrictData`` and extends strictness annotations to all
-arguments of functions.
-
-```haskell
-f x y = x + y
-```
-
-Is equivalent to the following function declaration with explicit bang patterns:
-
-```haskell
-f !x !y = x + y
-```
-
-On a module-level this effectively makes Haskell a call-by-value language with
-some caveats. All arguments to functions are now explicitly evaluated and all
-data in constructors within this module are in head normal form by construction.
-However there are some subtle points to this that are better explained in the
-language guide.
-
-* [Strict Extensions](https://downloads.haskell.org/~ghc/master/users-guide//glasgow_exts.html?highlight=typefamilydependencies#strict-by-default-pattern-bindings)
+~~~~ {.haskell include="src/04-extensions/synonym.hs"}
+~~~~
 
 FlexibleInstances
 -------------------
@@ -4845,6 +4826,7 @@ with the OVERLAPPING and INCOHERENT pragmas.
 ~~~~ {.haskell include="src/04-extensions/overlapping_anno.hs"}
 ~~~~
 
+
 IncoherentInstances
 -------------------
 
@@ -4859,20 +4841,6 @@ generally pretty crazy and usually a sign of poor design.
 There is also an incoherent instance.
 
 ~~~~ {.haskell include="src/04-extensions/incoherent_anno.hs"}
-~~~~
-
-TypeSynonymInstances
--------------------
-
-Normally type class definitions are restricted to be being defined only over
-fully expanded types with all type synonym indirections removed. Type synonyms
-introduce a "naming indirection" that can included in the instance search to
-allow you to write synonym instances for multiple synonyms which expand to
-concrete types.
-
-This is used quite often in modern Haskell.
-
-~~~~ {.haskell include="src/04-extensions/synonym.hs"}
 ~~~~
 
 <hr/>
@@ -5071,7 +5039,113 @@ characteristics when compiled with GHC.
 Lazy Spines
 -----------
 
-TODO
+```haskell
+
+data List a = Cons a (List a) | Nil
+
+-- [1,2,3,4]
+
+-- Cons 
+-- | \
+-- 1  Cons
+--    | \
+--    2  Cons
+--       | \ 
+--       3  Cons
+--          | \
+--          4  Nil
+```
+
+BangPatterns
+------------
+
+The extension ``BangPatterns`` allows an alternative syntax to force arguments
+to functions to be wrapped in seq. A bang operator on an arguments forces its
+evaluation to weak head normal form before performing the pattern match. This
+can be used to keep specific arguments evaluated throughout recursion instead of
+creating a giant chain of thunks.
+
+```haskell
+{-# LANGUAGE BangPatterns #-}
+
+sum :: Num a => [a] -> a
+sum = go 0
+  where
+    go !acc (x:xs) = go (acc + x) xs
+    go  acc []     = acc
+```
+
+This is desugared into code effectively equivalent to the following:
+
+```haskell
+sum :: Num a => [a] -> a
+sum = go 0
+  where
+    go acc _ | acc `seq` False = undefined
+    go acc (x:xs)              = go (acc + x) xs
+    go acc []                  = acc
+```
+
+Function application to seq'd arguments is common enough that it has a special
+operator.
+
+```haskell
+($!) :: (a -> b) -> a -> b
+f $! x  = let !vx = x in f vx
+```
+
+StrictData
+----------
+
+As of GHC 8.0 strictness annotations can be applied to all definitions in a
+module automatically. In previous versions it was necessary to definitions via
+explicit syntactic annotations at all sites.
+
+Enabling StrictData makes constructor fields strict by default on any module it
+is enabled on.
+
+```haskell
+{-# LANGUAGE StrictData #-}
+
+data Employee = Employee
+  { name :: T.Text
+  , age :: Int
+  }
+```
+
+Is equivalent to:
+
+```haskell
+data Employee = Employee
+  { name :: !T.Text
+  , age :: !Int
+  }
+```
+
+Strict
+------
+
+Strict implies ``-XStrictData`` and extends strictness annotations to all
+arguments of functions.
+
+```haskell
+f x y = x + y
+```
+
+Is equivalent to the following function declaration with explicit bang patterns:
+
+```haskell
+f !x !y = x + y
+```
+
+On a module-level this effectively makes Haskell a call-by-value language with
+some caveats. All arguments to functions are now explicitly evaluated and all
+data in constructors within this module are in head normal form by construction.
+However there are some subtle points to this that are better explained in the
+language guide.
+
+* [Strict Extensions](https://downloads.haskell.org/~ghc/master/users-guide//glasgow_exts.html?highlight=typefamilydependencies#strict-by-default-pattern-bindings)
+
 
 Deepseq
 -------
@@ -5178,22 +5252,19 @@ What Should be in Prelude
 To get work done on industrial projects you probably need the following
 libraries:
 
-<div class="alert alert-success">
-* text
-* containers
-* unordered-containers
-* mtl
-* transformers
-* vector
-* filepath
-* directory
-* process
-* bytestring
-* optparse-applicative
-* stm
-* async
-* unix
-</div>
+* ``text``
+* ``containers``
+* ``unordered-containers``
+* ``mtl``
+* ``transformers``
+* ``vector``
+* ``filepath``
+* ``directory``
+* ``process``
+* ``bytestring``
+* ``optparse-applicative``
+* ``unix``
+* ``aeson``
 
 Custom Preludes
 ---------------
@@ -5239,9 +5310,9 @@ Preludes
 There are many approaches to custom preludes. The most widely used ones are
 all available on Hackage.
 
-* [protolude](http://hackage.haskell.org/package/protolude)
-* [rio](http://hackage.haskell.org/package/rio)
 * [base-prelude](http://hackage.haskell.org/package/base-prelude)
+* [rio](http://hackage.haskell.org/package/rio)
+* [protolude](http://hackage.haskell.org/package/protolude)
 * [relude](http://hackage.haskell.org/package/relude)
 * [foundation](http://hackage.haskell.org/package/foundation)
 * [rebase](http://hackage.haskell.org/package/rebase)
@@ -5255,7 +5326,8 @@ are more community efforts and others are developed by consulting companies or
 industrial users wishing to standardise their commercial code.
 
 In Modern Haskell there are many different perspectives on Prelude design and
-the degree to which more advanced ideas should be used.
+the degree to which more advanced ideas should be used.  Which one is right for
+you is a matter of personal preference and constraints on your place of work.
 
 Protolude
 ---------
@@ -5303,31 +5375,31 @@ read :: Read a => String -> a
 
 A list of partial functions in the default prelude:
 
-* error
-* undefined
-* fail
-* head
-* init
-* tail
-* last
-* foldl
-* foldr
-* foldl'
-* foldr'
-* foldr1
-* foldl1
-* cycle
-* maximum
-* minimum
-* (!!)
-* sum
-* product
-* fromJust
-* read
-* reverse
-* toEnum
-* genericIndex
-* (!)
+* ``error``
+* ``undefined``
+* ``fail``
+* ``head``
+* ``init``
+* ``tail``
+* ``last``
+* ``foldl``
+* ``foldr``
+* ``foldl'``
+* ``foldr'``
+* ``foldr1``
+* ``foldl1``
+* ``cycle``
+* ``maximum``
+* ``minimum``
+* ``(!!)``
+* ``sum``
+* ``product``
+* ``fromJust``
+* ``read``
+* ``reverse``
+* ``toEnum``
+* ``genericIndex``
+* ``(!)``
 
 Replacing Partiality
 --------------------
@@ -5362,21 +5434,30 @@ atNote   :: String -> [a] -> Int -> a
 Boolean Blindness
 ------------------
 
+Boolean blindness is a common problem found in many programming languages.
+Consider the following two definitions which deconstruct a maybe value into a
+boolean. Is there anything wrong with the definitions and below and why is this
+not caught in the type system?
+
 ```haskell
 data Bool = True | False
+
+isNotJust :: Maybe a -> Bool
+isNotJust (Just x) = True
+isNotJust (Just x) = False
 
 isJust :: Maybe a -> Bool
 isJust (Just x) = True
 isJust Nothing  = False
 ```
 
-The problem with the boolean type is that there is effectively no difference
+The problem with the `Bool` type is that there is effectively no difference
 between True and False at the type level. A proposition taking a value to a Bool
 takes any information given and destroys it. To reason about the behavior we
 have to trace the provenance of the proposition we're getting the boolean answer
-from, and this introduces a whole slew of possibilities for misinterpretation. In
-the worst case, the only way to reason about safe and unsafe use of a function
-is by trusting that a predicate's lexical name reflects its provenance!
+from, and this introduces a whole slew of possibilities for misinterpretation.
+In the worst case, the only way to reason about safe and unsafe use of a
+function is by trusting that a predicate's lexical name reflects its provenance!
 
 For instance, testing some proposition over a Bool value representing whether
 the branch can perform the computation safely in the presence of a null is
@@ -6646,6 +6727,8 @@ Quantification
 
 TODO
 
+Socrates is a man, all men are mortal.
+
 Universal Quantification
 ------------------------
 
@@ -7401,7 +7484,7 @@ Name           Type Signature                                              Descr
 -----          ---------------------------------                           -----------------
 Catamorphism   ``cata :: (a -> b -> b) -> b -> [a] -> b``                  Deconstructs a data structure
 Anamorphism    ``ana :: (b -> Maybe (a, b)) -> b -> [a]``                  Constructs a structure level by level
-Hylomorphism   ``hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b`` Hylomorphism
+Hylomorphism   ``hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b`` TDO
 
 For Fix point type over a type `f :: * -> *` we can write down the recursion
 schemes as the following definitions:
@@ -7682,7 +7765,13 @@ from the types alone!
 Criterion
 ---------
 
-Criterion is a statistically aware benchmarking tool.
+Criterion is a statistically aware benchmarking tool. It exposes a library which
+allows us to benchmark individual functions over and over and test the
+distribution of timings for abberant beahvior and stability. These kind of tests
+are quite common to include in libraries which need to test that the
+introduction of new logic doesn't result in performance regressions.
+
+Criterion operates largely with the following four functions.
 
 ```haskell
 whnf :: (a -> b) -> a -> Pure
@@ -7691,8 +7780,18 @@ nfIO :: NFData a => IO a -> IO ()
 bench :: Benchmarkable b => String -> b -> Benchmark
 ```
 
+The `whnf` function evaluates a function applied to an argument `a` to *weak
+head normal form*, while `nf` evaluates a function applied to an argument `a`
+deeply to *normal form*. See [Laziness].
+
+The `bench` function samples a function over and over according to a
+configuration to develop a statistical distribution of it's runtime. 
+
 ~~~~ {.haskell include="src/15-testing/criterion.hs"}
 ~~~~
+
+These criterion reports can be generated out to either CSV or to an HTML file
+output with plots of the data.
 
 ```haskell
 $ runhaskell criterion.hs
@@ -7733,7 +7832,7 @@ variance introduced by outliers: 67.628%
 variance is severely inflated by outliers
 ```
 
-Criterion can also generate a HTML page containing the benchmark results plotted
+To generate an HTML page containing the benchmark results plotted
 
 ```bash
 $ ghc -O2 --make criterion.hs
@@ -8824,29 +8923,39 @@ statically verify that a function that operates over a ``Maybe a`` is always
 given a ``Just`` or that an arithmetic functions always yields an Int that is
 even positive number.
 
-To Install LiquidHaskell in Ubuntu add the following line to your
-``/etc/sources.list``:
+LiquidHaskell analyses the modules and discharges proof obligations
+to an SMT solver to see if the conditions are satisfiable.  This allows us to
+prove the absence of a family of errors around memory safety, arithmetic
+exceptions and information flow.
+
+You will need *either* the Microsoft Research [Z3 SMT
+solver](https://github.com/Z3Prover/z3) or Stanford [CVC4 SMT
+solver](https://cvc4.github.io/).
+
+For Linux:
 
 ```bash
-deb http://ppa.launchpad.net/hvr/z3/ubuntu trusty main
+sudo apt install z3 # z3
+sudo apt install cvc4 # cvc4
 ```
 
-And then install the external SMT solver.
+For Mac:
 
 ```bash
-$ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys F6F88286
-$ sudo apt-get install z3
+brew tap z3 # z3
+brew tap cvc4/cvc4 # cvc4
+brew install cvc4/cvc4/cvc4
 ```
 
-Then clone the repo and build it using stack.
+Then install LiquidHaskell either with Cabal or Stack:
 
 ```bash
-$ git clone --recursive git@github.com:ucsd-progsys/liquidhaskell.git
-$ cd liquidhaskell
-$ stack install
+cabal install liquidhaskell
+stack install liquidhaskell
 ```
 
-Ensure that ``$HOME/.local/bin`` is on your ``$PATH``.
+Then with the LiquidHaskell framework installed you can annotate your Haskell
+modules with refinement types and run the `liquid`
 
 ```haskell
 import Prelude hiding (mod, gcd)
@@ -8876,6 +8985,30 @@ Done solving.
 
 
 **** RESULT: SAFE **************************************************************
+```
+
+To run Liquid Haskell over a Cabal project you can include the cabal directory
+by passing `cabaldir` flag and then including the source directory which
+contains your application code. You can specify additional specification for
+external modules by including a `spec` folder containing special LH modules with
+definitions.
+
+An example specification module.
+
+```haskell
+module spec MySpec where
+
+import GHC.Base
+import GHC.Integer
+import Data.Foldable
+
+assume length :: Data.Foldable.Foldable f => xs:f a -> {v:Nat | v = len xs}
+```
+
+To run the checker over your project:
+
+```bash
+$ liquid -f --cabaldir -i src -i spec src/*.hs
 ```
 
 For more extensive documentation and further use cases see the official
@@ -9494,7 +9627,7 @@ generators over them and factor them.
 ~~~~ {.haskell include="src/19-numbers/polynomial.hs"}
 ~~~~
 
-See: [cobinat](https://hackage.haskell.org/package/poly)
+See: [poly](https://hackage.haskell.org/package/poly)
 
 Combinatorics 
 -------------
@@ -10592,6 +10725,25 @@ network protocol:
 
 See: [Text Parsing Tutorial](https://www.fpcomplete.com/school/starting-with-haskell/libraries-and-frameworks/text-manipulation/attoparsec)
 
+Configurator
+------------
+
+Configurator is a library for configuring Haskell daemons and programs.  It uses
+a simple, but flexible, configuration language, supporting several of the most
+commonly needed types of data, along with interpolation of strings from the
+configuration or the system environment.
+
+~~~~ {.haskell include="src/24-parsing/configurator.hs"}
+~~~~
+
+An example configuration file:
+
+~~~~ {.haskell include="src/24-parsing/example.config"}
+~~~~
+
+Configurator also includes an ``import`` directive allows the configuration of a
+complex application to be split across several smaller files, or configuration
+data to be shared across several applications.
 
 Optparse Applicative
 --------------------
@@ -10715,26 +10867,6 @@ As a simple input consider the following simple program.
 
 ~~~~ {.haskell include="src/24-parsing/happy/input.test"}
 ~~~~
-
-Configurator
-------------
-
-Configurator is a library for configuring Haskell daemons and programs.  It uses
-a simple, but flexible, configuration language, supporting several of the most
-commonly needed types of data, along with interpolation of strings from the
-configuration or the system environment.
-
-~~~~ {.haskell include="src/24-parsing/configurator.hs"}
-~~~~
-
-An example configuration file:
-
-~~~~ {.haskell include="src/24-parsing/example.config"}
-~~~~
-
-Configurator also includes an ``import`` directive allows the configuration of a
-complex application to be split across several smaller files, or configuration
-data to be shared across several applications.
 
 <hr/>
 
@@ -11076,8 +11208,13 @@ $$
 
 These are bilinear over group addition and multiplication.
 
-* $e(g_1+g_2,h) = e(g_1,h) e(g_2, h)$
-* $e(g,h_1+h_2) = e(g, h_1) e(g, h_2)$
+$$ 
+e(g_1+g_2,h) = e(g_1,h) e(g_2, h)
+$$
+
+$$
+e(g,h_1+h_2) = e(g, h_1) e(g, h_2)
+$$
 
 There are many types of pairings that can be computed. The `pairing` library
 implements the Ate pairing over several elliptic curve groups including the
@@ -13344,21 +13481,21 @@ The **R1** register always holds the active closure, and subsequent registers
 are arguments passed in registers. Functions with more than 10 values spill into
 memory.
 
-* Sp
-* SpLim
-* Hp
-* HpLim
-* HpAlloc
-* R1
-* R2
-* R3
-* R4
-* R5
-* R6
-* R7
-* R8
-* R9
-* R10
+* ``Sp``
+* ``SpLim``
+* ``Hp``
+* ``HpLim``
+* ``HpAlloc``
+* ``R1``
+* ``R2``
+* ``R3``
+* ``R4``
+* ``R5``
+* ``R6``
+* ``R7``
+* ``R8``
+* ``R9``
+* ``R10``
 
 **Examples**
 
@@ -13376,6 +13513,13 @@ For the simplest example consider a constant static constructor. Simply a
 function which yields the Unit value. In this case the function is simply a
 constructor with no payload, and is statically allocated.
 
+Lets consider a few example to develop some intuition about the Cmm layout
+for simple Haskell programs.
+
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
+```
+
 Haskell:
 
 ```haskell
@@ -13389,6 +13533,10 @@ Cmm:
      unit_closure:
          const ()_static_info;
  }]
+```
+
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
 ```
 
 Consider a static constructor with an argument.
@@ -13411,6 +13559,10 @@ Cmm:
  }]
 ```
 
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
+```
+
 Consider a literal constant. This is a static value.
 
 Haskell:
@@ -13428,6 +13580,10 @@ Cmm:
          const I#_static_info;
          const 1;
  }]
+```
+
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
 ```
 
 Consider the identity function.
@@ -13455,6 +13611,10 @@ Cmm:
  }]
 ```
 
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
+```
+
 Consider the constant function.
 
 Haskell:
@@ -13478,6 +13638,10 @@ Cmm:
          R1 = R2;
          jump stg_ap_0_fast; // [R1]
  }]
+```
+
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
 ```
 
 Consider a function where application of a function ( of unknown arity ) occurs.
@@ -13515,6 +13679,10 @@ Cmm:
          HpAlloc = 32;
          goto che;
  }]
+```
+
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
 ```
 
 Consider a function which branches using pattern matching:
@@ -13566,6 +13734,10 @@ Cmm:
          jump stg_gc_fun; // [R1, R2]
      ciU: jump sio_info; // [R1]
  }]
+```
+
+```{=latex}
+\noindent\rule{\textwidth}{1pt}
 ```
 
 **Macros**
@@ -13645,6 +13817,9 @@ stg_ap_p_fast
 }
 ```
 
+Inline CMM
+----------
+
 Handwritten Cmm can be included in a module manually by first compiling it
 through GHC into an object and then using a special FFI invocation.
 
@@ -13669,8 +13844,10 @@ Cmm Runtime:
 * [Updates.cmm](https://github.com/ghc/ghc/blob/master/rts/Updates.cmm)
 * [Precompiled Closures ( Autogenerated Output )](https://gist.github.com/sdiehl/e5c9daab7a6d1da0ede7)
 
-GHC Optimisations
------------------
+Optimisation
+------------
+
+GHC uses a suite of assembly optimisations to generate more optimal code.
 
 #### Tables Next to Code
 
@@ -13792,8 +13969,6 @@ from the main process.
 
 ~~~~ {.haskell include="src/29-ghc/ekg.hs"}
 ~~~~
-
-![](img/ekg.png)
 
 RTS Profiling
 -------------
@@ -15195,704 +15370,6 @@ If you so wish to study more category, there are many resources online.
 * [Category Theory for Programmers Lectures](https://www.youtube.com/watch?v=I8LbkfSSR58&list=PLbgaMIhjbmEnaH_LTkxLI7FMa2HsnawM_)
 * [Category Theory, Awodey](http://www.amazon.com/Category-Theory-Oxford-Logic-Guides/dp/0199237182)
 * [Category Theory Foundations](https://www.youtube.com/watch?v=ZKmodCApZwk)
-
-<hr/>
-
-Other Languages
-===============
-
-Let us attempt to objectively compare Haskell to other programming languages
-with regards to which language principles they share and in what respects
-they differ. These comparisons are not advisements to use or avoid any of
-these languages, but rather statements of the similarities and differences
-between them at the language level.
-
-No notion of "weak" or "strong" typing will be discussed because the terms have
-no universal meaning.
-
-Haskell
--------
-
-Haskell's genesis happened in 1987 at the [Functional Programming Languages and
-Computer Architecture](https://www.haskell.org/onlinereport/preface-jfp.html)
-conference in Portland, OR. Participants had achieved a consensus that there
-was a profusion of non-strict, pure languages and concluded that this
-excess was hampering the development and wider use of such languages.
-Subsequently, a committee was formed to design a new pure, lazy, general
-purpose programming language. Out of this collaboration emerged Haskell, named
-for logician [Haskell B. Curry](https://en.wikipedia.org/wiki/Haskell_Curry),
-upon whose research the logical underpinnings of the Haskell language rest.
-
-Since 1987, the Haskell language standard has continued to evolve. Haskell 1.0
-was released in April of 1990, with particularly significant updates to the
-standard released in [1998](https://www.haskell.org/onlinereport/) and
-[2010](https://www.haskell.org/onlinereport/haskell2010/).
-
-Haskell's main implementation is [*ghc*](https://www.haskell.org/ghc/). GHC
-is licenced under a permissive, non-copyleft, 3-clause BSD-style licence.
-
-Haskell is a *general purpose language*.
-
-Haskell is *garbage collected*.
-
-Haskell is *compiled* through a custom native code generator.
-
-Haskell is *statically* typed.
-
-Haskell allows polymorphism by means of *parametric polymorphism* and *ad-hoc
-polymorphism* through typeclasses.
-
-Haskell is *pure* and statically tracks effects.
-
-Haskell has a *managed runtime*.
-
-Haskell employs *lazy evaluation* by default using *call-by-need*.
-
-Haskell's package manager is cabal-install or stack.
-
-OCaml
------
-
-OCaml, originally known as Objective Caml, is the main implementation of the Caml
-programming language. The type system of OCaml is significantly less advanced
-than modern GHC Haskell and does not supported higher-kinded types or type-level
-programming to the extent that has become prevalent in portions of recent
-Haskell. The OCaml compiler is also significantly less advanced than modern GHC
-runtime and largely does not perform any compiler optimizations or program
-transformations. The language itself does have several advantages over Haskell in
-that is has a module system. Although it is possible to write pure OCaml, there is
-no language-integrated support, and the current engineering practice around the
-language encourages ubiquitous impurity in third-party libraries.
-
-**Main difference**: Both have fairly modern type systems, but OCaml does not
-enforce purity and uses call-by-value.
-
-OCaml's main implementation is [*ocamlc*](http://ocaml.org/). The OCaml compiler
-is distributed under [the Q Public
-licence](http://www.gnu.org/licenses/license-list.html#QPL), a permissive,
-non-copyleft FLOSS licence. Some portions of the OCaml libraries are licensed under
-the [GPLv2](http://www.gnu.org/licenses/gpl.html). See the [OCaml GitHub
-page](https://github.com/ocaml/ocaml/blob/trunk/LICENSE) for more information
-about licensing specifics.
-
-OCaml is a *general purpose language*.
-
-OCaml is a *statically typed* language.
-
-OCaml is *garbage collected*.
-
-OCaml allows polymorphism by means of *parametric polymorphism* and *ad-hoc
-polymorphism* through modular implicits.
-
-OCaml has a module system and functors.
-
-OCaml is not an optimizing compiler.
-
-OCaml is *impure* by default and does not statically track effects.
-
-OCaml's evaluation is *call-by-value*.
-
-OCaml has a package manager called [OPAM](https://opam.ocaml.org/).
-
-Standard ML
------------
-
-Standard ML was a general-purpose, modular, functional programming language with
-compile-time type checking and type inference.
-
-[Standard ML](https://en.wikipedia.org/wiki/Standard_ML) was traditionally a
-general purpose language, although it's lack of a modern compiler largely only
-makes it useful for work on pure type theory and proof assistants and not in
-industrial settings. Standard ML has been largely abandoned in recent years
-and is a good example of a promising language that withered on the vine from
-a lack of engineering effort devoted toward the backend compiler.
-
-**Main difference**: Standard ML is no longer actively developed, Haskell is.
-
-Standard ML's main implementation is [*smlnj*](http://smlnj.org/). Other
-implementations existed in [*mlton*](http://mlton.org/) and
-[*polyml*](http://www.polyml.org/).
-
-Standard ML has no package manager.
-
-Standard ML allows polymorphism by means of *parametric polymorphism*.
-
-Standard ML has a module system and functors.
-
-Standard ML is a *statically typed* language.
-
-Standard ML is *impure* by default and does not statically track effects.
-
-Standard ML implementations are typically *garbage collected*.
-
-Standard ML's evaluation is *call-by-value*.
-
-Standard ML employs strict evaluation.
-
-Agda
-----
-
-Agda is a dependently typed functional programming language used in type theory
-research. Unlike Coq, has no support for tactics, and proofs are written in a
-functional programming style.
-
-**Main difference**: Agda is not a general purpose language, Haskell is. Agda is
-not used to write executable programs for practical uses outside of research.
-
-Agda's main implementation is *agda*.
-
-Agda is not a general purpose language, it is largely used as a proof
-environment and tool for constructive mathematics.
-
-Agda has no package manager.
-
-Agda is a *statically typed* language.
-
-Coq
----
-
-Coq is an interactive theorem prover based on the calculus of inductive
-constructions. It compiles into a Core language called Gallina whose defining
-feature is that it is weakly normalizing (i.e. all programs terminate ).
-Although Coq allows limited extraction of some programs to other languages, it
-is not by itself a programming language in the traditional sense, most Coq
-programs are not run or compiled.
-
-**Main difference**: Coq is not a general purpose language, Haskell is.
-
-Coq's main implementation is *coq*.
-
-Coq is *not a general purpose language*, it is largely used as a proof
-environment.
-
-Coq is a *statically typed* language.
-
-Idris
------
-
-Idris is a general-purpose purely functional programming language with dependent
-types.
-
-**Main difference**: Idris has dependent types and call-by-value semantics,
-Haskell does not have dependent types and uses call-by-need.
-
-Idris's main implementation is *idris*.
-
-Idris is a *general purpose language*.
-
-Idris allows polymorphism by means of *parametric polymorphism* and *ad-hoc
-polymorphism*.
-
-Idris's evaluation is *call-by-value*.
-
-Idris is a *statically typed* language.
-
-Idris is *garbage collected* by default, although there is some novel work on
-[uniqueness
-types](http://docs.idris-lang.org/en/latest/reference/uniqueness-types.html)
-which can statically guarantee aliasing properties of references.
-
-Idris is *pure* and statically tracks effects.
-
-Rust
------
-
-Rust is a general-purpose, multi-paradigm, compiled programming language
-developed by Mozilla Research. It incorporates many of the foundational ideas of
-Haskell's type system but uses a more traditional imperative evaluation model.
-Rust includes type inference, ad-hoc polymorphism, sum types, and option
-chaining as safe exception handling. Notably Rust lacks higher-kinded types
-which does not allow many modern functional abstractions to be encoded in
-the language. Rust does not enforce purity or track effects, but has a system
-for statically analyzing lifetimes of references informing the efficient
-compilation of many language constructs to occur without heap allocation.
-
-**Main difference**: Rust is a modern imperative typed language, Haskell is a
-modern functional typed language with recent type system. Rust does not have the
-capacity to distinguish between pure and impure functions at the language level.
-
-Rust's main implementation is *rustc*.
-
-Rust is a *statically typed* language.
-
-Rust is a *general purpose language*.
-
-Rust's package manager is Cargo.
-
-Rust allows polymorphism by means of *parametric polymorphism* and *ad-hoc
-polymorphism*.
-
-Rust is *not garbage collected* by default, instead uses static semantics to
-analyze lifetimes. Optionally supports garbage collection.
-
-Rust is *impure* by default and does not statically track effects. It does
-however have static tracking of memory allocations and lifetimes.
-
-Purescript
----------
-
-Purescript is a Haskell-like language that compiles into JavaScript for
-evaluation within a web browser. Semantically it is very close to Haskell except
-that is uses a call-by-value model instead of Haksell's call-by-need. The type
-system is a superset of Haskell 2010 and includes ad-hoc polymorphism,
-parametric polymorphism, rank-n polymorphism, row-polymorphism, higher-kinded
-types and full algebraic data types.
-
-**Main difference**: Purescript targets JavaScript in the browser, while GHC
-Haskell is designed to work on top of the GHC managed runtime.
-
-Purescript's main implementation is *purescript*.
-
-Purescript is a *statically typed* language.
-
-Purescript's evaluation is *call-by-value*.
-
-Purescript is *pure* and statically tracks effects using an extensible record
-system embedded in the Eff monad.
-
-Elm
----
-
-Elm is a ML-like language that compiles into JavaScript for evaluation within a
-web browser.
-
-**Main difference**: Elm targets JavaScript in the browser, while GHC Haskell is
-designed to work on top of the GHC managed runtime.  Elm lacks any semblance of
-a modern ML type system features, and has no coherent story for overloading,
-modules or higher polymorphism.
-
-Elm's main implementation is *elm*.
-
-Elm is a *statically typed* language.
-
-Elm targets JavaScript and is "transpiled" to JavaScript source code to be run
-exclusively in a browser or JavaScript interpreter.
-
-Elm allows polymorphism by means of *parametric polymorphism*.
-
-Elm is *pure* and statically tracks effects.
-
-Python
-------
-
-Python is a widely used general-purpose, high-level programming language. It is
-based on object-style of programming constructions and allows first class
-functions and higher order functions. Python is unityped and is notable for it's
-simplistic runtime and global mutex preventing concurrency.
-
-**Main difference**: Python is unityped and imperative, Haskell is statically
-typed.
-
-Python's main implementation is *cpython*.
-
-Python is a *unityped* language.
-
-Python is *impure* by default and does not statically track effects.
-
-Python internally refers to runtime value tags as *types*, which differs from
-the Haskell notion of types.
-
-Python allows polymorphism by means of unityping, all functions can take any
-type.
-
-R
--
-
-R is a programming language and software environment for statistical computing
-and graphics. The R language is widely used among statisticians and data miners
-for developing statistical software and data analysis
-
-**Main difference**: R is unityped and domain specific language, Haskell is
-statically typed and general purpose.
-
-R's main implementation is *r*.
-
-R is a *unityped* language.
-
-R allows polymorphism by means of *unityping*.
-
-R internally refers to runtime value tags as *types*, which differs from
-the Haskell notion of types.
-
-R is *interpreted*.
-
-Julia
-------
-
-Julia is a high-level dynamic programming language designed to address the
-requirements of high-performance numerical and scientific computing.
-
-**Main difference**: Julia is unityped and imperative, Haskell is statically
-typed.
-
-Julia's main implementation is *julia*.
-
-Julia is a *unityped* language.
-
-Julia allows polymorphism by means of *unityping*.
-
-Julia internally refers to runtime value tags as *types*, which differs from
-the Haskell notion of types.
-
-Julia is *compiled* through the LLVM framework.
-
-Erlang
-------
-
-Erlang is a general-purpose programming language and runtime environment. Erlang
-has built-in support for concurrency, distribution and fault tolerance.
-
-**Main difference**: Erlang is unityped and imperative, Haskell is statically
-typed and functional.
-
-Erlang's main implementation is *erl*.
-
-Erlang is a *unityped* language.
-
-Erlang allows polymorphism by means of *unityping*.
-
-Erlang's evaluation is *call-by-value*.
-
-Erlang internally refers to runtime value tags as *types*, which differs from
-the Haskell notion of types.
-
-Erlang is *impure* by default and does not statically track effects.
-
-Elixir
-------
-
-TODO
-
-Java
-------
-
-Java is a general purpose programming language. It is an imperative language
-which is statically typed. It is one of the most frequently used languages in
-the industry, as well as a common language used in academia to teach the
-fundamentals of object oriented programming.
-
-**Main difference**: Java is an object-oriented language, compared to Haskell
-which is functional.
-
-Java is *statically compiled* to Java Bytecode which can be ran on a Java
-Virtual Machine.
-
-Java's most recent version is Java8
-
-Java is cross-platform. It can be ran on Linux, Windows and Mac.
-
-Clojure
--------
-
-Clojure is a modern LISP dialect that emphasizes immutability. It does not
-enforce safety and idiomatic clojure often includes mutable references and
-destructive updates. There are some efforts toward an optional typing system
-provided by the [core.typed](https://github.com/clojure/core.typed).
-
-**Main difference**: Clojure is a unityped typed Lisp dialect, while Haskell is
-in the ML family.
-
-Clojure's main implementation is *clojure*.
-
-Clojure is a *unityped* language.
-
-Clojure allows polymorphism by means of *unityping*.
-
-Clojure is *garbage collected*.
-
-Clojure internally refers to runtime value tags as *types*, which differs from
-the Haskell notion of types.
-
-Clojure is *compiled* to Java Virtual Machine bytecode.
-
-Swift
-------
-
-Swift is a multi-paradigm language created for iOS and OS X development by
-Apple. Swift incorporates recent developments in language design and uncommonly
-includes return type polymorphism, type inference, ad-hoc polymorphism, sum
-types, and option chaining as safe exception handling. Swift does not enforce
-purity or track effects, and allows mutable and destructive updates.
-
-**Main difference**: Swift is reasonably modern imperative typed language,
-Haskell is a modern functional typed language.
-
-Swift's main implementation is *swiftc*.
-
-Swift allows polymorphism by means of *parametric polymorphism* and *ad-hoc
-polymorphism* through through inheritance, interfaces, and reflection.
-
-Swift is not *garbage collected*, but uses static semantics to analyse life cycles of reference values at compile time. References are annotated as *weak* or *strong* to prevent reference cycles. Value types are copied on write.
-
-Swift is a *statically typed* language.
-
-Swift is *compiled* through the LLVM framework.
-
-Swift *does not* have an effect system.
-
-Scheme
-------
-
-Scheme is a minimalist LISP implementation developed in the 1970s.
-
-**Main difference**: Scheme is minimalist dynamically typed language built
-around a small set of ideas making it easy to learn and teach. Haskell by
-contrast is a much larger language built as a platform to advance many modern
-areas of language research.
-
-Scheme has no canonical implementation; notable compilers include *chez scheme*
-and *mit scheme*.
-
-Scheme is a *unityped* language.
-
-Scheme allows polymorphism by means of *unityping*.
-
-Scheme is *garbage collected*.
-
-Scheme internally refers to runtime value tags as *types*, which differs from
-the Haskell notion of types.
-
-Scheme is either *interpreted* or *compiled*, depending on the implementation.
-
-Racket
-------
-
-Racket is a minimalist LISP implementation developed in the 1990s.
-
-**Main difference**: Racket is minimalist dynamically typed language built
-around a small set of ideas making it easy to learn and teach. Haskell by
-contrast is a much larger language built as a platform to advance many modern
-areas of language research.
-
-Rackets's main implementation is *racket*.
-
-Racket is a *unityped* language.
-
-Racket allows polymorphism by means of *unityping*.
-
-Racket is *garbage collected*.
-
-Racket internally refers to runtime value tags as *types*, which differs from
-the Haskell notion of types.
-
-Racket is *interpreted*.
-
-C#
---
-
-C# is a typed, class-based, single-inheritance object-oriented programming
-language originally developed at Microsoft as the flagship language for the
-.NET framework. Early versions closely resemble *Java*, but the language has
-since picked up a few influences from declarative and functional programming
-paradigms. .NET is Windows-only, but a cross-platform replacement, *Mono*,
-exists, that makes it possible to run .NET code on OS X and Linux.
-
-**Main difference**: C# is an impure object-oriented language, Haskell is a
-pure functional language.
-
-C#'s main implementation is *C#.NET*.
-
-C# is a *general purpose* programming language.
-
-C# is *garbage collected* (but allows opting out of GC through the use of
-`unsafe` blocks)
-
-C# is a *statically typed* language with limited *type inference* and some
-support for *dynamic typing*.
-
-C# allows polymorphism by means of *parametric polymorphism* through generics,
-*ad-hoc polymorphism* through inheritance, interfaces, and reflection.
-
-C# is impure and *does not* track effects.
-
-C# is typically *compiled* to .NET IL, which is then interpreted by the .NET
-runtime.
-
-F#
---
-
-C++
----
-
-C++ is a typed multi-paradigm (imperative, structured/procedural, class-based
-multiple-inheritance object-oriented, template metaprogramming) programming
-language developed by Bjarne Stroustrup in the early 1980s. The philosophy
-strongly favors zero-cost abstractions, and values performance higher than
-convenience. This has made the language extremely large and complex, and the
-culture and ecosystem diverse and fractured. Today, C++ is mainly found in
-legacy projects, but remains popular in areas where realtime performance and
-deterministic memory allocation are critical, such as embedded, audio/video,
-games, HFT, etc.
-
-**Main difference**: C++ is impure and uses RAII, Haskell is pure and
-garbage-collected.
-
-C++ has no canonical implementation; notable compilers include *gcc*,
-*clang*, and *MSVC++*.
-
-C++ is a *general purpose* programming language, with a bias towards
-*systems programming*.
-
-C++ is *not garbage collected*. Manual memory management (as in C) is
-supported, but the recommended paradigm is *RAII*.
-
-C++ is a *statically typed* language with limited *type inference* and many
-backdoors to bypass the type checker.
-
-C++ allows polymorphism by means of *parametric polymorphism* through template
-metaprogramming, and *ad-hoc polymorphism* through inheritance.
-
-C++ is *compiled*, the typical compilation target is native machine code.
-
-C++ *does not* track effects. It has limited support for tracking mutability at
-the type level.
-
-Go
---
-
-[Go](https://golang.org/) is a programming language developed at Google.
-Although Go is statically typed, it has failed to integrate most modern
-advances in programming language design done after the 1970s and instead
-chooses a seemingly regressive design. Most notably, it lacks any notion of
-generics, while polymorphism is achieved either by manual code duplication or
-unsafe coercions.
-
-**Main difference**: Go is a language designed around the idea that language
-design has not advanced since 1970, while Haskell incorporates many ideas from
-modern research.
-
-Go's main implementation is [*go*](https://go.googlesource.com/go).
-
-Go is a *statically typed* language.
-
-Go has *no safe polymorphism*.
-
-Go is statically *compiled* with a custom toolchain.
-
-Go is *garbage collected*.
-
-Go *does not* have an effect system.
-
-Scala
------
-
-Scala is a general purpose multi-paradigm language. Like Java, Scala is
-object-oriented, and uses a curly-brace syntax reminiscent of the C programming
-language. Unlike Java, Scala has many features of functional programming
-languages like Scheme, Standard ML and Haskell, including currying, type
-inference, immutability, lazy evaluation, and pattern matching.
-
-**Main difference**: Scala mixes functional programming with imperative
-programming and does not take a language-integrated stance on purity or effect
-tracking which breaks equational reasoning. External libraries and frameworks
-exist that embrace functional programming more effectively, but it is not
-enforced and imperative code and thin wrappers around Java libs quite often
-leaks industrial codebases.
-
-Scala's main implementation is [*scala*](http://www.scala-lang.org/).
-
-Scala is a *statically typed* language.
-
-Scala allows polymorphism by means of *parametric polymorphism* and *ad-hoc
-polymorphism* through implicits.
-
-Scala is *garbage collected*.
-
-Scala language *does not* have an effect system.
-
-Scala is statically *compiled* to Java Virtual Machine (JVM) bytecode.
-
-JavaScript
-----------
-
-JavaScript is a high-level, dynamic, untyped, and interpreted programming
-language that was ubiquitous in web development during the 90s and 00s.
-JavaScript is most kindly described as a language that "just happened" and an
-enduring testament to human capacity to route around problems.
-
-**Main difference**: Like many web technologies JavaScript "just happened" and
-its design was dominated by economic factors. Haskell was designed with some
-insight into the end result.
-
-JavaScript's implementations include *NodeJS*, *V8* and *spidermoneky*.
-
-JavaScript is a *unityped* language.
-
-JavaScript is *interpreted*, tracing JIT specialization is common.
-
-JavaScript allows polymorphism by means of *unityping*.
-
-JavaScript internally refers to runtime value tags as *types*, which differs
-from the Haskell notion of types.
-
-The majority of JavaScript implementations are garbage collected.
-
-TypeScript
-----------
-
-TODO
-
-Kotlin
-------
-
-**Main difference**: Kotlin is an imperative language which structures code
-around objects and classes, compared to Haskell which is functional language
-emphasizing pure higher-order functions.
-
-Kotlin is a *general purpose* programming language.
-
-Kotlin is *garbage collected* (but allows opting out of GC through the use of
-`unsafe` blocks)
-
-Kotlin is a *statically typed* language with limited *type inference* and some
-support for *dynamic typing*.
-
-Kotlin allows polymorphism by means of *parametric polymorphism* through
-generics, *ad-hoc polymorphism* through inheritance, interfaces, and reflection.
-
-Kotlin is impure and *does not* track effects.
-
-Kotlin is *statically compiled* to Java Bytecode which can be ran on a Java
-Virtual Machine.
-
-Kotlin is cross-platform. It can be ran on Linux, Windows and Mac.
-
-PHP
----
-
-PHP is a high-level, dynamic, untyped, and interpreted programming language that
-was common for scripting web applications in the 00s. PHP is widely criticized
-for it's poor design, unsafe defaults, and improper handling of simple
-programming constructs. Nevertheless, PHP is widely used as the backend for
-several of the highest profile websites.
-
-**Main difference**: PHP was designed in ad-hoc fashion to meet the needs of
-server side web development before the field was well-understood. The PHP
-runtime is "organic" and the language itself lacks the discipline and rigor found in
-Haskell.
-
-PHP implementations include *php* and *hack*.
-
-PHP is a *unityped* language.
-
-PHP is *interpreted*.
-
-PHP allows polymorphism by means of *unityping*.
-
-PHP internally refers to runtime value tags as *types*, which differs from the
-Haskell notion of types.
-
-The majority of PHP implementations are garbage collected.
-
-Perl
-----
-
-TODO
-
-Lua
----
-
-TODO
 
 <hr/>
 

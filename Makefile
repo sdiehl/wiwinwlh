@@ -2,9 +2,9 @@ PANDOC = pandoc
 IFORMAT = markdown+raw_tex+raw_attribute
 GHC = ghc
 
-HTEMPLATE = resources/page.tmpl
-LTEMPLATE = resources/page.latex
-ETEMPLATE = resources/page.epubt
+HTEMPLATE = resources/template.html
+LTEMPLATE = resources/template.tex
+ETEMPLATE = resources/template.epub
 
 UNICODE_MAP = resources/unicodemapping.tex
 
@@ -16,6 +16,9 @@ EFLAGS =
 HTML = tutorial.html
 EPUB = tutorial.epub
 PDF = tutorial.pdf
+
+COVER = resources/cover.tex
+BACK = resources/back.tex
 
 all: $(HTML) $(EPUB) $(PDF)
 html: $(HTML)
@@ -34,7 +37,7 @@ includes: includes.hs
 	(cat $(ETEMPLATE); ./includes < $<) \
 	| $(PANDOC) -f $(IFORMAT) -t epub $(FLAGS) $(EFLAGS) -o $@
 
-%.pdf: %.md includes
+%.pdf: %.md includes $(COVER) $(BACK)
 	./includes < $< | $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) -o $@
 
 clean:
