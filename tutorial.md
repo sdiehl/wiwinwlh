@@ -9810,16 +9810,16 @@ Data Structures
 Map
 ---
 
-Functionality      Function  Time Complexity
------------------- --------  ---------------
-Initialization     empty     O(1)
-Size               size      O(1)
-Lookup             lookup    O(log(n))
-Insertion          insert    O(log(n))
-Traversal          traverse  O(n)
-
 A map is an associative array mapping any instance of ``Ord`` keys to values of
 any type.
+
+Functionality      Function       Time Complexity
+------------------ -------------  ---------------
+Initialization     ``empty``      $O(1)$
+Size               ``size``       $O(1)$
+Lookup             ``lookup``     $O(\log(n))$
+Insertion          ``insert``     $O(\log(n))$
+Traversal          ``traverse``   $O(n)$
 
 ~~~~ {.haskell include="src/20-data-structures/map.hs"}
 ~~~~
@@ -9827,13 +9827,15 @@ any type.
 Tree
 ----
 
-Functionality      Function  Time Complexity
------------------- --------  ---------------
-Initialization     empty     O(1)
-Size               size      O(1)
-Lookup             lookup    O(log(n))
-Insertion          insert    O(log(n))
-Traversal          traverse  O(n)
+A tree is directed graph with a single root.
+
+Functionality      Function       Time Complexity
+------------------ -------------  ---------------
+Initialization     ``empty``      $O(1)$
+Size               ``size``       $O(1)$
+Lookup             ``lookup``     $O(\log(n))$
+Insertion          ``insert``     $O(\log(n))$
+Traversal          ``traverse``   $O(n)$
 
 ~~~~ {.haskell include="src/20-data-structures/tree.hs"}
 ~~~~
@@ -9841,18 +9843,18 @@ Traversal          traverse  O(n)
 Set
 ---
 
-Functionality      Function  Time Complexity
------------------- --------  ---------------
-Initialization     empty     O(1)
-Size               size      O(1)
-Insertion          insert    O(log(n))
-Deletion           delete    O(log(n))
-Traversal          traverse  O(n)
-Membership Test    member    O(log(n))
-
 Sets are an unordered data structures allow ``Ord`` values of any type and
 guaranteeing uniqueness with in the structure. They are not identical to the
 mathematical notion of a Set even though they share the same namesake.
+
+Functionality      Function       Time Complexity
+------------------ -------------  ---------------
+Initialization     ``empty``      $O(1)$
+Size               ``size``       $O(1)$
+Insertion          ``insert``     $O(\log(n))$
+Deletion           ``delete``     $O(\log(n))$
+Traversal          ``traverse``   $O(n)$
+Membership Test    ``member``     $O(\log(n))$
 
 ~~~~ {.haskell include="src/20-data-structures/set.hs"}
 ~~~~
@@ -9860,16 +9862,17 @@ mathematical notion of a Set even though they share the same namesake.
 Vector
 ------
 
-Functionality      Function  Time Complexity
------------------- --------  ---------------
-Initialization     empty     O(1)
-Size               length    O(1)
-Indexing           (!)       O(1)
-Append             append    O(n)
-Traversal          traverse  O(n)
+Vectors are high performance single dimensional arrays that come come in six
+variants, two for each of the following types of a mutable and an immutable
+variant.
 
-Vectors are high performance single dimensional arrays that come come in six variants, two for each of the
-following types of a mutable and an immutable variant.
+Functionality      Function        Time Complexity
+------------------ -------------   ---------------
+Initialization     ``empty``       $O(1)$
+Size               ``length``      $O(1)$
+Indexing           ``(!)``         $O(1)$
+Append             ``append``      $O(n)$
+Traversal          ``traverse``    $O(n)$
 
 * Data.Vector
 * Data.Vector.Storable
@@ -9897,16 +9900,18 @@ See: [Numerical Haskell: A Vector Tutorial](http://wiki.haskell.org/Numeric_Hask
 Mutable Vectors
 ---------------
 
-Functionality      Function  Time Complexity
------------------- --------  ---------------
-Initialization     empty     O(1)
-Size               length    O(1)
-Indexing           (!)       O(1)
-Append             append    O(n)
-Traversal          traverse  O(n)
-Update             modify    O(1)
-Read               read      O(1)
-Write              write     O(1)
+Mutable vectors are variants of vectors which allow inplace updates.
+
+Functionality      Function       Time Complexity
+------------------ ------------   ---------------
+Initialization     ``empty``      $O(1)$
+Size               ``length``     $O(1)$
+Indexing           ``(!)``        $O(1)$
+Append             ``append``     $O(n)$
+Traversal          ``traverse``   $O(n)$
+Update             ``modify``     $O(1)$
+Read               ``read``       $O(1)$
+Write              ``write``      $O(1)$
 
 ```haskell
 freeze :: MVector (PrimState m) a -> m (Vector a)
@@ -9924,27 +9929,28 @@ The vector library itself normally does bounds checks on index operations to
 protect against memory corruption. This can be enabled or disabled on the
 library level by compiling with ``boundschecks`` cabal flag.
 
-Unordered-Containers
+Unordered Containers
 --------------------
 
-Functionality      Function  Time Complexity
------------------- --------  ---------------
-Initialization     empty     O(1)
-Size               size      O(1)
-Lookup             lookup    O(log(n))
-Insertion          insert    O(log(n))
-Traversal          traverse  O(n)
+Both the ``HashMap`` and ``HashSet`` are purely functional data structures that
+are drop in replacements for the ``containers`` equivalents but with more
+efficient space and time performance. Additionally all stored elements must have
+a ``Hashable`` instance. These structures have different time complexities for
+insertions and lookups.
+
+Functionality      Function       Time Complexity
+------------------ -------------  ---------------
+Initialization     ``empty``      $O(1)$
+Size               ``size``       $O(1)$
+Lookup             ``lookup``     $O(\log(n))$
+Insertion          ``insert``     $O(\log(n))$
+Traversal          ``traverse``   $O(n)$
 
 ```haskell
 fromList :: (Eq k, Hashable k) => [(k, v)] -> HashMap k v
 lookup :: (Eq k, Hashable k) => k -> HashMap k v -> Maybe v
 insert :: (Eq k, Hashable k) => k -> v -> HashMap k v -> HashMap k v
 ```
-
-Both the ``HashMap`` and ``HashSet`` are purely functional data structures that
-are drop in replacements for the ``containers`` equivalents but with more
-efficient space and time performance. Additionally all stored elements must have
-a ``Hashable`` instance.
 
 ~~~~ {.haskell include="src/20-data-structures/unordered.hs"}
 ~~~~
@@ -9954,16 +9960,16 @@ See: [Announcing Unordered Containers](http://blog.johantibell.com/2012/03/annou
 Hashtables
 ----------
 
-Functionality      Function  Time Complexity
------------------- --------  ---------------
-Initialization     empty     O(1)
-Size               size      O(1)
-Lookup             lookup    O(1)
-Insertion          insert    O(1) amortized
-Traversal          traverse  O(n)
-
-
 Hashtables provides hashtables with efficient lookup within the ST or IO monad.
+These have constant time lookup like most languages:
+
+Functionality      Function      Time Complexity
+------------------ ------------- ---------------
+Initialization     ``empty``     $O(1)$
+Size               ``size``      $O(1)$
+Lookup             ``lookup``    $O(1)$
+Insertion          ``insert``    $O(1)$ amortized
+Traversal          ``traverse``  $O(n)$
 
 ~~~~ {.haskell include="src/20-data-structures/hashtables.hs"}
 ~~~~
@@ -10077,15 +10083,15 @@ x = G.insEdges edges gr
 DList
 -----
 
-Functionality      Function  Time Complexity
------------------- --------  ---------------
-Initialization     empty     O(1)
-Size               size      O(1)
-Lookup             lookup    O(log(n))
-Insertion          insert    O(log(n))
-Traversal          traverse  O(n)
-Append             (|>)      O(1)
-Prepend            (<|)      O(1)
+Functionality      Function      Time Complexity
+------------------ ------------  ---------------
+Initialization     ``empty``     $O(1)$
+Size               ``size``      $O(1)$
+Lookup             ``lookup``    $O(\log(n))$
+Insertion          ``insert``    $O(\log(n))$
+Traversal          ``traverse``  $O(n)$
+Append             ``(|>)``      $O(1)$
+Prepend            ``(<|)``      $O(1)$
 
 A dlist is a list-like structure that is optimized for O(1) append operations,
 internally it uses a Church encoding of the list structure. It is specifically
