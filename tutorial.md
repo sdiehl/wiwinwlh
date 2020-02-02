@@ -14052,6 +14052,220 @@ trusted: safe-inferred
 require own pkg trusted: False
 ```
 
+Generated Code
+--------------
+
+* **genprimop**
+* **genapply**
+
+compiler/prelude/primops.txt.pp
+
+```cpp
+stg_ap_stk_pnp
+{   R4 = W_[Sp+WDS(2)];
+    R3 = W_[Sp+WDS(1)];
+    R2 = W_[Sp+WDS(0)];
+    Sp_adj(3);
+    jump %GET_ENTRY(UNTAG(R1)) [R1,R2,R3,R4];
+}
+```
+
+```haskell
+primtype Int#
+
+primop   IntAddOp    "+#"    Dyadic
+   Int# -> Int# -> Int#
+   with commutable = True
+        fixity = infixl 6
+
+primop   IntSubOp    "-#"    Dyadic   Int# -> Int# -> Int#
+   with fixity = infixl 6
+```
+
+Runtime System
+---------------
+
+The GHC runtime system is a massive part of the compiler. It comes in at around
+70,000 lines of C and Cmm. It is 
+
+* **Storage**
+* **Execution**
+* **Scheduler**
+
+The toplevel interface is exposed through six key header files.
+
+```bash
+rts
+├── Cmm.h
+├── HsFFI.h
+├── MachDeps.h
+├── Rts.h
+├── RtsAPI.h
+└── STG.h
+```
+
+```bash
+include/stg
+├── DLL.h
+├── HaskellMachRegs.h
+├── MachRegs.h
+├── MiscClosures.h
+├── Prim.h
+├── Regs.h
+├── RtsMachRegs.h
+├── SMP.h
+├── Ticky.h
+└── Types.h
+```
+
+```bash
+include/rts
+├── Adjustor.h
+├── BlockSignals.h
+├── Bytecodes.h
+├── Config.h
+├── Constants.h
+├── EventLogFormat.h
+├── EventLogWriter.h
+├── FileLock.h
+├── Flags.h
+├── GetTime.h
+├── Globals.h
+├── Hpc.h
+├── IOManager.h
+├── Libdw.h
+├── LibdwPool.h
+├── Linker.h
+├── Main.h
+├── Messages.h
+├── OSThreads.h
+├── Parallel.h
+├── PrimFloat.h
+├── prof
+│   ├── CCS.h
+│   └── LDV.h
+├── Profiling.h
+├── Signals.h
+├── SpinLock.h
+├── StableName.h
+├── StablePtr.h
+├── StaticPtrTable.h
+├── storage
+│   ├── Block.h
+│   ├── ClosureMacros.h
+│   ├── Closures.h
+│   ├── ClosureTypes.h
+│   ├── FunTypes.h
+│   ├── GC.h
+│   ├── Heap.h
+│   ├── InfoTables.h
+│   ├── MBlock.h
+│   └── TSO.h
+├── Threads.h
+├── Ticky.h
+├── Time.h
+├── Timer.h
+├── TTY.h
+├── Types.h
+└── Utils.h
+```
+
+```bash
+rts/cm
+├── BlockAlloc.c
+├── CNF.c
+├── Compact.c
+├── Evac.c
+├── Evac_thr.c
+├── GCAux.c
+├── GC.c
+├── GCUtils.c
+├── MarkWeak.c
+├── MBlock.c
+├── Sanity.c
+├── Scav.c
+├── Scav_thr.c
+├── Storage.c
+└── Sweep.c
+```
+
+```bash
+rts
+├── Apply.cmm
+├── Compact.cmm
+├── Exception.cmm
+├── HeapStackCheck.cmm
+├── PrimOps.cmm
+├── StgMiscClosures.cmm
+├── StgStartup.cmm
+├── StgStdThunks.cmm
+└── Updates.cmm
+```
+
+```bash
+rts
+├── Adjustor.c
+├── Arena.c
+├── Capability.c
+├── CheckUnload.c
+├── ClosureFlags.c
+├── Disassembler.c
+├── FileLock.c
+├── Globals.c
+├── Hash.c
+├── Heap.c
+├── Hpc.c
+├── HsFFI.c
+├── Inlines.c
+├── Interpreter.c
+├── LdvProfile.c
+├── Libdw.c
+├── LibdwPool.c
+├── linker
+├── Linker.c
+├── Messages.c
+├── OldARMAtomic.c
+├── PathUtils.c
+├── Pool.c
+├── Printer.c
+├── ProfHeap.c
+├── ProfilerReport.c
+├── ProfilerReportJson.c
+├── Profiling.c
+├── Proftimer.c
+├── RaiseAsync.c
+├── RetainerProfile.c
+├── RetainerSet.c
+├── RtsAPI.c
+├── RtsDllMain.c
+├── RtsFlags.c
+├── RtsMain.c
+├── RtsMessages.c
+├── RtsStartup.c
+├── RtsSymbolInfo.c
+├── RtsSymbols.c
+├── RtsUtils.c
+├── Schedule.c
+├── Sparks.c
+├── StableName.c
+├── StablePtr.c
+├── StaticPtrTable.c
+├── Stats.c
+├── StgCRun.c
+├── StgPrimFloat.c
+├── STM.c
+├── Task.c
+├── ThreadLabels.c
+├── ThreadPaused.c
+├── Threads.c
+├── Ticky.c
+├── Timer.c
+├── TopHandler.c
+├── Trace.c
+├── Weak.c
+└── WSDeque.c
+```
+
 </hr>
 
 Resources
