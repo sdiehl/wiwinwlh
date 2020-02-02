@@ -115,10 +115,10 @@ This is a guide for non-Haskell software engineers who have an interest in
 Haskell. I presume you know some basics about how your operating system works,
 the shell, and the some fundamentals of other imperative programming languages.
 If you are a Python or Java software engineer with no experience with Haskell
-this is the "cliff notes" of Haskell for you. We'll delve into a little theory
-as needed to explain concepts but no more than necessary. All knowledge is
-derived from experience and only implementing Haskell logic for yourself will
-grant insight.
+this is the executive summary of Haskell theory and practice for you. We'll
+delve into a little theory as needed to explain concepts but no more than
+necessary. All knowledge is derived from experience and only implementing
+Haskell logic for yourself will grant insight.
 
 There is no particular order to this guide, other than the first chapter which
 describes how to get set up with Haskell and use the foundational compiler and
@@ -9754,23 +9754,17 @@ Differential Equations
 TODO
 
 Runge-Kutta 
-
-
-Linear Algebra 
---------------
-
-TODO
+https://hackage.haskell.org/package/hmatrix-gsl-0.19.0.1/docs/Numeric-GSL-ODE.html
 
 Statistics
 ----------
 
+Haskell has a basic statistics library for calculating descriptive statistics,
+generating and sampling probability distributions and performing statistical
+tests.
+
 ~~~~ {.haskell include="src/19-numbers/stats.hs"}
 ~~~~
-
-Markov chain Monte Carlo
-------------------------
-
-TODO
 
 Constructive Reals
 ------------------
@@ -12428,40 +12422,68 @@ hold the interactions between the user and the internal compiler phases.
 
 **HsSyn**
 
-- ``HsModule``
-- ``HsBind``
-- ``HsDecl``
-- ``HsExpr``
-- ``HsGroup``
-- ``HsLit``
-- ``Pat``
-- ``HsType``
+* ``HsModule`` - Haskell source module containing all toplevel definitions, pragmas and imports.
+* ``HsBind`` - Universal type for any Haskell binding mapping names to scope.
+* ``HsDecl`` - Toplevel declaration in a module.
+* ``HsGroup`` - A classifier type of toplevel decalarations.
+* ``HsExpr`` - An expression used in a declaration. 
+* ``HsLit`` - An literal expression (number, character, char, etc) used in a declaration.
+* ``Pat`` - A pattern match occuring in a function declaration of left of a pattern binding.
+* ``HsType`` - Haskell source representation of a type-level expression.
+* ``Literal`` - Haskell source representation of a literal mapping to either a literal numeric type or a machine type.
 
 **CoreSyn**
 
-- ``Expr``
-- ``Arg``
-- ``Alt``
-- ``AltCon``
-- ``Bind``
+The core syntax is a very small set of constructors for the Core intermediate
+language. Most of the datatypes are contained in the `Expr` datatype. All core
+expressions consists of toplevel `Bind` of expressions objects.
+
+* ``Expr`` - Core expression.
+* ``Bind`` - Core binder, either recursive or non-recursive.
+* ``Arg`` - Expression that occur in function arguments.
+* ``Alt`` - A pattern match case split alternative.
+* ``AltCon`` - A case alterantive constructor.
 
 **StgSyn**
 
-- ``StgApp``
-- ``StgLit``
-- ``StgConApp``
-- ``StgOpApp``
-- ``StgLam``
-- ``StgCase``
-- ``StgLet``
-- ``StgLetNoEscape``
-- ``StgTick``
+Spineless tagless G-machine or STG is the intermediate representation GHC uses
+before generating native code. It is an even simpler language than Core and
+models a virtual machine which maps to the native compilation target.
+
+* ``StgTopBinding`` - A toplevel module STG binding.
+* ``StgBinding`` - An STG binding, either recursive or non-recursive.
+* ``StgExpr`` - A STG expression over Id names.
+  - ``StgApp`` - Application of a function to a fixed set of arguments.
+  - ``StgLit`` - An expression literal.
+  - ``StgConApp`` - An application of a data constructor to a fixed set of values.
+  - ``StgOpApp``- An application of a primop to a fixed set of arguments.
+  - ``StgLam`` - An STG lambda binding.
+  - ``StgCase`` - An STG case expansion.
+  - ``StgLet`` - An STG let binding.
 
 Core
 ----
 
 Core is the explicitly typed System-F family syntax through that all Haskell
 constructs can be expressed in.
+
+```haskell
+data Bind b
+  = NonRec b (Expr b)
+  | Rec [(b, Expr b)]
+
+data Expr b
+  = Var Id
+  | Lit Literal  
+  | App (Expr b) (Arg b)
+  | Lam b (Expr b)
+  | Let (Bind b) (Expr b)
+  | Case (Expr b) b Type [Alt b]
+  | Cast (Expr b) Coercion
+  | Tick (Tickish Id) (Expr b)
+  | Type Type
+  | Coercion Coercion
+```
 
 To inspect the core from GHCi we can invoke it using the following flags and the
 following shell alias. We have explicitly disable the printing of certain
