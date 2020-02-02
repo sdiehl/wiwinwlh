@@ -13,3 +13,4 @@ includes
 *.agdai
 .stack-work
 dist-newstyle
+resources/*.eps

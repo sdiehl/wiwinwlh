@@ -2,20 +2,18 @@
   \definecolor{titlepagecolor}{HTML}{FDF6E3}
   \definecolor{namecolor}{cmyk}{1,.50,0,.10} 
   %\pagecolor{titlepagecolor}
-  \pagecolor{white}
+  %\pagecolor{white}
 
-  \vspace*{\stretch{1.0}}
-  \begin{center}
+  \color{black}
+  \begin{flushright}
      \Huge\textbf{What I Wish I Knew When Learning Haskell}\\
-     \vspace*{\stretch{0.5}}
+     \line(1,0){450} \\
      \Large{Stephen Diehl}
-  \end{center}
-  \vspace*{\stretch{2.0}}
+  \end{flushright}
 
-  \begin{figure}
-      \centering
-      \includegraphics[height=3in,width=3in]{img/cover.ps}
-  \end{figure}
+  \tikz[remember picture,overlay]
+    \node[opacity=1.0,inner sep=0pt,shift={(0 cm,8cm)}] at (current page.south)
+    {\includegraphics[width=\paperwidth,height=\paperheight]{resources/cover2.eps}};
 
 \end{titlepage}
 \pagecolor{white}
