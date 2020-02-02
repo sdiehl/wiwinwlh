@@ -1744,6 +1744,14 @@ fib 1 = 1
 fib n = fib (n-1) + fib (n-2)
 ```
 
+```haskell
+fib :: Integer -> Integer
+fib n = case n of
+  0 -> 0
+  1 -> 1
+  n -> fib (n-1) + fib(n-2)
+```
+
 Pattern matching on lists
 
 Operators
@@ -2815,18 +2823,16 @@ exist only for when one can manually prove the soundness of an expression but
 can't express this property in the type-system or externalities to Haskell.
 
 ```haskell
-unsafeCoerce :: a -> b
-unsafePerformIO :: IO a -> a
+unsafeCoerce :: a -> b         -- Unsafely coerce anything into anything
+unsafePerformIO :: IO a -> a   -- Unsafely run IO action outside of IO
 ```
 
 <div class="alert alert-danger">
 Using these functions to subvert the Haskell typesystem will cause all measure
 of undefined behavior with unimaginable pain and suffering, and are <span
 style="font-weight: bold">strongly discouraged</span>. When initially starting
-out with Haskell there are no legitimate reason to use these functions at all,
-period.
+out with Haskell there are no legitimate reason to use these functions at all.
 </div>
-
 
 <hr/>
 
@@ -9735,6 +9741,10 @@ cryptography applications in Haskell. Including:
 * [Riemann Zeta Functions](https://hackage.haskell.org/package/arithmoi-0.10.0.0/docs/Math-NumberTheory-Zeta.html)
 * [Pollard's Rho Algorithm](https://hackage.haskell.org/package/arithmoi-0.10.0.0/docs/Math-NumberTheory-Moduli-DiscreteLogarithm.html)
 * [Jacobi symbols](https://hackage.haskell.org/package/arithmoi-0.10.0.0/docs/Math-NumberTheory-Moduli-Jacobi.html)
+* Meijer-G Functions
+
+~~~~ {.haskell include="src/19-numbers/arithmoi.hs"}
+~~~~
 
 See: [arithmoi](https://hackage.haskell.org/package/arithmoi)
 
@@ -13469,6 +13479,25 @@ inside of the loop which are updated when computed. It also includes static
 references to both itself (for recursion) and the dictionary for instance of
 ``Num`` typeclass over the type ``Int``.
 
+
+The type system of STG system consits of the following types:
+
+* **StgWord** -  Unit of heap allocation
+* **StgPtr** - Basic pointer type
+* **StgInt** - 
+* **StgChar**
+* **StgFloat**
+* **StgDouble**
+* **StgAddr**
+* **StgBool**
+* **StgVoid**
+* **StgOffset**
+* **StgCode**
+* **StgStablePtr8*
+* **StgFunPtr**
+* **StgUnion**
+
+
 Worker/Wrapper
 --------------
 
@@ -14086,11 +14115,16 @@ Runtime System
 ---------------
 
 The GHC runtime system is a massive part of the compiler. It comes in at around
-70,000 lines of C and Cmm. It is 
+70,000 lines of C and Cmm. There is simply no way to explain most of what occurs
+in the runtime succinctly. There is more than two decades worth of work that has
+gone into making this system and it is quite advanced. Instead lets look at the
+basic structure and some core modules.
 
-* **Storage**
 * **Execution**
+* **Storage**
 * **Scheduler**
+* **Garbage Collector**
+* **Profiling Tools**
 
 The toplevel interface is exposed through six key header files.
 
@@ -14119,6 +14153,20 @@ include/stg
 ```
 
 ```bash
+include/rts/storage
+├── Block.h
+├── ClosureMacros.h
+├── Closures.h
+├── ClosureTypes.h
+├── FunTypes.h
+├── GC.h
+├── Heap.h
+├── InfoTables.h
+├── MBlock.h
+└── TSO.h
+```
+
+```bash
 include/rts
 ├── Adjustor.h
 ├── BlockSignals.h
@@ -14141,26 +14189,12 @@ include/rts
 ├── OSThreads.h
 ├── Parallel.h
 ├── PrimFloat.h
-├── prof
-│   ├── CCS.h
-│   └── LDV.h
 ├── Profiling.h
 ├── Signals.h
 ├── SpinLock.h
 ├── StableName.h
 ├── StablePtr.h
 ├── StaticPtrTable.h
-├── storage
-│   ├── Block.h
-│   ├── ClosureMacros.h
-│   ├── Closures.h
-│   ├── ClosureTypes.h
-│   ├── FunTypes.h
-│   ├── GC.h
-│   ├── Heap.h
-│   ├── InfoTables.h
-│   ├── MBlock.h
-│   └── TSO.h
 ├── Threads.h
 ├── Ticky.h
 ├── Time.h
@@ -14168,6 +14202,19 @@ include/rts
 ├── TTY.h
 ├── Types.h
 └── Utils.h
+```
+
+```bash
+rts
+├── Apply.cmm
+├── Compact.cmm
+├── Exception.cmm
+├── HeapStackCheck.cmm
+├── PrimOps.cmm
+├── StgMiscClosures.cmm
+├── StgStartup.cmm
+├── StgStdThunks.cmm
+└── Updates.cmm
 ```
 
 ```bash
@@ -14189,18 +14236,7 @@ rts/cm
 └── Sweep.c
 ```
 
-```bash
-rts
-├── Apply.cmm
-├── Compact.cmm
-├── Exception.cmm
-├── HeapStackCheck.cmm
-├── PrimOps.cmm
-├── StgMiscClosures.cmm
-├── StgStartup.cmm
-├── StgStdThunks.cmm
-└── Updates.cmm
-```
+The source for the whole runtime contains 50 or so modules.
 
 ```bash
 rts
@@ -14221,7 +14257,6 @@ rts
 ├── LdvProfile.c
 ├── Libdw.c
 ├── LibdwPool.c
-├── linker
 ├── Linker.c
 ├── Messages.c
 ├── OldARMAtomic.c
@@ -14265,16 +14300,6 @@ rts
 ├── Weak.c
 └── WSDeque.c
 ```
-
-</hr>
-
-Resources
-----------
-
-* [GHC Illustrated](https://takenobu-hs.github.io/downloads/haskell_ghc_illustrated.pdf)
-* [Dive into GHC: Pipeline](http://www.stephendiehl.com/posts/ghc_01.html)
-* [Dive into GHC: Intermediate Forms](http://www.stephendiehl.com/posts/ghc_02.html)
-* [Dive into GHC: Targeting Core](http://www.stephendiehl.com/posts/ghc_03.html)
 
 <hr/>
 
