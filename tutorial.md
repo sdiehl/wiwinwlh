@@ -12765,23 +12765,38 @@ See [ghc-prim](https://hackage.haskell.org/package/ghc-prim-0.5.3/docs/GHC-Prim.
 SIMD Intrinsics
 ---------------
 
-GHC has intrstructions for generating code that use SIMD vector instructions.
-For example the following `<8xfloat>` and `<8xdouble>` are used internally by
-the following datatypes
+GHC has procedures for generating code that use SIMD vector instructions when
+using the LLVM backend (`-fllvm`). For example the following `<8xfloat>` and
+`<8xdouble>` are used internally by the following datatypes exposed by
+`ghc-prim`.
 
 * `FloatX8#`
 * `DoubleX8#`
 
-And operations over these map to single CPU instructions that GHC can generate
-on CPU architectures that support it.
+And operations over these map to single CPU instructions that work with the bulk
+values instead of single values. For instance adding two vectors:
 
 ```haskell
 -- Add two vectors element-wise.
 plusDoubleX8# :: DoubleX8# -> DoubleX8# -> DoubleX8#
 ```
 
+For example:
+
+~~~~ {.haskell include="src/29-ghc/simd/simd.hs"}
+~~~~
+
+When you generate this code to LLVM you will see that GHC is indded allocating
+the values as vector types if you browse the assembly output.
+
+```llvm
+  %XMM1_Var = alloca <4 x i32>, i32 1
+  store <4 x i32> undef, <4 x i32>* %XMM1_Var, align 1
+```
+
 Using the native SIMD instructions you can perform low-level vectorised
-operations over unboxed memory, typically found in numerical computing problems.
+operations over the unboxed memory, typically found in numerical computing
+problems.
 
 See: [SIMD Operations](https://hackage.haskell.org/package/ghc-prim-0.5.3/docs/GHC-Prim.html#g:29)
 
