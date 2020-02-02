@@ -39,12 +39,12 @@ You may distribute this text in its full form freely, but may not reauthor or
 sublicense this work. Any reproductions of major portions of the text must
 include attribution.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
-IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+The software is provided “as is”, without warranty of any kind, express or
+implied, including But not limited to the warranties of merchantability, fitness
+for a particular purpose and noninfringement. In no event shall the authors or
+copyright holders be liable for any Claim, damages or other liability, whether
+in an action of contract, tort or otherwise, Arising from, out of or in
+connection with the software or the use or other dealings in the software.
 
 <hr/>
 
@@ -1423,7 +1423,14 @@ f x y = x + y
 ```
 
 This simply defines a function named `f` of two arguments and on the right hand
-side adds and yields the result. A function of two arguments need not
+side adds and yields the result. Central to the idea of functional programming
+is that computational functions should behave like mathematical functions.
+
+$$
+f(x,y) = x+y
+$$
+
+A function of two arguments need not
 neccessarily be applied to two arguments. The result of only applying a single
 argument is to yield another function which applies the second argument when it
 is given. For example we can define an `add` function and subsequently a `inc`
@@ -11183,21 +11190,10 @@ order set of hashes and is quite efficient.
 Secure Memory Handling
 ----------------------
 
-TODO
-
-ByteArray
-
-```haskell
-data Base
-  = Base16            -- ^ similar to hexadecimal
-  | Base32
-  | Base64            -- ^ standard Base64
-  | Base64URLUnpadded -- ^ unpadded URL-safe Base64
-  | Base64OpenBSD     -- ^ Base64 as used in OpenBSD password encoding (such as bcrypt)
-
-convertToBase :: (ByteArrayAccess bin, ByteArray bout) => Base -> bin -> bout
-convertFromBase :: (ByteArrayAccess bin, ByteArray bout) => Base -> bin -> Either String bout
-```
+GMP integers
+Timing attacks
+Constant time equality
+Wiping memory out of scope
 
 AES Ciphers
 -----------
