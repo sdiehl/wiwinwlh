@@ -8,7 +8,7 @@ import Math.NumberTheory.Zeta
 exampleZeta :: Double
 exampleZeta = zetas 1e-10 !! 10
 
--- Euler toitient function
+-- Euler totient function
 exampleEuler :: Integer
 exampleEuler = totient 25
 
