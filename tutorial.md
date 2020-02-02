@@ -20,7 +20,7 @@ requests](https://github.com/sdiehl/wiwinwlh) on Github.
 Author
 ------
 
-This text is authored and edited by Stephen Diehl.
+This text is authored by Stephen Diehl.
 
 * Web: [www.stephendiehl.com](www.stephendiehl.com)
 * Twitter: [https://twitter.com/smdiehl](https://twitter.com/smdiehl)
@@ -12363,96 +12363,99 @@ See:
 
 * [Outputable](https://hackage.haskell.org/package/ghc-8.6.5/docs/Outputable.html)
 
-Types
------
+Datatypes
+---------
 
 GHC has many datatypes but several of them are central data structures that are
 the core datatypes that are manipulated during compilation. These are divided
-into six core categories.
+into seven core categories.
 
 **Monads**
 
 The GHC monads which encapsulate the compiler driver pipeline and statefully
 hold the interactions between the user and the internal compiler phases.
 
-* GHC
-* P
-* Hsc
-* TcRn
-* DsM
-* SimplM
-* MonadUnique
+* ``GHC`` - The toplevel GHC monad that contains the compiler driver.
+* ``P`` - The parser monad.
+* ``Hsc`` - The compiler module for a single module.
+* ``TcRn`` - The monad holding state for typechecker and renamer passes.
+* ``DsM`` - The monad holding state for desugaring pass.
+* ``SimplM`` - The monad holding state of simplification pass.
+* ``MonadUnique`` - A monad for generating unique identifiers
+
+**Names**
+
+* ``ModuleName`` - A qualified module name.
+* ``Name`` - A unique name generated after renaming pass with provenance information of the symbol.
+* ``Var`` - A typed `Name`.
+* ``Type`` - The representation of a type in the GHC type system.
+* ``RdrName`` - A name generated from the parser without scoping or type information.
+* ``Token`` - Alex lexer tokens
+* ``SrcLoc`` - The position information of a lexeme within the source code.
+* ``SrcSpan`` - The span information of a lexeme within the source code.
+* ``Located`` - Source code location newtype wrapper for AST containing position and span information.
 
 **Session**
 
-* HscEnv
-* DynFlags
-* Settings
-* UniqEnv
-* Target
-* TargetId
-* HscTarget
-* GhcMode
-* ModSummary
-* InteractiveContext
-* TypeEnv
-* GlobalRdrEnv
-* TcGblEnv
-* FixityEnv
-* Module
-* ModuleName
-* [ModGuts](https://downloads.haskell.org/~ghc/7.10.2/docs/html/libraries/ghc-7.10.2/HscTypes.html#t:ModGuts)
-* [ModuleInfo](https://downloads.haskell.org/~ghc/7.10.2/docs/html/libraries/ghc-7.10.2/GHC.html#t:ModuleInfo)
-* [ModDetails](https://downloads.haskell.org/~ghc/7.10.2/docs/html/libraries/ghc-7.10.2/HscTypes.html#t:ModDetails)
-* AvailInfo
-* Class
-* ClsInt
-* FamInst
-* InstEnv
-* TyCon
-* DataCon
-* TyThing
-* RdrName
-* Name
-* Var
-* Type
-* DataConRep
-* SrcLoc
-* SrcSpan
-* Located - Source code location newtype wrapper for AST
-* GhcException
-* Token - Alex lexer tokens
+* ``DynFlags`` - A mutable state holding all compiler flags and options for compiling a project.
+* ``HscEnv`` - An immutable monad state holding the flags and session for compiling a single module.
+* ``Settings`` - Immutable datatype holding holding system settings, architecture and paths for compilation.
+* ``Target`` - A compilation target.
+* ``TargetId`` - Name of a compilation target, either module or file.
+* ``HscTarget`` - Target code output. Either LLVM, ASM or interpreted. 
+* ``GhcMode`` - Operation mode of GHC, either multi-module compilation or single shot.
+* ``ModSummary`` - An element in a project's module graph containing file information and graph location.
+* ``InteractiveContext`` - Context for GHCI interactive shell when using interpreter target.
+* ``TypeEnv`` - A symbol table mapping from Names to TyThings.
+* ``GlobalRdrEnv`` - A symbol table mapping `RdrName` to `GlobalRdrElt`.
+* ``GlobalRdrElt`` - A symbol emitted by the parser with provenance about where it was defined and brought into scope.
+* ``TcGblEnv`` - A symbol table generated after a module is completed typechecking.
+* ``FixityEnv`` - A symbol table mapping infix operators to fixity delcarations.
+* ``Module`` - A module name and identifier.
+* ``ModGuts`` - The total state of all passes accumulated by compiling a module. After compilation `ModIFace` and `ModDetails` are kept.
+* ``ModuleInfo`` - Container for information about a Module.
+* ``ModDetails`` - Data structure summarises all metadata about a compiled module.
+* ``AvailInfo`` - Symbol table of what objects are in scope.
+* ``Class`` - Data structure holding all metadata about a typeclass definition.
+* ``ClsInt`` - Data structure holding all metadata about a typeclass instance.
+* ``FamInst``- Data structure holding all metadata about a type/data family instance declaration.
+* ``TyCon`` - Data structure holding all metadata about a type constructor.
+* ``DataCon`` - Data structure holding all metadata about a data constructor.
+* ``InstEnv`` - A InstEnv hodlings a mapping of known instances for that family.
+* ``TyThing`` - A global name with a type attached. Classified by namespace.
+* ``DataConRep`` - Data constructor representation generated from parser.
+* ``GhcException`` - Exceptions thrown by GHC inside of Hsc monad for aberrant compiler behavior. Panics or internal errors.
 
 **HsSyn**
 
-- HsModule
-- HsBind
-- HsDecl
-- HsExpr
-- HsGroup
-- HsLit
-- Pat
-- HsType
+- ``HsModule``
+- ``HsBind``
+- ``HsDecl``
+- ``HsExpr``
+- ``HsGroup``
+- ``HsLit``
+- ``Pat``
+- ``HsType``
 
 **CoreSyn**
 
-- Expr
-- Arg
-- Alt
-- AltCon
-- Bind
+- ``Expr``
+- ``Arg``
+- ``Alt``
+- ``AltCon``
+- ``Bind``
 
 **StgSyn**
 
-- StgApp
-- StgLit
-- StgConApp
-- StgOpApp
-- StgLam
-- StgCase
-- StgLet
-- StgLetNoEscape
-- StgTick
+- ``StgApp``
+- ``StgLit``
+- ``StgConApp``
+- ``StgOpApp``
+- ``StgLam``
+- ``StgCase``
+- ``StgLet``
+- ``StgLetNoEscape``
+- ``StgTick``
 
 Core
 ----
