@@ -5846,8 +5846,6 @@ data Tree a = Node a [Tree a]
   deriving (Show, Functor, Foldable, Traversable)
 ```
 
-See: [Typeclassopedia](http://wiki.haskell.org/Typeclassopedia)
-
 split
 -----
 
@@ -5875,32 +5873,37 @@ whileJust :: Monad m => m (Maybe a) -> (a -> m b) -> m [b]
 Strings
 =======
 
-The string situation in Haskell is not great.
+The string situation in Haskell is a sad affair. The default String type is
+defined as linked list of pointers to characters which is an extremely
+pathological and inefficient way of representing textual data. Unfortunately for
+historical reasons large portions of GHC and Base depend on String.
+
+The String problem is intrinsically linked with the fact that the default GHC
+Prelude is provides a set of broken default that are difficult to change because
+GHC and the entire ecosystem historically depend on it. There are however high
+performance string libraries that can swapped out for the broken `String` type
+and we will discuss some ways of working with high-performance and memory
+efficient replacements.
 
 String
 ------
 
-<div class="alert alert-danger">
-<b>The default String type is broken and should be avoided whenever
-possible.</b> Unfortunately for historical reasons large portions of GHC and
-Base depend on String.
-</div>
-
 The default Haskell string type is implemented as a naive linked list of
-characters, this is terrible for most purposes but no one knows how to fix it
-without rewriting large portions of all code that exists and nobody can commit
-the time to fix it. So it remains broken, likely forever.
+characters, this is hilariously terrible for most purposes but no one knows how
+to fix it without rewriting large portions of all code that exists, and simply
+nobody no one wants to commit the time to fix it. So it remains broken, likely
+forever.
 
 ```haskell
 type String = [Char]
 ```
 
-For more performance sensitive cases there are two libraries for processing textual data: ``text`` and
-``bytestring``.
+However, fear not as there are are two replacmenet libraries for processing
+textual data: ``text`` and ``bytestring``.
 
-* <b>text</b> - Used for handling unicode data.
-* <b>bytestring</b> - Used for handling ASCII data that needs to interchanged
-  with C code or network protocols.
+* `text` - Used for handling unicode data.
+* `bytestring` - Used for handling ASCII data that needs to interchanged with C
+  code or network protocols.
 
 For each of these there are two variants for both text and bytestring.
 
@@ -5908,14 +5911,14 @@ For each of these there are two variants for both text and bytestring.
 * <b>strict</b> Byte vectors are encoded as strict Word8 arrays of bytes or code
   points
 
-Giving rise to the four types.
+Giving rise to Cartesian product of the four common string types:
 
 Variant                   Module
 -------------             ----------
-<b>strict text</b>        Data.Text
-<b>lazy text</b>          Data.Text.Lazy
-<b>strict bytestring</b>  Data.ByteString
-<b>lazy bytestring</b>    Data.ByteString.Lazy
+<b>strict text</b>        `Data.Text`
+<b>lazy text</b>          `Data.Text.Lazy`
+<b>strict bytestring</b>  `Data.ByteString`
+<b>lazy bytestring</b>    `Data.ByteString.Lazy`
 
 String Conversions
 ------------------
@@ -5931,6 +5934,16 @@ Data.Text             id         fromStrict      encodeUtf8       encodeUtf8
 Data.Text.Lazy        toStrict   id              encodeUtf8       encodeUtf8
 Data.ByteString       decodeUtf8 decodeUtf8      id               fromStrict
 Data.ByteString.Lazy  decodeUtf8 decodeUtf8      toStrict         id
+
+Be careful with the functions (`decodeUtf8`, `decodeUtf16LE`, etc) as they are
+partial and will throw errors if the byte array given does not contain unicode
+code points. Instead use one of the following functions which will allow you to
+explicitly handle the error case:
+
+```haskell
+decodeUtf8' :: ByteString -> Either UnicodeException Text
+decodeUtf8With :: OnDecodeError -> ByteString -> Text
+```
 
 OverloadedStrings
 -----------------
@@ -10406,58 +10419,49 @@ Hello from Haskell, here's a number passed between runtimes:
 Back inside of C again.
 ```
 
-Calling Haskell from C
-----------------------
+hsc2hs
+------
 
-```cpp
-#include <stdio.h>
-#include "HsFFI.h"
-#include "foo_stub.h"
+When doing socket level programming, when handling UDP packets there
+is a packed C struct with a set of fields defined by the Linux kernel. These
+fields are defined in the following C pseudocode. 
 
-extern void __stginit_Foo ( void );
+~~~~ {.cpp include="src/21-ffi/mini-hsc/msghdr.c"}
+~~~~
 
-int main(int argc, char *argv[])
-{
-  hs_init(&argc, &argv);
-  hs_add_root(__stginit_Foo);
-
-  hs_exit();
-  return 0;
-}
-```
-
+If we want to marshall packets to and from Haskell datatypes we need to be able
+to be able to take a pointer to memory holding the packet message header and
+scan the memory into native Haskell types. This involves knowing some
+information about the memory offsets for the packet structure. GHC ships with a
+tool known as `hsc2hs` which can be used to read information from C header files
+to automatically generate the boilerplate instances of `Storable` to perform
+this marshalling. The `hsc2hs` library acts a preprocessor over `.hsc` files
+and can fill in information as specific by several macros to generate Haskell
+source.
 
 ```haskell
-{-# LANGUAGE CPP #-}
-{-# LANGUAGE ForeignFunctionInterface #-}
-
-module Example where
-
-foreign export ccall example :: IO ()
-
-example :: IO ()
-example = do
-  print "Hello from Haskell"
-  return ()
+#include <file.h>
+#const <C_expression>
+#peek <struct_type>, <field>
+#poke <struct_type>, <field>
 ```
+
+For example the following module from the `network` library must introspect the
+`msghdr` struct from `<sys/socket.h>`.
+
+~~~~ {.haskell include="src/21-ffi/mini-hsc/Example.hsc"}
+~~~~
+
+Running the command line tool over this module we get the following Haskell
+output `Example.hs`. This can also be run as part of a Cabal build step by
+including `hsc2hs` in your `build-tools`.
 
 ```bash
 $ hsc2hs Example.hsc
 ```
 
-```cpp
-#include "HsFFI.h"
-#include "Example_stub.h"
-
-int main( int argc, char *argv[] )
-{
-  // init GHC runtime
-  hs_init (&argc, &argv);
-
-  // call Haskell function
-  example();
-}
-```
+~~~~ {.haskell include="src/21-ffi/mini-hsc/Example.hs"}
+~~~~
 
 <hr/>
 
@@ -11938,10 +11942,9 @@ Warp
 Warp is a efficient massively concurrent web server, it is the backend server
 behind several of popular Haskell web frameworks. The internals have been finely
 tuned to utilize Haskell's concurrent runtime and is capable of handling a great
-deal of concurrent requests.
-
-For example we can construct a simple web service while simply returns a 200
-status code with a ByteString which is flushed to the socket.
+deal of concurrent requests. For example we can construct a simple web service
+while simply returns a 200 status code with a ByteString which is flushed to the
+socket.
 
 ~~~~ {.haskell include="src/27-web/warp.hs"}
 ~~~~

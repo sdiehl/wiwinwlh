@@ -84,7 +84,7 @@ Trustworthy                ,        ,            ,                , Specialized 
 TupleSections              , ✓      ,            ,                , General     , Syntax Extension      
 TypeFamilies               ,        ,            ,                , Specialized , Typelevel Programming 
 TypeHoles                  , ✓      ,            ,                , General     , Interactive Typing    
-TypeInType                 ,        ,            ,                , Specialized , Typelevel Programming
+TypeInType                 ,        , ✓          ,                , Specialized , Typelevel Programming
 TypeOperators              ,        ,            ,                , Specialized , Typelevel Programming 
 TypeSynonymInstances       , ✓      ,            ,                , General     , Typeclass Extension   
 UnboxedTuples              ,        ,            ,                , Specialized , FFI                   
