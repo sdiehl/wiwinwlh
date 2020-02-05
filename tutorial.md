@@ -1723,6 +1723,24 @@ Datatypes with infix constructors
 Pattern Matching
 -----------------
 
+```haskell
+value :: Card -> Integer
+value card = case card of
+  Two    -> 2
+  Three  -> 3
+  Four   -> 4
+  Five   -> 5
+  Six    -> 6
+  Seven  -> 7
+  Eight  -> 8
+  Nine   -> 9
+  Ten    -> 10
+  Jack   -> 10
+  Queen  -> 10
+  King   -> 10
+  Ace    -> 1
+```
+
 The following pattern match brings the values of the record into scope of the
 function body.
 
@@ -11840,6 +11858,9 @@ Servant
 
 TODO
 
+~~~~ {.haskell include="src/27-web/mini-servant/Main.hs"}
+~~~~
+
 Databases
 =========
 
@@ -12008,9 +12029,31 @@ Selda
 
 TODO
 
-~~~~ {.haskell include="src/28-databases/selda.hs"}
+~~~~ {.haskell include="src/28-databases/mini-selda/Main.hs"}
 ~~~~
 
+This will generate the following Sqlite DDL to instantiate the tables directly
+from the types of the Haskell data strutures. Deriving `SqlRow` for the instance
+will create a bidirectional mapping from the database to the Haskell datatype
+allowing you to write queries which can map directly into Haskell types
+automatically using Generics.
+
+```sql
+CREATE TABLEIF NOT EXISTS "companies" 
+( 
+   "id" integer PRIMARY KEY autoincrement NOT NULL, 
+   "name" text NOT NULL 
+);
+
+CREATE TABLEIF NOT EXISTS "employees" 
+( 
+   "id" integer PRIMARY KEY autoincrement NOT NULL, 
+   "name" text NOT NULL, 
+   "title" text NOT NULL, 
+   "companyId" integer NOT NULL, 
+   CONSTRAINT "fk0_companyId" FOREIGN KEY ("companyId") REFERENCES "companies"("id" ) 
+);
+```
 
 <hr/>
 

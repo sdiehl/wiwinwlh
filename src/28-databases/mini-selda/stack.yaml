@@ -1,0 +1,7 @@
+resolver: lts-14.20
+packages:
+- '.'
+extra-deps:
+- selda-0.5.1.0
+flags: {}
+extra-package-dbs: []
