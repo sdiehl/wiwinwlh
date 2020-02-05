@@ -1686,7 +1686,7 @@ An sum type:
 ```
 
 ```haskell
-data Suit = Clubs | Diamonads | Hearts | Spades
+data Suit = Clubs | Diamonds | Hearts | Spades
 data Color = Red | Back
 data Value 
   = Two
@@ -1702,6 +1702,7 @@ data Value
   | Queen
   | King
   | Ace
+  deriving (Eq, Ord)
 ```
 
 An example of a record type. 
@@ -1712,6 +1713,15 @@ data Card = Card
   , color :: Color
   , value :: Value
   }
+```
+
+```haskell
+queenDiamonds :: Card
+queenDiamonds = Card Diamonds Red Queen
+
+-- Alternatively 
+queenDiamonds :: Card
+queenDiamonds = Card { suit = Diamonds, color = Red, value = Queen }
 ```
 
 TODO
@@ -1745,8 +1755,20 @@ The following pattern match brings the values of the record into scope of the
 function body.
 
 ```haskell
+suitBeats :: Suit -> Suit -> Bool
+suitBeats Clubs    Diamonds  = True
+suitBeats Clubs    Hearts    = True
+suitBeats Clubs    Spaces    = True
+suitBeats Diamonds Hearts    = True
+suitBeats Diamonds Spades    = True
+suitBeats Hearts   Spades    = True
+suitBeats _        _         = False
+```
+
+```haskell
 beats :: Card -> Card -> Bool
-beats (Card suite1 color1 value1) (Card suite2 color2 value2) = 
+beats (Card suit1 color1 value1) (Card suit2 color2 value2) = 
+  (suitBeats suit1 suit2) && (value1 > value2)
 ```
 
 TODO
@@ -4764,15 +4786,15 @@ Historical Extensions
 Several language extensions have either been absorbed into the core language or
 become deprecated in favor of others. Others are just considered misfeatures.
 
-* `Rank2Types` - Rank2Types has been subsumed by RankNTypes
+* `Rank2Types` - Rank2Types has been subsumed by `RankNTypes`
 * `XPolymorphicComponents` - Was an implementation detail of higher-rank
   polymorphism that no longer exists.
 * `NPlusKPatterns` - These were largely considered an ugly edge-case of pattern
   matching language that was best removed.
 * `TraditionalRecordSyntax` - Traditional record syntax was an extension to the
   Haskell 98 specification for what we now consider standard record syntax.
-* `OverlappingInstances` - Subsumed by explicit OVERLAPPING pragmas.
-* `IncoherentInstances` - Subsumed by explicit INCOHERENT pragmas.
+* `OverlappingInstances` - Subsumed by explicit `OVERLAPPING` pragmas.
+* `IncoherentInstances` - Subsumed by explicit `INCOHERENT` pragmas.
 * `NullaryTypeClasses` - Subsumed by explicit Multiparameter Typeclasses with no
   parameters.
 
@@ -15113,7 +15135,7 @@ In a separate module we can then enable Quasiquotes and embed the string.
 ~~~~ {.haskell include="src/31-template-haskell/multiline_example.hs"}
 ~~~~
 
-git-embed
+Path Files
 ----------
 
 Often times it is necessary to embed the specific Git version hash of a build
@@ -15122,6 +15144,23 @@ to the command line to retrieve the version information of the CWD Git repositor
 and use Template Haskell to define embed this information at compile-time. This
 is often useful for embedding in ``--version`` information in the command line
 interface to your program or service.
+
+This example also makes use of the Cabal a `Paths_pkgname` module during compile
+time which contains which contains several functions for querying target
+paths and included data files for the Cabal project.
+
+```haskell
+version :: Version
+getBinDir :: IO FilePath 
+getLibDir :: IO FilePath 
+getDataDir :: IO FilePath
+getLibexecDir :: IO FilePath
+getSysconfDir :: IO FilePath
+getDataFileName :: FilePath -> IO FilePath
+```
+
+An example of usage to query the Git metadata into the compiled binary of a
+project using the `git-embed` package:
 
 ```haskell
 {-# LANGUAGE TemplateHaskell #-}
@@ -15139,8 +15178,6 @@ gitBranch = $(embedGitBranch)
 ver :: String
 ver = showVersion Paths_myprog.version
 ```
-
-See: [git-embed](https://hackage.haskell.org/package/git-embed)
 
 <hr/>
 
