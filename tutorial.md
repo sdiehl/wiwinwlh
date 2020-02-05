@@ -882,7 +882,7 @@ the default import many libraries these days do not use the standard prelude
 chosing instead to roll a customm one on a per-project basis or use a off-the
 shelf prelude from Hackage.
 
-The Prelude contains common datatype and classes such as [List], [Monad](Monads),
+The Prelude contains common datatype and classes such as [List], [Monad](#monads),
 [Maybe] and most simple associated functions for manipulating these structures.
 These are the msot foundational programming constructs in Haskell.
 
@@ -2839,6 +2839,8 @@ out with Haskell there are no legitimate reason to use these functions at all.
 Monads
 ======
 
+TODO
+
 Eightfold Path to Monad Satori
 ------------------------------
 
@@ -2847,7 +2849,7 @@ Instead, I suggest a path to enlightenment:
 
 1. Don't read the monad tutorials.
 2. No really, don't read the monad tutorials.
-3. Learn about [Haskell types](http://book.realworldhaskell.org/read/types-and-functions.html).
+3. Learn about the Haskell typesystem.
 4. Learn what a typeclass is.
 5. Read the [Typeclassopedia](http://wiki.haskell.org/Typeclassopedia).
 6. Read the monad definitions.
@@ -3096,8 +3098,8 @@ See:
 
 * [Haskell 2010: Do Expressions](http://www.haskell.org/onlinereport/haskell2010/haskellch3.html#x8-470003.14)
 
-Maybe
------
+Maybe Monad
+-----------
 
 The *Maybe* monad is the simplest first example of a monad instance. The Maybe
 monad models computations which may fail to yield a value at any point during
@@ -3163,8 +3165,8 @@ do addition that might fail. Desugared examples are provided as well.
 ~~~~ {.haskell include="src/02-monads/maybe.hs"}
 ~~~~
 
-List
-----
+List Monad
+----------
 
 The *List* monad is the second simplest example of a monad instance. As always,
 this monad implements both ``(>>=)`` and ``return``. The definition of bind says
@@ -3243,8 +3245,9 @@ the same fact holds true for the lists bound to ``b`` and ``c``.
 ~~~~ {.haskell include="src/02-monads/list.hs"}
 ~~~~
 
-IO
---
+IO Monad
+--------
+
 Perhaps the most (in)famous example in Haskell of a type that forms a monad
 is ``IO``. A value of type ``IO a`` is a computation which, when performed,
 does some I/O before returning a value of type ``a``. These computations are
@@ -6312,13 +6315,15 @@ See: [Polyvariadic functions](http://okmij.org/ftp/Haskell/polyvariadic.html)
 Error Handling
 ==============
 
-Maybe
------
+TODO
+
+Maybe Monad
+-----------
 
 TODO
 
-Either
-------
+Either Monad
+------------
 
 TODO
 
@@ -6449,6 +6454,7 @@ See:
 * [Spoon](https://hackage.haskell.org/package/spoon)
 
 <hr/>
+
 
 Advanced Monads
 ===============
@@ -6749,8 +6755,8 @@ do-notation and if-then-else syntax by providing alternative definitions local t
 ~~~~ {.haskell include="src/10-advanced-monads/indexed.hs"}
 ~~~~
 
-lifted-base
--------------
+Lifted Base
+-----------
 
 The default prelude predates a lot of the work on monad transformers and as such
 many of the common functions for handling  errors and interacting with IO are
@@ -7088,9 +7094,6 @@ and all signatures contained therein.
 GADTs
 =====
 
-GADTs
------
-
 *Generalized Algebraic Data types* (GADTs) are an extension to algebraic
 datatypes that allow us to qualify the constructors to datatypes with type
 equality constraints, allowing a class of types that are not expressible using
@@ -7321,7 +7324,7 @@ See: [Fun with Phantom Types](http://www.researchgate.net/publication/228707929_
 
 
 Typelevel Operations
--------------
+--------------------
 
 With a richer language for datatypes we can express terms that witness the
 relationship between terms in the constructors, for example we can now express a
@@ -12010,8 +12013,8 @@ TODO
 GHC
 ===
 
-Block Diagram
--------------
+Compiler Design
+---------------
 
 The flow of code through GHC is a process of translation between several
 intermediate languages and optimizations and transformations thereof. A common
@@ -12020,12 +12023,6 @@ and at various stages the binders will be transformed, for example the Renamer
 pass effectively translates the ``HsSyn`` datatype from a AST parametrized over
 literal strings as the user enters into a ``HsSyn`` parameterized over qualified
 names that includes modules and package names into a higher level Name type.
-
-##### GHC Compiler
-
-<div class="center">
-![](img/ghc.png)
-</div>
 
 ##### GHC Compiler Passes
 
@@ -12054,7 +12051,7 @@ names that includes modules and package names into a higher level Name type.
 * **Stg** pass translates the resulting Core into STG (Spineless Tagless
    G-Machine) which effectively makes all laziness explicit and encodes the
    thunks and update frames that will be handled during evaluation.
-* **Codegen/Cmm** pass will then translate STG into Cmm (flavoured C--) a simple
+* **Codegen/Cmm** pass will then translate STG into Cmm a simple
   imperative language that manifests the low-level implementation details of
   runtime types. The runtime closure types and stack frames are made explicit
   and low-level information about the data and code (arity, updatability, free
