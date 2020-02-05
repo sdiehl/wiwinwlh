@@ -4049,7 +4049,6 @@ APIs.
 * RankNTypes
 * [ExistentialQuantification](#quantification)
 * [TypeFamilies](#type-families)
-* [TypeInType]
 * [TypeOperators]
 * [TypeApplications](#promoted-syntax)
 * UndecidableInstances
@@ -4536,25 +4535,61 @@ DeriveFunctor
 
 Many instances of functor over datatypes with simple single parameters and
 trivial constructors are simply the result of trivially applying a functions
-over the single constructor's argument. GHC can derive this boilerplace automatically in deriving clauses if DeriveFunctor is enabled.
+over the single constructor's argument. GHC can derive this boilerplace
+automatically in deriving clauses if DeriveFunctor is enabled.
 
 ~~~~ {.haskell include="src/04-extensions/derive_functor.hs"}
-~~~~
-
-DeriveTraversable
------------------
-
-Many instances of traversable over datatypes with simple single parameters and
-trivial constructors have mechanical traversable instances that GHC can derive
-automatically.
-
-~~~~ {.haskell include="src/04-extensions/derive_traversable.hs"}
 ~~~~
 
 DeriveFoldable
 --------------
 
-TODO
+Similar to how Functors can be automatically derived, many instances of Foldable
+for types of kind `* -> *` have instances that simply derive the functions:
+  
+* foldMap
+* foldr
+* null 
+
+By simply deriving the boilerplate function over subexpression type with the
+single parameter term.  For instance if we have a custom rose tree and binary
+tree implementation we can automatically derive the fold functions for these
+datatypes automatically.
+
+~~~~ {.haskell include="src/04-extensions/folding.hs"}
+~~~~
+
+These will generate the following instances:
+
+```haskell
+instance Foldable RoseTree where
+  foldr f z (RoseTree a1 a2)
+    = f a1 ((\ b3 b4 -> foldr (\ b1 b2 -> foldr f b2 b1) b4 b3) a2 z)
+  foldMap f (RoseTree a1 a2)
+    = mappend (f a1) (foldMap (foldMap f) a2)
+  null (RoseTree _ _) = False
+
+instance Foldable Tree where
+  foldr f z (Leaf a1) = f a1 z
+  foldr f z (Branch a1 a2)
+    = (\ b1 b2 -> foldr f b2 b1) a1 ((\ b3 b4 -> foldr f b4 b3) a2 z)
+  foldMap f (Leaf a1) = f a1
+  foldMap f (Branch a1 a2) = mappend (foldMap f a1) (foldMap f a2)
+  null (Leaf _) = False
+  null (Branch a1 a2) = (&&) (null a1) (null a2)
+```
+
+DeriveTraversable
+-----------------
+
+Just as with Functor and Foldable, many `Traversable` instances for
+single-paramater datatypes of kind `* -> *` have trivial implementations of the
+`traverse` function which can be derived automatically. By enabling
+`DeriveTraversable` we can use stock deriving to automatically derive these
+instances.
+
+~~~~ {.haskell include="src/04-extensions/derive_traversable.hs"}
+~~~~
 
 DeriveGeneric
 -------------
@@ -4577,11 +4612,10 @@ data List a
   (Generic)
 ```
 
-Will generate the following dynamic instance
+Will generate the following `Generic` instance:
 
 ```haskell
 instance Generic (List a) where
-
   type
     Rep (List a) =
       D1
@@ -4607,16 +4641,12 @@ instance Generic (List a) where
             )
             :+: C1 ('MetaCons "Nil" 'PrefixI 'False) U1
         )
-
-  from x =
-    M1
+  from x = M1
       ( case x of
           Cons g1 g2 -> L1 (M1 ((:*:) (M1 (K1 g1)) (M1 (K1 g2))))
           Nil -> R1 (M1 U1)
       )
-
-  to (M1 x) =
-    case x of
+  to (M1 x) = case x of
       (L1 (M1 ((:*:) (M1 (K1 g1)) (M1 (K1 g2))))) -> Cons g1 g2
       (R1 (M1 U1)) -> Nil
 ```
@@ -4624,12 +4654,16 @@ instance Generic (List a) where
 DeriveAnyClass
 --------------
 
-TODO
-
 With ``-XDeriveAnyClass`` we can derive any class. The deriving logic generates
-an instance declaration for the type with no explicitly-defined methods. If
-the typeclass implements a default for each method then this will be
-well-defined and give rise to an automatic instances.
+an instance declaration for the type with no explicitly-defined methods or with
+all instances having a specific default implementation given. These are used
+extensively with [Generics] when instance provide empty [Minimal
+Annotations](#minimal-annotations) which are all derived from generic logics.
+
+A contrived example of a class with an empty minimal set might be the following:
+
+~~~~ {.haskell include="src/04-extensions/derive_any.hs"}
+~~~~
 
 DuplicateRecordFields
 ---------------------
@@ -4649,8 +4683,8 @@ test :: (Person, Animal, Vegetable)
 test = (Person {id = 1}, Animal {id = 2}, Vegetable {id = 3})
 ```
 
-Using just DuplicateRecordFields, projection is still not supported so the
-following will not work. OverloadedLabels fixes this to some extent.
+Using just `DuplicateRecordFields`, projection is still not supported so the
+following will not work.
 
 ```haskell
 test :: (Int, Int, Int)
@@ -4763,20 +4797,46 @@ TODO
 DerivingVia
 -----------
 
-TODO
+`DerivingVia` is an extension of `GeneraliazedNewtypeDeriving`. Just as newtype
+deriving allows us to derive instances in terms of instances for the underlying
+representation of the newtype, DerivingVia allows deriving instances instance by
+specifying a custom type which has a runtime representation equal to the desired
+behavior to derive the instance for. The derived instance can then be `coerced`
+to behave as if it were operating over the given type.  This is a powerful new
+mechanism that allows us to derive many typeclasses in terms of other
+typeclasses. 
 
-UndecidableSuperClasses
------------------------
-
-TODO
+~~~~ {.haskell include="src/04-extensions/derive_via.hs"}
+~~~~
 
 DerivingStrategies
 -------------------
 
-TODO
+Deriving has proven a powerful mechanism to add to the typeclass extension and
+as such there have been a variety of bifurcations in it's use. Since GHC 8.2
+there are now four different algorithms that can be used to derive typeclasses
+instances. These are enabled by different extensions and now have specific
+syntax for invoking each algorithm specifically. Turning on `DerivingStrategies`
+allows you to disambiguate which algorithm GHC should use for individual class
+derivations.
 
-TypeInType
-----------
+* `stock` - Standard GHC builtin deriving (i.e. `Eq`, `Ord`, `Show`)
+* `anyclass` - Deriving via minimal annotations with [DeriveAnyClass].
+* `newtype` - Deriving with [GeneralizedNewtypeDeriving].
+* `via` - Deriving with [DerivingVia].
+
+These can stacked and combined on top of a data or newtype declaration.
+
+```haskell
+newtype Example = Example Int
+  deriving stock    (Read, Show)
+  deriving newtype  (Num, Floating)
+  deriving anyclass (ToJSON, FromJSON, ToSQL, FromSQL)
+  deriving (Eq) via (Const Int Any)
+```
+
+UndecidableSuperClasses
+-----------------------
 
 TODO
 
@@ -4797,6 +4857,8 @@ become deprecated in favor of others. Others are just considered misfeatures.
 * `IncoherentInstances` - Subsumed by explicit `INCOHERENT` pragmas.
 * `NullaryTypeClasses` - Subsumed by explicit Multiparameter Typeclasses with no
   parameters.
+* `TypeInType` - Is deprecated in favour of the combination of `PolyKinds` and
+  `DataKinds` and extensions to the GHC typesystem after GHC 8.0.
 
 <hr/>
 
