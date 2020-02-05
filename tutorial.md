@@ -130,9 +130,10 @@ toward more complex topics in later chapters.
 As there is no ordering after the first chapter I will refer to concepts
 globally without introducing them first. If something doesn't make sense just
 skip it and move on. I strongly encourage you to play around with the source
-code modules for yourself. Haskell cannot be learned from an armchair, only from
-writing tons of code and interacting with compiler. GHC may seem like a cruel
-instructor at first, but in time most people grow to love it.
+code modules for yourself. Haskell cannot be learned from an armchair, instead
+it can only be mastered by writing a ton of code for yourself. GHC may initially
+seem like a cruel instructor, but in time most people grow to see it as their
+friend.
 
 GHC
 ---
@@ -3975,22 +3976,22 @@ The Benign
 It's not obvious which extensions are the most common but it's fairly safe to
 say that these extensions are benign and are safely used extensively:
 
-* [NoImplicitPrelude](Custom Preludes)
+* [NoImplicitPrelude](#custom-preludes)
 * [OverloadedStrings]
 * [LambdaCase]
 * [FlexibleContexts]
 * [FlexibleInstances]
-* [GeneralizedNewtypeDeriving](Newtype Deriving)
+* [GeneralizedNewtypeDeriving](#newtype-deriving)
 * [TypeSynonymInstances]
-* [MultiParamTypeClasses](MultiParam Typeclasses)
-* [FunctionalDependencies](MultiParam Typeclasses)
-* [NoMonomorphismRestriction](Monomorphism Restriction)
+* [MultiParamTypeClasses](#multiParam-typeclasses)
+* [FunctionalDependencies](#multiParam-typeclasses)
+* [NoMonomorphismRestriction](#monomorphism-restriction)
 * [GADTs]
 * [BangPatterns]
 * [DeriveGeneric]
 * [DeriveAnyClass]
 * [DerivingStrategies]
-* [ScopedTypeVariables](Scoped Type Variables)
+* [ScopedTypeVariables](#scoped-type-variables)
 
 The Advanced
 ------------
@@ -3999,16 +4000,16 @@ These extensions are typically used by advanced projects that push the limits of
 what is possible with Haskell to enforce complex invariants and very type-safe
 APIs.
 
-* [PolyKinds](Promotion)
-* [DataKinds](Promotion)
-* DerivingVia
+* [PolyKinds](#promotion)
+* [DataKinds](#promotion)
+* [DerivingVia]
 * [GADTs]
-* RankN
-* ExistentialQuantification
-* [TypeFamilies](Type Families)
+* RankNTypes
+* [ExistentialQuantification](#quantification)
+* [TypeFamilies](#type-families)
 * [TypeInType]
-* TypeOperators
-* TypeApplications
+* [TypeOperators]
+* [TypeApplications](#promoted-syntax)
 * UndecidableInstances
 
 The Lowlevel
@@ -6749,9 +6750,6 @@ do-notation and if-then-else syntax by providing alternative definitions local t
 ~~~~ {.haskell include="src/10-advanced-monads/indexed.hs"}
 ~~~~
 
-See: [Fun with Indexed monads](https://github.com/dorchard/effect-monad/raw/master/docs/ixmonad-fita14.pdf)
-
-
 lifted-base
 -------------
 
@@ -8183,7 +8181,9 @@ on under the hood.
 ~~~~ {.haskell include="src/16-type-families/role_infer.hs"}
 ~~~~
 
-```haskkell
+With:
+
+```haskell
 coerce :: Coercible * a b => a -> b
 class (~R#) k k a b => Coercible k a b
 ```

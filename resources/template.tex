@@ -22,10 +22,9 @@
 \usepackage{tikz}
 \usepackage{hyperref}
 \hypersetup{%
-  colorlinks=true,          % hyperlinks will be black
+  colorlinks=false,         % hyperlinks will be black
   linkcolor=black,
-  linkbordercolor=red,      % hyperlink borders will be red
-  pdfborderstyle={/S/U/W 1} % border style will be underline of width 1pt
+  pdfborderstyle={0 0 0}
 }
 
 \newif\ifprint
@@ -58,10 +57,13 @@
 % Syntax Higlighting
 \usepackage{listings}
 
+% Haskell Syntax Highlighting
 \usepackage{resources/haskell}
 
 \lstset{
   language=haskell,
+  basicstyle=\linespread{0.2}\small\sffamily,
+  breaklines=true,
   frame=ltb,
   framerule=0pt,
   xleftmargin=15pt,
@@ -82,7 +84,6 @@
   showspaces=false,
   keywordstyle=\bfseries\rmfamily,
   columns=fullflexible,
-  basicstyle=\small\sffamily,
   showstringspaces=false,
   morecomment=[l]\%,
 }

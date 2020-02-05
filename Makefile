@@ -1,5 +1,5 @@
 PANDOC = pandoc
-IFORMAT = markdown+raw_tex+raw_attribute
+IFORMAT = markdown+raw_tex+raw_attribute+auto_identifiers+implicit_header_references
 GHC = ghc
 
 HTEMPLATE = resources/template.html
