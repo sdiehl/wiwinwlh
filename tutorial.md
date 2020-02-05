@@ -918,20 +918,20 @@ frequently used flags are:
 
 Flag                                 Description
 ----                                 ------------
--fwarn-tabs                          Emit warnings of tabs instead of spaces in the source code
--fwarn-unused-imports                Warn about libraries imported without being used
--fwarn-name-shadowing                Warn on duplicate names in nested bindings
--fwarn-incomplete-uni-patterns       Emit warnings for incomplete patterns in lambdas or pattern bindings
--fwarn-incomplete-patterns           Warn on non-exhaustive patterns
--fwarn-overlapping-patterns          Warn on pattern matching branches that overlap
--fwarn-incomplete-record-updates     Warn when records are not instantiated with all fields
--fdefer-type-errors                  Turn type errors into warnings
--fwarn-missing-signatures            Warn about toplevel missing type signatures
--fwarn-monomorphism-restriction      Warn when the monomorphism restriction is applied implicitly
--fwarn-orphans                       Warn on orphan typeclass instances
--fforce-recomp                       Force recompilation regardless of timestamp
--fno-code                            Omit code generation, just parse and typecheck
--fobject-code                        Generate object code
+`-fwarn-tabs`                        Emit warnings of tabs instead of spaces in the source code
+`-fwarn-unused-imports`              Warn about libraries imported without being used
+`-fwarn-name-shadowing`              Warn on duplicate names in nested bindings
+`-fwarn-incomplete-uni-patterns`     Emit warnings for incomplete patterns in lambdas or pattern bindings
+`-fwarn-incomplete-patterns`         Warn on non-exhaustive patterns
+`-fwarn-overlapping-patterns`        Warn on pattern matching branches that overlap
+`-fwarn-incomplete-record-updates`   Warn when records are not instantiated with all fields
+`-fdefer-type-errors`                Turn type errors into warnings
+`-fwarn-missing-signatures`          Warn about toplevel missing type signatures
+`-fwarn-monomorphism-restriction`    Warn when the monomorphism restriction is applied implicitly
+`-fwarn-orphans`                     Warn on orphan typeclass instances
+`-fforce-recomp`                     Force recompilation regardless of timestamp
+`-fno-code`                          Omit code generation, just parse and typecheck
+`-fobject-code`                      Generate object code
 
 Like most compilers, GHC takes the ``-Wall`` flag to enable all warnings.
 However, a few of the enabled warnings are highly verbose. For example,
@@ -4061,18 +4061,18 @@ optimal performance or need to integrate with foreign functions and native code.
 Most of these are used to manipulate base machine types and interface directly
 with the low-level byte representations of data structures.
 
-* [CPP](CPP)
+* [CPP](#cpp)
 * [BangPatterns]
-* [CApiFFI](CPP)
+* [CApiFFI](#cpp)
 * [Strict]
 * [StrictData]
-* [RoleAnnotations](Roles)
-* [ForeignFunctionInterface](FFI)
-* [InterruptibleFFI](FFI)
-* [UnliftedFFITypes](FFI)
-* [MagicHash](Primops)
-* [UnboxedSums](Unboxed Types)
-* [UnboxedTuples](Unboxed Types)
+* [RoleAnnotations](#roles)
+* [ForeignFunctionInterface](#ffi)
+* [InterruptibleFFI](#ffi)
+* [UnliftedFFITypes](#ffi)
+* [MagicHash](#primops)
+* [UnboxedSums](#unboxed-types)
+* [UnboxedTuples](#unboxed-types)
 
 The Dangerous
 -------------
@@ -4084,9 +4084,9 @@ remedy the error at hand, as much as GHC might suggest otherwise!
 
 * AllowAmbigiousTypes
 * DatatypeContexts
-* [OverlappingInstances](OverlappingInstances)
-* [IncoherentInstances](IncoherentInstances)
-* [ImpredicativeTypes](Impredicative Types)
+* [OverlappingInstances](#multiparam-typeclasses)
+* [IncoherentInstances]
+* [ImpredicativeTypes](#impredicative-types)
 
 NoMonomorphismRestriction
 -------------------------
@@ -8655,7 +8655,25 @@ See: [Type-Level Literals](http://www.haskell.org/ghc/docs/7.8.2/html/users_guid
 Typelevel Strings
 -----------------
 
-TODO
+Since GHC 8.0 we have been able to work with typelevel strings values
+represented at the typelevel as `Symbol` with kind `Symbol`. The `GHC.TypeLits`
+module defines a set of a typeclases for lifting these valuess to and form the
+value level and comparing and computing over the values at typelevel.
+
+```haskell
+symbolVal :: forall n proxy. KnownSymbol n => proxy n -> String
+type family AppendSymbol (m :: Symbol) (n :: Symbol) :: Symbol
+type family CmpSymbol (m :: Symbol) (n :: Symbol) :: Ordering
+sameSymbol :: (KnownSymbol a, KnownSymbol b) => Proxy a -> Proxy b -> Maybe (a :~: b)
+```
+
+These can be used to tag specific data at the typelevel with compile-time
+information encoded in the strings. For example we can construct a simple unit
+system which allows us to attach units to numerical quantities and perform basic
+dimensional analysis.
+
+~~~~ {.haskell include="src/17-promotion/typelevel_strings.hs"}
+~~~~
 
 Custom Errors
 -------------
@@ -10297,8 +10315,17 @@ optimized for append/prepend operations and traversal.
 ~~~~ {.haskell include="src/20-data-structures/sequence.hs"}
 ~~~~
 
+
 FFI
 ===
+
+Haskell does not exist in a vacuum and will quite often need to interact with or
+offload computation to another programming language. Since GHC itself is built
+on the GCC ecosystem interfacing with libraries that can be linked via a C ABI
+is quite natural. Indeed many high performance libraries will call out to
+Fortran, C, or C++ code to perform numerical computations that can be linked
+seamlessly into the Haskell runtime. There are several approaches to combining
+Haskell with other languages in the via the *Foreign Function Interface* or FFI. 
 
 Pure Functions
 --------------
@@ -15208,8 +15235,10 @@ is often useful for embedding in ``--version`` information in the command line
 interface to your program or service.
 
 This example also makes use of the Cabal a `Paths_pkgname` module during compile
-time which contains which contains several functions for querying target
-paths and included data files for the Cabal project.
+time which contains which contains several functions for querying target paths
+and included data files for the Cabal project. This can be included in the
+`exposed-modules` of a package to be accessed directly by the project, otherwise
+it is placed automatically in `other-modules`.
 
 ```haskell
 version :: Version
