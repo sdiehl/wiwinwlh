@@ -4958,14 +4958,6 @@ the collective programmer consciousness and can often be non-intuitive to the
 novice. Some time is often needed to fully grok how lazy evaluation works and
 how to wield it's great power and when to force strictness.
 
-See:
-
-* [Oh My Laziness!](http://alpmestan.com/posts/2013-10-02-oh-my-laziness.html)
-* [Reasoning about Laziness](http://www.slideshare.net/tibbe/reasoning-about-laziness)
-* [Lazy Evaluation of Haskell](http://www.vex.net/~trebla/haskell/lazy.xhtml)
-* [More Points For Lazy Evaluation](http://augustss.blogspot.hu/2011/05/more-points-for-lazy-evaluation-in.html)
-* [How Lazy Evaluation Works in Haskell](https://hackhands.com/lazy-evaluation-works-haskell/)
-
 Strictness
 ----------
 
@@ -5289,6 +5281,15 @@ bottom, we fail at the usage site instead of the outer pattern match.
 
 ~~~~ {.haskell include="src/05-laziness/lazy_patterns.hs"}
 ~~~~
+
+External Resources
+------------------
+
+* [Oh My Laziness!](http://alpmestan.com/posts/2013-10-02-oh-my-laziness.html)
+* [Reasoning about Laziness](http://www.slideshare.net/tibbe/reasoning-about-laziness)
+* [Lazy Evaluation of Haskell](http://www.vex.net/~trebla/haskell/lazy.xhtml)
+* [More Points For Lazy Evaluation](http://augustss.blogspot.hu/2011/05/more-points-for-lazy-evaluation-in.html)
+* [How Lazy Evaluation Works in Haskell](https://hackhands.com/lazy-evaluation-works-haskell/)
 
 <hr/>
 
@@ -5811,27 +5812,8 @@ Variant                   Module
 <b>strict bytestring</b>  Data.ByteString
 <b>lazy bytestring</b>    Data.ByteString.Lazy
 
-Escaping Text
---------------
-
-Haskell uses C-style single-character escape codes
-
-Escape  Unicode Character
-------  ------- ----------------------
-\\n     U+000A  newline
-\\0     U+0000  null character
-\\&     n/a     empty string
-\\'     U+0027  single quote
-\\\\    U+005C  backslash
-\\a     U+0007  alert
-\\b     U+0008  backspace
-\\f     U+000C  form feed
-\\r     U+000D  carriage return
-\\t     U+0009  horizontal tab
-\\v     U+000B  vertical tab
-\\"     U+0022  double quote
-
-#### Conversions
+String Conversions
+------------------
 
 Conversions between strings types ( from : left column, to : top row ) are done
 with several functions across the bytestring and text libraries. The mapping
@@ -6017,6 +5999,27 @@ to write well-typed regex expressions as strings.
 
 ~~~~ {.haskell include="src/07-text-bytestring/regex.hs"}
 ~~~~
+
+Escaping Text
+--------------
+
+Haskell uses C-style single-character escape codes
+
+Escape  Unicode Character
+------  ------- ----------------------
+\\n     U+000A  newline
+\\0     U+0000  null character
+\\&     n/a     empty string
+\\'     U+0027  single quote
+\\\\    U+005C  backslash
+\\a     U+0007  alert
+\\b     U+0008  backspace
+\\f     U+000C  form feed
+\\r     U+000D  carriage return
+\\t     U+0009  horizontal tab
+\\v     U+000B  vertical tab
+\\"     U+0022  double quote
+
 
 <hr/>
 
@@ -6424,7 +6427,7 @@ See:
 
 * [Control.Monad.Except](https://hackage.haskell.org/package/mtl-2.2.1/docs/Control-Monad-Except.html)
 
-spoon
+Spoon
 -----
 
 Sometimes you'll be forced to deal with seemingly pure functions that can throw
@@ -6445,11 +6448,12 @@ See:
 
 * [Spoon](https://hackage.haskell.org/package/spoon)
 
-
 <hr/>
 
 Advanced Monads
 ===============
+
+TODO
 
 Function Monad
 --------------
@@ -7543,7 +7547,7 @@ scoping dictionary.
 ~~~~ {.haskell include="src/14-interpreters/initial_interpreter.hs"}
 ~~~~
 
-What's especially nice about this approach is how naturally catamorphisms
+What is especially elegant about this approach is how naturally catamorphisms
 compose into efficient composite transformations.
 
 ```haskell
@@ -7949,7 +7953,7 @@ Unit tests
       11 tests completed
 ```
 
-silently
+Silently
 --------
 
 Often in the process of testing IO heavy code we'll need to redirect stdout to
@@ -9975,8 +9979,6 @@ iterateN :: Int -> (a -> a) -> a -> Vector a
 ~~~~ {.haskell include="src/20-data-structures/vector.hs"}
 ~~~~
 
-See: [Numerical Haskell: A Vector Tutorial](http://wiki.haskell.org/Numeric_Haskell:_A_Vector_Tutorial)
-
 Mutable Vectors
 ---------------
 
@@ -10594,8 +10596,6 @@ pure and can always be rolled back if a commit fails.
 ~~~~ {.haskell include="src/22-concurrency/stm.hs"}
 ~~~~
 
-See: [Beautiful Concurrency](https://www.fpcomplete.com/school/advanced-haskell/beautiful-concurrency)
-
 Monad Par
 ---------
 
@@ -10805,8 +10805,6 @@ network protocol:
 
 ~~~~ {.haskell include="src/24-parsing/attoparsec.hs"}
 ~~~~
-
-See: [Text Parsing Tutorial](https://www.fpcomplete.com/school/starting-with-haskell/libraries-and-frameworks/text-manipulation/attoparsec)
 
 Configurator
 ------------
@@ -11073,8 +11071,6 @@ operator (``=$``) for combining Sources and Sink and a Conduit and a Sink respec
 
 ~~~~ {.haskell include="src/25-streaming/conduit.hs"}
 ~~~~
-
-See: [Conduit Overview](https://www.fpcomplete.com/user/snoyberg/library-documentation/conduit-overview)
 
 </hr>
 
@@ -13280,11 +13276,6 @@ or ST.
 ~~~~ {.haskell include="src/29-ghc/monad_prim.hs"}
 ~~~~
 
-See:
-
-* [Evaluation order and state tokens](https://www.fpcomplete.com/user/snoyberg/general-haskell/advanced/evaluation-order-and-state-tokens)
-
-
 ghc-heap-view
 -------------
 
@@ -14113,6 +14104,8 @@ primop   IntSubOp    "-#"    Dyadic   Int# -> Int# -> Int#
 
 Runtime System
 ---------------
+
+TODO
 
 The GHC runtime system is a massive part of the compiler. It comes in at around
 70,000 lines of C and Cmm. There is simply no way to explain most of what occurs
@@ -15659,11 +15652,6 @@ See: [You Could Have Defined Natural Transformations](http://blog.sigfpe.com/200
 
 Commutative Diagrams
 --------------------
-
-TODO
-
-String Diagrams
----------------
 
 TODO
 

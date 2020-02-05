@@ -22,10 +22,22 @@
 \usepackage{tikz}
 \usepackage{hyperref}
 \hypersetup{%
-  colorlinks=false,         % hyperlinks will be black
+  colorlinks=true,          % hyperlinks will be black
+  linkcolor=black,
   linkbordercolor=red,      % hyperlink borders will be red
   pdfborderstyle={/S/U/W 1} % border style will be underline of width 1pt
 }
+
+\newif\ifprint
+\printtrue
+\ifprint
+  \let\oldhref\href
+  \renewcommand\href[2]{%
+    \oldhref{#1}{#2}%
+    \footnote{\url{#1}}%
+  }
+\fi
+
 \usepackage{amssymb,amsmath}
 \usepackage{framed}
 \usepackage{fancyvrb}
@@ -173,9 +185,6 @@ $include-before$
 $endfor$
 $if(toc)$
 {
-$if(colorlinks)$
-\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$black$endif$}
-$endif$
 \setcounter{tocdepth}{$toc-depth$}
 \tableofcontents
 
