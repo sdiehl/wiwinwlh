@@ -111,14 +111,14 @@ this beautiful language at some point in their lives.
 How to Read
 -----------
 
-This is a guide for non-Haskell software engineers who have an interest in
-Haskell. I presume you know some basics about how your operating system works,
-the shell, and the some fundamentals of other imperative programming languages.
-If you are a Python or Java software engineer with no experience with Haskell
-this is the executive summary of Haskell theory and practice for you. We'll
-delve into a little theory as needed to explain concepts but no more than
-necessary. All knowledge is derived from experience and only implementing
-Haskell logic for yourself will grant insight.
+This is a guide for working software engineers who have an interest in Haskell
+but don't know Haskell yet. I presume you know some basics about how your
+operating system works, the shell, and the some fundamentals of other imperative
+programming languages.  If you are a Python or Java software engineer with no
+experience with Haskell this is the executive summary of Haskell theory and
+practice for you. We'll delve into a little theory as needed to explain concepts
+but no more than necessary. All knowledge is derived from experience and only
+implementing code for yourself will grant insight.
 
 There is no particular order to this guide, other than the first chapter which
 describes how to get set up with Haskell and use the foundational compiler and
@@ -244,21 +244,21 @@ file structure:
 
 ```bash
 .
-├── app            # Executable entry-point
-│   └── Main.hs    # Main-is file
-├── src            # Executable entry-point
-│   └── Lib.hs     # Exposed module
-├── test           # Test entry-point
-│   └── Spec.hs    # Main-is file
-├── ChangeLog.md   # extra-source-files
-├── LICENSE        # extra-source-files
-├── README.md      # extra-source-files
-├── package.yaml   # hpack configuration
+├── app                          # Executable entry-point
+│   └── Main.hs                  # Main-is file
+├── src                          # Executable entry-point
+│   └── Lib.hs                   # Exposed module
+├── test                         # Test entry-point
+│   └── Spec.hs                  # Main-is file
+├── ChangeLog.md                 # extra-source-files
+├── LICENSE                      # extra-source-files
+├── README.md                    # extra-source-files
+├── package.yaml                 # hpack configuration
 ├── Setup.hs
-├── simple.cabal   # cabal configuration generated from hpack
-├── stack.yaml     # stack configuration
-├── .hlint.yaml    # hlint configuration
-└── .ghci          # ghci configuration
+├── simple.cabal                 # cabal configuration generated from hpack
+├── stack.yaml                   # stack configuration
+├── .hlint.yaml                  # hlint configuration
+└── .ghci                        # ghci configuration
 ```
 
 More complex projects consisting of multiple components will have use a multiple
@@ -10858,6 +10858,10 @@ Available options:
 
 See: [Optparse Applicative Tutorial](https://github.com/pcapriotti/optparse-applicative)
 
+#### Optparse Generic
+
+TODO
+
 Happy & Alex
 ------------
 
@@ -13471,7 +13475,7 @@ The type system of STG system consits of the following types:
 
 * **StgWord** -  Unit of heap allocation
 * **StgPtr** - Basic pointer type
-* **StgInt** - 
+* **StgInt**
 * **StgChar**
 * **StgFloat**
 * **StgDouble**
@@ -13480,10 +13484,9 @@ The type system of STG system consits of the following types:
 * **StgVoid**
 * **StgOffset**
 * **StgCode**
-* **StgStablePtr8*
+* **StgStablePtr**
 * **StgFunPtr**
 * **StgUnion**
-
 
 Worker/Wrapper
 --------------
@@ -14480,8 +14483,8 @@ libraries for Haskell.
 * aeson-pretty
 
 These days it is best to avoid the pretty printer and use the standard
-[prettyprinter] library which subsumes most of the features of these previsious
-libraries under one uniform API.
+`prettyprinter` library which subsumes most of the features of these previous
+libraries under one modern uniform API.
 
 prettyprinter
 -------------
@@ -14627,7 +14630,7 @@ descriptions of logic in Haskell.
 The llvm-hs library is split across two modules:
 
 * ``llvm-hs-pure`` - Pure Haskell datatypes
-* ``llvm-hs` `- Bindings to C++ framework for optimisation and JIT
+* ``llvm-hs`` - Bindings to C++ framework for optimisation and JIT
 
 The llvm-hs`bindings allow us to construct LLVM abstract syntax tree by
 manipulating a variety of Haskell datatypes. These datatypes all can be
@@ -15691,7 +15694,8 @@ f >=> Just ≡ f
 Monoidal Categories
 -------------------
 
-TODO
+~~~~ {.haskell include="src/33-categories/monoidal.hs"}
+~~~~
 
 Resources
 ---------
