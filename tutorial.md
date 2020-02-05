@@ -261,15 +261,15 @@ file structure:
 └── .ghci          # ghci configuration
 ```
 
-More complex projects consisting of multiple projects will have use a multiple
-projects like above but nested in subfolders with a `cabal.project` or
-`stack.yaml` in the root in the root.
+More complex projects consisting of multiple components will have use a multiple
+projects like above, but nested in subfolders with a `cabal.project` or
+`stack.yaml` in the root of the repository.
 
 ```bash
 .
-├── lib-core            # component1
-├── lib-http            # component2
-├── lib-utils           # component3
+├── lib-one             # component1
+├── lib-two             # component2
+├── lib-three           # component3
 ├── stack.yaml          # stack project configuration
 └── cabal.project       # cabal project configuration
 ```
@@ -278,9 +278,9 @@ An example Cabal project `cabal.project1` for the above multi-component library
 repository would look like:
 
 ```yaml
-packages: ./lib-core/
-          ./lib-http
-          ./lib-utils
+packages: ./lib-one
+          ./lib-two
+          ./lib-three
 ```
 
 While an example Stack project `stack.yaml` for the above multi-component library
@@ -289,9 +289,9 @@ repository would be:
 ```yaml
 resolver: lts-14.20
 packages:
-- 'lib-core'
-- 'lib-http'
-- 'lib-utils'
+- 'lib-one'
+- 'lib-two'
+- 'lib-three'
 
 extra-package-dbs: []
 ```
@@ -729,8 +729,7 @@ of your existing project's ``cabal`` file by running:
 stack init
 ```
 
-An example ``stack.yaml`` file for [GHC](https://www.haskell.org/ghc) 8.8.1
-would look like:
+An example ``stack.yaml`` file for GHC 8.8.1 would look like:
 
 ```bash
 resolver: lts-14.20
