@@ -4764,16 +4764,16 @@ Historical Extensions
 Several language extensions have either been absorbed into the core language or
 become deprecated in favor of others. Others are just considered misfeatures.
 
-* Rank2Types - Rank2Types has been subsumed by RankNTypes
-* XPolymorphicComponents - Was an implementation detail of higher-rank
+* `Rank2Types` - Rank2Types has been subsumed by RankNTypes
+* `XPolymorphicComponents` - Was an implementation detail of higher-rank
   polymorphism that no longer exists.
-* NPlusKPatterns - These were largely considered an ugly edge-case of pattern
+* `NPlusKPatterns` - These were largely considered an ugly edge-case of pattern
   matching language that was best removed.
-* TraditionalRecordSyntax - Traditional record syntax was an extension to the
+* `TraditionalRecordSyntax` - Traditional record syntax was an extension to the
   Haskell 98 specification for what we now consider standard record syntax.
-* OverlappingInstances - Subsumed by explicit OVERLAPPING pragmas.
-* IncoherentInstances - Subsumed by explicit INCOHERENT pragmas.
-* NullaryTypeClasses - Subsumed by explicit Multiparameter Typeclasses with no
+* `OverlappingInstances` - Subsumed by explicit OVERLAPPING pragmas.
+* `IncoherentInstances` - Subsumed by explicit INCOHERENT pragmas.
+* `NullaryTypeClasses` - Subsumed by explicit Multiparameter Typeclasses with no
   parameters.
 
 <hr/>
@@ -11795,6 +11795,32 @@ Lucid
 
 TODO
 
+Hastache
+--------
+
+Hastache is string templating based on the "Mustache" style of encoding
+metavariables with double braces ``{{ x }}``. Hastache supports automatically
+converting many Haskell types into strings and uses the efficient Text functions
+for formatting.
+
+The variables loaded into the template are specified in either a function
+mapping variable names to printable MuType values. For instance using a
+function.
+
+~~~~ {.haskell include="src/27-web/hastache.hs"}
+~~~~
+
+Or using Data-Typeable record and ``mkGenericContext``, the Haskell field names
+are converted into variable names.
+
+~~~~ {.haskell include="src/27-web/hastache_generic.hs"}
+~~~~
+
+The MuType and MuContext types can be parameterized by any monad or transformer
+that implements ``MonadIO``, not just IO.
+
+</hr>
+
 Warp
 ----
 
@@ -11826,32 +11852,6 @@ apply for monads may break down or fail with error terms.
 
 A collection of useful related resources can be found on the Scotty wiki:
 [Scotty Tutorials & Examples](https://github.com/scotty-web/scotty/wiki)
-
-Hastache
---------
-
-Hastache is string templating based on the "Mustache" style of encoding
-metavariables with double braces ``{{ x }}``. Hastache supports automatically
-converting many Haskell types into strings and uses the efficient Text functions
-for formatting.
-
-The variables loaded into the template are specified in either a function
-mapping variable names to printable MuType values. For instance using a
-function.
-
-~~~~ {.haskell include="src/27-web/hastache.hs"}
-~~~~
-
-Or using Data-Typeable record and ``mkGenericContext``, the Haskell field names
-are converted into variable names.
-
-~~~~ {.haskell include="src/27-web/hastache_generic.hs"}
-~~~~
-
-The MuType and MuContext types can be parameterized by any monad or transformer
-that implements ``MonadIO``, not just IO.
-
-</hr>
 
 Servant
 -------
