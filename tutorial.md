@@ -698,14 +698,13 @@ See:
 Stack
 -----
 
-[Stack](http://docs.haskellstack.org/en/stable/README/) is a alternative
-approach to Haskell package structure that emerged in 2015. Instead of using a
-rolling build like [Cabal], stack breaks up sets of packages into release blocks
-that guarantee internal compatibility between sets of packages.  The package
-solver for stack uses a different strategy for resolving dependencies than
-cabal-install has historically used and combines this with a centralised build
-server called [Stackage] which continuously tests the set of packages in a
-resolver to ensure they build against each other.
+Stack is a alternative approach to Haskell package structure that emerged in
+2015. Instead of using a rolling build like [Cabal], stack breaks up sets of
+packages into release blocks that guarantee internal compatibility between sets
+of packages.  The package solver for stack uses a different strategy for
+resolving dependencies than cabal-install has historically used and combines
+this with a centralised build server called [Stackage] which continuously tests
+the set of packages in a resolver to ensure they build against each other.
 
 </hr>
 
@@ -2244,10 +2243,9 @@ programmer than cannot be manifest in the Haskell type system.
 Debugger
 --------
 
-Since [GHCi] version 6.8.1, a built-in
-[debugger](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/ghci-debugger.html)
-has been available, although its use is somewhat rare. Debugging uncaught
-exceptions from bottoms is similar style to debugging segfaults with gdb.
+Since GHC version 6.8.1, a built-in debuggerhas been available, although its use
+is somewhat rare. Debugging uncaught exceptions from bottoms is similar style to
+debugging segfaults with gdb.
 
 ```haskell
 λ: :set -fbreak-on-exception       -- Sets option for evaluation to stop on exception
@@ -2879,7 +2877,16 @@ out with Haskell there are no legitimate reason to use these functions at all.
 Monads
 ======
 
-TODO
+Monads one of the core components to constructing Haskell programs. In their
+most general form monads are an algebraic building block that can give rise to
+ways of structuring control flow, handling data structures and orchestating
+logic. They are a very general algebraic way of structing code and have a
+certain reputation for being confusing. However their power and flexability have
+become foundational to the way modern Haskell programs are structured.
+
+There is a singlar truth to keep in mind when learning monads.
+
+> A monad is just it's algebraic laws. Nothing more, nothing less.
 
 Eightfold Path to Monad Satori
 ------------------------------
@@ -6104,6 +6111,11 @@ instance IsList [a] where
 λ: :type [1,2,3]
 [1,2,3] :: (Num (GHC.Exts.Item l), GHC.Exts.IsList l) => l
 ```
+
+For example we could write a overloaded list instance for hash tables that
+simply coverts to the hash table using `fromList`. You shouldn't acutally do
+this in practice but it is possible. Some math libraries that use vector-like
+structures will use overloaded lists in this fashion.
 
 ~~~~ {.haskell include="src/07-text-bytestring/overloadedlist.hs"}
 ~~~~
