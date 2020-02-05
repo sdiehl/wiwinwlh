@@ -6490,9 +6490,9 @@ dependency on IO.
 
 TODO
 
-* MonadThrow
-* MonadCatch
-* MonadMask
+* `MonadThrow`
+* `MonadCatch`
+* `MonadMask`
 
 ~~~~ {.haskell include="src/09-errors/exceptions.hs"}
 ~~~~
@@ -11000,12 +11000,16 @@ Available options:
 ~~~~ {.haskell include="src/24-parsing/optparse_applicative.hs"}
 ~~~~
 
-
-See: [Optparse Applicative Tutorial](https://github.com/pcapriotti/optparse-applicative)
-
 #### Optparse Generic
 
-TODO
+Many `optparse-applicative` command line parsers can also be generated using
+Generics from descriptions of records. This approach is not fullproof but works
+well enough for simple command line applications with a few options. For more
+complex interfaces with subcommands and help information you'll need to go back
+to the `optparse-applicative` level. For example:
+
+~~~~ {.haskell include="src/24-parsing/optparse_generic.hs"}
+~~~~
 
 Happy & Alex
 ------------
@@ -11919,6 +11923,8 @@ Haskell data structures and HTML representation.
 
 Lucid
 -----
+
+Lucid is another HTML generation library.
 
 TODO
 
@@ -14839,8 +14845,6 @@ See:
 
 Template Haskell
 ================
-
-TODO
 
 Metaprogramming
 ---------------
