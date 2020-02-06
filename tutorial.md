@@ -1190,6 +1190,7 @@ sensible:
 ```haskell
 :seti -XNoImplicitPrelude
 :seti -XFlexibleContexts
+:seti -XFlexibleInstances
 :seti -XOverloadedStrings
 import Protolude
 ```
@@ -4984,7 +4985,7 @@ Compiling the ``-Wmissing-methods`` will warn when a instance is defined that
 does not meet the minimal criterion.
 
 TypeSynonymInstances
--------------------
+--------------------
 
 Normally type class definitions are restricted to be being defined only over
 fully expanded types with all type synonym indirections removed. Type synonyms
@@ -4998,24 +4999,26 @@ This is used quite often in modern Haskell.
 ~~~~
 
 FlexibleInstances
--------------------
+------------------
 
 Normally the head of a typeclass instance must contain only a type constructor
 applied to any number of type variables. There can be no nesting of other
 constructors or non-type variables in the head. The `FlexibleInstances`
 extension loosens this restriction to allow arbitrary nesting and non-type
 variables to be mentioned in the head definition. This extension also implicitly
-enables TypeSynonymInstances.
-
-TODO
+enables `TypeSynonymInstances`.
 
 ~~~~ {.haskell include="src/04-extensions/flexinstances.hs"}
 ~~~~
 
 FlexibleContexts
--------------------
+----------------
 
-TODO
+Just as with instances, contexts normally are also constrained to consist
+entirely of constraints where a class is applied to just type variables. The
+`FlexibleContexts` extension lifts this restriction and allows any type of type
+variable and nesting to occur the class constraint head. There however still a
+global restriction that all class hierarchies must not contain cycles.
 
 ~~~~ {.haskell include="src/04-extensions/flexcontexts.hs"}
 ~~~~
@@ -6462,62 +6465,15 @@ See: [Polyvariadic functions](http://okmij.org/ftp/Haskell/polyvariadic.html)
 Error Handling
 ==============
 
-TODO
-
-Maybe Monad
------------
-
-TODO
+There are a plethora of ways of handling errors in Haskell. While Haskell's
+runtime supports throwing and handling exceptions, it is important to use the
+right method in the right context.
 
 Either Monad
 ------------
 
+EitherT
 TODO
-
-Control.Exception
------------------
-
-The most low-level way to handle errors is to use the ``throw`` and ``catch`` functions which
-allow us to throw extensible exceptions in pure code but catch the resulting exception within IO.  Of
-specific note is that return value of the ``throw`` inhabits all types.
-
-```haskell
-throw :: Exception e => e -> a
-catch :: Exception e => IO a -> (e -> IO a) -> IO a
-try :: Exception e => IO a -> IO (Either e a)
-evaluate :: a -> IO a
-```
-
-~~~~ {.haskell include="src/09-errors/ioexception.hs"}
-~~~~
-
-Because a value will not be evaluated unless needed, if one desires to know for
-sure that an exception is either caught or not it can be deeply forced into head
-normal form before invoking catch. The ``strictCatch`` is not provided by
-standard library but has a simple implementation in terms of ``deepseq``.
-
-```haskell
-strictCatch :: (NFData a, Exception e) => IO a -> (e -> IO a) -> IO a
-strictCatch = catch . (toNF =<<)
-```
-
-Exceptions
-----------
-
-The problem with the previous approach is having to rely on GHC's asynchronous exception handling inside of IO
-to handle basic operations. The ``exceptions`` provides the same API as ``Control.Exception`` but loosens the
-dependency on IO.
-
-TODO
-
-* `MonadThrow`
-* `MonadCatch`
-* `MonadMask`
-
-~~~~ {.haskell include="src/09-errors/exceptions.hs"}
-~~~~
-
-See: [exceptions](http://hackage.haskell.org/package/exceptions)
 
 ExceptT
 -------
@@ -6578,6 +6534,51 @@ instance MonadError e (Either e) where
 See:
 
 * [Control.Monad.Except](https://hackage.haskell.org/package/mtl-2.2.1/docs/Control-Monad-Except.html)
+
+Control.Exception
+-----------------
+
+The GHC runtime provides builtin operations ``throw`` and ``catch`` functions
+which allow us to throw exceptions in pure code and catch the resulting
+exception within IO. Note that return value of the ``throw`` inhabits all types.
+
+```haskell
+throw :: Exception e => e -> a
+catch :: Exception e => IO a -> (e -> IO a) -> IO a
+try :: Exception e => IO a -> IO (Either e a)
+evaluate :: a -> IO a
+```
+
+~~~~ {.haskell include="src/09-errors/ioexception.hs"}
+~~~~
+
+Because a value will not be evaluated unless needed, if one desires to know for
+sure that an exception is either caught or not it can be deeply forced into head
+normal form before invoking catch. The ``strictCatch`` is not provided by
+standard library but has a simple implementation in terms of ``deepseq``.
+
+```haskell
+strictCatch :: (NFData a, Exception e) => IO a -> (e -> IO a) -> IO a
+strictCatch = catch . (toNF =<<)
+```
+
+Exceptions
+----------
+
+The problem with the previous approach is having to rely on GHC's asynchronous exception handling inside of IO
+to handle basic operations. The ``exceptions`` provides the same API as ``Control.Exception`` but loosens the
+dependency on IO.
+
+TODO
+
+* `MonadThrow`
+* `MonadCatch`
+* `MonadMask`
+
+~~~~ {.haskell include="src/09-errors/exceptions.hs"}
+~~~~
+
+See: [exceptions](http://hackage.haskell.org/package/exceptions)
 
 Spoon
 -----
@@ -12491,20 +12492,9 @@ type Located = GenLocated SrcSpan
 Parser
 ------
 
-TODO
-
-* parseModule 
-* parseSignature 
-* parseImport 
-* parseStatement 
-* parseDeclaration 
-* parseExpression 
-* parsePattern 
-* parseTypeSignature
-* parseStmt
-* parseIdentifier
-* parseType
-* parseBackpack
+The GHC parser is itself written in Happy. It defines it's Parser monad as the
+following definition which emits a sequences of `Located` tokens with the
+lexemes position information. The ambient monad is the `P` monad. 
 
 ```yacc
 %monad { P } { >>= } { return }
@@ -12512,15 +12502,33 @@ TODO
 %tokentype { (Located Token) }
 ```
 
+Since there are many flavours of Haskell syntax enabled by langauge syntax
+extensions, the monad parser itself is passed a specific set of `DynFlags` which
+specify the language specific Haskell syntax to parse. An example parser
+invocation would look like:
+
 ```haskell
 runParser :: DynFlags -> String -> P a -> ParseResult a
 runParser flags str parser = unP parser parseState
 where
-  filename = "<interactive>"
-  location = mkRealSrcLoc (mkFastString filename) 1 1
-  buffer = stringToStringBuffer str
+  filename   = "<interactive>"
+  location   = mkRealSrcLoc (mkFastString filename) 1 1
+  buffer     = stringToStringBuffer str
   parseState = mkPState flags buffer location
 ```
+
+The `parser` argument above can be one of the folowing Happy entry point
+functions which parse different fragments of the Haskell grammar.
+
+* `parseModule`
+* `parseSignature`
+* `parseStatement`
+* `parseDeclaration`
+* `parseExpression`
+* `parseTypeSignature`
+* `parseStmt`
+* `parseIdentifier`
+* `parseType`
 
 See:
 
