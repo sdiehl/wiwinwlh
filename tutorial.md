@@ -3926,10 +3926,114 @@ Effect Systems
 Polysemy
 --------
 
-TODO
+Polysemy is a new effect system library based on the free-monad approach to
+modeling effects. The library uses modern type system features to model effects
+on top of a `Sem` monad. The monad will have a members constraint type which
+constraints a parameter `r` by a type-level of effects in the given unit of
+computation.
 
-~~~~ {.haskell include="src/03-monad-transformers/polysemy.hs"}
-~~~~
+```haskell
+Members [ .. effects .. ] => Sem r a
+```
+
+For example we seamlessly mix and match error handling, tracing, and stateful
+updates inside of one computation without the new to create a layered monad.
+This would look something like the following:
+
+```haskell
+Members '[Trace, State Example, Error MyError] r => Sem r ()
+```
+
+These effects can then be evaluated using an interpreter function which unrolls
+and potentially evaluates the effects of the `Sem` free monad. Some of these
+interpreters for tracing, state and error are similar to the evaluations for
+monad transformers but evaluate one layer of type-level list of the *effect
+stack*. 
+
+```haskell
+runError :: Sem (Error e ': r) a -> Sem r (Either e a)
+runState :: s -> Sem (State s ': r) a -> Sem r (s, a)
+runTraceList :: Sem (Trace ': r) a -> Sem r ([String], a)
+```
+
+The resulting `Sem` monad with a single field can then be lowered into a single
+resulting monad such as IO or Either.
+
+```haskell
+runFinal :: Monad m => Sem '[Final m] a -> m a
+embedToFinal :: (Member (Final m) r, Functor m) => Sem (Embed m ': r) a -> Sem r a
+```
+
+The library provides rich set of of effects that can replace many uses of monad
+transformers.
+
+* `Polysemy.Async` - Asynchronous computations
+* `Polysemy.AtomicState` - Atomic operations
+* `Polysemy.Error` - Error handling
+* `Polysemy.Fail` - Computations will can fail
+* `Polysemy.IO` - Monadic IO
+* `Polysemy.Input` - Input effects
+* `Polysemy.Output` - Output effects
+* `Polysemy.NonDet` - Non-determinism effect
+* `Polysemy.Reader` - Contextual state ala Reader monad
+* `Polysemy.Resource` - Resources with finalizers
+* `Polysemy.State` - Stateful effects
+* `Polysemy.Trace` - Tracing effect
+* `Polysemy.Writer` - Accumulation effect ala Writer monad
+
+For example for a simple stateful computation with only a single effect.
+
+```haskell
+data Example = Example { x :: Int, y :: Int }
+  deriving (Show)
+
+-- Stateful update to Example datastructure.
+example1 :: Member (State Example) r => Sem r ()
+example1 = do
+  modify $ \s -> s {x = 1}
+  pure ()
+
+runExample1 :: IO ()
+runExample1 = do
+  (result, _) <-
+    runFinal
+      $ embedToFinal @IO
+      $ runState (Example 0 0) example1
+  print result
+```
+
+And a more complex example which combines multiple effects:
+
+```haskell
+import Polysemy
+import Polysemy.Error
+import Polysemy.State
+import Polysemy.Trace
+
+data MyError = MyError
+  deriving (Show)
+
+-- Stateful update to Example datastructure, with errors and tracing.
+example2 :: Members '[Trace, State Example, Error MyError] r => Sem r ()
+example2 = do
+  modify $ \s -> s {x = 1, y = 2}
+  trace "foo"
+  throw MyError
+  pure ()
+
+runExample2 :: IO ()
+runExample2 = do
+  result <-
+    runFinal
+      $ embedToFinal @IO
+      $ errorToIOFinal @MyError
+      $ runState (Example 0 0)
+      $ traceToIO example2
+  print result
+```
+
+The use of free-monads is not entirely without cost, and there are experimental
+GHC plugins which can abstract away some of the overhead from the effect stack.
 
 Fused Effects
 -------------
@@ -12123,7 +12227,7 @@ This yields the result set:
     , title = "Practical PostgreSQL"
     , first_name = "John"
     , last_name = "Worsley"
-    }
+  `}
 , Book
     { id_ = 25908
     , title = "Franklin in the Dark"
@@ -12148,8 +12252,33 @@ This yields the result set:
 Sqlite
 ------
 
+The `sqlite-simple` library provides a binding to the `libsqlite3` which can
+interact with and query SQLite databases. It provides precisely the same
+interface as the Postgre library of similar namesakes. 
+
+```haskell
+query_ :: FromRow r => Connection -> Query -> IO [r]
+query :: (ToRow q, FromRow r) => Connection -> Query -> q -> IO [r]
+execute :: ToRow q => Connection -> Query -> q -> IO Int64
+execute_ :: Connection -> Query -> IO Int64
+```
+
+All datatypes can be serialised to and from result sets by defining `FromRow`
+and `ToRow` datatypes which map your custom datatypes to a RowParser which
+convets result sets, or a serialisers which maps custom to one of the following
+primitive sqlite types.
+
+* `SQLInteger`
+* `SQLFloat`
+* `SQLText`
+* `SQLBlob`
+* `SQLNull`
+
 ~~~~ {.haskell include="src/28-databases/sqlite.hs"}
 ~~~~
+
+For examples of serialising to datatype see the previous [Postgres] section as
+it has an identical interface.
 
 Redis
 -----

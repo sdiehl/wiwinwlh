@@ -6,46 +6,46 @@
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TypeOperators #-}
-{-# LANGUAGE TypeSynonymInstances #-}
 
 import Polysemy
 import Polysemy.Error
 import Polysemy.State
 import Polysemy.Trace
 
-data Example
-  = Example
-      { x :: Int,
-        y :: Int
-      }
+data Example = Example {x :: Int, y :: Int}
   deriving (Show)
 
-data MyFail = MyFail
+data MyError = MyError
   deriving (Show)
 
+-- Stateful update to Example datastructure.
 example1 :: Member (State Example) r => Sem r ()
 example1 = do
   modify $ \s -> s {x = 1}
-  modify $ \s -> s {y = 2}
   pure ()
 
-example2 :: Members '[Trace, State Example, Error MyFail] r => Sem r ()
+-- Stateful update to Example datastructure, with errors and tracing.
+example2 :: Members '[Trace, State Example, Error MyError] r => Sem r ()
 example2 = do
-  modify $ \s -> s {x = 1}
-  modify $ \s -> s {y = 2}
-  --throw MyFail
+  modify $ \s -> s {x = 1, y = 2}
   trace "foo"
+  throw MyError
   pure ()
 
-main :: IO ()
-main = do
-  (s, _) <- runFinal $ embedToFinal @IO $ runState (Example 0 0) example1
-  res <-
+runExample1 :: IO ()
+runExample1 = do
+  (result, _) <-
     runFinal
       $ embedToFinal @IO
-      $ errorToIOFinal @MyFail
+      $ runState (Example 0 0) example1
+  print result
+
+runExample2 :: IO ()
+runExample2 = do
+  result <-
+    runFinal
+      $ embedToFinal @IO
+      $ errorToIOFinal @MyError
       $ runState (Example 0 0)
       $ traceToIO example2
-  print s
-  print res
-  pure ()
+  print result
