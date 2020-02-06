@@ -12227,7 +12227,7 @@ This yields the result set:
     , title = "Practical PostgreSQL"
     , first_name = "John"
     , last_name = "Worsley"
-  `}
+   }
 , Book
     { id_ = 25908
     , title = "Franklin in the Dark"
@@ -12311,16 +12311,67 @@ simple key-value store wrapped around the Map type.
 Selda
 -----
 
-TODO
+Selda is a object relation mapper and database abstraction which provides a
+higher level interface for creating database schemas for multiple database
+backends, as well as a type-safe query interface which makes use of advanced
+type system features to ensure integrity of queries.
 
-~~~~ {.haskell include="src/28-databases/mini-selda/Main.hs"}
-~~~~
+Selda is very unique in that it uses the `OverloadedLabels` extension to query
+refer to database fields that map directly to fields of records. By deriving
+`Generic` and instantiating `SqlRow` via `DeriveAnyClass` we can create
+databases schemas automatically with generic deriving.
+
+```haskell
+data Employee = Employee
+  { id        :: ID Employee
+  , name      :: Text
+  , title     :: Text
+  , companyId :: ID Company
+  }
+  deriving (Generic, SqlRow)
+
+data Company = Company
+  { id :: ID Company
+  , name :: Text
+  }
+  deriving (Generic, SqlRow)
+
+instance SqlRow Employee
+instance SqlRow Company
+```
+
+The tables themselves can be named, annotated with metadata about constraints
+and foreign keys and assigned to a Haskell value.
+
+```haskell
+employees :: Table Employee
+employees = table "employees" [#id :- autoPrimary, #companyId :- foreignKey companies #id]
+
+companies :: Table Company
+companies = table "companies" [#id :- autoPrimary]
+```
+
+This table can then be generated and populated.
+
+```haskell
+main :: IO ()
+main = withSQLite "company.sqlite" $ do
+  createTable employees
+  createTable companies
+  -- Populate companies
+  insert_
+    companies
+    [Company (toId 0) "Dunder Mifflin Inc."]
+  -- Populate employees
+  insert_
+    employees
+    [ Employee (toId 0) "Michael Scott" "Director" (toId 0),
+      Employee (toId 1) "Dwight Schrute" "Regional Manager" (toId 0)
+    ]
+```
 
 This will generate the following Sqlite DDL to instantiate the tables directly
-from the types of the Haskell data strutures. Deriving `SqlRow` for the instance
-will create a bidirectional mapping from the database to the Haskell datatype
-allowing you to write queries which can map directly into Haskell types
-automatically using Generics.
+from the types of the Haskell data strutures.
 
 ```sql
 CREATE TABLEIF NOT EXISTS "companies" 
@@ -12337,6 +12388,30 @@ CREATE TABLEIF NOT EXISTS "employees"
    "companyId" integer NOT NULL, 
    CONSTRAINT "fk0_companyId" FOREIGN KEY ("companyId") REFERENCES "companies"("id" ) 
 );
+```
+
+Selda also provides an embedded query langauge for specifying type-safe queries
+by allowing you to add the overloaded labels to work with these values directly
+as SQL selectors.
+
+```haskell
+select :: Relational a => Table a -> Query s (Row s a)
+insert :: (MonadSelda m, Relational a) => Table a -> [a] -> m Int
+query :: (MonadSelda m, Result a) => Query (Backend m) a -> m [Res a]
+from :: (Typeable t, SqlType a) => Selector t a -> Query s (Row s t) -> Query s (Col s a)
+
+restrict :: Same s t => Col s Bool -> Query t ()
+order :: (Same s t, SqlType a) => Col s a -> Order -> Query t ()
+```
+
+An example `SELECT` SQL query:
+
+```haskell
+exampleSelect :: IO ([Employee], [Company])
+exampleSelect = withSQLite "company.sqlite" $
+  query $ do
+      employee <- select employees
+      restrict (employee ! #id .>= 1)
 ```
 
 <hr/>
