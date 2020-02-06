@@ -1,0 +1,8 @@
+digraph G {
+  Semigroup -> Monoid;
+  Functor -> Applicative;
+  Applicative -> Monad;
+  Applicative -> Alternative;
+  Functor -> Traversable;
+  Foldable -> Traversable;
+}

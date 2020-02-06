@@ -4843,6 +4843,25 @@ class (Ctx1 a, Ctx2 b) => MyClass a b where
 --        +------------------------ Typeclass Method
 ```
 
+Standard Hierarchy
+------------------
+
+In the course of writing Haskell there are seven core instances you will use and
+derive most frequently. Each of them are lawful classes with several equations
+associated with their methods.
+
+* `Semigroup`
+* `Monoid`
+* `Functor`
+* `Applicative`
+* `Monad`
+* `Foldable`
+* `Traversable`
+
+<div class="center">
+![](img/class.png)
+</div>
+
 Instance Search
 ---------------
 
