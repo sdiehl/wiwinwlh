@@ -645,6 +645,13 @@ if !impl(ghc >= 8.0)
   Build-Depends: fail >= 4.9 && <4.10
 ```
 
+Version bounds in cabal files can be managed automatically with a tool
+`cabal-bounds` which can automatically generate, update and format cabal files.
+
+```bash
+$ cabal-bounds update
+```
+
 See:
 
 * [Package Versioning Policy](https://pvp.haskell.org/)
@@ -3971,7 +3978,41 @@ than people who do web programming. We will use the following classifications:
 \csvautolongtable[respect all]{extensions.csv}
 ```
 
+The golden source of truth for language extensions is the official GHC user's
+guide which contains a plethora of information on the details of these
+extensions.
+
 See: [GHC Extension Reference](https://ghc.gitlab.haskell.org/ghc/doc/users_guide/lang.html)
+
+Extension Dependencies
+----------------------
+
+TODO
+
+Extension                    Implies
+-------------------------    ---------------------------------------
+TypeFamilyDependencies       TypeFamilies
+TypeInType                   PolyKinds DataKinds KindSignatures
+PolyKinds                    KindSignatures
+ScopedTypeVariables          ExplicitForAll
+RankNTypes                   ExplicitForAll
+ImpredicativeTypes           RankNTypes
+TemplateHaskell              TemplateHaskellQuotes
+Strict                       StrictData
+RebindableSyntax             NoImplicitPrelude
+TypeOperators                ExplicitNamespaces
+LiberalTypeSynonyms          ExplicitForAll
+ExistentialQuantification    ExplicitForAll
+GADTs                        MonoLocalBinds GADTSyntax
+DuplicateRecordFields        DisambiguateRecordFields
+RecordWildCards              DisambiguateRecordFields
+DeriveTraversable            DeriveFoldable DeriveFunctor
+MultiParamTypeClasses        ConstrainedClassMethods
+DerivingVia                  DerivingStrategies
+FunctionalDependencies       MultiParamTypeClasses
+FlexibleInstances            TypeSynonymInstances
+TypeFamilies                 MonoLocalBinds KindSignatures ExplicitNamespaces
+IncoherentInstances          OverlappingInstances
 
 The Benign
 ----------
@@ -4958,6 +4999,13 @@ This is used quite often in modern Haskell.
 
 FlexibleInstances
 -------------------
+
+Normally the head of a typeclass instance must contain only a type constructor
+applied to any number of type variables. There can be no nesting of other
+constructors or non-type variables in the head. The `FlexibleInstances`
+extension loosens this restriction to allow arbitrary nesting and non-type
+variables to be mentioned in the head definition. This extension also implicitly
+enables TypeSynonymInstances.
 
 TODO
 
