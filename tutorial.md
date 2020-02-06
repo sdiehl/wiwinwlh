@@ -4858,9 +4858,7 @@ associated with their methods.
 * `Foldable`
 * `Traversable`
 
-<div class="center">
-![](img/class.png)
-</div>
+![](img/class.png){ width=250px }
 
 Instance Search
 ---------------
@@ -9741,7 +9739,9 @@ class Fractional a => Floating a
 class (RealFrac a, Floating a) => RealFloat a
 ```
 
-![](img/numerics.png)
+<center>
+![](img/numerics.png){ width=250px }
+</center>
 
 Conversions between concrete numeric types ( from : left column, to : top row )
 is accomplished with several generic functions.
@@ -10198,7 +10198,7 @@ definition graph.
 
 So for example we can construct a simple graph:
 
-![](img/graph1.png)
+![](img/graph1.png){ width=100px }
 
 ```haskell
 ex1 :: [(String, String, [String])]
@@ -10220,7 +10220,7 @@ sc1 = scc' (fromList ex1)
 
 Or with two strongly connected subgraphs:
 
-![](img/graph2.png)
+![](img/graph2.png){ width=250px }
 
 ```haskell
 ex2 :: [(String, String, [String])]
@@ -10281,7 +10281,7 @@ x = G.insEdges edges gr
   nodes = zip [0,1 ..] [2,3,4,1]
 ```
 
-![](img/graphviz.png)
+![](img/graphviz.png){ width=100px }
 
 DList
 -----
@@ -10732,7 +10732,7 @@ fork :: Par () -> Par ()
 spawn :: NFData a => Par a -> Par (IVar a)
 ```
 
-![](img/par.png)
+![](img/par.png){ width=250px }
 
 ~~~~ {.haskell include="src/22-concurrency/par.hs"}
 ~~~~
