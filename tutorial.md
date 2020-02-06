@@ -4350,8 +4350,9 @@ EmptyCase
 ---------
 
 GHC normally requires at least one pattern branch in case statement this
-restriction can be relaxed with -XEmptyCase. The case statement then immediately
-yields a ``Non-exhaustive patterns in case`` if evaluated.
+restriction can be relaxed with `EmptyCase` langauge extension. The case
+statement then immediately yields a ``Non-exhaustive patterns in case`` if
+evaluated.
 
 ```
 test = case of
