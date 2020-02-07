@@ -4943,11 +4943,6 @@ newtype Example = Example Int
   deriving (Eq) via (Const Int Any)
 ```
 
-UndecidableSuperClasses
------------------------
-
-TODO
-
 Historical Extensions
 ---------------------
 
@@ -12682,7 +12677,30 @@ setting a compiler session from a cradle is shown bellow:
 Abstract Syntax Tree
 --------------------
 
-TODO
+GHC uses several syntax trees during it's compilation. These are defined in the
+following modules:
+
+* `HsExpr` - Syntax tree for the frontend of GHC compiler.
+* `StgSyn` - Syntax tree of STG intermediate representation
+* `Cmm` - Syntax tree for the CMM intermediate representation
+
+GHC's frontend source tree are grouped into datatypes for the following language
+constructs and use the naming convention:
+
+* `Binds` - Declarations of functions. For example the body of a class declaration or class instance.
+* `Decl` - Declarations of datatypes, types, newtypes, etc.
+* `Expr` - Expressions. For example, let statements, lambdas, if-blocks, do-blocks, etc.
+* `Lit` - Literals. For example, integers, characters, strings, etc.
+* `Module` - Modules including import declarations, exports and pragmas.
+* `Name` - Names that occur in other constructs. Such as modules names, constructors and variables.
+* `Pat` - Patterns that occur in case statements and binders.
+* `Type` - Type syntax that occurs in toplevel signatures and explicit annotations.
+
+Generally all AST in the frontend of the compiler is annotated with position
+information that is kept around to give better error reporting about the
+provenance of the specific problematic set of the syntax tree. This is done
+through a datatype `GenLocated` with attaches the position information `l` to
+element `e`.
 
 ```haskell
 data GenLocated l e = L l e
@@ -12691,7 +12709,64 @@ data GenLocated l e = L l e
 type Located = GenLocated SrcSpan
 ```
 
-* [HsExpr](https://hackage.haskell.org/package/ghc-8.6.5/docs/HsExpr.html#t:HsExpr)
+For example, the type of located source expressions is defined by the type:
+
+```haskell
+type LHsExpr p = Located (HsExpr p)
+data HsExpr p
+  = HsVar (XVar p) (Located (IdP p))	
+  | HsLam (XLam p) (MatchGroup p (LHsExpr p))	
+  | HsApp (XApp p) (LHsExpr p) (LHsExpr p)	
+  ...
+```
+
+The `HsSyn` AST is reused across multiple compiler passes.
+
+```haskell
+data GhcPass (c :: Pass)
+data Pass = Parsed | Renamed | Typechecked
+
+type GhcPs = GhcPass 'Parsed
+type GhcRn = GhcPass 'Renamed
+type GhcTc = GhcPass 'Typechecked
+```
+
+```haskell
+type family IdP p
+type instance IdP GhcPs = RdrName
+type instance IdP GhcRn = Name
+type instance IdP GhcTc = Id
+
+type LIdP p = Located (IdP p)
+```
+
+Individual elements of the syntax are defined by type families which a single
+parameter for the pass.
+
+```haskell
+type family XVar x
+type family XLam x
+type family XApp x
+```
+
+The type of `HsExpr` used in the *parser pass* can then be defined simply as
+`LHsExpr GhcPs` and from the *typechecker pass* `LHsExpr GhcTc`.
+
+**Names**
+
+GHC has an interesting zoo of names it uses internally for identifiers in the
+syntax tree. There are more than the following but these are the primary ones
+you will see most often:
+
+* `RdrName` - Names that come directly from the parser without metadata.
+* `OccName` - Names with metadata about the namespace the variable is in.
+* `Name` - A unique name introduced during the renamer pass with metadata about it's provenance. 
+* `Var` - A typed variable name with metadata about it's use sites.
+* `Id` - A term-level identifier. Type Synonym for Var. 
+* `TyVar` - A type-level identifier. Type Synonym for Var. 
+* `TcTyVar` - A type variable used in the typechecker. Type Synonym for Var. 
+
+See: [Trees That Grow](https://ghc.haskell.org/trac/ghc/wiki/ImplementingTreesThatGrow)
 
 Parser
 ------
