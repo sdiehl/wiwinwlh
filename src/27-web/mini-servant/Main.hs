@@ -27,7 +27,6 @@ import Servant.API
     FormUrlEncoded,
     Get,
     Post,
-    --QueryParam',
     ReqBody,
   )
 import Servant.HTML.Blaze (HTML)

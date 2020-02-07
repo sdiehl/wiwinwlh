@@ -12110,7 +12110,45 @@ A collection of useful related resources can be found on the Scotty wiki:
 Servant
 -------
 
-TODO
+```haskell
+data (path :: k) :> (a :: *) 
+data a :<|> b 
+data ReqBody' (mods :: [*]) (contentTypes :: [*]) (a :: *)
+type Post = Verb POST 200
+type Get  = Verb GET 200
+data StdMethod = GET | POST | HEAD | PUT | DELETE | TRACE | CONNECT | OPTIONS | PATCH
+```
+
+```haskell
+type Application 
+  = Request 
+  -> (Response -> IO ResponseReceived)
+  -> IO ResponseReceived
+type Middleware = Application -> Application
+newtype Handler a = Handler { runHandler' :: ExceptT ServerError IO a }
+serve :: HasServer api '[] => Proxy api -> Server api -> Application
+run :: Port -> Application -> IO ()
+```
+
+The simplest example is simply.
+
+```haskell
+type AppAPI = "api" :> "hello" :> Get ‘[JSON] String
+
+appAPI :: Proxy AppAPI
+appAPI = Proxy :: Proxy AppAPI
+
+helloHandler :: Handler String
+helloHandler = return "Hello World!"
+
+apiHandler :: Server AppAPI
+apiHandler = helloHandler
+
+runServer :: IO ()
+runServer = do
+  let port = 8000
+  run port (serve appAPI apiHandler)
+```
 
 ~~~~ {.haskell include="src/27-web/mini-servant/Main.hs"}
 ~~~~
