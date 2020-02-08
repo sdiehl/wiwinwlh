@@ -880,10 +880,8 @@ Flags
 GHC has a wide variety of flags that can be passed to configure different
 behavior in the compiler.
 
-Enabling [GHC](https://www.haskell.org/ghc) [compiler
-flags](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/flag-reference.html)
-grants the user more control in detecting common code errors. The most
-frequently used flags are:
+Enabling GHC compiler flags grants the user more control in detecting common
+code errors. The most frequently used flags are:
 
 Flag                                 Description
 ----                                 ------------
@@ -919,8 +917,7 @@ project's ``.cabal`` file. For example:
     -fwarn-incomplete-patterns
 ```
 
-The flags described above are simply the most useful. See the [official
-reference](https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/flag-reference.html)
+The flags described above are simply the most useful. See the official reference
 for the complete set of GHC's supported flags.
 
 For information on debugging GHC internals, see the [commentary](#block-diagram)
@@ -1022,9 +1019,8 @@ See:
 GHCi
 ----
 
-[GHCi](https://wiki.haskell.org/GHC/GHCi) is the interactive shell for the
-[GHC](https://www.haskell.org/GHC) compiler. GHCi is where we will spend
-most of our time in every day development.
+[GHCi](https://wiki.haskell.org/GHC/GHCi) is the interactive shell for the GHC
+compiler. GHCi is where we will spend most of our time in every day development.
 
 Command      Shortcut   Action
 -----------  ---------  --------------------------
@@ -5464,9 +5460,6 @@ data in constructors within this module are in head normal form by construction.
 However there are some subtle points to this that are better explained in the
 language guide.
 
-* [Strict Extensions](https://downloads.haskell.org/~ghc/master/users-guide//glasgow_exts.html?highlight=typefamilydependencies#strict-by-default-pattern-bindings)
-
-
 Deepseq
 -------
 
@@ -7124,8 +7117,6 @@ The free theorem of fmap:
 forall f g. fmap f . fmap g = fmap (f . g)
 ```
 
-See: [Theorems for Free](http://www-ps.iai.uni-bonn.de/cgi-bin/free-theorems-webui.cgi?)
-
 Type Systems
 ------------
 
@@ -7576,9 +7567,6 @@ data Token a
 
 The [tagged](http://hackage.haskell.org/package/tagged) library defines a similar ``Tagged`` newtype wrapper.
 
-See: [Fun with Phantom Types](http://www.researchgate.net/publication/228707929_Fun_with_phantom_types/file/9c960525654760c169.pdf)
-
-
 Typelevel Operations
 --------------------
 
@@ -7731,8 +7719,6 @@ Tree a = μ a. 1 + a * (List a)
        = 1 + a^2 + a^4 + a^6 + a^8 ...
 ```
 
-See: [Species and Functors and Types, Oh My!](http://dept.cs.williams.edu/~byorgey/pub/species-pearl.pdf)
-
 F-Algebras
 -----------
 
@@ -7810,8 +7796,6 @@ compose into efficient composite transformations.
 compose :: Functor f => (f (Fix f) -> c) -> (a -> Fix f) -> a -> c
 compose f g = f . unFix . g
 ```
-
-* [Understanding F-Algebras](https://www.fpcomplete.com/user/bartosz/understanding-algebras)
 
 recursion-schemes
 -----------------
@@ -13216,7 +13200,6 @@ f =
 See:
 
 * [Core Spec](https://github.com/ghc/ghc/blob/master/docs/core-spec/core-spec.pdf)
-* [Core By Example](http://alpmestan.com/2013/06/27/ghc-core-by-example-episode-1/)
 * [CoreSynType](https://ghc.haskell.org/trac/ghc/wiki/Commentary/Compiler/CoreSynType)
 
 Inliner
@@ -14487,12 +14470,6 @@ through GHC into an object and then using a special FFI invocation.
 ~~~~ {.haskell include="src/29-ghc/cmm_include.hs"}
 ~~~~
 
-See:
-
-* [CmmType](http://hackage.haskell.org/trac/ghc/wiki/Commentary/Compiler/CmmType)
-* [MiscClosures](https://github.com/ghc/ghc/blob/master/includes/stg/MiscClosures.h)
-* [StgCmmArgRep](https://github.com/ghc/ghc/blob/master/compiler/codeGen/StgCmmArgRep.hs)
-
 Cmm Runtime:
 
 * [Apply.cmm](https://github.com/ghc/ghc/blob/master/rts/Apply.cmm)
@@ -14653,12 +14630,12 @@ of the runtime logic is stored across the `includes`, `utils` and `rts` folders.
 ```haskell
 ghc-8.8.2
 ├── includes
-│   ├── rts
-│   └── stg
+│   ├── rts               # Public interface for RTS
+│   └── stg               # Definitions for STG langauge
 ├── utils
-│   ├── genapply
-│   └── genprimopcode
-│   └── deriveConstants
+│   ├── genapply          # Generates Cmm closure application boilerplate
+│   └── genprimopcode     # Generates Primop builtin operations for GHC
+│   └── deriveConstants   # Machine specific information about register and sizes
 └── rts
     ├── hooks
     ├── linker
@@ -14697,8 +14674,8 @@ include/stg
 └── Types.h               # C Declarations of types used in STG
 ```
 
-The storage format definitions define the memory layout of closures, InfoTables,
-sparks, etc as they are represented on the heap.
+The `storage` folder contains format definitions define that define the memory
+layout of closures, InfoTables, sparks, etc as they are represented on the heap.
 
 ```bash
 include/rts/storage
