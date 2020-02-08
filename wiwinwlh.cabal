@@ -1,17 +1,18 @@
-cabal-version: >=1.10
-name: wiwinwlh
-version: 0.1.0.0
-license: MIT
-license-file: LICENSE
-maintainer: stephen.m.diehl@gmail.com
-author: Stephen Diehl
-build-type: Simple
-extra-source-files:
-    README.md
+cabal-version:      >=1.10
+name:               wiwinwlh
+version:            0.1.0.0
+license:            MIT
+license-file:       LICENSE
+maintainer:         stephen.m.diehl@gmail.com
+author:             Stephen Diehl
+build-type:         Simple
+extra-source-files: README.md
 
-library
-    default-language: Haskell2010
-    build-depends:
-        base >=4.12.0.0 && <4.13,
-        containers >=0.6.0.1 && <0.7,
-        pandoc >=2.9.1 && <2.10
+executable includes
+  main-is:          includes.hs
+  default-language: Haskell2010
+  build-depends:
+      base        >=4.12.0.0 && <4.13
+    , containers  >=0.6.0.1  && <0.7
+    , pandoc      >=2.9.1    && <2.10
+    , text        >=1.2.3.1  && <1.3

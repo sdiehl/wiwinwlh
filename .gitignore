@@ -14,3 +14,4 @@ includes
 .stack-work
 dist-newstyle
 resources/*.eps
+.brokdb

@@ -41,7 +41,6 @@ includes: includes.hs
 	./includes < $< | $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) -o $@
 
 links:
-	cabal install brok
 	brok tutorial.md
 
 clean:

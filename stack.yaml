@@ -1,5 +1,6 @@
 resolver: lts-14.20
 allow-newer: true
+pvp-bounds: both
 packages:
 - '.'
 extra-deps:
