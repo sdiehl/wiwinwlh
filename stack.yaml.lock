@@ -3,10 +3,87 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages: []
+packages:
+- completed:
+    hackage: pandoc-2.9.1.1@sha256:1dc5df8c32e1058fec2a2f3638efe0f41f81ab86b760b77eafbb4b09ccf312ee,35645
+    pantry-tree:
+      size: 86314
+      sha256: 262fa868d8a589e1850ea46d994ca7d77d75dc723f8ae394bcdb4d9279820104
+  original:
+    hackage: pandoc-2.9.1.1
+- completed:
+    hackage: HsYAML-0.2.1.0@sha256:e4677daeba57f7a1e9a709a1f3022fe937336c91513e893166bd1f023f530d68,5311
+    pantry-tree:
+      size: 1340
+      sha256: 21f61bf9cad31674126b106071dd9b852e408796aeffc90eec1792f784107eff
+  original:
+    hackage: HsYAML-0.2.1.0
+- completed:
+    hackage: doclayout-0.2.0.1@sha256:0410e40c4fa8e299b4f5fa03d378111b9d0effdf59134c95882a160637887ba8,2063
+    pantry-tree:
+      size: 424
+      sha256: d43cc75d1a016cb5c5029ec1e00306192631a344f1453c2c0f25e9370452a8b4
+  original:
+    hackage: doclayout-0.2.0.1
+- completed:
+    hackage: doctemplates-0.8.1@sha256:be34c3210d9ebbba1c10100e30d8c3ba3b6c34653ec2ed15f09e5d05055aa37d,3111
+    pantry-tree:
+      size: 2303
+      sha256: 9d4d8e7a85166ffd951b02f87be540607b55084c04730932346072329adf4913
+  original:
+    hackage: doctemplates-0.8.1
+- completed:
+    hackage: emojis-0.1@sha256:3cd86b552ad71c118a7822128c97054b6cf22bc4ff5b8f7e3eb0b356202aeecd,1907
+    pantry-tree:
+      size: 426
+      sha256: 0af0e5f0ba2af10a2eda8b96b41ff77d2229d90682c1220723a13b9582c4a41b
+  original:
+    hackage: emojis-0.1
+- completed:
+    hackage: haddock-library-1.8.0@sha256:293544a80c3d817a021fec69c430e808914a9d86db0c6bd6e96a386607a66627,3850
+    pantry-tree:
+      size: 3397
+      sha256: 2fb23fd09565829807a0368011cd57ea13e9a79fa4c65a47810aaf9a528427c2
+  original:
+    hackage: haddock-library-1.8.0
+- completed:
+    hackage: jira-wiki-markup-1.0.0@sha256:24484791e650c80c452348e2523decc9a410aa965f79c0734c1e257f93b25cd1,3576
+    pantry-tree:
+      size: 1178
+      sha256: 60c39181a59a497be6c754e1cbf03461d9c4950bd4c523ca1efe1bd11e6f6b4f
+  original:
+    hackage: jira-wiki-markup-1.0.0
+- completed:
+    hackage: pandoc-types-1.20@sha256:8393b1a73b8a6a1f3feaeb3a6592c176461082c3e4d897f1b316b1a58dd84c39,3999
+    pantry-tree:
+      size: 855
+      sha256: cdaa66d381a21406434e7a733c9b9291a3bc44b623e7a9f97ef335283770f3fa
+  original:
+    hackage: pandoc-types-1.20
+- completed:
+    hackage: skylighting-0.8.3.2@sha256:8b8573cd8820129a4c00675f52606f0f4c04c65d2e631e9e0e3d793cefdb534c,9730
+    pantry-tree:
+      size: 10380
+      sha256: cfe063d17444f6e12a8884cab7b2ec76afba9925be04155af605931793eac1f3
+  original:
+    hackage: skylighting-0.8.3.2
+- completed:
+    hackage: skylighting-core-0.8.3.2@sha256:1f7cb6c8bb9299a83c50ae1f4b00d3808e27e4401807c530c8c3df956ad26d23,8058
+    pantry-tree:
+      size: 13279
+      sha256: 1cc0d70bd3f066bf8382206721a1e3854b78fbd067ece3d76ddbfc1c4e73fd2b
+  original:
+    hackage: skylighting-core-0.8.3.2
+- completed:
+    hackage: texmath-0.12@sha256:148a7cf41aaba411a3a7b8e6995bcf7a29fc499af64b2320eb573fbd1c15d209,6565
+    pantry-tree:
+      size: 273835
+      sha256: b2d6e699481f7b7aa784ca357b9dc28d0724bed46ab6a64a37250467341cd69f
+  original:
+    hackage: texmath-0.12
 snapshots:
 - completed:
-    size: 504512
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/11/0.yaml
-    sha256: 2587f446431d8c77bcb963ca8ff0a839a7b7f77042b5a98901b6b47c61fdd8f8
-  original: lts-11.0
+    size: 524154
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/14/20.yaml
+    sha256: 2f5099f69ddb6abfe64400fe1e6a604e8e628f55e6837211cd70a81eb0a8fa4d
+  original: lts-14.20

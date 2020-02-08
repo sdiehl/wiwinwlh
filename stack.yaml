@@ -1,6 +1,18 @@
-resolver: lts-11.0
+resolver: lts-14.20
+allow-newer: true
 packages:
 - '.'
-extra-deps: []
+extra-deps:
+- pandoc-2.9.1.1
+- HsYAML-0.2.1.0
+- doclayout-0.2.0.1
+- doctemplates-0.8.1
+- emojis-0.1
+- haddock-library-1.8.0
+- jira-wiki-markup-1.0.0
+- pandoc-types-1.20
+- skylighting-0.8.3.2
+- skylighting-core-0.8.3.2
+- texmath-0.12
 flags: {}
 extra-package-dbs: []

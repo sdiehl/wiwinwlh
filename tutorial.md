@@ -14602,11 +14602,12 @@ trusted: safe-inferred
 require own pkg trusted: False
 ```
 
-Generated Code
---------------
+Utilities
+---------
 
 * **genprimop**
 * **genapply**
+* **deriveConstants**
 
 compiler/prelude/primops.txt.pp
 
@@ -14635,128 +14636,150 @@ primop   IntSubOp    "-#"    Dyadic   Int# -> Int# -> Int#
 Runtime System
 ---------------
 
-TODO
-
 The GHC runtime system is a massive part of the compiler. It comes in at around
 70,000 lines of C and Cmm. There is simply no way to explain most of what occurs
-in the runtime succinctly. There is more than two decades worth of work that has
-gone into making this system and it is quite advanced. Instead lets look at the
-basic structure and some core modules.
+in the runtime succinctly. There is more than three decades worth of work that
+has gone into making this system and it is quite advanced. Instead lets look at
+the basic structure and some core modules.
 
-* **Execution**
-* **Storage**
-* **Scheduler**
-* **Garbage Collector**
-* **Profiling Tools**
+The golden source of truth for all GHC internals if the GHC Wiki Commentary
+written by the compiler maintainers:
 
-The toplevel interface is exposed through six key header files.
+https://gitlab.haskell.org/ghc/ghc/wikis/commentary
+
+Inside the GHC source tree the runtime system spans multiple modules. The bulk
+of the runtime logic is stored across the `includes`, `utils` and `rts` folders.
+
+```haskell
+ghc-8.8.2
+├── includes
+│   ├── rts
+│   └── stg
+├── utils
+│   ├── genapply
+│   └── genprimopcode
+│   └── deriveConstants
+└── rts
+    ├── hooks
+    ├── linker
+    ├── posix
+    ├── sm
+    └── win32
+```
+
+The toplevel for the runtime interface is exposed through six key header files
+found in the `/includes` folder.
 
 ```bash
-rts
-├── Cmm.h
-├── HsFFI.h
-├── MachDeps.h
-├── Rts.h
-├── RtsAPI.h
-└── STG.h
+includes
+├── Cmm.h             # Defines Cmm types and macros
+├── HsFFI.h           # Defines mapping between STG types and Haskell types, and FFI functions
+├── MachDeps.h        # Defines types of of machine integer types and sizes
+├── Rts.h             # Declares everything that the GHC RTS exposes externally
+├── RtsAPI.h          # API for invoking Haskell functions via the RTS
+└── STG.h             # Toplevel import for all STG types, control flow operations and memory layout
 ```
+
+The `stg` folder contains many of the macros used in the evaluation of STG as
+well as the memory layout and mappings from to STG to machine types.
 
 ```bash
 include/stg
-├── DLL.h
-├── HaskellMachRegs.h
-├── MachRegs.h
-├── MiscClosures.h
-├── Prim.h
-├── Regs.h
-├── RtsMachRegs.h
-├── SMP.h
-├── Ticky.h
-└── Types.h
+├── DLL.h                 # Support for Windows DLLs
+├── HaskellMachRegs.h     # Registers used in STG code
+├── MachRegs.h            # Registers used in STG code
+├── MiscClosures.h        # Type definitions for layout of STG closures
+├── Prim.h                # Declarations of primops
+├── Regs.h                # Registers for STG virtual machine
+├── RtsMachRegs.h         # Registers for STG virtual machine
+├── SMP.h                 # Declarations for multicore memory operations
+├── Ticky.h               # Profiling tools
+└── Types.h               # C Declarations of types used in STG
 ```
+
+The storage format definitions define the memory layout of closures, InfoTables,
+sparks, etc as they are represented on the heap.
 
 ```bash
 include/rts/storage
-├── Block.h
-├── ClosureMacros.h
-├── Closures.h
-├── ClosureTypes.h
-├── FunTypes.h
-├── GC.h
-├── Heap.h
-├── InfoTables.h
-├── MBlock.h
-└── TSO.h
+├── Block.h               # Block structure for the storage manager
+├── ClosureMacros.h       # Macros for manipulating info tables of closures
+├── Closures.h            # Type definitions for closures
+├── ClosureTypes.h        # Definitions for closure metadata (arity, etc)
+├── FunTypes.h            # Definitions of function argument types
+├── GC.h                  # Type definitions for GC blocks, nursery, generations
+├── Heap.h                # Introsepction for GHC heap
+├── InfoTables.h          # Type definitinos for function info tables
+├── MBlock.h              # Introspection for determining if points are on the GHC heap
+└── TSO.h                 # Thread state objects
 ```
 
 ```bash
 include/rts
-├── Adjustor.h
-├── BlockSignals.h
-├── Bytecodes.h
-├── Config.h
-├── Constants.h
-├── EventLogFormat.h
-├── EventLogWriter.h
-├── FileLock.h
-├── Flags.h
-├── GetTime.h
-├── Globals.h
-├── Hpc.h
-├── IOManager.h
-├── Libdw.h
-├── LibdwPool.h
-├── Linker.h
-├── Main.h
-├── Messages.h
-├── OSThreads.h
-├── Parallel.h
-├── PrimFloat.h
-├── Profiling.h
-├── Signals.h
-├── SpinLock.h
-├── StableName.h
-├── StablePtr.h
-├── StaticPtrTable.h
-├── Threads.h
-├── Ticky.h
-├── Time.h
-├── Timer.h
-├── TTY.h
-├── Types.h
-└── Utils.h
+├── Adjustor.h            # Dynamically allocated code for Haskell closures to be viewed as C function pointers.
+├── BlockSignals.h        # RTS signal handling
+├── Bytecodes.h           # Bytecode definitions for GHCi
+├── Config.h              # Runtime system settings (debug, profiling)
+├── Constants.h           # Global constants
+├── EventLogFormat.h      # Event log for profiling
+├── EventLogWriter.h      # Event log for profiling
+├── FileLock.h            # Filesystem file locking
+├── Flags.h               # +RTS flag settings
+├── GetTime.h             # System clock timers
+├── Globals.h             # Data.Typeale and GHC.Conc storage utilities
+├── Hpc.h                 # Haskell program coverage hooks
+├── IOManager.h           # IO event loop
+├── Libdw.h               # DWARF debugging
+├── LibdwPool.h           # DWARF debugging
+├── Linker.h              # Object linker
+├── Main.h                # Defines hs_main entry point invoked by Main.main
+├── Messages.h            # Runtime error logging
+├── OSThreads.h           # Abstraction over operating system thread libraries
+├── Parallel.h            # Defines newSpark primitive
+├── PrimFloat.h           # Primitive floating point operations
+├── Profiling.h           # Cost center profiling
+├── Signals.h             # RTS signal handling
+├── SpinLock.h            # Abstraction over system spin locks
+├── StableName.h          # Interface for GHC.StableName objects
+├── StablePtr.h           # Interface for GHC.Stable pointers which arent collected by GC
+├── StaticPtrTable.h      # Declarations for Static Pointer Table
+├── Threads.h             # Interface for thread scheduler
+├── Ticky.h               # Profiling counter types
+├── Time.h                # Time resolution and datatype settings for the runtime
+├── Timer.h               # Timer for profiling
+├── TTY.h                 # POSIX tty interface
+├── Types.h               # RTS types, defines StgClosure StgInfoTable and StgTSO
+└── Utils.h               # Misc utilities
 ```
+
+The runtime system folder itself contains several modules which are written in
+Cmm.
 
 ```bash
 rts
-├── Apply.cmm
-├── Compact.cmm
-├── Exception.cmm
-├── HeapStackCheck.cmm
-├── PrimOps.cmm
-├── StgMiscClosures.cmm
-├── StgStartup.cmm
-├── StgStdThunks.cmm
-└── Updates.cmm
+├── Apply.cmm              # Application of closures
+├── Compact.cmm            # Compact regions
+├── Exception.cmm          # Async exception primitives
+├── HeapStackCheck.cmm     # Heap and Stack failure checks
+├── PrimOps.cmm            # Array, MVar, TVar, STM primitives
+├── StgMiscClosures.cmm    # Entry code for closure types
+├── StgStartup.cmm         # Code for starting, stopping and restarting threads
+├── StgStdThunks.cmm       # Introspection and field selection of thunks
+└── Updates.cmm            # Code up to update thunks, BlackHole handling.
 ```
 
 ```bash
 rts/cm
-├── BlockAlloc.c
-├── CNF.c
-├── Compact.c
-├── Evac.c
-├── Evac_thr.c
-├── GCAux.c
-├── GC.c
-├── GCUtils.c
-├── MarkWeak.c
-├── MBlock.c
-├── Sanity.c
-├── Scav.c
-├── Scav_thr.c
-├── Storage.c
-└── Sweep.c
+├── BlockAlloc.c           # GC block allocator
+├── CNF.c                  # Compact normal forms, non-GCd structures
+├── Compact.c              # Compacting garbage collector
+├── Evac.c                 # Generational garbage collector: 
+├── GC.c                   # Generational garbage collector
+├── MBlock.c               # Architecture-dependent functions for allocations
+├── Sanity.c               # Sanity checking for heap and stack
+├── Scav.c                 # Scavenger functions for generational GC
+├── Storage.c              # GC storage manager
+└── Sweep.c                # Mark and sweep algorithm for block allocator
 ```
 
 The source for the whole runtime contains 50 or so modules.
