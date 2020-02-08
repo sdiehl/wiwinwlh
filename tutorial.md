@@ -1016,11 +1016,11 @@ See:
 * [Stackage](https://www.stackage.org/)
 * [Stackage FAQ](https://github.com/fpco/lts-haskell#readme)
 
-GHCi
+GHCI
 ----
 
-[GHCi](https://wiki.haskell.org/GHC/GHCi) is the interactive shell for the GHC
-compiler. GHCi is where we will spend most of our time in every day development.
+GHCI is the interactive shell for the GHC compiler. GHCi is where we will spend
+most of our time in every day development.
 
 Command      Shortcut   Action
 -----------  ---------  --------------------------
@@ -7083,9 +7083,28 @@ catch a handler = control $ \runInIO ->
 Quantification
 ==============
 
-TODO
+In logic a predicate is a statement about a subject. For instance the statement:
+Socrates is a man, can be written as:
 
-Socrates is a man, all men are mortal.
+```text
+Man(Socrates)
+```
+
+... where Socrates is the subject. A predicate assigned to a variable Man(x) has
+a truth value if the predicate holds for the subject. The domain of a variable
+is the set of all variables that may be assigned to the variable. A quantifier
+turns predicates into propositions by assigning values to all variables. For
+example the statement: All men are mortal. This is an example of a universal
+quantifier which describe a predicate that holds forall inhabitants of the
+domain of variables.
+
+```text
+Forall x. If Man(x) then Mortal(x)
+```
+
+The truth value that that Socrates is mortal can be derived from above relation.
+Programming with quantifiers in Haskell follows this same kind of logical
+convention except we will be working with types and constraints on types.
 
 Universal Quantification
 ------------------------
