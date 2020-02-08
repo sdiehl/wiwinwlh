@@ -1690,9 +1690,18 @@ queenDiamonds :: Card
 queenDiamonds = Card { suit = Diamonds, color = Red, value = Queen }
 ```
 
+The problem with definition of this datatype is that it admits several values
+which are malformed. For instance it is possible to instantiate a `Card` with a
+suit `Hearts` but with color `Black` which is an invalid value. The convention
+for preventing these kind of values in Haskell is to limit the export of
+constructors in a module and only provide a limit set of functions which the
+module exports, which can enforce these constraints. These are **smart
+constructors** and an extremely common pattern in Haskell library design. For
+example we can export functions for building up specific suit cards that enforce
+the color invariant.
 
 ```haskell
-module Cards (diamond, spade, heart, club) where
+module Cards (Card, diamond, spade, heart, club) where
 
 diamond :: Value -> Card
 diamond = Card Diamonds Red
