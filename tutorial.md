@@ -1690,6 +1690,23 @@ queenDiamonds :: Card
 queenDiamonds = Card { suit = Diamonds, color = Red, value = Queen }
 ```
 
+
+```haskell
+module Cards (diamond, spade, heart, club) where
+
+diamond :: Value -> Card
+diamond = Card Diamonds Red
+
+spade :: Value -> Card
+spade = Card Spades Black
+
+heart :: Value -> Card
+heart = Card Hearts Red
+
+club :: Value -> Card
+club = Card Clubs Black
+```
+
 TODO
 
 Recursive types
