@@ -14828,9 +14828,11 @@ rts/sm
 ├── BlockAlloc.c           # GC block allocator
 ├── CNF.c                  # Compact normal forms, non-GCd structures
 ├── Compact.c              # Compacting garbage collector
-├── Evac.c                 # Generational garbage collector: 
+├── Evac.c                 # Generational garbage collector:
 ├── GC.c                   # Generational garbage collector
 ├── MBlock.c               # Architecture-dependent functions for allocations
+├── NonMoving.c            # Low-latency garbage collector
+├── NonMovingMark.c        # Low-latency garbage collector mark algorithm
 ├── Sanity.c               # Sanity checking for heap and stack
 ├── Scav.c                 # Scavenger functions for generational GC
 ├── Storage.c              # GC storage manager
@@ -14867,6 +14869,36 @@ rts
 ├── TopHandler.c                # RTS main thread handler
 ├── Weak.c                      # Handling of weak pointers and finalisation logic
 └── WSDeque.c                   # Work-stealing deque data structure for parallel runtime
+```
+
+The runtime system itself also has three different modes/ways of operation.
+
+* *Vanilla* - Runtime without additional settings. Single threaded.
+* *Threaded* - Runtime linked using the `-threaded` option.
+* *Profiling* - Runtime linked using the `-prof` option.
+
+The specific flags can be checked by passing `+RTS --info` to a compiled binary.
+
+```haskell
+ [("GHC RTS", "YES")
+ ,("GHC version", "8.6.5")
+ ,("RTS way", "rts_v")
+ ,("Build platform", "x86_64-unknown-linux")
+ ,("Build architecture", "x86_64")
+ ,("Build OS", "linux")
+ ,("Build vendor", "unknown")
+ ,("Host platform", "x86_64-unknown-linux")
+ ,("Host architecture", "x86_64")
+ ,("Host OS", "linux")
+ ,("Host vendor", "unknown")
+ ,("Target platform", "x86_64-unknown-linux")
+ ,("Target architecture", "x86_64")
+ ,("Target OS", "linux")
+ ,("Target vendor", "unknown")
+ ,("Word size", "64")
+ ,("Compiler unregisterised", "NO")
+ ,("Tables next to code", "YES")
+ ]
 ```
 
 <hr/>
