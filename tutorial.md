@@ -4161,7 +4161,9 @@ See: [GHC Extension Reference](https://ghc.gitlab.haskell.org/ghc/doc/users_guid
 Extension Dependencies
 ----------------------
 
-TODO
+Some language extensions will implicitly enable other language extensions for
+their operation. The table below shows the dependencies between various
+extensions and which sets are implied.
 
 Extension                    Implies
 -------------------------    ---------------------------------------
@@ -12045,21 +12047,36 @@ Template Haskell. There is a excellent documentation and a book on building real
 world applications. This style of metaprogramming to build applications will
 either appeal to you or it won't.
 
-**Scotty**
-
-TODO
-
-See: [Scotty]
-
 **Servant**
 
-TODO
+Servant is the newest of the standard Haskell web frameworks. It emerged after
+GHC 8.0 and incorporates many modern langauge extensions. It is based around the
+key idea of having a type-safe routing system in which many aspects of the
+request/response cycle of the server are expressed at the type-level. This
+allows many common errors found in web applications to be prevented. Servant
+also has very advanced documentation generation capability and can automatically
+generate API endpoint documentation from the type signatures of an application.
+Servant has a reputation for being a bit more challenging to learn but is quite
+powerful and has an wide user-base in the industrial Haskell community.
 
 See: [Servant]
 
+**Scotty**
+
+Scotty is a minimal web framework that builds on top of the Warp web server. It
+is based on a simple routing model and that makes standing up simple REST
+API services quite simple. It's design is modeled after the Flask and Sinatra
+models found in Python and Ruby.
+
+See: [Scotty]
+
 **Snap**
 
-TODO
+Snap is a small Haskell web framework which was developed heavily in the early
+2000s. It is based on a very well-tested core and has a modular framework in
+which "snaplets" can extend the base server. Much of the Haskell.org
+infrastructure of packages and developmenet runs on top of Snap web
+applications.
 
 HTTP
 ----
@@ -12190,6 +12207,8 @@ A collection of useful related resources can be found on the Scotty wiki:
 
 Servant
 -------
+
+TODO
 
 ```haskell
 data (path :: k) :> (a :: *) 
