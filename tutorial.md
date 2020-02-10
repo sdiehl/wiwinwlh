@@ -8,35 +8,37 @@ Basics
 What is Haskell?
 ----------------
 
-At it's heart Haskell is a lazy, functional, statically-typed programming
+At its heart Haskell is a lazy, functional, statically-typed programming
 language with advanced type system features such as higher-rank, higher-kinded
 parametric polymorphism, monadic effects, generalized algebraic data types,
-ad-hoc polymorphism through type classes, associated type families, and more.
-Haskell is an advanced programming language that pushes the frontiers of
-programming language design more so than any other general purpose language
-while still remaining practical for everyday use.
+ad-hoc polymorphism through type classes, associated type families, and more. As
+a programming language, Haskell pushes the frontiers of programming language
+design more so than any other general purpose language while still remaining
+practical for everyday use.
 
-Haskell is a singular language in that is remains an organic community effort
-that is driven from the userbase instead of by corporate influences. While there
-are some Haskell companies and consultancies, most are fairly small and none
-have an outsized influence on the development of the language. This is stark
-contrast to ecosystems like Java and Go where Oracle and Google dominate all
-development. Haskell is also driven by a synthesis between multiple disciplines
-of academic computer science and industrial users who both contribute to the
-language ecosystem.
+Beyond language features, Haskell remains an organic, community-driven effort,
+run by its userbase instead of by corporate influences. While there are some
+Haskell companies and consultancies, most are fairly small and none have an
+outsized influence on the development of the language. This is in stark contrast
+to ecosystems like Java and Go where Oracle and Google dominate all development.
+In fact, the Haskell community is a synthesis between multiple disciplines of
+academic computer science and industrial users from large and small firms, all
+of whom contribute back to the language ecosystem.
 
-Originally Haskell was designed as an ML dialect language that grew out of an
-older language Miranda. The GHC committee was formed in the 90s to pursue
-building a research vehicle for lazy programming languages. This was a
-particularly in-vogue research topic that attracted some very talented
-people who eventually laid the foundation for modern Haskell.
+Originally, Haskell was borne out of academic research. Designed as an ML
+dialect, it was initially inspired by an older language called Miranda. In the
+early 90s, a group of academics formed the GHC committee to pursue building a
+research vehicle for lazy programming languages as a replacement for Miranda.
+This was a particularly in-vogue research topic at the time and as a result the
+committee attracted various talented individuals who who initiated the language
+and ultimately laid the foundation for modern Haskell.
 
-Throughout the last 30 years Haskell has grown into a very mature compiler with
-a fledgling ecosystem that is constantly reinventing itself and looking to
-further a set of research goals that define the community. Although laziness was
-originally the major research goal, this has largely become a quirky artifact
-that most users of the language are generally uninterested in.  In modern times
-the major themes of Haskell community are:
+Over the last 30 years Haskell has grown into a mature compiler with a fledgling
+ecosystem that is constantly reinventing itself and looking to further a set of
+research goals that define the community. Although laziness was originally the
+major research goal, this has largely become a quirky artifact that most users
+of the language are generally uninterested in. In modern times the major themes
+of Haskell community are:
 
 * A vehicle for type system research
 * Experimentation in the design space of typed effect systems
@@ -48,12 +50,14 @@ the major themes of Haskell community are:
 * Efficient functional compiler design
 * Alternative models of parallel and concurrent programming
 
-Although these are the major research goals, Haskell is a fully general purpose
-language and has been used in everything from cryptoanalysis for the defense
-sector to driving firmware in garbage trucks and everything in-between. Haskell
-has a thriving ecosystem of industrial applications in web development, compiler
-design, machine learning, financial services, FPGA development, algorithmic
-trading, numerical computing, cryptography research, and cybersecurity.
+Although these are the major research goals, Haskell is still a fully general
+purpose language, and it has been applied in wildly diverse settings from
+garbage trucks to cryptoanalysis for the defense sector and everything
+in-between. With a thriving ecosystem of industrial applications in web
+development, compiler design, machine learning, financial services, FPGA
+development, algorithmic trading, numerical computing, cryptography research,
+and cybersecurity, the language has a lot to offer to any field or software
+practitioner.
 
 Haskell as an ecosystem is one that is purely organic, it takes decades to
 evolve, makes mistakes and is not driven by any one ideology or belief about the
@@ -4275,7 +4279,7 @@ foo x y = x + y
 bar = foo 1
 ```
 
-and then we attempt to call the function ``bar`` with a Double, we get a type
+And then we attempt to call the function ``bar`` with a Double, we get a type
 error:
 
 ```bash
@@ -4414,9 +4418,9 @@ RecursiveDo
 -----------
 
 Recursive do notation allows use of self-reference expressions on both sides of
-a monadic bind. For instance the following uses lazy evaluation to generate
-an infinite list. This is sometimes used to instantiate a cyclic datatype
-inside a monadic context that needs to hold a reference to itself.
+a monadic bind. For instance the following uses lazy evaluation to generate an
+infinite list. This is sometimes used to instantiate a cyclic datatype inside a
+monadic context that needs to hold a reference to itself.
 
 ```haskell
 {-# LANGUAGE RecursiveDo #-}
@@ -4541,10 +4545,10 @@ example = (52!)
 MultiWayIf
 ----------
 
-Multi-way if expands traditional if statements to allow pattern match
-conditions that are equivalent to a chain of if-then-else statements. This
-allows us to write "pattern matching predicates" on a value. This alters the
-syntax of Haskell language.
+Multi-way if expands traditional if statements to allow pattern match conditions
+that are equivalent to a chain of if-then-else statements. This allows us to
+write "pattern matching predicates" on a value. This alters the syntax of
+Haskell language.
 
 ```haskell
 {-# LANGUAGE MultiWayIf #-}
@@ -4561,7 +4565,7 @@ EmptyCase
 ---------
 
 GHC normally requires at least one pattern branch in case statement this
-restriction can be relaxed with `EmptyCase` langauge extension. The case
+restriction can be relaxed with `EmptyCase` language extension. The case
 statement then immediately yields a ``Non-exhaustive patterns in case`` if
 evaluated.
 
@@ -4572,8 +4576,9 @@ test = case of
 LambdaCase
 ----------
 
-For case statements, LambdaCase allows the elimination of redundant free
-variables introduced purely for the case of pattern matching on.
+For case statements, the langauge extension `LambdaCase` allows the elimination
+of redundant free variables introduced purely for the case of pattern matching
+on.
 
 Without *LambdaCase*:
 
@@ -4597,9 +4602,9 @@ With *LambdaCase*:
 NumDecimals
 -----------
 
-NumDecimals allows the use of exponential notation for integral literals that
-are not necessarily floats. Without it, any use of exponential notation
-induces a Fractional class constraint.
+The extension `NumDecimals` allows the use of exponential notation for integral
+literals that are not necessarily floats. Without it, any use of exponential
+notation induces a Fractional class constraint.
 
 ```haskell
 googol :: Fractional a => a
@@ -4613,13 +4618,13 @@ googol = 1e100
 ```
 
 PackageImports
--------------
+--------------
 
-Package imports allows us to disambiguate hierarchical package names by their
-respective package key. This is useful in the case where you have to imported
-packages that expose the same module. In practice most of the common libraries
-have taken care to avoid conflicts in the namespace and this is not usually a
-problem in most modern Haskell.
+The syntax langguage extension `PackageImports` allows us to disambiguate
+hierarchical package names by their respective package key. This is useful in
+the case where you have to imported packages that expose the same module. In
+practice most of the common libraries have taken care to avoid conflicts in the
+namespace and this is not usually a problem in most modern Haskell.
 
 For example we could explicitly ask GHC to resolve that ``Control.Monad.Error``
 package be drawn from the ``mtl`` library.
@@ -4635,7 +4640,7 @@ RecordWildCards
 
 Record wild cards allow us to expand out the names of a record as variables
 scoped as the labels of the record implicitly. The extension can be used to
-extract variables names into a scope or to assign to variables in a record
+extract variables names into a scope and/or to assign to variables in a record
 drawing, aligning the record's labels with the variables in scope for the
 assignment. The syntax introduced is the ``{..}`` pattern selector.
 
@@ -4645,7 +4650,7 @@ assignment. The syntax introduced is the ``{..}`` pattern selector.
 NamedFieldPuns
 ---------------
 
-NamedFieldPuns provides alternative syntax for accessing record fields in a
+`NamedFieldPuns` provides alternative syntax for accessing record fields in a
 pattern match.
 
 ```haskell
@@ -4720,9 +4725,9 @@ DeriveFoldable
 Similar to how Functors can be automatically derived, many instances of Foldable
 for types of kind `* -> *` have instances that simply derive the functions:
   
-* foldMap
-* foldr
-* null 
+* `foldMap`
+* `foldr`
+* `null`
 
 By simply deriving the boilerplate function over subexpression type with the
 single parameter term.  For instance if we have a custom rose tree and binary
@@ -11528,7 +11533,7 @@ root hash is called the *Merkle root* and uniquely identifies the data included
 under it. Any change to the leaves, or any reorordering of the nodes will
 produce a different hash. 
 
-A merkle tree admits an efficient "proof of inclusion" where to produce evidence
+A Merkle tree admits an efficient "proof of inclusion" where to produce evidence
 that a single node is included in the set can be done by simply tracing the
 roots of a single node up to the binary tree to the root. This is a logarithmic
 order set of hashes and is quite efficient. 
@@ -11538,6 +11543,8 @@ order set of hashes and is quite efficient.
 
 Secure Memory Handling
 ----------------------
+
+TODO
 
 GMP integers
 Timing attacks
