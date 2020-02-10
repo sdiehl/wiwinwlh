@@ -1645,11 +1645,22 @@ example = uncurryAdd (1,2)
 Algebraic Datatypes
 -------------------
 
-An sum type:
+Custom datatypes in Haskell are defined with the `data` keyword followed by the
+the type name, it's parameters, and then a set of **constructors**. The possible
+constructors are either `sum` types or of `product` types. A sum type is a set
+of options that is delimited by a pipe. A datatype is inhabited by only a single
+value sum type at one point and intuitively models a set of "options" a value
+may take. While a product type is a combination of a set of typed values,
+potentially named by records fields. For example the following are two
+definitions of a Point product type with two fields `x` and `y`.
 
-
-```{=latex}
+```haskell
+data Point = Point Int Int
+data Point = Point { x :: Int, y :: Int }
 ```
+
+An another example a deck of common playing cards could be modeled by the
+following set of product and sum types:
 
 ```haskell
 data Suit = Clubs | Diamonds | Hearts | Spades
@@ -1671,7 +1682,8 @@ data Value
   deriving (Eq, Ord)
 ```
 
-An example of a record type. 
+An record type can use these custom datatypes to define all the parameters that
+define an individual playing card. 
 
 ```haskell
 data Card = Card
@@ -1680,6 +1692,8 @@ data Card = Card
   , value :: Value
   }
 ```
+
+Some example values:
 
 ```haskell
 queenDiamonds :: Card
@@ -1716,11 +1730,31 @@ club :: Value -> Card
 club = Card Clubs Black
 ```
 
-TODO
+Datatypes may also be **recursive**, in the sense that they can contain
+themselves as fields. The most common example is a linked list which can be
+defined recursively as either an empty list or a value linked to potentially
+nested version of itself.
 
-Recursive types
-Constructors
-Datatypes with infix constructors
+```haskell
+data List a = Nil | List a (List a)
+```
+
+An example value would look like:
+
+```haskell
+list :: List Integer
+list = List 1 (List 2 (List 3 Nil))
+```
+
+Constructors for datatypes can also be defined as infix symbols. This is
+somewhat rare, but is sometimes used more math heavy libraries. For example the
+constructor for our list type could be defined as the infix operator `:+:`. When
+the value is printed using a Show instance, the operator will be printed in
+infix form.
+
+```haskell
+data List a = Nil | a :+: (List a)
+```
 
 Pattern Matching
 -----------------
@@ -11513,6 +11547,8 @@ Wiping memory out of scope
 AES Ciphers
 -----------
 
+TODO
+
 ~~~~ {.haskell include="src/32-cryptography/AES.hs"}
 ~~~~
 
@@ -16272,11 +16308,6 @@ that, with a few caveats, polymorphic Haskell functions are natural
 transformations.
 
 See: [You Could Have Defined Natural Transformations](http://blog.sigfpe.com/2008/05/you-could-have-defined-natural.html)
-
-Commutative Diagrams
---------------------
-
-TODO
 
 Kleisli Category
 ----------------
