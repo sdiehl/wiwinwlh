@@ -10793,20 +10793,220 @@ Threads
 
 TODO
 
+```haskell
+getNumCapabilities :: IO Int
+yield :: IO ()
+threadDelay :: Int -> IO ()
+```
+
+```haskell
+forkIO :: IO () -> IO ThreadId
+myThreadId :: IO ThreadId
+killThread :: ThreadId -> IO ()
+throwTo :: Exception e => ThreadId -> e -> IO ()
+```
+
+```haskell
+forkOS :: IO () -> IO ThreadId
+isCurrentThreadBound :: IO Bool
+```
+
+IO managed threads, vs bound threads
+
+```haskell
+threadWaitRead :: Fd -> IO ()
+threadWaitWrite :: Fd -> IO ()
+```
+
 IORef
 -----
 
-TODO
+`IORef` is a mutable reference that can be read and writen to within the IO
+monad. It is simplest most low-level mutable reference provided by the base
+library.
+
+```haskell
+newIORef :: a -> IO (IORef a)
+writeIORef :: IORef a -> a -> IO ()
+readIORef :: IORef a -> IO a
+modifyIORef' :: IORef a -> (a -> a) -> IO ()
+```
+
+For example we could construct two `IORef`s which mutably hold the balances for
+two imaginary bank accounts. These references can be passed to another `IO`
+function which can update the values in place.
+
+```haskell
+import Data.IORef
+
+example :: IO Integer
+example = do
+  account1 <- newIORef 5000
+  account2 <- newIORef 1000
+  transfer 500 account1 account2
+  readIORef account1
+
+transfer :: Integer -> IORef Integer -> IORef Integer -> IO ()
+transfer n from to = do
+  modifyIORef from (+ (-n))
+  modifyIORef to (+ n)
+```
+
+There are also several atomic functions to update `IORef` when working with the
+threaded runtime.
+
+```haskell
+atomicWriteIORef :: IORef a -> a -> IO ()
+atomicModifyIORef :: IORef a -> (a -> (a, b)) -> IO b
+```
+
+The atomic modify function `atomicModifyIORef` reads the value of `r` and
+applies the function `f` to `r` giving ack `(a',b)`. Then value `r` is updated
+with the new value `a'` and `b` is the return value. Both the read and the write
+are done atomically so it is not possible that any value will alter the
+underlying `IORef` between the read and write.
+
+Normally `IORef` is garbage collected like any other value. Once it is out of
+scope and the runtime has no more references to it, the runtime will collect the
+thunk holding the `IORef` as well as the value the underlying pointer points at.
+Sometimes when working with these references will require adding additional
+finalisation logic.
+
+```haskell
+mkWeakIORef :: IORef a -> IO () -> IO (Weak (IORef a))
+```
+
+The `mkWeakIORef` attaches a finalizer function in the second argument which is
+run when the value is garbage collected.
 
 MVars
 -----
 
-TODO
+MVars are mutable references like IORefs that can be used to share mutable state
+between threads. An `MVar` has two states *empty* and *full*. Reading from an
+empty MVar will block the current thread. Writing to a full MVar will also block
+the current thread. Thus only one value can be held inside the MVar allowing us
+to synchronize the value across threads. MVars are building blocks for many
+higher concurrent primitives which use them under the hood.
+
+An MVar can either be initialised in an empty state or with a supplied value.
+
+```haskell
+newEmptyMVar :: IO (MVar a)
+newMVar :: a -> IO (MVar a)
+```
+
+The function `takeMVar` operates like a read returning the value, but once the
+value is read the state of the underlying MVar is left empty. This read is
+performed once for the first thread to wake up polling for the read.
+
+```haskell
+takeMVar :: MVar a -> IO a
+putMVar :: MVar a -> a -> IO ()
+readMVar :: MVar a -> IO a
+swapMVar :: MVar a -> a -> IO a
+isEmptyMVar :: MVar a -> IO Bool
+```
+
+As an example consider a multithreaded scenario where a second thread is created
+which polls on atomically on an MVar update.
+
+```haskell
+import Control.Concurrent
+import Control.Monad
+import Prelude hiding (take)
+
+take :: MVar [Char] -> IO ()
+take m = forever $ do
+  x <- takeMVar m
+  putStrLn x
+
+put :: MVar [Char] -> IO ()
+put m = do
+  replicateM_ 10 $ do
+    threadDelay 100000
+    putMVar m "Value set."
+
+example :: IO ()
+example = do
+  m <- newEmptyMVar
+  forkIO (take m)
+  put m
+```
+
+If a thread is left sleeping waiting on an MVar and the runtime no longer has
+any references to code which can write to the MRef (i.e. all references to the
+MVar are garbage collected) the thread will be thrown the exception
+`BlockedIndefinitelyOnMVar` since no value can subsequently be written to it.
 
 TVar
 ----
 
-TODO
+TVars are transactional mutable variables which can be read and written to
+within in the STM monad. The STM monad provides support for *Software
+Transactional Memory* which is a higher level abstraction for concurrent
+communication that doesn't require explict thread maintenance and has lovely
+easy compositional nature.
+
+The STM monad magically hooks into the runtime system and provides two key
+operations `atomically` and `retry` which allow monadic blocks of STM actions to
+be performed atomically and passed around symbolically. In the event that the
+runtime fails to commit a transaction, the `retry` function can rerun the logic
+contained in a `STM a`.
+
+```
+atomically :: STM a -> IO a
+retry :: STM a
+```
+
+TVars can be created just like IORefs but instead of being in IO they can also
+be created with the STM monad.
+
+```haskell
+newTVar :: a -> STM (TVar a)
+newTVarIO :: a -> IO (TVar a)
+```
+
+Read, writes and updates proceed exactly like IORef updates but inside of STM.
+
+```
+readTVar :: TVar a -> STM a
+writeTVar :: TVar a -> a -> STM ()
+modifyTVar :: TVar a -> (a -> a) -> STM ()
+```
+
+As an example consider the IORef account transfers from above, but instead the
+two `modifyTVar` actions are performed atomically inside of the transfer
+function.
+
+```haskell
+import Control.Concurrent
+import Control.Concurrent.STM
+import Control.Concurrent.STM.TVar
+
+example :: IO Integer
+example = do
+  account1 <- atomically $ newTVar 5000
+  account2 <- atomically $ newTVar 1000
+  atomically (transfer 500 account1 account2)
+  readTVarIO account1
+
+transfer :: Integer -> TVar Integer -> TVar Integer -> STM ()
+transfer n from to = do
+  modifyTVar from (+ (-n))
+  modifyTVar to (+ n)
+```
+
+There is an additional `TMVar` which behaves precisely like the traditional
+`MVar` (i.e. it has an empty and full state) but which is embedded in IO. It is
+has precisely the same semantics as MVar but emits values within STM.
+
+```haskell
+-- Control.Concurrent.STM.TMVar
+newTMVar :: a -> STM (TMVar a)
+putTMVar :: TMVar a -> a -> STM ()
+takeTMVar :: TMVar a -> STM a
+```
 
 Chans
 -----
@@ -10819,12 +11019,59 @@ readChan :: Chan a -> IO a
 writeChan :: Chan a -> a -> IO ()
 ```
 
-TODO
+There is also an STM variant of Chan called `TChan`.
+
+```haskell
+newTChan :: STM (TChan a)
+readTChan :: TChan a -> STM a
+writeTChan :: TChan a -> a -> STM ()
+```
 
 Semaphores
 ----------
 
 TODO
+
+```haskell
+newQSem :: Int -> IO QSem
+waitQSem :: QSem -> IO ()
+signalQSem :: QSem -> IO ()
+```
+
+```haskell
+import Control.Concurrent
+import Control.Concurrent.QSem
+
+task :: Integer -> QSem -> IO ()
+task index sem = do
+  waitQSem sem
+  forkIO $ putStrLn ("Thread: " ++ show index ++ "\n")
+  signalQSem sem
+
+example :: IO ()
+example = do
+  sem <- newQSem 1
+  forkIO (task 1 sem)
+  forkIO (task 2 sem)
+  forkIO (task 3 sem)
+  return ()
+```
+
+QSem also have a variant `QSemN` which allows a resource to be acquired and
+released in a fixed quantity other than one. The `waitQSemN` function then takes
+an integral quantity to wait for.
+
+```haskell
+newQSemN :: Int -> IO QSemN
+waitQSemN :: QSemN -> Int -> IO ()
+```
+
+There is also an STM variant of QSem.
+
+```haskell
+newTSem :: Integer -> STM TSem
+waitTSem :: TSem -> STM ()
+```
 
 Threadscope
 -----------
@@ -16373,6 +16620,8 @@ f >=> Just ≡ f
 
 Monoidal Categories
 -------------------
+
+TODO
 
 ~~~~ {.haskell include="src/33-categories/monoidal.hs"}
 ~~~~
