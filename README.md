@@ -49,6 +49,7 @@ Chapter Code Examples:
 * [31-template-haskell/  ](https://github.com/sdiehl/wiwinwlh/tree/master/src/31-template-haskell/)
 * [32-cryptography       ](https://github.com/sdiehl/wiwinwlh/tree/master/src/32-cryptography/)
 * [33-categories/        ](https://github.com/sdiehl/wiwinwlh/tree/master/src/33-categories/)
+* [34-categories/        ](https://github.com/sdiehl/wiwinwlh/tree/master/src/34-time/)
 
 Contributing
 ------------
