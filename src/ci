@@ -23,3 +23,11 @@ echo -e "\e[1;32mOK\e[0m"
 echo -n "06-prelude .. "
 cd 06-prelude && bash ci && cd ..
 echo -e "\e[1;32mOK\e[0m"
+
+echo -n "33-categories .. "
+cd 33-categories && bash ci && cd ..
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "34-time .. "
+cd 34-time && bash ci && cd ..
+echo -e "\e[1;32mOK\e[0m"
