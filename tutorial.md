@@ -4203,6 +4203,39 @@ Fused Effects
 
 TODO
 
+```haskell
+class (HFunctor sig, Monad m) => Algebra sig m | m -> sig where
+  alg :: sig m a -> m a
+
+class HFunctor sig => Effect sig where
+```
+
+```haskell
+type Has eff sig m = (Members eff sig, Algebra sig m)
+```
+
+```haskell
+class Member (sub :: (* -> *) -> (* -> *)) sup where
+  inj :: sub m a -> sup m a
+```
+
+```haskell
+data State s m k
+  = Get (s -> m k)
+  | Put s (m k)
+  deriving (Functor)
+
+newtype StateC s m a = StateC (s -> m (s, a))
+  deriving (Functor)
+
+runState :: s -> StateC s m a -> m (s, a)
+```
+
+```haskell
+get :: Has (State s) sig m => m s
+put :: Has (State s) sig m => s -> m ()
+```
+
 <hr/>
 
 Language Extensions
@@ -11145,7 +11178,7 @@ newTVarIO :: a -> IO (TVar a)
 
 Read, writes and updates proceed exactly like IORef updates but inside of STM.
 
-```
+```haskell
 readTVar :: TVar a -> STM a
 writeTVar :: TVar a -> a -> STM ()
 modifyTVar :: TVar a -> (a -> a) -> STM ()
@@ -16890,6 +16923,41 @@ TODO
 
 ~~~~ {.haskell include="src/33-categories/monoidal.hs"}
 ~~~~
+
+
+```haskell
+type Hask = (->)
+
+instance Category (->) where
+  id = Prelude.id
+  (.) = (Prelude..)
+ 
+instance Bifunctor (->) (,) where
+  f *** g = \(a,b) -> (f a,g b)
+ 
+instance Associative (->) (,) where
+  associate ((a,b),c) = (a,(b,c))
+  coassociate (a,(b,c)) = ((a,b),c)
+ 
+instance Monoidal (->) (,) () where
+  idl ((),a) = a
+  idr (a,()) = a
+  coidl a = ((),a)
+  coidr a = (a,())
+ 
+instance Braided (->) (,) where
+  braid (a,b) = (b,a)
+ 
+instance Cartesian (->) (,) () where
+  fst = Prelude.fst
+  snd = Prelude.snd
+  diag x = (x,x)
+
+instance CCC (->) (,) () (->) where
+  apply (f,a) = f a
+  curry = Prelude.curry
+  uncurry = Prelude.uncurry
+```
 
 Resources
 ---------
