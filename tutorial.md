@@ -10286,12 +10286,28 @@ calculating volatility smiles of options products.
 See: [HQuantLib](https://hackage.haskell.org/package/hquantlib)
 
 Differential Equations
------------------------
+----------------------
 
-TODO
+There are several Haskell libraries for finding numerical solutions to systems
+of differential equations. These kind of problems show up quite frequently in
+scientific computing problems.
 
-Runge-Kutta 
-https://hackage.haskell.org/package/hmatrix-gsl-0.19.0.1/docs/Numeric-GSL-ODE.html
+For example a simple differential equation is Van der Pol oscillator which
+occurs frequently in physics. This is a second order differential equation which
+relates the position of a oscillator $x$ in terms of time, acceleration ${d^{2}x
+\over dt^{2}}$, and the velocity $dx \over dt$ a scalar parameter $\mu$. It is
+given by the equation.
+
+$$
+{\displaystyle {d^{2}x \over dt^{2}}-\mu (1-x^{2}){dx \over dt}+x=0,}
+$$
+
+For example this equation can be solved for a fixed $\mu$ and set of boundary
+conditions for the time parameter $t$. The solution is returned as an HMatrix
+vector.
+
+~~~~ {.haskell include="src/19-numbers/diffeq/Main.hs"}
+~~~~
 
 Statistics
 ----------

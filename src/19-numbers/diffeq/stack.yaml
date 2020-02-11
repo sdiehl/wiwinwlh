@@ -1,0 +1,3 @@
+resolver: lts-14.20
+extra-deps:
+- fused-effects-1.0.0.0
