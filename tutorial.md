@@ -2768,16 +2768,12 @@ These days it is quite common to use cloud hosted continuous integration systems
 to test code from version control systems. There are many community contributed
 build script for different service providers:
 
-TODO
+* [Travis CI for Cabal](https://github.com/haskell-CI/haskell-ci/blob/master/.travis.yml)
+* [Travis CI for Stack](https://docs.haskellstack.org/en/stable/travis_ci/)
+* [Circle CI for Cabal & Stack](https://github.com/composewell/packcheck/blob/master/.circleci/config.yml)
+* [Github Actions for Cabal & Stack](https://gist.github.com/mstksg/11f753d891cee5980326a8ea8c865233)
 
-* [Travis CI with Cabal](https://github.com/haskell-CI/haskell-ci/blob/master/.travis.yml)
-* [Travis CI with Stack](https://docs.haskellstack.org/en/stable/travis_ci/)
-* [Circle CI with Cabal]()
-* [Circle CI with Stack]()
-* [Github Actions with Cabal]()
-* [Github Actions with Stack]()
-
-See also the official CI `repository:
+See also the official CI repository:
 
 * [haskell-ci](https://github.com/haskell-CI/haskell-ci)
 
