@@ -100,7 +100,7 @@ GHC
 
 GHC is the Glorious Glasgow Haskell Compiler originally written in 1989. GHC is
 a massive compiler supports a wide variety of extensions. GHC is the de facto
-standard for Hsakell compilers. There are a few other compilers that have
+standard for Haskell compilers. There are a few other compilers that have
 existed but they either are quite limited or have bit rotted over the years. GHC
 is also the only reference implementation for the Haskell language and defines
 what Haskell the language is by its implementation.
@@ -1765,8 +1765,36 @@ data List a = Nil | a :+: (List a)
 Pattern Matching
 -----------------
 
+To unpack an algebraic datatype and extract it's fields we'll use a built in
+language construction known as *pattern match*. This is denoted by the `case`
+syntax and "scrutinizes" a specific value. A case expression will then be
+followed by a sequence of *matches* which consist of a *pattern* on the left and
+an arbitrary expression on the right. The left patterns will all consist of
+constructors for the type of the scrutinized value and should enumerate all
+possible constructors. For product type patterns that are scrutinized a sequence
+of variables will bind the fields associated with it's positional location in
+the constructors of constructor.
+
+Pattern matches can be written in explicit case statements or in toplevel
+functional declarations. The latter simply expands the former in the desugaring
+phase of the compiler.
+
 ```haskell
-value :: Card -> Integer
+data Example = Example Int Int Int
+
+example1 :: Example -> Int
+example1 x = case x of 
+  Example a b c -> a + b + c
+
+example2 :: Example -> Int
+example2 (Example a b c) = a + b +c
+```
+
+Following on the playing card example in the previous, we could use a pattern to
+produce a function which scores the face value of a playing card.
+
+```haskell
+value :: Value -> Integer
 value card = case card of
   Two    -> 2
   Three  -> 3
@@ -1783,8 +1811,12 @@ value card = case card of
   Ace    -> 1
 ```
 
-The following pattern match brings the values of the record into scope of the
-function body.
+And we can use a double pattern match to produce a function which determines
+which suit trumps another suit. For example we can introduce an order of suits
+of cards where the ranking of cards proceeds (Clubs, Diamonds, Hearts, Spaces).
+A `_` underscore used inside a pattern indicates a wildcard pattern and
+matches against any constructor given. This should be the last pattern used a in
+match list.
 
 ```haskell
 suitBeats :: Suit -> Suit -> Bool
@@ -1797,17 +1829,23 @@ suitBeats Hearts   Spades    = True
 suitBeats _        _         = False
 ```
 
+And finally we can write a function which determines if another card beats
+another card in terms of the two pattern matching functions above.  The
+following pattern match brings the values of the record into scope of the
+function body assigning to names specified in the pattern syntax.
+
 ```haskell
 beats :: Card -> Card -> Bool
 beats (Card suit1 color1 value1) (Card suit2 color2 value2) = 
   (suitBeats suit1 suit2) && (value1 > value2)
 ```
 
-TODO
+Functions may also invoke themselves. This is known as *recursion*. This is
+quite common in pattern matching definitions which recursively tear down or
+build up data structures. This kind of pattern is one of the defining modes of
+programming functionally. 
 
-Toplevel vs case statements
-
-Functions may also invoke themselves. This is known as recursion.
+The following two recursive pattern matches are desugared forms of each other:
 
 ```haskell
 fib :: Integer -> Integer
@@ -1824,7 +1862,16 @@ fib n = case n of
   n -> fib (n-1) + fib(n-2)
 ```
 
-Pattern matching on lists
+Pattern matching on lists is also an extremely common pattern. It has special
+pattern syntax and the tail variable is typically pluralized. In the following
+`x` denotes the head variable and `xs` denotes the tail. For example the
+following function traverses a list of integers and adds `(+1)` to each value.
+
+```haskell
+addOne :: [Int] -> [Int]
+addOne (x : xs) = (x+1) : (addOne xs)
+addOne [] = []
+```
 
 Operators
 ---------

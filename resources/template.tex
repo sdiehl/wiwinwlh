@@ -22,6 +22,21 @@
 \usepackage{tikz}
 \usepackage{hyperref}
 
+$if(colorlinks)$
+\hypersetup{%
+  colorlinks=true,
+  linkcolor=blue,
+  anchorcolor=blue,
+  urlcolor=cyan,
+  filecolor=red,
+  linkbordercolor=red,
+  pdfborderstyle={/S/U/W 1}
+  pdfauthor={Stephen Diehl},
+  pdfsubject={Haskell Programming},
+  pdftitle={What I Wish I Knew When Learning Haskell},
+  pdfkeywords={LaTeX, PDF, hyperlinks}
+}
+$else$
 \hypersetup{%
   colorlinks=false,         % hyperlinks will be black
   linkcolor=black,
@@ -31,6 +46,7 @@
   pdftitle={What I Wish I Knew When Learning Haskell},
   pdfkeywords={LaTeX, PDF, hyperlinks}
 }
+$endif$
 
 \newif\ifprint
 \printtrue
