@@ -77,8 +77,9 @@ operating system works, the shell, and the some fundamentals of other imperative
 programming languages.  If you are a Python or Java software engineer with no
 experience with Haskell this is the executive summary of Haskell theory and
 practice for you. We'll delve into a little theory as needed to explain concepts
-but no more than necessary. All knowledge is derived from experience and only
-implementing code for yourself will grant insight.
+but no more than necessary. If you're looking for a pure introductory tutorial,
+this probably isn't the right start for you, however this can be read as a
+companion to other introductory texts.
 
 There is no particular order to this guide, other than the first chapter which
 describes how to get set up with Haskell and use the foundational compiler and
@@ -2044,10 +2045,11 @@ Side Effects
 Contrary to many misconceptions, side effects are integral part of Haskell
 programming. Haskell although takes a different approach to effectful
 programming and has varies models of modeling these effects within the type
-system. These range from using [Monads] to building [algebraic models](Effect
-Systems) of effects that draw clear lines between effectful code and pure code.
-The idea of reasoning about where effects can and cannot exist is one of the key
-idea of Haskell, **not the idea of trying to avoid side effects**.
+system. These range from using [Monads] to building [algebraic
+models](#effect-systems) of effects that draw clear lines between effectful code
+and pure code.  The idea of reasoning about where effects can and cannot exist
+is one of the key idea of Haskell, **not the idea of trying to avoid side
+effects**.
 
 Indeed the simplest Hello World program in Haskell is quite simply:
 
@@ -2070,10 +2072,51 @@ main = do
 Records
 -------
 
-Records in Haskell are fundamentally broken and there multiple philosophies
-about how to route around this issue.
+Records in Haskell are fundamentally broken for several reasons.
 
-TODO RANT
+1. **The syntax is unconventional.**
+
+Most programming language use dot or arrow syntax for field accessors like the
+following:
+
+```cpp
+person.name
+person->name
+```
+
+Haskell however uses function application syntax since record accessors are
+simply just functions. Instead or creating a privileged class of names and
+syntax for field accessors, Haskell instead choose to implement the simplest
+model and expands accessors to function during compilation.
+
+```haskell
+name person
+person {name="foo"}
+```
+
+2. **Incomplete pattern matches are implicitly generated for sums of products.**
+
+```haskell
+data Example = Ex1 { a :: Int } | Ex2 { b :: Int }
+```
+
+The functions generated for `a` or `b` in both of these cases are partial. See
+[Exhaustiveness] checking.
+
+3. **Lack of Namespacing**
+
+Given two records defined in the same module (or imported) GHC is unable to (by
+default) disambiguate which field accessor to assign at a callsite that uses `a`.
+
+```haskell
+data Example1 = Ex1 { a :: Int }
+data Example2 = Ex2 { a :: Int }
+```
+
+This can be routed around with the language extension `DisambiguateRecordFields`
+but only to a certain extent. If we want to write maximally polymorphic
+functions which operate over arbitrary records which have a field `a`, then the
+GHC typesystem is not able to express this without some much higher-level magic.
 
 Newtypes
 --------
@@ -2693,7 +2736,7 @@ ignore: {name: Use let, within: MyModule}
 
 See:
 
-* https://github.com/ndmitchell/hlint
+* [HLint Github](https://github.com/ndmitchell/hlint)
 
 Docker Images
 -------------
@@ -6709,6 +6752,8 @@ Either Monad
 ------------
 
 EitherT
+-------
+
 TODO
 
 ExceptT
@@ -6802,14 +6847,18 @@ Exceptions
 ----------
 
 The problem with the previous approach is having to rely on GHC's asynchronous exception handling inside of IO
-to handle basic operations. The ``exceptions`` provides the same API as ``Control.Exception`` but loosens the
-dependency on IO.
+to handle basic operations and the bifurcation of APIs which need to expose
+different APIs for any monad that has failure (`IO`, `STM`, `ExceptT`, etc).
 
-TODO
+The ``exceptions`` package provides provides the same API as
+``Control.Exception`` but loosens the dependency on IO. It instead provides a
+granular set of typeclasses which can operate over different monads which
+require a precise subset of error handling methods.
 
-* `MonadThrow`
-* `MonadCatch`
-* `MonadMask`
+* `MonadThrow` - Monads which expose a interface for throwing exceptions.
+* `MonadCatch` - Monads which expose a interface for handling exceptions.
+* `MonadMask` - Monads which expose a interface for masking asynchronous
+  exceptions.
 
 ~~~~ {.haskell include="src/09-errors/exceptions.hs"}
 ~~~~
