@@ -11187,12 +11187,54 @@ takeTMVar :: TMVar a -> STM a
 Chans
 -----
 
-```haskell
-data Chan a
+Channels are unbounded queues that can be written for which an unbounded number
+of values can be written to an unbounded number of times times. Channels are
+implemented using MVars which can be consumed by any number of other threads to
+read data off of the Chan. Channels are created and read to using a simple
+`new`, `read` and `write` interface just as we've seen with other concurrency
+primitives.  
 
+```haskell
 newChan :: IO (Chan a)
 readChan :: Chan a -> IO a
 writeChan :: Chan a -> a -> IO ()
+```
+
+An example in which a channel is created between a producer and consumer threads
+is shown below. This can be used to share data between threads and create work
+queue background processing systems.
+
+```haskell
+import System.IO
+import Control.Monad
+import Control.Concurrent
+import Control.Concurrent.Chan
+
+producer :: Chan Integer -> IO ()
+producer chan = forM_ [0 .. 1000] $ \i -> do
+  writeChan chan i
+  putStrLn "Writing to channel."
+
+consumer :: Chan Integer -> IO ()
+consumer chan = forever $ do
+  val <- readChan chan
+  thread <- myThreadId
+  putStrLn ("Recieved item in thread: " ++ show thread)
+  print val
+
+example :: IO ()
+example = do
+  chan <- newChan
+  forkIO (consumer chan)
+  forkIO (consumer chan)
+  forkIO (consumer chan)
+  forkIO (producer chan)
+  pure ()
+
+main :: IO ()
+main = do
+  hSetBuffering stdout LineBuffering
+  example
 ```
 
 There is also an STM variant of Chan called `TChan`.
