@@ -6757,13 +6757,31 @@ right method in the right context.
 Either Monad
 ------------
 
-EitherT
--------
+In keeping with the Haskell tradition it is always preferable to use pure logic
+when possible. In many simple cases error handling can be done quite simply by
+using the `Monad` instance of Either. Monadic bind simply threads a `Right`
+value through the monad and "short-circuits" evaluation when a `Left` is
+introduced. This is simple enough error handling which privileges the `Left`
+constructor to hold the error. Many simple functions which can fail can simply
+use the `Either Error a` in the result type to encode simple error handling.
 
-TODO
+The downside to this is that it force every consumer of the function to pattern
+match on the result to handle the error case. It also assumes that all `Error`
+types can be encoded inside of the sum type holding the possible failures.
+
+```haskell
+saveDiv -> Float -> Float -> Either DivError Float
+safeDiv x 0 = Left NoDivZero
+safeDiv x y = x `div` y
+```
 
 ExceptT
 -------
+
+When using `transformers` style effect stacks it is quite common to need to have
+a layer of the stack which can fail. When using the style of composing effects a
+monad transformer (which is a wrapper around Either monad) can be added which
+lifts the error handling into a `ExceptT` effect layer.
 
 As of mtl 2.2 or higher, the ``ErrorT`` class has been replaced by the
 ``ExceptT``.  At transformers level.
@@ -6798,7 +6816,8 @@ m `catchE` h = ExceptT $ do
         Right r -> return (Right r)
 ```
 
-Using mtl:
+And also this can extended to the mtl `MonadError` instance for which we can
+write instances for IO and Either themselves:
 
 ```haskell
 instance MonadTrans (ExceptT e) where
@@ -6825,9 +6844,12 @@ See:
 Control.Exception
 -----------------
 
-The GHC runtime provides builtin operations ``throw`` and ``catch`` functions
-which allow us to throw exceptions in pure code and catch the resulting
-exception within IO. Note that return value of the ``throw`` inhabits all types.
+GHC has a builtin system for propagating errors up at the runtime level, below
+the business logic level. These are used internally for all sorts of concurrency
+and system interface. The runtime provides builtin operations ``throw`` and
+``catch`` functions which allow us to throw exceptions in pure code and catch
+the resulting exception within IO. Note that return value of the ``throw``
+inhabits all types.
 
 ```haskell
 throw :: Exception e => e -> a
@@ -6898,7 +6920,11 @@ See:
 Advanced Monads
 ===============
 
-TODO
+When working with the wider library you will find there a variety of "advanced
+monads" which are higher-level constructions on top of of the monadic interface
+which enrich the structure with additional rules or build APIs for combining
+different types of monads. Some of the most-used cases are mentioned in this
+section.
 
 Function Monad
 --------------
