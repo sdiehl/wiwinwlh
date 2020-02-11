@@ -2764,11 +2764,11 @@ FROM fpco/stack-build:lts-14.0
 Continuous Integration
 ----------------------
 
-TODO
-
 These days it is quite common to use cloud hosted continuous integration systems
 to test code from version control systems. There are many community contributed
 build script for different service providers:
+
+TODO
 
 * [Travis CI with Cabal](https://github.com/haskell-CI/haskell-ci/blob/master/.travis.yml)
 * [Travis CI with Stack](https://docs.haskellstack.org/en/stable/travis_ci/)
@@ -2902,9 +2902,8 @@ symbols marks it as a code block:
 -- @
 ```
 
-Similarly, it's possible to use bird tracks (``>``) in a comment line to
-set off a code block. This usage is very similar to [Bird style Literate
-Haskell](https://wiki.haskell.org/Literate_programming#Bird_Style).
+Similarly, it's possible to use bird tracks (``>``) in a comment line to set off
+a code block. 
 
 ```haskell
 -- | A similar code block example that uses bird tracks (i.e. '>')
@@ -5063,7 +5062,14 @@ resort.
 TypeApplications
 ----------------
 
-TODO
+Type type system extension `TypeApplications` allows you to use to use explicit
+annotations for subexpressions. For example if you have a subexpression which
+has inferred type `a -> b -> a` you can explicitly name the types of `a` and `b`
+by explicitly stating `@Int @Bool` to assign `a` to `Int` and `b` to `Bool`.
+This is particularly useful when working with typeclasses where type inference
+cannot deduce the types of all subexpressions from the toplevel signature and
+results in a overly specific default. This is quite common when working with
+roundtrips of `read` and `show`. For example:
 
 ~~~~ {.haskell include="src/04-extensions/application.hs"}
 ~~~~

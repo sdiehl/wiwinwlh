@@ -9,7 +9,8 @@ ETEMPLATE = resources/template.epub
 UNICODE_MAP = resources/unicodemapping.tex
 
 FLAGS = --standalone --toc --toc-depth=2 --highlight-style tango
-LFLAGS = --top-level-division=chapter -V colorlinks=false
+LFLAGS = --top-level-division=chapter
+#LFLAGS = --top-level-division=chapter -V colorlinks
 HFLAGS = -c css/style.css -c css/layout.css
 EFLAGS = 
 
