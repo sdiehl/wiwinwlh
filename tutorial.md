@@ -8028,8 +8028,8 @@ compose :: Functor f => (f (Fix f) -> c) -> (a -> Fix f) -> a -> c
 compose f g = f . unFix . g
 ```
 
-recursion-schemes
------------------
+Recursion Schemes & The Morphism Zoo 
+------------------------------------
 
 Recursion schemes are a generally way of classifying a families of traversal
 algorithms that modify data structures recursively. Recursion schemes give rise
@@ -8037,17 +8037,20 @@ to a rich set of algebraic structures which can be composed to devise all sorts
 of elaborate term rewrite systems. Most applications of recursion schemes occur
 in the context of graph rewriting or abstract syntax tree manipulation. 
 
-Several basic recursion schemes form the foundation of these rules. These are
-called *Catamorphisms*, *Anamorphisms* and *Hylomorphisms*.
+Several basic recursion schemes form the foundation of these rules. Grossly, a
+*anamorphism* is an unfolding of a data structure into a list of terms, while a
+*catamorphism* is a is the refolding of a data structure from a list of terms.
 
-Name           Type Signature                                              Description
------          ---------------------------------                           -----------------
-Catamorphism   ``cata :: (a -> b -> b) -> b -> [a] -> b``                  Deconstructs a data structure
-Anamorphism    ``ana :: (b -> Maybe (a, b)) -> b -> [a]``                  Constructs a structure level by level
-Hylomorphism   ``hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b`` TODO
+Name           Type Signature                             
+-----          ---------------------------------
+Catamorphism   ``cata :: (a -> b -> b) -> b -> [a] -> b``
+Anamorphism    ``ana :: (b -> Maybe (a, b)) -> b -> [a]``
+Paramorphism   ``para :: (a -> ([a], b) -> b) -> b -> [a] -> b``
+Apomorphism    ``apo :: (b -> (a, Either [a] b))  ->  b  -> [a]``
+Hylomorphism   ``hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b``
 
-For Fix point type over a type `f :: * -> *` we can write down the recursion
-schemes as the following definitions:
+For a `Fix` point type over a type with a Functor instance for the parameter `f`
+we can write down the recursion schemes as the following definitions:
 
 ```haskell
 -- | A fix-point type.
@@ -8064,35 +8067,62 @@ ana f = Fix . fmap (ana f) . f
 -- | Hylomorphism
 hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b
 hylo f g = h where h = f . fmap h . g
+
+-- Paramorphism
+para :: Functor f => (f (Fix f, t) -> t) -> Fix f -> t
+para f (Fix x) = psi (fmap l x) where
+  l x = (x, para f x)
 ```
 
-
-A library called ``recursion-schemes`` implements these basic recursion schemes
-as well as whole family of higher-order combinators off the shelf. These are
-implemented in terms of two functions `Foldable` and `Unfoldable` which are
-extensions of a base functor type. For the `Fix` type above these functions
-expand into the following definitions:
+One can also construct monadic versions of these functions which have a result
+type inside of a monad. Instead of using function composition we use [Kleisi
+composition](#kleisli-category).
 
 ```haskell
-class Functor t => Foldable t where
+-- Monadic catamorphism
+cataM :: (Traversable f, Monad m) => (f a -> m a) -> Fix f -> m a
+cataM f = f <=< traverse (cataM f) . unfix
+```
+
+The library ``recursion-schemes`` implements these basic recursion schemes as
+well as whole family of higher-order combinators off the shelf. These are
+implemented in terms of two typeclases `Recursive` and `Corecursive` which are
+extend an instance of Functor with default methods for catamorphisms and
+anamorphisms. For the `Fix` type above these functions expand into the following
+definitions:
+
+```haskell
+class Functor t => Recursive t where
   project :: t -> t t
   cata :: (t a -> a) -> t -> a
   cata f = c where c = f . fmap c . project
 
-class Functor t => Unfoldable t where
+class Functor t => Corecursive t where
   embed :: t -> t t
-  ana :: (a -> Base t a) -> a -> t
+  ana :: (a -> t a) -> a -> t
   ana g = a where a = embed . fmap a . g
+
+-- Additional ListF helper
+data ListF a b = Nil | Cons a b
 ```
 
-Their use case is shown below:
-
-~~~~ {.haskell include="src/14-interpreters/recursion_schemes.hs"}
-~~~~
-
-An example of usage:
+The canonical example of a catamorphism is the factorial function which is a
+composition of a coalgebra creates a list from `n` to `1` and an algebra which
+multiplies the resulting list to a single result:
 
 ~~~~ {.haskell include="src/14-interpreters/catamorphism.hs"}
+~~~~
+
+Another example is unfolding of lambda calculus to perform a substitution over a
+variable. We can define a catamoprhism for traversing over the AST.
+
+~~~~ {.haskell include="src/14-interpreters/factorial.hs"}
+~~~~
+
+Another use case would be to collect the free variables inside of the AST. This
+example use the `recursion-schemes` library.
+
+~~~~ {.haskell include="src/14-interpreters/recursion_schemes.hs"}
 ~~~~
 
 See:
