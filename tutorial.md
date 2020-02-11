@@ -11285,15 +11285,15 @@ See:
 Strategies
 ----------
 
-```haskell
-type Strategy a = a -> Eval a
-using :: a -> Strategy a -> a
-```
-
 Sparks themselves form the foundation for higher level parallelism constructs known as ``strategies`` which
 adapt spark creation to fit the computation or data structure being evaluated. For instance if we wanted to
 evaluate both elements of a tuple in parallel we can create a strategy which uses sparks to evaluate both
 sides of the tuple.
+
+```haskell
+type Strategy a = a -> Eval a
+using :: a -> Strategy a -> a
+```
 
 ~~~~ {.haskell include="src/22-concurrency/strategies.hs"}
 ~~~~
@@ -11358,6 +11358,11 @@ See:
 STM
 ---
 
+Software Transactional Memory is a technique for guaranteeing atomicity of
+values in parallel computations, such that all contexts view the same data when
+read and writes are guaranteed by the runtime to never to result in inconsistent
+states.
+
 ```haskell
 atomically :: STM a -> IO a
 orElse :: STM a -> STM a -> STM a
@@ -11372,12 +11377,9 @@ modifyTVar :: TVar a -> (a -> a) -> STM ()
 modifyTVar' :: TVar a -> (a -> a) -> STM ()
 ```
 
-Software Transactional Memory is a technique for guaranteeing atomicity of
-values in parallel computations, such that all contexts view the same data when
-read and writes are guaranteed never to result in inconsistent states.
-
 The strength of Haskell's purity guarantees that transactions within STM are
-pure and can always be rolled back if a commit fails.
+pure and can always be rolled back if a commit fails. An example of usage is
+shown below.
 
 ~~~~ {.haskell include="src/22-concurrency/stm.hs"}
 ~~~~
@@ -11984,17 +11986,52 @@ order set of hashes and is quite efficient.
 Secure Memory Handling
 ----------------------
 
-TODO
+When using Haskell for cryptography work and even inside web services, some care
+must be taken to ensure that the primitives you are using don't accidentally
+expose secrets or user data accidentally. This can occur in many ways through
+the mishandling of keys, timing attacks against interactive protocols, and the
+insecure wiping of memory. 
 
-GMP integers
-Timing attacks
-Constant time equality
-Wiping memory out of scope
+When using Haskell integers be aware that arithmetic operations are **not
+constant time** and are simply backed by GMP integers. This may or may not be
+appropriate for your code if you expect arithmetic operations to be branch-free
+or have constant time addition or multiplication. If you need constant
+arithmetic you will likely have to drop down to C or Assembly and link the
+resulting code that operates in to your code. Many of the Haskell cryptography
+libraries do just this.
 
-AES Ciphers
------------
+With regards to timing attacks, take note of which functions are marked as
+vulnerable to timing attacks as most of these are marked in public API
+documentation.
 
-TODO
+When comparing hashes and unencrypted data for equality also make sure to use an
+equality test which is constant time. The default derived instance for `Eq` does
+*not* have this property. The `securemem` library provides a `SecureMem`
+datatype which can hold an arbitrary sized ByteString and can only be compared
+against other `SecureMem` ByteStrings by a constant time algorithm.
+
+```haskell
+-- import Data.SecureMem
+allocateSecureMem :: Int -> IO SecureMem
+finalizeSecureMem :: SecureMem -> IO ()
+toSecureMem :: ByteString -> SecureMem
+```
+
+This data structure will also automatically scrub it's bytes with a runtime
+integrated finalizer on the pointer to the underlying memory. This ensures that
+as soon as the value is garbage collected, its underlying memory is set to
+wiped to zero values and does not linger on the processes memory.
+
+AES Encryption
+--------------
+
+AES (Advanced Encryption Standard) is a symmetric block cipher standardized by
+NIST. The cipher block size is fixed at 16 bytes and it is encrypted using a key
+of 128, 192 or 256 bits. AES is common cipher standard for symmetric encryption
+and used heavily in internet protocols.
+
+An example of encrypting and decrypting data using the `cryptonite` library is
+shown below:
 
 ~~~~ {.haskell include="src/32-cryptography/AES.hs"}
 ~~~~
