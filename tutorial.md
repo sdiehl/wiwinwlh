@@ -68,6 +68,11 @@ frustrating and exciting; and therein lies the fun that has been the
 intellectual siren song that has drawn many talented programmers to dabble in
 this beautiful language at some point in their lives.
 
+See:
+
+* [A History of Haskell](https://dl.acm.org/doi/10.1145/1238844.1238856)
+* [Wearing the Hair Shirt: A Retrospective on Haskell](http://www.cs.nott.ac.uk/~pszgmh/appsem-slides/peytonjones.ppt?ref=driverlayer.com/web)
+
 How to Read
 -----------
 
@@ -5514,26 +5519,6 @@ not required.
 Of important note is that GHCi runs without any optimizations applied so the
 same program that performs poorly in GHCi may not have the same performance
 characteristics when compiled with GHC.
-
-Lazy Spines
------------
-
-```haskell
-
-data List a = Cons a (List a) | Nil
-
--- [1,2,3,4]
-
--- Cons 
--- | \
--- 1  Cons
---    | \
---    2  Cons
---       | \ 
---       3  Cons
---          | \
---          4  Nil
-```
 
 BangPatterns
 ------------
@@ -11997,8 +11982,8 @@ constant time** and are simply backed by GMP integers. This may or may not be
 appropriate for your code if you expect arithmetic operations to be branch-free
 or have constant time addition or multiplication. If you need constant
 arithmetic you will likely have to drop down to C or Assembly and link the
-resulting code that operates in to your code. Many of the Haskell cryptography
-libraries do just this.
+resulting code into your Haskell logic. Many Haskell cryptography libraries do
+just this.
 
 With regards to timing attacks, take note of which functions are marked as
 vulnerable to timing attacks as most of these are marked in public API
