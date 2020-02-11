@@ -2,6 +2,8 @@
 % Stephen Diehl
 % February 2020
 
+<copyright></copyright>
+
 Basics
 ======
 
@@ -2672,6 +2674,8 @@ FROM fpco/stack-build:lts-14.0
 Continuous Integration
 ----------------------
 
+TODO
+
 These days it is quite common to use cloud hosted continuous integration systems
 to test code from version control systems. There are many community contributed
 build script for different service providers:
@@ -4227,7 +4231,7 @@ APIs.
 * RankNTypes
 * [ExistentialQuantification](#quantification)
 * [TypeFamilies](#type-families)
-* [TypeOperators]
+* [TypeOperators](#promoted-syntax)
 * [TypeApplications](#promoted-syntax)
 * UndecidableInstances
 
@@ -5212,7 +5216,7 @@ one.
 Historically enabling this on module-level was not the best idea, since
 generally we define multiple classes in a module only a subset of which may be
 incoherent. So as of 7.10 we now have the capacity to just annotate instances
-with the OVERLAPPING and INCOHERENT pragmas.
+with the `OVERLAPPING` and `INCOHERENT` pragmas.
 
 ~~~~ {.haskell include="src/04-extensions/overlapping_anno.hs"}
 ~~~~
@@ -5764,9 +5768,14 @@ read :: Read a => String -> a
 
 A list of partial functions in the default prelude:
 
+**Partial for all inputs**
+
 * ``error``
 * ``undefined``
-* ``fail``
+* ``fail`` -- For `Monad IO`
+
+**Partial for empty lists**
+
 * ``head``
 * ``init``
 * ``tail``
@@ -5780,15 +5789,27 @@ A list of partial functions in the default prelude:
 * ``cycle``
 * ``maximum``
 * ``minimum``
-* ``(!!)``
+
+**Partial for Nothing**
+
+* ``fromJust``
+
+**Partial for invalid strings lists**
+
+* ``read``
+
+**Partial for infinite lists**
+
 * ``sum``
 * ``product``
-* ``fromJust``
-* ``read``
 * ``reverse``
+
+**Partial for negative or unbounded numbers**
+
+* ``(!)``
+* ``(!!)``
 * ``toEnum``
 * ``genericIndex``
-* ``(!)``
 
 Replacing Partiality
 --------------------
@@ -7899,7 +7920,7 @@ Name           Type Signature                                              Descr
 -----          ---------------------------------                           -----------------
 Catamorphism   ``cata :: (a -> b -> b) -> b -> [a] -> b``                  Deconstructs a data structure
 Anamorphism    ``ana :: (b -> Maybe (a, b)) -> b -> [a]``                  Constructs a structure level by level
-Hylomorphism   ``hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b`` TDO
+Hylomorphism   ``hylo :: Functor f => (f b -> b) -> (a -> f a) -> a -> b`` TODO
 
 For Fix point type over a type `f :: * -> *` we can write down the recursion
 schemes as the following definitions:
@@ -15208,6 +15229,16 @@ The specific flags can be checked by passing `+RTS --info` to a compiled binary.
  ,("Compiler unregisterised", "NO")
  ,("Tables next to code", "YES")
  ]
+```
+
+The state of the runtime can also be queried at runtime for statistics about the
+heap, garbage collector and wall time. The `getRTSStats` generates two datateyps
+wwith all the queryable information contained in `RTSStats` and `GCDetails`.
+
+```haskell
+import GHC.Stats
+
+getRTSStats :: IO RTSStats
 ```
 
 <hr/>
