@@ -12749,8 +12749,8 @@ Endpoint         Servant route
 ---------------- ----------------------------------------
 `GET /api/hello` `"api" :> "hello" :> Get ‘[JSON] String`
 
-The HTTP methods are lifted to the typelevel as DataKinds from the following
-definition.
+The HTTP methods are lifted to the type level as [DataKinds](#promotion) from
+the following definition.
 
 ```haskell
 data StdMethod = GET | POST | HEAD | PUT | DELETE | TRACE | CONNECT | OPTIONS | PATCH
@@ -12836,6 +12836,8 @@ A fuller example will actually use the Bootstrap CSS framework to generate a
 user interface which will enable the interface to send and receive form data
 form data.
 
+First we define a custom `User` datatype and using generic deriving we can
+derive the serializer from URI form data automatically.
 
 ```haskell
 data User = User {name :: Text, userId :: Int}
@@ -12843,20 +12845,26 @@ data User = User {name :: Text, userId :: Int}
   deriving anyclass (FromForm, FromHttpApiData)
 ```
 
+The URL routes are specified in an API type which maps the REST verbs to
+response handlers.
 
 ```haskell
 type API =
   Get '[HTML] Markup
-    :<|> ( "user"
-             :> ReqBody '[FormUrlEncoded] User
-             :> Post '[HTML] Markup
-         )
+  :<|> ( "user" :> ReqBody '[FormUrlEncoded] User :> Post '[HTML] Markup )
 ```
+
+The handler is an inhabitant of the `API`type and defines the value level
+handlers corresponding to the routes at the type-level `:<|>` terms.
 
 ```haskell
 server :: Handler Markup :<|> (User -> Handler Markup)
 server = index :<|> createUser
 ```
+
+The page rendering itself is mostly blaze boilerplate that generates the markup
+programmatically using combinators. One could just as easily plug in any of the
+templating languages (Mustache, ...) instead here.
 
 ```haskell
 index :: Handler Markup
@@ -12872,6 +12880,9 @@ userForm =
       submit "Create user"
 ```
 
+The page will include the html and header containing the source files. In this
+case we'll simply load the Bootstrap library from a CDN.
+
 
 ```haskell
 page :: Markup -> Markup
@@ -12886,6 +12897,10 @@ page body = do
       ... other body markup ...
 ```
 
+And then the handler for POST for the single endpoint will simply deserialize
+the User datatype form the POST data and render it into a page with the fields
+extracted. 
+
 ```haskell
 createUser :: User -> Handler Markup
 createUser user@User {..} = do
@@ -12895,6 +12910,9 @@ createUser user@User {..} = do
     Html.p ("Username: " <> toHtml name)
 ```
 
+Putting it all together we can invoke run on a given port and serve the
+application. Point your browser at `localhost:8000` to see it run.
+
 ```haskell
 main :: IO ()
 main = do
@@ -12902,6 +12920,8 @@ main = do
   let application = Server.serve @API Proxy server
   Warp.run 8000 application
 ```
+
+<hr/>
 
 Databases
 =========
