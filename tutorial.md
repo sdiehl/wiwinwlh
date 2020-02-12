@@ -11262,13 +11262,20 @@ writeTChan :: TChan a -> a -> STM ()
 Semaphores
 ----------
 
-TODO
+Semaphores are a concurrency primitive used used to control access to a common
+resource used by multiple threads. A semaphore is a variable containing an
+integral value that can be incremented or decremented by concurrent processes. A
+semaphore will restrict currency to a integral count of consumers called the
+*limit*. The `QSem` provides an interface for a simple lock semaphore that can
+be created in IO and polled on using `waitQSem`.
 
 ```haskell
 newQSem :: Int -> IO QSem
 waitQSem :: QSem -> IO ()
 signalQSem :: QSem -> IO ()
 ```
+
+A simple example of usage:
 
 ```haskell
 import Control.Concurrent
@@ -11298,7 +11305,7 @@ newQSemN :: Int -> IO QSemN
 waitQSemN :: QSemN -> Int -> IO ()
 ```
 
-There is also an STM variant of QSem.
+There is also an STM variant of QSem called `TSem` which has the same semantics.
 
 ```haskell
 newTSem :: Integer -> STM TSem
@@ -11317,7 +11324,7 @@ $ ./program +RTS -N4 -l
 $ threadscope Example.eventlog
 ```
 
-![](img/threadscope.png)
+![](img/threadscope.png){ width=300px }
 
 See:
 
@@ -12669,6 +12676,29 @@ Lucid
 -----
 
 Lucid is another HTML generation library.
+
+```haskell
+class ToHtml a where
+  toHtml :: Monad m => a -> HtmlT m ()
+  toHtmlRaw :: Monad m => a -> HtmlT m ()
+
+execHtmlT :: Monad m => HtmlT m a -> m Builder
+renderText :: Html a -> Text
+renderBS :: Html a -> ByteString
+```
+
+```haskell
+makeAttribute
+  :: Text -- ^ Attribute name.
+  -> Text -- ^ Attribute value.
+  -> Attribute
+
+makeElement
+  :: Functor m
+  => Text       -- ^ Name.
+  -> HtmlT m a  -- ^ Children HTML.
+  -> HtmlT m a -- ^ A parent element.
+```
 
 TODO
 
