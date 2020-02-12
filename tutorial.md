@@ -1093,6 +1093,15 @@ import Data.Eq
 import Control.Monad
 ```
 
+Language extensions can be set at the repl.
+
+```haskell
+:set -XNoImplicitPrelude
+:set -XFlexibleContexts
+:set -XFlexibleInstances
+:set -XOverloadedStrings
+```
+
 To see compiler-level flags and pragmas, use:
 
 ```haskell
@@ -10147,8 +10156,8 @@ Word     fromIntegral fromIntegral  fromIntegral  id             fromIntegral  f
 Integer  fromIntegral fromIntegral  fromIntegral  fromIntegral   id            fromIntegral
 Rational fromRational fromRational  truncate      truncate       truncate      id
 
-Integer
--------
+Arbitrary-precision Arirthmetic
+-------------------------------
 
 The ``Integer`` type in GHC is implemented by the GMP (``libgmp``) arbitrary
 precision arithmetic library.  Unlike the ``Int`` type the size of Integer
@@ -10160,8 +10169,8 @@ An alternative library ``integer-simple`` can be linked in place of libgmp.
 
 See: [GHC, primops and exorcising GMP](http://www.well-typed.com/blog/32/)
 
-Complex
--------
+Complex Numbers
+---------------
 
 Haskell supports arithmetic with complex numbers via a Complex datatype from the
 ``Data.Complex`` module. The first argument is the real part, while the second
@@ -10199,8 +10208,8 @@ is an instance of ``RealFloat``.
 λ: let g x n = cos (n*x) :+ sin (n*x)
 ```
 
-Scientific
-----------
+Decimal & Scientific Types
+--------------------------
 
 Scientific provides arbitrary-precision numbers represented using scientific
 notation. The constructor takes an arbitrarily sized Integer argument for the
@@ -10215,8 +10224,8 @@ fromFloatDigits :: RealFloat a => a -> Scientific
 ~~~~ {.haskell include="src/19-numbers/scientific.hs"}
 ~~~~
 
-Polynomials
------------
+Polynomial Arithmetic
+---------------------
 
 The standard library for working with symbolic polynomials is the `poly`
 library. It exposes a interface for working with univariate polynomials which
@@ -10299,8 +10308,8 @@ vector.
 ~~~~ {.haskell include="src/19-numbers/diffeq/Main.hs"}
 ~~~~
 
-Statistics
-----------
+Statistics & Probability
+------------------------
 
 Haskell has a basic statistics library for calculating descriptive statistics,
 generating and sampling probability distributions and performing statistical
@@ -11487,19 +11496,27 @@ See: [Diagrams Quick Start Tutorial](http://projects.haskell.org/diagrams/doc/qu
 Parsing
 =======
 
+Parser combinators were originally developed in the Haskell programming language
+and the last 10 years have seen a massive amount of refinement and improvements
+on parser combinator libraries. Today Haskell has an amazing parser ecosystem.
+
 Parsec
 ------
 
-For parsing in Haskell it is quite common to use a family of libraries known as *Parser Combinators* which let
-us write code to generate parsers which themselves looks very similar to the parser grammar itself!
+For parsing in Haskell it is quite common to use a family of libraries known as
+*Parser Combinators* which let us write code to generate parsers which
+themselves from an abstract description of thee grammar described with
+combinators.
 
               Combinators
 -----------   ------------
-``<|>``       The choice operator tries to parse the first argument before proceeding to the second. Can be chained sequentially to generate a sequence of options.
+``<|>``       The choice operator tries to parse the first argument before proceeding to the second.
 ``many``      Consumes an arbitrary number of patterns matching the given pattern and returns them as a list.
 ``many1``     Like many but requires at least one match.
 ``optional``  Optionally parses a given pattern returning its value as a Maybe.
 ``try``       Backtracking operator will let us parse ambiguous matching expressions and restart with a different pattern.
+
+`<|>` can be chained sequentially to generate a sequence of options.
 
 There are two styles of writing Parsec, one can choose to write with monads or with applicatives.
 
@@ -12547,13 +12564,6 @@ Frameworks
 
 There are three large Haskell web frameworks:
 
-**Yesod**
-
-Yesod is a large featureful ecosystem built on lots of metaprogramming using
-Template Haskell. There is a excellent documentation and a book on building real
-world applications. This style of metaprogramming to build applications will
-either appeal to you or it won't.
-
 **Servant**
 
 Servant is the newest of the standard Haskell web frameworks. It emerged after
@@ -12576,6 +12586,13 @@ API services quite simple. It's design is modeled after the Flask and Sinatra
 models found in Python and Ruby.
 
 See: [Scotty]
+
+**Yesod**
+
+Yesod is a large featureful ecosystem built on lots of metaprogramming using
+Template Haskell. There is a excellent documentation and a book on building real
+world applications. This style of metaprogramming appeals to some types of
+programmers who can work with the code generation style.
 
 **Snap**
 
@@ -12715,29 +12732,79 @@ A collection of useful related resources can be found on the Scotty wiki:
 Servant
 -------
 
-TODO
+Servant is a modern Haskell web framework heavily based on type-level
+programming patterns. Servant's novel invention is a type-safe way of specifying
+URL routes. This consists of two type-level infix combinators `:>` and `:<|>`
+combinators which combine URL fragments into routes that are run by the web
+server. The two datatypes are defined as followings:
 
 ```haskell
 data (path :: k) :> (a :: *) 
 data a :<|> b 
-data ReqBody' (mods :: [*]) (contentTypes :: [*]) (a :: *)
-type Post = Verb POST 200
-type Get  = Verb GET 200
+```
+
+For example the URL endpoint for a GET route that returns JSON.
+
+Endpoint         Servant route
+---------------- ----------------------------------------
+`GET /api/hello` `"api" :> "hello" :> Get ‘[JSON] String`
+
+The HTTP methods are lifted to the typelevel as DataKinds from the following
+definition.
+
+```haskell
 data StdMethod = GET | POST | HEAD | PUT | DELETE | TRACE | CONNECT | OPTIONS | PATCH
 ```
+And the common type synonyms are given for successful requests:
+
+```haskell
+type Post = Verb POST 200
+type Get  = Verb GET 200
+```
+
+For requests that receive a payload from the client a `ReqBody` is attached to
+the route which contains the content type of the requested payload. This takes a
+type-level list of options and the Haskell value type to serialize into.
+
+```haskell
+data ReqBody' (mods :: [*]) (contentTypes :: [*]) (a :: *)
+```
+
+Endpoint          Servant route
+----------------  --------------------------------------------------------------
+`POST /api/hello` `"api" :> "hello" :> ReqBody '[JSON] MyData :> Post '[JSON] MyData`
+
+The application itself is expressed simply as a function which takes a `Request`
+containing the headers and payload and handles it by evaluating to a `Response`
+inside of the IO. The underling server used in `servant-server` is Warp.
 
 ```haskell
 type Application 
   = Request 
   -> (Response -> IO ResponseReceived)
   -> IO ResponseReceived
+```
+
+Middleware is then simply a higher order function which takes an `Application`
+to another `Application`.
+
+```haskell
 type Middleware = Application -> Application
+```
+
+Handlers are specified defined in `servant-server` and are IO computations with
+failures handed by `ServerError`. The toplevel functions `run` and `serve` can
+be used to instantiate the application inside of a server.
+
+```haskell
 newtype Handler a = Handler { runHandler' :: ExceptT ServerError IO a }
 serve :: HasServer api '[] => Proxy api -> Server api -> Application
 run :: Port -> Application -> IO ()
 ```
 
-The simplest example is simply.
+The simplest end to end example is simply a router which has a single endpoint
+mapping to a server handler which returns the String "Hello World" as a
+`application/json` content type.
 
 ```haskell
 type AppAPI = "api" :> "hello" :> Get ‘[JSON] String
@@ -12757,11 +12824,86 @@ runServer = do
   run port (serve appAPI apiHandler)
 ```
 
-~~~~ {.haskell include="src/27-web/mini-servant/Main.hs"}
-~~~~
+A fuller example will actually use the Bootstrap CSS framework to generate a
+user interface which will enable the interface to send and receive form data
+form data.
+
+
+```haskell
+data User = User {name :: Text, userId :: Int}
+  deriving stock (Generic, Show)
+  deriving anyclass (FromForm, FromHttpApiData)
+```
+
+
+```haskell
+type API =
+  Get '[HTML] Markup
+    :<|> ( "user"
+             :> ReqBody '[FormUrlEncoded] User
+             :> Post '[HTML] Markup
+         )
+```
+
+```haskell
+server :: Handler Markup :<|> (User -> Handler Markup)
+server = index :<|> createUser
+```
+
+```haskell
+index :: Handler Markup
+index = do
+  pure (page userForm)
+
+userForm :: Html.Html
+userForm =
+  Html.div ! Attr.class_ "row" $ do
+    form "/user" "post" $ do
+      field "name"
+      field "userId"
+      submit "Create user"
+```
+
+
+```haskell
+page :: Markup -> Markup
+page body = do
+  Html.html do
+    Html.head do
+      Html.title "Example App"
+      Html.link
+        ! Attr.rel "stylesheet"
+        ! Attr.href "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    Html.body do
+      ... other body markup ...
+```
+
+```haskell
+createUser :: User -> Handler Markup
+createUser user@User {..} = do
+  liftIO (print user)
+  pure $ page $ do
+    Html.p ("Id: " <> toHtml userId)
+    Html.p ("Username: " <> toHtml name)
+```
+
+```haskell
+main :: IO ()
+main = do
+  putStrLn "Running Server"
+  let application = Server.serve @API Proxy server
+  Warp.run 8000 application
+```
 
 Databases
 =========
+
+Haskell has bindings for most major databases and persistence engines. Generally
+the libraries will consist of two different layers. The raw bindings which wrap
+the C library or wire protocol will usually be called `-simple`. So for example
+`postgres-simple`. While higher level libraries will typically depend on this
+library for the bindings and provide higher level interfaces for building
+queries, managing transactions, and connection pooling.
 
 Postgres
 --------
@@ -14100,8 +14242,8 @@ data DMonad m = DMonad
 
 ```haskell
 class (Functor t, Foldable t) => Traversable t where
-    traverse :: Applicative f => (a -> f b) -> t a -> f (t b)
-    traverse f = sequenceA . fmap f
+  traverse :: Applicative f => (a -> f b) -> t a -> f (t b)
+  traverse f = sequenceA . fmap f
 ```
 
 ```haskell
@@ -15713,6 +15855,8 @@ App
 ```
 
 A full example of pretty printing the lambda calculus is shown below:
+
+TODO, use prettyprinter instead
 
 ~~~~ {.haskell include="src/30-languages/pretty.hs"}
 ~~~~

@@ -48,4 +48,4 @@ plus_suc {suc n} = cong suc (plus_suc {n})
 
 reverse : ∀ {A n} → Vec A n → Vec A n
 reverse []       = []
-reverse {A} {suc n} (x ∷ xs) = subst vec (plus_suc {n}) (reverse xs ++ (x  ∷ []))
+reverse {A} {suc n} (x ∷ xs) = subst vec (plus_suc {n}) (reverse xs ++ (x ∷ []))
