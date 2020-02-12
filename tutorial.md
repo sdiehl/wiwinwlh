@@ -12675,7 +12675,13 @@ Haskell data structures and HTML representation.
 Lucid
 -----
 
-Lucid is another HTML generation library.
+Lucid is another HTML generation library. It takes a different namespacing
+approach than Blaze and doesn't use names which clash with the default Prelude
+exports. So elements like `div`, `id`, and `head` are replaced with underscore
+suffixed functions. `div_`, `id_` and `head_`.
+
+The base interface is defined through a `ToHTML` typeclass which renders an
+element into a text builder interface wrapped in `HtmlT` transformer.
 
 ```haskell
 class ToHtml a where
@@ -12686,6 +12692,9 @@ execHtmlT :: Monad m => HtmlT m a -> m Builder
 renderText :: Html a -> Text
 renderBS :: Html a -> ByteString
 ```
+
+New elements and attributes can be created by the smart constructors for
+`Attribute` and `Element` types.
 
 ```haskell
 makeAttribute
@@ -12700,7 +12709,10 @@ makeElement
   -> HtmlT m a -- ^ A parent element.
 ```
 
-TODO
+A simple example of usage is shown below:
+
+~~~~ {.haskell include="src/27-web/lucid.hs"}
+~~~~
 
 Hastache
 --------
