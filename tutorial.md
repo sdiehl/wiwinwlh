@@ -10981,27 +10981,56 @@ example f x y = runEval $ do
 Threads
 -------
 
-TODO
+For fine-grained concurrency and parallelism, Haskell has a lightweight thread
+system that schedules logical threads on the available operating system threads.
+These lightweight threads are called *unbound threads*, while native operating
+systems are called *bound threads* since they are bound to a single operating
+system thread. The functions to spawn an run tasks inside these threads all live
+in the IO monad. The number of possible simultaneous threads is given by the
+`getNumCapabilities` functions based on the system environment.
 
 ```haskell
+forkIO :: IO () -> IO ThreadId
+forkOS :: IO () -> IO ThreadId
+runInBoundThread :: IO a -> IO a
+runInUnboundThread :: IO a -> IO a
 getNumCapabilities :: IO Int
+isCurrentThreadBound :: IO Bool
+```
+
+Managed threads work with the runtime system's IO manager which will schedule
+and manage cooperative multitaksing and polling. When a individual unbound
+thread is blocked polling on a file description or lock it will yield to another
+runnable thread managed by the runtime. This yield action can also be explicitly
+invoked with the `yield` function. A thread can also schedule a wait using
+`threadDelay` to yield to the scheduler for a fixed interval given in
+microseconds.
+
+```haskell
 yield :: IO ()
 threadDelay :: Int -> IO ()
 ```
 
+Once a thread is forked the fork action will give back a `ThreadId` which can be
+used to call actions and kill the thread from another context. Inside of a
+running thread the current ThreadId can be quired with `myThreadId`.
+
 ```haskell
-forkIO :: IO () -> IO ThreadId
 myThreadId :: IO ThreadId
 killThread :: ThreadId -> IO ()
+```
+
+An exception can also be raised in a given `ThreadId` given an instance of
+`Exception` typeclass.
+
+```haskell
 throwTo :: Exception e => ThreadId -> e -> IO ()
 ```
 
-```haskell
-forkOS :: IO () -> IO ThreadId
-isCurrentThreadBound :: IO Bool
-```
-
-IO managed threads, vs bound threads
+When individually polling on file descriptors there are several functions that
+can schedule the thread to wake up again when the given file is given a wake
+event from the kernel. The following functions will yield the current waiting on
+either a read or write event on the given file description `Fd`.
 
 ```haskell
 threadWaitRead :: Fd -> IO ()
