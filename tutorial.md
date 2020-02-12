@@ -12810,6 +12810,8 @@ fail404 :: Handler ()
 fail404 = throwError $ err404 { errBody = "Not found" }
 ```
 
+**Minimal Example**
+
 The simplest end to end example is simply a router which has a single endpoint
 mapping to a server handler which returns the String "Hello World" as a
 `application/json` content type.
@@ -12832,9 +12834,11 @@ runServer = do
   run port (serve appAPI apiHandler)
 ```
 
-A fuller example will actually use the Bootstrap CSS framework to generate a
-user interface which will enable the interface to send and receive form data
-form data.
+**Full Example**
+
+As a second case, we consider a larger application which builds a user interface
+which will enable the interface to send and receive data from the client to the
+REST API.
 
 First we define a custom `User` datatype and using generic deriving we can
 derive the serializer from URI form data automatically.
@@ -12920,6 +12924,10 @@ main = do
   let application = Server.serve @API Proxy server
   Warp.run 8000 application
 ```
+
+From here you could all manner of additional logic, like adding in the [Selda]
+object relational mapper, adding in `servant-auth` for authentication or using
+`swagger2 for building Open API specifications.
 
 <hr/>
 
