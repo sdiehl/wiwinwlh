@@ -8297,60 +8297,32 @@ Running this we rather see it is able to deduce most of the laws for list functi
 
 ```bash
 $ runhaskell src/quickspec.hs
-== API ==
--- functions --
-map :: (A -> A) -> [A] -> [A]
-minimum :: [A] -> A
-(++) :: [A] -> [A] -> [A]
-length :: [A] -> Int
-sort, id, reverse :: [A] -> [A]
-
 -- background functions --
 id :: A -> A
 (:) :: A -> [A] -> [A]
 (.) :: (A -> A) -> (A -> A) -> A -> A
 [] :: [A]
-
 -- variables --
 f, g, h :: A -> A
 xs, ys, zs :: [A]
-
--- the following types are using non-standard equality --
-A -> A
-
--- WARNING: there are no variables of the following types; consider adding some --
-A
-
-== Testing ==
-Depth 1: 12 terms, 4 tests, 24 evaluations, 12 classes, 0 raw equations.
-Depth 2: 80 terms, 500 tests, 18673 evaluations, 52 classes, 28 raw equations.
-Depth 3: 1553 terms, 500 tests, 255056 evaluations, 1234 classes, 319 raw equations.
-319 raw equations; 1234 terms in universe.
-
 == Equations about map ==
   1: map f [] == []
   2: map id xs == xs
   3: map (f.g) xs == map f (map g xs)
-
 == Equations about minimum ==
   4: minimum [] == undefined
-
 == Equations about (++) ==
   5: xs++[] == xs
   6: []++xs == xs
   7: (xs++ys)++zs == xs++(ys++zs)
-
 == Equations about sort ==
   8: sort [] == []
   9: sort (sort xs) == sort xs
-
 == Equations about id ==
  10: id xs == xs
-
 == Equations about reverse ==
  11: reverse [] == []
  12: reverse (reverse xs) == xs
-
 == Equations about several functions ==
  13: minimum (xs++ys) == minimum (ys++xs)
  14: length (map f xs) == length xs
@@ -13446,7 +13418,7 @@ Parser
 
 The GHC parser is itself written in Happy. It defines it's Parser monad as the
 following definition which emits a sequences of `Located` tokens with the
-lexemes position information. The ambient monad is the `P` monad. 
+lexemes position information. The parser is embedded inside the `P` monad. 
 
 ```yacc
 %monad { P } { >>= } { return }
