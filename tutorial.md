@@ -15934,12 +15934,47 @@ monoidally composes a variety of documents together. The Monoid append operation
 simply concatenates two documents while a variety of higher level combinators
 add additional string elements into the language.
 
+The `Pretty` class maps an arbitrary value into a `Doc` type which is annotated
+with the renderder.
+
+```haskell
+data Doc ann
+
+class Pretty a where
+  pretty :: a -> Doc ann
+  prettyList :: [a] -> Doc ann
+```
+
+The `Doc` type can then be rendered to any number of strings type means of a
+layout algorithm. The builtin methods are `Compact`, `Smart` and `Pretty`.
+
+```haskell
+viaShow :: Show a => a -> Doc ann
+layoutPretty :: LayoutOptions -> Doc ann -> SimpleDocStream ann
+renderStrict :: SimpleDocStream ann -> Text
+putDoc :: Doc ann -> IO ()
+```
+
+The common combinators are shown below,
+
               Combinators
 -----------   ------------
 ``<>``        Concatenation
 ``<+>``       Spaced concatenation
-``char``      Renders a character as a ``Doc``
-``text``      Renders a string as a ``Doc``
+``nest``      Nested a document with whitespace
+``group``     Lays out on a line by removing line breaks
+``align``     Lays out with the nesting level at the current column
+``hang``      Lays out with the nesting level relative to the first line
+``indent``    Increases indentation by a given count
+``list``      Lays out a given list with braces and commas.
+``tupled``    Lays out a given list with parens and commas.
+``hsep``      Horizontal concatenation
+``vsep``      Vertical concatenation
+``hcat``      TODO
+``vcat``      TODO
+``puncutate`` Appends a given doc to all elements of a list of docs
+``parens``    Surrounds with parentheses
+``dquotes``   Surrounds with double quotes
 
 For example the common pretty printed form of the lambda calculus ``k``
 combinator is:
@@ -15960,9 +15995,10 @@ App
   (Lam "x" (Lam "y" (Var "x")))
 ```
 
-A full example of pretty printing the lambda calculus is shown below:
-
-TODO, use prettyprinter instead
+A full example of pretty printing the lambda calculus is shown below. This uses
+a custom `Pretty` class to pass an integral value which indicates the depth of
+the lambda expression. Alternatively the builtin `Pretty` class could be used
+for simpler datatypes.
 
 ~~~~ {.haskell include="src/30-languages/pretty.hs"}
 ~~~~
