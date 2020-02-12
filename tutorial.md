@@ -12802,6 +12802,14 @@ serve :: HasServer api '[] => Proxy api -> Server api -> Application
 run :: Port -> Application -> IO ()
 ```
 
+For error handling the `throwError` function can be used attached to an error
+response code.
+
+```haskell
+fail404 :: Handler ()
+fail404 = throwError $ err404 { errBody = "Not found" }
+```
+
 The simplest end to end example is simply a router which has a single endpoint
 mapping to a server handler which returns the String "Hello World" as a
 `application/json` content type.
