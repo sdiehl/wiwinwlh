@@ -14777,22 +14777,21 @@ references to both itself (for recursion) and the dictionary for instance of
 ``Num`` typeclass over the type ``Int``.
 
 
-The type system of STG system consits of the following types:
+The type system of STG system consits of the following types. The size of these
+types depend on the size of a `void*` pointer on the architecture.
 
 * **StgWord** -  Unit of heap allocation
 * **StgPtr** - Basic pointer type
-* **StgInt**
-* **StgChar**
-* **StgFloat**
-* **StgDouble**
-* **StgAddr**
-* **StgBool**
-* **StgVoid**
-* **StgOffset**
-* **StgCode**
-* **StgStablePtr**
-* **StgFunPtr**
-* **StgUnion**
+* **StgBool** - Booean int bit flag
+* **StgInt** - `Int#`
+* **StgChar** - `Char#`
+* **StgFloat** - `Float#`
+* **StgDouble** - `Double#`
+* **StgAddr** - `Addr#` (`void *` pointer)
+* **StgStablePtr** - `StablePtr#`
+* **StgOffset** - Byte offset within a closure
+* **StgFunPtr** - Pointer to a C functions
+* **StgVolatilePtr** - Pointer to a volatile word
 
 Worker/Wrapper
 --------------
