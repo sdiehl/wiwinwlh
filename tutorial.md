@@ -1881,7 +1881,7 @@ suitBeats _        _         = False
 
 And finally we can write a function which determines if another card beats
 another card in terms of the two pattern matching functions above.  The
-following pattern match brings the values of the record into scope of the
+following pattern match brings the values of the record into the scope of the
 function body assigning to names specified in the pattern syntax.
 
 ```haskell
@@ -1923,8 +1923,8 @@ addOne (x : xs) = (x+1) : (addOne xs)
 addOne [] = []
 ```
 
-Operators
----------
+Operators and Sections
+----------------------
 
 An operator is a function that can be applied using infix syntax or partially
 applied using a section. Operators can be defined to use any combination the
@@ -1944,9 +1944,9 @@ Operators are of one of three fixity classes.
 
 Expressions involving infix operators are disambiguated by the operator's fixity
 and precedence. Infix operators are either left or right associative. These
-denoted by fixity declarations of the operator `infixr` `infixl` and `infix`.
-The standard operators defined in the Prelude have the following precedence
-table.
+denoted by fixity declarations for the operator using either `infixr` `infixl`
+and `infix`.  The standard operators defined in the Prelude have the following
+precedence table.
 
 ```haskell
 infixr 9  .
@@ -1978,10 +1978,11 @@ For example the following are equivalent:
 Typeclasses
 -----------
 
-Typeclasses one of the core abstractions Haskell. Just as wrote polymorphic
-functions before which operating over all given types, we can use type classes
-which provide a form of bounded polymorphism which constrain type variables to a
-subset of types which implement a given class.
+Typeclasses are one of the core abstractions in Haskell. Just as we wrote
+polymorphic functions above which operate over all given types (the `id`
+function is one example), we can use typeclasses to provide a form of bounded
+polymorphism which constrains type variables to a subset of those types that
+implement a given class.
 
 For example we can define an equality class which allows us to define an
 overloaded notion of equality depending on the data structure provided.
@@ -1992,7 +1993,7 @@ class Equal a where
 ```
 
 Then we can define this typeclass over several different types. These
-definitions are called **typeclass instances**. For example over boolean values
+definitions are called **typeclass instances**. For example for the `Bool` type
 the equality typeclass would be defined as:
 
 ```haskell
@@ -2003,20 +2004,20 @@ instance Equal Bool where
   equal False True  = False
 ```
 
-Over the unit type, the instance is trivial:
+Over the unit type, where only a single value exists, the instance is trivial:
 
 ```haskell
 instance Equal () where
   equal () () = True
 ```
 
-Over Ordering defined as
+For the Ordering type, defined as:
 
 ```haskell
 data Ordering = LT | EQ | GT
 ```
 
-we would have:
+We would have the following Equal instance:
 
 ```haskell
 instance Equal Ordering where
@@ -2026,24 +2027,29 @@ instance Equal Ordering where
   equal _ _   = False
 ```
 
-For more complex data structures like lists we can write this instance
-recursively in terms of pattern matching on list elements to check their
-equality all the way down the spine of the list. This enforces that the
-underlying element of the list itself has a notion of equality, so we put this
-in the **typeclass context** which is written to the left of the fat arrow
-`=>`.
+An Equal instance for a more complex data structure like the list type relies
+upon the fact that the type of the elements in the list must also have a notion
+of equality, so we include this as a constraint in the typeclass context, which
+is written to the left of the fat arrow `=>`. With this constraint in place, we
+can write this instance recursively by pattern matching on the list elements and
+checking for equality all the way down the spine of the list:
 
 ```haskell
 instance (Equal a) => Equal [a] where
   equal [] [] = True   -- Empty lists are equal
   equal [] ys = False  -- Lists of unequal size are not equal
   equal xs [] = False
+  -- equal x y is only allowed here due to the constraint (Equal a)
   equal (x:xs) (y:ys) = equal x y && equal xs ys
 ```
+In the above definition, we know that we can check for equality between
+individual list elements if those list elements satisfy the Equal constraint.
+Knowing that they do, we can then check for equality between two complete lists.
 
-And for tuples we would check each element respectively. Note that this has two
-constraints in the context of the typeclass that both type variables `a` and `b`
-have to themselves have a Equal instance.
+For tuples, we will also include the Equal constraint for their elements, and we
+can then check each element for equality respectively. Note that this instance
+includes two constraints in the context of the typeclass, requiring that both
+type variables `a` and `b` must also have an Equal instance.
 
 ```haskell
 instance (Equal a, Equal b) => Equal (a,b) where
@@ -2076,7 +2082,7 @@ frequently and defined over many prelude types:
 Many of the default classes have instances that can be deriving automatically.
 After the definition of a datatype you can add a `deriving` clause which will
 generate the instances for this datatype automatically. This does not work
-universally but for many instances which have boiilerplate definitions GHC is
+universally but for many instances which have boilerplate definitions GHC is
 quite clever and can save you from writing quite a bit of code by hand.
 
 For example for a custom list type.
@@ -2091,16 +2097,18 @@ data List a
 Side Effects
 ------------
 
-Contrary to many misconceptions, side effects are integral part of Haskell
-programming. Haskell although takes a different approach to effectful
-programming and has varies models of modeling these effects within the type
-system. These range from using [Monads] to building [algebraic
-models](#effect-systems) of effects that draw clear lines between effectful code
-and pure code.  The idea of reasoning about where effects can and cannot exist
-is one of the key idea of Haskell, **not the idea of trying to avoid side
-effects**.
+Contrary to a common misconception, side effects are integral part of Haskell
+programming. Probably the most interesting thing about Haskell’s approach to
+side effects is that they are encoded in the type system. This is certainly a
+different approach to effectful programming, and the language has various models
+for modeling these effects within the type system. These models range from using
+[Monads](#monads) to building [algebraic models](#algebraic-effects) of
+effects that draw clear lines between effectful code and pure code. The idea
+of reasoning about where effects can and cannot exist is one of the key ideas
+of Haskell, but this certainly does not mean trying to avoid side effects
+altogether!
 
-Indeed the simplest Hello World program in Haskell is quite simply:
+Indeed a Hello World program in Haskell is quite simply:
 
 ```haskell
 main :: IO ()
@@ -2108,7 +2116,7 @@ main = print "Hello World"
 ```
 
 Other side effects can include reading from the terminal and prompting the user
-for input.
+for input, such as in the complete program below:
 
 ```haskell
 main :: IO ()
@@ -2171,22 +2179,23 @@ Newtypes
 --------
 
 Newtypes are a form of zero-cost abstraction that allows developers to specify
-compile-time names for types which have the same underlying representation for
-which the developer wishes to expose a more restrictive interface. This allows
-the compiler to distinguish between different types which have
+compile-time names for types for which the developer wishes to expose a more
+restrictive interface.  They’re zero-cost because these new types end up with
+the same underlying representation as the things they differentiate.  This
+allows the compiler to distinguish between different types which have
 representationally identical but semantically different.
 
-For instance velocity can be represented as a scalar quantity represent as a
-double but the user may not want to mix doubles with vector quantities. Newtypes
-allow us to distinguish between scalars and vectors at compile time so that no
-accidental calculations can occur.
+For instance velocity can be represented as a scalar quantity represented as a
+double but the user may not want to mix doubles with other vector quantities.
+Newtypes allow us to distinguish between scalars and vectors at compile time so
+that no accidental calculations can occur.
 
 ```haskell
 newtype Velocity = Velocity Double
 ```
 
 Most importantly these newtypes disappear during compilation and the velocity
-type is represented simply as just a machine double with no overhead.
+type will be represented as simply just a machine double with no overhead.
 
 See also the section on [Newtype Deriving] for a further discussion of tricks
 involved with handling newtypes.
@@ -2236,6 +2245,8 @@ exception, halt the program, and print the specified error message. In the
 ``divByY`` function below, passing the function ``0`` as the divisor results
 in this function results in such an exception.
 
+TODO fix divByY example
+
 ```haskell
 error :: String -> a                       -- Takes an error message of type
                                            -- String and returns whatever type
@@ -2273,9 +2284,9 @@ case x of
   A -> ()
 ```
 
-The code snippet above is translated into the following [GHC
-Core](#code) output. The compiler inserts an exception to account for the
-non-exhaustive patterns:
+The code snippet above is translated into the following [GHC Core](#core) output
+where the compiler will insert an exception to account for the non-exhaustive
+patterns:
 
 ```haskell
 case x of _ {
@@ -2311,13 +2322,22 @@ either practical or historical.
 The canonical example is the ``head`` function which has type ``[a] -> a``.
 This function could not be well-typed without the bottom.
 
+```haskell
+-- | Extract the first element of a list, which must be non-empty.
+head                    :: [a] -> a
+head (x:_)              =  x
+head []                 =  error "Prelude.head: empty list"
+```
+
+Some further examples of bottoms:
+
 ~~~~ {.haskell include="src/01-basics/bottoms.hs"}
 ~~~~
 
 It is rare to see these partial functions thrown around carelessly in production
 code because they cause the program to halt. The preferred method for handling
 exceptions is to combine the use of safe variants provided in ``Data.Maybe``
-with the usual fold functions ``maybe`` and ``either``.
+with the functions ``maybe`` and ``either``.
 
 Another method is to use pattern matching, as shown in ``listToMaybe``, a safer
 version of ``head`` described below:
