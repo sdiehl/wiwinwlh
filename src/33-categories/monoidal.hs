@@ -1,5 +1,6 @@
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FunctionalDependencies #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
 
 import Prelude hiding ((.))
 
@@ -8,7 +9,7 @@ class Category k where
   (.) :: k b c -> k a b -> k a c
 
 class Category k => Bifunctor k p where
-  (***) :: k a b -> k a' b' -> k (p a a') (p b b')
+  bimap :: k a b -> k a' b' -> k (p a a') (p b b')
 
 class Bifunctor k p => Associative k p where
   associate :: k (p (p a b) c) (p a (p b c))
@@ -28,7 +29,7 @@ class (Monoidal k prod i, Braided k prod) => Cartesian k prod i | k -> prod i wh
   snd :: k (prod a b) b
   diag :: k a (prod a a)
   (&&&) :: k a b -> k a c -> k a (prod b c)
-  f &&& g = (f *** g) . diag
+  f &&& g = (f `bimap` g) . diag
 
 class Cartesian k p i => CCC k p i e | k -> p i e where
   apply :: k (p (e a b) a) b

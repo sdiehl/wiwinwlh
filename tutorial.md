@@ -35,9 +35,10 @@ This was a particularly in-vogue research topic at the time and as a result the
 committee attracted various talented individuals who who initiated the language
 and ultimately laid the foundation for modern Haskell.
 
-Over the last 30 years Haskell has grown into a mature compiler with a fledgling
-ecosystem that is constantly reinventing itself and looking to further a set of
-research goals that define the community. Although laziness was originally the
+Over the last 30 years Haskell has evolved into a mature ecosystem, with an
+equally mature compiler. Even so, the language is frequently reimagined by
+passionated contributors who may be furthering academic research goals or merely
+contributing out of personal interest. Although laziness was originally the
 major research goal, this has largely become a quirky artifact that most users
 of the language are generally uninterested in. In modern times the major themes
 of Haskell community are:
@@ -78,12 +79,12 @@ How to Read
 
 This is a guide for working software engineers who have an interest in Haskell
 but don't know Haskell yet. I presume you know some basics about how your
-operating system works, the shell, and the some fundamentals of other imperative
+operating system works, the shell, and some fundamentals of other imperative
 programming languages.  If you are a Python or Java software engineer with no
-experience with Haskell this is the executive summary of Haskell theory and
-practice for you. We'll delve into a little theory as needed to explain concepts
-but no more than necessary. If you're looking for a pure introductory tutorial,
-this probably isn't the right start for you, however this can be read as a
+Haskell experience, this is the executive summary of Haskell theory and practice
+for you. We'll delve into a little theory as needed to explain concepts but no
+more than necessary. If you're looking for a pure introductory tutorial, this
+probably isn't the right start for you, however this can be read as a
 companion to other introductory texts.
 
 There is no particular order to this guide, other than the first chapter which
@@ -96,7 +97,7 @@ toward more complex topics in later chapters.
 As there is no ordering after the first chapter I will refer to concepts
 globally without introducing them first. If something doesn't make sense just
 skip it and move on. I strongly encourage you to play around with the source
-code modules for yourself. Haskell cannot be learned from an armchair, instead
+code modules for yourself. Haskell cannot be learned from an armchair; instead
 it can only be mastered by writing a ton of code for yourself. GHC may initially
 seem like a cruel instructor, but in time most people grow to see it as their
 friend.
@@ -104,12 +105,13 @@ friend.
 GHC
 ---
 
-GHC is the Glorious Glasgow Haskell Compiler originally written in 1989. GHC is
-a massive compiler supports a wide variety of extensions. GHC is the de facto
-standard for Haskell compilers. There are a few other compilers that have
-existed but they either are quite limited or have bit rotted over the years. GHC
-is also the only reference implementation for the Haskell language and defines
-what Haskell the language is by its implementation.
+GHC is the Glorious Glasgow Haskell Compiler. Originally written in 1989, GHC is
+now the de facto standard for Haskell compilers. A few other compilers have
+existed along the way, but they either are quite limited or have bit rotted over
+the years. At this point, GHC is a massive compiler and it supports a wide
+variety of extensions. It’s also the only reference implementation for the
+Haskell language and as such, it defines what Haskell the language is by its
+implementation.
 
 GHC is run at the command line with the command `ghc`.
 
@@ -122,9 +124,9 @@ The Glorious Glasgow Haskell Compilation System, version 8.8.1
 $ ghc Example.hs -o example
 ```
 
-GHC's runtime is written in C and uses machinery from GCC infrastructure for
-it's native code generator and can also use LLVM for it's native code
-generation. GHC is supported on the following architectures:
+GHC's runtime is written in C and uses machinery from GCC infrastructure for its
+native code generator and can also use LLVM for it's native code generation. GHC
+is supported on the following architectures:
 
 * Linux x86
 * Linux x86_64
@@ -4092,8 +4094,46 @@ See:
 Effect Systems
 --------------
 
+TODO
+
 * fused-effects
 * polysemy
+* eff
+
+**Extensibility problems**
+
+TODO
+
+When you add a new custom transformer inside of our business logic we'll
+typically have to derive a large number of boilerplate instances to compose it
+inside of the mtl transformer stack.  For example adding MonadReader instance
+for n large large number of undecidable instances that do nothing but mostly
+lifts. You can see this massive boilerplate all over the design of the `mtl`
+library.
+
+```
+instance MonadReader r m => MonadReader r (ExceptT e m) where
+    ask   = lift ask
+    local = mapExceptT . local
+    reader = lift . reader
+
+instance MonadReader r m => MonadReader r (IdentityT m) where
+    ask   = lift ask
+    local = mapIdentityT . local
+    reader = lift . reader
+
+-- Same for ListT, MaybeT, ...
+
+...
+```
+
+This is called the $n^2$ instance problem and is at the heart of the mtl
+extensibility problem.
+
+**Non-commutative transformers**
+
+Since monad transformers don't commute in general, we can't always merge two
+`StateT` layers together.
 
 Polysemy
 --------
@@ -4275,7 +4315,8 @@ Fused-effects requires the following language extensions to operate.
 
 **Minimal Example**
 
-TODO
+A minimal example using the `State` effect to track stateful updates to a single
+integral value.
 
 ```haskell
 example1 :: Has (State Integer) sig m => m Integer
@@ -4283,7 +4324,13 @@ example1 = do
   modify (+ 1)
   modify (* 10)
   get
+```
 
+The evaluation of this monadic state block results in a `m Integer` with the
+Algebra and Effect context. This can then be evaluated into either `Identity` or
+`IO` using `run`.
+
+```haskell
 ex1 :: (Algebra sig m, Effect sig) => m Integer
 ex1 = evalState (1 :: Integer) example1
 
@@ -4782,7 +4829,7 @@ restriction can be relaxed with `EmptyCase` language extension. The case
 statement then immediately yields a ``Non-exhaustive patterns in case`` if
 evaluated.
 
-```
+```haskell
 test = case of
 ```
 
@@ -14926,8 +14973,7 @@ inside of the loop which are updated when computed. It also includes static
 references to both itself (for recursion) and the dictionary for instance of
 ``Num`` typeclass over the type ``Int``.
 
-
-The type system of STG system consits of the following types. The size of these
+The type system of STG system consists of the following types. The size of these
 types depend on the size of a `void*` pointer on the architecture.
 
 * **StgWord** -  TODO
@@ -17255,10 +17301,24 @@ f >=> Just ≡ f
 Monoidal Categories
 -------------------
 
-TODO
+On top of the basic category structure there are other higher-level objects that
+can be constructed that enrich the category with additional operations.
+
+* A **bifunctor** is a functor whose domain is the product of two categories.
+* A **monoidal category** is a category which has a tensor product and a unit
+  object.
+* A **braided monoidal category** is a category which has tensor product and an
+  operation `braid` which swaps elements in the tensor product.
+* A **cartesian monoidal category** is a is a monoidal category with, binary
+  product, and diagonal.
+* A **cartesian closed category** has is a monoidal category with a terminal
+  object, binary products and exponential objects.
 
 ~~~~ {.haskell include="src/33-categories/monoidal.hs"}
 ~~~~
+
+An example of this tower is is the `Hask` with `(->)` as exponential, `(,)` as
+product and `()` as unit object.
 
 ```haskell
 type Hask = (->)
@@ -17268,7 +17328,7 @@ instance Category (->) where
   (.) = (Prelude..)
  
 instance Bifunctor (->) (,) where
-  f *** g = \(a,b) -> (f a,g b)
+  bimap f g = \(a,b) -> (f a,g b)
  
 instance Associative (->) (,) where
   associate ((a,b),c) = (a,(b,c))
