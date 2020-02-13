@@ -4206,27 +4206,34 @@ runExample2 = do
 
 The use of free-monads is not entirely without cost, and there are experimental
 GHC plugins which can abstract away some of the overhead from the effect stack.
+Code thats makse use of polysemy should enable the following GHC flags to enable
+aggressive typeclass specialisation:
+
+* `-flate-specialise`
+* `-fspecialise-aggressively`
 
 Fused Effects
 -------------
 
-TODO
+Fused-effects is an alternative approach to effect systems based on algebraic
+effects model. Unlike polysemy, fused-effects does not use a free monad as an
+intermediate form. Fused-effects has competative performance compared with mtl
+and doesn't require additional GHC plugins or extension compiler fusion rules to
+optimise away the abstraction overhead.
 
-```haskell
-class (HFunctor sig, Monad m) => Algebra sig m | m -> sig where
-  alg :: sig m a -> m a
-
-class HFunctor sig => Effect sig where
-```
+The `fused-effects` library exposes a constraint kind called `Has` which
+annotates a type signature that contains effectful logic. In this signature `m`
+is called the **carrier** for the `sig` **effect signature** containing the
+`eff` effect.
 
 ```haskell
 type Has eff sig m = (Members eff sig, Algebra sig m)
 ```
 
-```haskell
-class Member (sub :: (* -> *) -> (* -> *)) sup where
-  inj :: sub m a -> sup m a
-```
+For example the traditional State effect is modeled by the following datatype
+with three parameters. The `s` parameter is the state object, the `m` is the
+effect parameter. This exposes the same interface as `Control.Monad.State`
+except for the `Has` constraint instead.
 
 ```haskell
 data State s m k
@@ -4234,15 +4241,83 @@ data State s m k
   | Put s (m k)
   deriving (Functor)
 
+get :: Has (State s) sig m => m s
+put :: Has (State s) sig m => s -> m ()
+```
+
+The `Carrier` for the State effect is defined as `StateC` and the evaluators for
+the state carrier are defined in the same interface as `mtl` except they
+evaluate into a result containing the effect parameter `m`.
+
+```haskell
 newtype StateC s m a = StateC (s -> m (s, a))
   deriving (Functor)
 
 runState :: s -> StateC s m a -> m (s, a)
 ```
 
+The evaluators for the effect lift monadic actions from an effectful
+computation.
+
 ```haskell
-get :: Has (State s) sig m => m s
-put :: Has (State s) sig m => s -> m ()
+runM :: LiftC m a -> m a
+run :: Identity a -> a
+```
+
+Fused-effects requires the following language extensions to operate.
+
+```haskell
+{-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE UndecidableInstances #-}
+```
+
+**Minimal Example**
+
+TODO
+
+```haskell
+example1 :: Has (State Integer) sig m => m Integer
+example1 = do
+  modify (+ 1)
+  modify (* 10)
+  get
+
+ex1 :: (Algebra sig m, Effect sig) => m Integer
+ex1 = evalState (1 :: Integer) example1
+
+run1 :: Identity Integer
+run1 = runM ex1
+
+run2 :: IO Integer
+run2 = runM ex1
+```
+
+**Composite Effects**
+
+Consider a more complex example which combines exceptions with `Throw` effect
+with `State`. Importantly note that functions `runThrow` and `evalState` cannot
+infer the state type from the signature alone and thus require additional
+annotations. This differs from `mtl` which typically has more optimal inference.
+
+```haskell
+example2 ::
+  ( Has (State (Double, Double)) sig m,
+    Has (Throw ArithException) sig m
+  ) =>
+  m Double
+example2 = do
+  (a, b) <- get
+  if b == 0
+    then throwError DivideByZero
+    else pure (a / b)
+
+ex2 :: (Algebra sig m, Effect sig) => m (Either ArithException Double)
+ex2 = runThrow $ evalState (1 :: Double, 2 :: Double) example2
+
+ex3 :: (Algebra sig m, Effect sig) => m (Either ArithException Double)
+ex3 = evalState (1 :: Double, 0 :: Double) (runThrow example2)
 ```
 
 <hr/>
@@ -14857,7 +14932,7 @@ types depend on the size of a `void*` pointer on the architecture.
 
 * **StgWord** -  TODO
 * **StgPtr** - Basic pointer type
-* **StgBool** - Booean int bit flag
+* **StgBool** - Boolean int bit flag
 * **StgInt** - `Int#`
 * **StgChar** - `Char#`
 * **StgFloat** - `Float#`
@@ -17185,7 +17260,6 @@ TODO
 
 ~~~~ {.haskell include="src/33-categories/monoidal.hs"}
 ~~~~
-
 
 ```haskell
 type Hask = (->)
