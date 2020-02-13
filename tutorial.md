@@ -186,7 +186,7 @@ To modify your shell to include ghc and cabal.
 $ source ~/.ghcup/env
 ```
 
-Or permanently add the following to your `.bashrc` or `.zshrc` file:
+Or you can permanently add the following to your `.bashrc` or `.zshrc` file:
 
 ```bash
 export PATH="~/.ghcup/bin:$PATH"
@@ -201,12 +201,13 @@ package level. So, why are there two different package managers?
 
 The simplest explanation is that Haskell is an organic ecosystem with no central
 authority, and as such different groups of people with different ideas and
-different economic interests about optimal packaging built around two different
-models. The interests of an organic community don't always result in open source
-convergence, however the ecosystem has seen both package managers reach much
-greater levels of stability as a result of collaboration. In this article I
-won't make a preference which system to use, this is best left up to the reader
-to experiment and use the system which best your or your company's needs.
+different economic interests about optimal packaging built their own solutions
+around two different models. The interests of an organic community don't always
+result in open source convergence; however, the ecosystem has seen both package
+managers reach much greater levels of stability as a result of collaboration. In
+this article, I won't offer a preference for which system to use: it is left up
+to the reader to experiment and use the system which best suits your or your
+company's needs.
 
 Project Structure
 -----------------
@@ -233,9 +234,9 @@ file structure:
 └── .ghci                        # ghci configuration
 ```
 
-More complex projects consisting of multiple components will have use a multiple
-projects like above, but nested in subfolders with a `cabal.project` or
-`stack.yaml` in the root of the repository.
+More complex projects consisting of multiple components will include multiple
+project directories like that above, but these will be nested in subfolders with
+a `cabal.project` or `stack.yaml` in the root of the repository.
 
 ```bash
 .
@@ -246,8 +247,8 @@ projects like above, but nested in subfolders with a `cabal.project` or
 └── cabal.project       # cabal project configuration
 ```
 
-An example Cabal project `cabal.project1` for the above multi-component library
-repository would look like:
+An example Cabal project file, named `cabal.project1` above, this
+multi-component library repository would include these lines.
 
 ```yaml
 packages: ./lib-one
@@ -255,8 +256,8 @@ packages: ./lib-one
           ./lib-three
 ```
 
-While an example Stack project `stack.yaml` for the above multi-component library
-repository would be:
+By contract, an example Stack project `stack.yaml` for the above multi-component
+library repository would be:
 
 ```yaml
 resolver: lts-14.20
