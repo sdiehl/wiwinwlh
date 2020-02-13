@@ -7312,13 +7312,12 @@ Socrates is a man, can be written as:
 Man(Socrates)
 ```
 
-... where Socrates is the subject. A predicate assigned to a variable Man(x) has
-a truth value if the predicate holds for the subject. The domain of a variable
-is the set of all variables that may be assigned to the variable. A quantifier
-turns predicates into propositions by assigning values to all variables. For
-example the statement: All men are mortal. This is an example of a universal
-quantifier which describe a predicate that holds forall inhabitants of the
-domain of variables.
+A predicate assigned to a variable Man(x) has a truth value if the predicate
+holds for the subject. The domain of a variable is the set of all variables that
+may be assigned to the variable. A quantifier turns predicates into propositions
+by assigning values to all variables. For example the statement: All men are
+mortal. This is an example of a universal quantifier which describe a predicate
+that holds forall inhabitants of the domain of variables.
 
 ```text
 Forall x. If Man(x) then Mortal(x)
@@ -7358,18 +7357,23 @@ A universally quantified type-variable actually implies quite a few rather deep
 properties about the implementation of a function that can be deduced from its
 type signature. For instance the identity function in Haskell is guaranteed to
 only have one implementation since the only information that the information
-that can present in the body
+that can present in the body:
 
 ```haskell
 id :: forall a. a -> a
 id x = x
 ```
 
+These so called *free theorems* are properties that hold for any well-typed
+inhabitant of a universally quantified signature.
+
 ```haskell
 fmap :: Functor f => (a -> b) -> f a -> f b
 ```
 
-The free theorem of fmap:
+For example a free theorem of `fmap` is that every implementation of functor
+*can only ever have the property* that composition of maps of functions is the
+same as maps of the functions composed together.
 
 ```haskell
 forall f g. fmap f . fmap g = fmap (f . g)

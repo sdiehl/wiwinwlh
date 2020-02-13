@@ -14,9 +14,8 @@ script:
 - stack $ARGS --no-terminal --install-ghc build 
 - stack $ARGS --no-terminal --install-ghc ghc includes.hs -- -o includes
 - stack $ARGS --no-terminal --install-ghc exec make
-# Run the exmaple test suite
-- cd src
-- bash ci
+# Run the example test suite
+- cd src && bash ./ci
 cache:
   directories:
   - $HOME/.stack
