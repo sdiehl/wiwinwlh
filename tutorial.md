@@ -1359,47 +1359,53 @@ interface which is linked against other Haskell modules. A module may reexport
 symbols from other modules.
 
 ```haskell
+# A module starts with its export declarations of symbols declared in this file.
 module MyModule (myExport1, myExport2) where
 
+# Followed by a set of imports of symbols from other files
 import OtherModule (myImport1, myImport2)
+
+# Rest of the logic and definitions in the module follow
+# ...
 ```
 
 Modules dependency graphs optionally may by cyclic (i.e. they import symbols
 from each other) through the use of a boot file, but this is often best avoided
 if at all possible.
 
-A import of all symbols into the local namespace.
+Various module import strategies exist. For instance, we may:
+
+Import of all symbols into the local namespace.
 
 ```haskell
 import Data.List
 ```
 
-A import of select symbols into the local namespace:
+Import of select symbols into the local namespace:
 
 ```haskell
 import Data.List (nub, sort)
 ```
 
-A import into the global namespace masking a symbol:
+Import into the global namespace masking a symbol:
 
 ```haskell
 import Data.List hiding (nub)
 ```
 
-A qualified import of `Data.Map` namespace into the local namespace.
+Import symbols qualified under `Data.Map` namespace into the local namespace.
 
 ```haskell
 import qualified Data.Map
 ```
 
-A qualified import of `Data.Map` reassigned to `M` into the local namespace.
+Import symbols qualified and reassigned to a custom namespace (`M`, in the example below):
 
 ```haskell
 import qualified Data.Map as M
 ```
 
-You may dump multiple modules into the same namespace so long as the symbols do
-not clash.
+You may also dump multiple modules into the same namespace so long as the symbols do not clash:
 
 ```haskell
 import qualified Data.Map as M
@@ -1419,30 +1425,37 @@ Functions
 ---------
 
 Functions are the central construction in Haskell. A function `f` of two
-arguments `x` and `y` can be defined in a single line as a left and and right
-and side of an equation:
+arguments `x` and `y` can be defined in a single line 
+as the left-hand and right-hand side of an equation:
 
 ```haskell
 f x y = x + y
 ```
 
-This simply defines a function named `f` of two arguments and on the right hand
+This line defines a function named `f` of two arguments, which on the right-hand
 side adds and yields the result. Central to the idea of functional programming
-is that computational functions should behave like mathematical functions.
+is that computational functions should behave like mathematical functions. For
+instance, consider this mathematical definition of the above Haskell function,
+which, aside from the parentheses, looks the same:
 
 $$
 f(x,y) = x+y
 $$
 
-A function of two arguments need not
-neccessarily be applied to two arguments. The result of only applying a single
-argument is to yield another function which applies the second argument when it
-is given. For example we can define an `add` function and subsequently a `inc`
-function which simply adds 1 to a given value.
+In Haskell, a function of two arguments need not necessarily be applied to two
+arguments. The result of applying only the first argument is to yield another
+function to which later the second argument can be applied. For example, we can
+define an `add` function and subsequently a single-argument `inc` function, by
+merely pre-applying `1` to add:
 
 ```haskell
 add x y = x + y
 inc = add 1
+```
+
+```haskell
+λ: inc 4
+5
 ```
 
 In addition to named functions Haskell also has anonymous lambda functions
@@ -1452,15 +1465,15 @@ denoted with a backslash. For example the identity function:
 id x = x
 ```
 
-are identical
+Is identical to:
 
 ```haskell
 id = \x -> x
 ```
 
-Functions may themselvews take other functions as arguments. These functions are
-called *higher-order functions*. For example the following function applies a
-given argument `f` which is itelf a function to a value x twice.
+Functions may themselves or other functions as arguments, a feature known as
+*higher-order functions*. For example the following function applies a given
+argument `f` which is itself a function to a value `x` twice.
 
 ```haskell
 applyTwice f x = f (f x)
@@ -1477,18 +1490,18 @@ those constructs. A type system overlays additional structure on top of the
 syntax that impose constraints on the formation of expressions in terms of based
 on the context in which they occur.
 
-Dynamic programming languages often confuse this terminology and bit and
+Dynamic programming languages often confuse this terminology and
 associate types with values at evaluation, whereas static languages associate
 types to expressions *before evaluation*.
 
-Static languages may optionally also push these types to the evaluation in the
-form of runtime type information.  Haskell fully has the capacity to do this
-(see [Dynamic]) but this style of programming is not idiomatic Haskell, instead
+Static languages may optionally also push these types to the evaluation stage in
+the form of runtime type information.  Haskell fully has the capacity to do this
+(see [Dynamic]) but this style of programming is not idiomatic Haskell; instead
 the trend is to "make invalid states unrepresentable" at compile-time rather
 than performing massive amounts of runtime checks.
 
 Dynamically typed languages check these "types" at run-time, whereas static
-language check types at compile time. This overloaded use of the word type to
+language check types at compile time. This overloaded use of the word "type" to
 refer to both the theoretical definition and the colloquial definition of
 runtime tags is a bit confusing. Dynamic languages are in a sense as statically
 typed as static languages, however they have a degenerate type system with only
@@ -1505,6 +1518,8 @@ evolution of *dependent types*.  The next evolution of these type systems are
 not quite ready for full production but are likely to rapidly become so in the
 next decade.
 
+TODO
+
 For now, the Haskell way of thinking it that a single unitype is too
 restrictive. It is simply easier to add dynamic components to a richly typed
 ambient language than the inverse way around.  Haskell's rich type system is
@@ -1512,7 +1527,7 @@ based on lambda calculus known as Girard's System-F (See [Rank-N Types]) and has
 a vast amount of extensions to support more type-level programming added to it
 over the years.
 
-The *ground types* you'll see are quite common 
+The following *ground types* are quite common:
 
 * `()` - The unit type
 * `Char` - ASCII Characters
@@ -1523,8 +1538,8 @@ The *ground types* you'll see are quite common
 * `Float` - Machine floating point values
 * `Double` - Machine double floating point values
 
-As well has parameterised types which are associated with common data structures
-such as lists and tuples.
+Parameterised types which also frequently appear and are are associated with
+common data structures such as lists and tuples.
 
 * `[a]` -- Homogeneous lists with elements of a type `a`
 * `(a,b)` -- Tuple with two elements of type `a` and `b`
@@ -1538,8 +1553,9 @@ Type Signatures
 ---------------
 
 A toplevel Haskell function consists of two lines. The *value-level* definition
-which is a function name, followed by its arguments, followed by the function
-body which compute the value it yields.
+which is a function name, followed by its arguments on the left-hand side of the
+equals sign, and then  the function body which compute the value it yields on
+the right-hand side:
 
 ```haskell
 myFunction x y = x ^ 2 + y ^ 2
@@ -1551,10 +1567,9 @@ myFunction x y = x ^ 2 + y ^ 2
      +-------------- function
 ```
 
-The *type-level* definition is the function name followed by the type of the
-arguments separated by arrows with the final term being the type of the function
-body which is the type of value yielded by the function itself.
-
+The *type-level* definition is the function name followed by the type of its
+arguments separated by arrows, and  the final term is the type of the entire
+function body, meaning the type of value yielded by the function itself.
 
 ```haskell
 myFunction :: Int -> Int -> Int
@@ -1566,28 +1581,25 @@ myFunction :: Int -> Int -> Int
      +----------------------- function
 ```
 
-A simple example of a function which adds to integers.
-
-```haskell
-f :: Integer -> Integer -> Integer
-f x y = x + y
-```
-
-And functions are capable of invoking other functions inside of their function
-bodies.
+Here is a simple example of a function which adds to integers.
 
 ```haskell
 add :: Integer -> Integer -> Integer
 add x y = x + y
+```
 
+Functions are also capable of invoking other functions inside of their function
+bodies:
+
+```haskell
 inc :: Integer -> Integer
 inc = add 1
 ```
 
-The simplest function, called the *identity function* is the function which
-takes a single value and simply returns it back. This is an example of a
-polymorphic function since it can handle values of *any type*. The identity
-functions work just as well over strings as it can integers.
+The simplest function, called the *identity function* a function which takes a
+single value and simply returns it back. This is an example of a polymorphic
+function since it can handle values of *any type*. The identity functions work
+just as well over strings as it can integers.
 
 ```haskell
 id :: a -> a
@@ -1595,7 +1607,7 @@ id x = x
 ```
 
 This can alternatively be written in terms of an anonymous *lambda function*
-which is backslash following by a space separated list of arguments, followed by
+which is backslash followed by a space separated list of arguments, followed by
 a function body.
 
 ```haskell
@@ -1604,25 +1616,25 @@ id = \x -> x
 ```
 
 One of the big ideas in functional programming is that functions are themselves
-first class values and can be passed to other functions as arguments themselves.
+first class values which can be passed to other functions as arguments themselves.
 For example the `applyTwice` function takes an argument `f` which is of type
-(`a -> a`) and applies that function over a given value `x` twice and yields the
-result. `applyTwice` is a higher-order function which transforms functions into
-other functions.
+(`a -> a`) and it applies that function over a given value `x` twice and yields the
+result. `applyTwice` is a higher-order function which will transforms one
+function into another function.
 
 ```haskell
 applyTwice :: (a -> a) -> a -> a
 applyTwice f x = f (f x)
 ```
 
-To the left of a type signature you will often see a big arrow `=>` which
-denotes a set of constraints over the type signature. Each of these constraints
-will be in uppercase and will normally mention at least one of the type
-variables on the right hand side of the arrow. These constraints can mean many
-things but in the simplest from they denote that a type variable has an
-implementation of a [Type Classes]. The `add` function below operate over any
-two similar values `x` and `y` which have a numerical interface for adding them
-together.
+Often to the left of a type signature you will see a big arrow `=>` which
+denotes a set of **constraints** over the type signature. Each of these
+constraints will be in uppercase and will normally mention at least one of the
+type variables on the right hand side of the arrow. These constraints can mean
+many things but in the simplest from they denote that a type variable must have
+an implementation of a [type class](#type-classes). The `add` function below
+operates over any two similar values `x` and `y`, but these values must have a
+numerical interface for adding them together.
 
 ```haskell
 add :: (Num a) => a -> a -> a
@@ -1630,8 +1642,7 @@ add x y = x + y
 ```
 
 Type signatures can also appear at the value level in the form of *explicit type
-signatures* which are denoted in parentheses and have an explicit type
-ascription to a subexpression in the function body. 
+signatures* which are denoted in parentheses.
 
 ```haskell
 add1 :: Int -> Int
@@ -1639,9 +1650,9 @@ add1 x = x + (1 :: Int)
 ```
 
 These are sometimes needed to provide additional hints to the typechecker when
-specific terms are ambiguous to the typechecker or additional language
-extensions are enabled which don't have precise inference methods for deducing
-all type variables.
+specific terms are ambiguous to the typechecker, or when additional language
+extensions have been enabled which don't have precise inference methods for
+deducing all type variables.
 
 Currying
 --------
@@ -1649,10 +1660,13 @@ Currying
 In other languages functions normally have an *arity* which prescribes the
 number of arguments a function can take. Some languages have fixed arity (like
 Fortran) others have flexible arity (like Python) where a variable of number of
-arguments can passed. Haskell has a very simple, all functions in Haskell take a
-single argument. Arguments can be applied until the function is *saturated* and
-computes the function body. For example the `add` function from above can be
-*partially applied* to produce `add1` function. 
+arguments can be passed. Haskell follows a very simple rule: all functions in
+Haskell take a single argument. For multi-argument functions (some of which
+we've already seen), arguments will be individually applied until the function
+is *saturated* and the function body is evaluated. This is known as “currying”. 
+
+For example, the add function from above can be partially applied to produce an
+add1 function:
 
 ```haskell
 add :: Int -> Int -> Int
@@ -1662,15 +1676,19 @@ add1 :: Int -> Int
 add1 = add 1
 ```
 
-Currying is the process of taking a function which takes two arguments and
-transforming it into a function which takes a tuple of arguments.
+Uncurrying is the process of taking a function which takes two arguments and
+transforming it into a function which takes a tuple of arguments. The Haskell
+prelude includes both a curry and an uncurry function for transforming functions
+into those that take multiple arguments from those that take a tuple of
+arguments and vice versa:
 
 ```haskell
 curry :: ((a, b) -> c) -> a -> b -> c
 uncurry :: (a -> b -> c) -> (a, b) -> c
 ```
 
-For example applied to the add function:
+For example, uncurry applied to the add function creates a function that takes a
+tuple of integers:
 
 ```haskell
 uncurryAdd :: (Int, Int) -> Int
