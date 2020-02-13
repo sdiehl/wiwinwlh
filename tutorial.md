@@ -309,11 +309,11 @@ $ cabal init
 $ cabal configure
 ```
 
-A ``.cabal`` file will be created with the configuration options for our new
-project.
+This will result in a ``.cabal`` file being created with the configuration
+options for our new project.
 
-Dependencies can also be built in parallel by passing ``-j<n>`` where ``n`` is
-the number of concurrent builds.
+Cabal can also build dependencies can in parallel by passing ``-j<n>`` where
+``n`` is the number of concurrent builds.
 
 ```bash
 $ cabal install -j4 --only-dependencies
@@ -330,9 +330,9 @@ which modules within the package structure will be publicly visible when the
 package is installed. These modules are the user-facing APIs that we wish to
 expose to downstream consumers.
 
-For an **executable**`, the ``main-is`` field indicates the module that
-exports the ``main`` function running the executable logic of
-the application. Every module in the package must be listed in one of
+For an **executable**`, the ``main-is`` field indicates the module that exports
+the ``main`` function responsible for running the executable logic of the
+application. Every module in the package must be listed in one of
 ``other-modules``, ``exposed-modules`` or ``main-is`` fields.
 
 ```yaml
@@ -342,7 +342,7 @@ cabal-version:      >= 1.10
 author:             Paul Atreides
 license:            MIT
 license-file:       LICENSE
-synopsis:           The code must flow.
+synopsis:           My example library.
 category:           Math
 tested-with:        GHC
 build-type:         Simple
@@ -375,14 +375,15 @@ Test-Suite test
       mylibrary == 0.1
 ```
 
-To run an "executable" for a project under the ``cabal``.
+To run an "executable" under ``cabal`` execute the command:
 
 ```bash
 $ cabal run
 $ cabal run <name> # when there are several executables in a project
 ```
 
-To load the "library" into a [GHCi](#ghci) shell under ``cabal``.
+To load the "library" into a [GHCi](#ghci) shell under ``cabal`` execute the
+command:
 
 ```bash
 $ cabal repl
@@ -401,8 +402,8 @@ $ cabal build
 ```
 
 To run the tests, our package must itself be reconfigured with the
-``--enable-tests`` and the ``build-depends`` options. The ``Test-Suite`` must be
-installed manually, if not already present.
+``--enable-tests`` flag and the ``build-depends`` options. The ``Test-Suite``
+must be installed manually, if not already present.
 
 ```bash
 $ cabal install --only-dependencies --enable-tests
@@ -412,13 +413,15 @@ $ cabal test <name>
 ```
 
 Moreover, arbitrary shell commands can be invoked with the
-[GHC](https://www.haskell.org/ghc/) environmental variables set up command.
-Quite common is to invoke a new shell with this command such that
-the ``ghc`` and ``ghci`` commands use the package environment.
+[GHC](https://www.haskell.org/ghc/) environmental variables.  It is quite common
+is to run a new bash shell with this command such that the ``ghc`` and ``ghci``
+commands use the package environment. This can also run any system executable
+with the `GHC_PACKAGE_PATH` variable set to the libraries [package
+database](#package-databases).
 
 ```bash
 $ cabal exec
-$ cabal exec sh
+$ cabal exec bash
 ```
 
 The [haddock](#haddock) documentation can be generated for the local project by
@@ -481,12 +484,12 @@ Cabal New-Build
 ---------------
 
 The interface for Cabal has seen an overhaul in the last few years and has moved
-more closely towards the Nix-style of local builds. In the new system packages
-are seperated in into categories:
+more closely towards the Nix-style of local builds. Under the new system packages
+are separated into categories:
 
-* **Local Packages** - Packages are Haskell packages built from a configuration
-  file which specifies a path to a directory with a cabal file. These can be
-  working project as well as all of it's local transitive dependencies. 
+* **Local Packages** - Packages are built from a configuration file which
+  specifies a path to a directory with a cabal file. These can be working
+  project as well as all of it's local transitive dependencies. 
 * **External Packages** - External packages are packages retrieved from either
   the public Hackage or private Hackage repository. These packages are hashed
   and stored locally in `~/.cabal/store` to be reused across builds.
@@ -539,8 +542,8 @@ of several categories.
   packages needed to build the project. See [Package Databases].
 
 These all get stored under the `dist-newstyle` folder structure which is set up
-hierarchically about by the specific CPU architecture, GHC compiler version and
-package version.
+hierarchically under the specific CPU architecture, GHC compiler version and
+finally the package version.
 
 ```bash
 dist-newstyle
@@ -591,10 +594,10 @@ dist-newstyle
 Local Packages
 --------------
 
-Both Stack and Cabal can handle local packages built the local filesystem,
-remote tarballs, or from Git repositories.
+Both Stack and Cabal can handle local packages built the local filesystem, from
+remote tarballs, or from remote Git repositories.
 
-Inside of the stack.yaml simply specify the git repository remote and the hash
+Inside of the `stack.yaml` simply specify the git repository remote and the hash
 to pull.
 
 ```yaml
@@ -621,11 +624,11 @@ Version Bounds
 --------------
 
 All Haskell packages are versioned and the numerical quantities in the version
-are supposed to following the [Package Versioning
+are supposed to follow the [Package Versioning
 Policy](https://pvp.haskell.org/). 
 
-As packages evolve in time there are three numbers which monotonically increase
-depending on what has changed in the package.
+As packages evolve over time there are three numbers which monotonically
+increase depending on what has changed in the package.
 
 * Major version number
 * Minor version number
@@ -639,9 +642,10 @@ version:             0.1.0.0
 ```
 
 Every library's cabal file will have a packages dependencies section which will
-specify the external packages which the library depends on the allowed versions
-that it is known to build against. The convention is to put upper bounds to the
-next major unreleased version if the lower bound is using latest package.
+specify the external packages which the library depends on. It will also contain
+the allowed versions that it is known to build against in the `build-depends`
+section. The convention is to put upper bounds to the next major unreleased
+version if the lower bound at the currently used version.
 
 ```perl
 build-depends:       
@@ -685,11 +689,12 @@ Stack
 
 Stack is a alternative approach to Haskell package structure that emerged in
 2015. Instead of using a rolling build like [Cabal], stack breaks up sets of
-packages into release blocks that guarantee internal compatibility between sets
-of packages.  The package solver for stack uses a different strategy for
-resolving dependencies than cabal-install has historically used and combines
-this with a centralised build server called [Stackage] which continuously tests
-the set of packages in a resolver to ensure they build against each other.
+      packages into release blocks that guarantee internal compatibility between
+      sets of packages.  The package solver for stack uses a different strategy
+      for resolving dependencies than cabal-install has historically used and
+        stack combines this with a centralised build server called [Stackage]
+        which continuously tests the set of packages in a resolver to ensure
+        they build against each other.
 
 </hr>
 
@@ -713,7 +718,7 @@ of your existing project's ``cabal`` file by running:
 stack init
 ```
 
-An example ``stack.yaml`` file for GHC 8.8.1 would look like:
+An example ``stack.yaml`` file for GHC 8.8.1 would look like this:
 
 ```bash
 resolver: lts-14.20
@@ -727,8 +732,8 @@ Most of the common libraries used in everyday development are already in the
 [Stackage](https://www.stackage.org/) repository. The ``extra-deps`` field
 can be used to add [Hackage](http://hackage.haskell.org/) dependencies that are
 not in the Stackage repository. They are specified by the package and the
-version key. For instance, the ``zenc`` package could be added to
-the ``stack`` build:
+version key. For instance, the ``zenc`` package could be added to 
+``stack`` build in the following way:
 
 ```haskell
 extra-deps:
@@ -774,9 +779,11 @@ HPack
 HPack is an alternative package description language that uses a structured YAML
 format to generate Cabal files. Hpack succeeds in DRYing (Don't Repeat Yourself)
 several sections of cabal files that are often quite repetative across large
-projects. Hpack uses a `package.yaml` file which the command line tool `hpack`
-generates whenever the project is built. Hpack can be integrated into Stack and
-will generate cabal files whenever `stack build` is invoked.
+projects. Hpack uses a `package.yaml` file which is consumed by the command line
+tool `hpack`.  Hpack can be integrated into Stack and will generate resulting
+cabal files whenever `stack build` is invoked on a project using a
+`package.yaml` file. The output cabal file contains a hash of the input yaml
+file for consistency check.
 
 A small `package.yaml` file might look something like the following:
 
@@ -847,7 +854,8 @@ modules.
 * *Unsafe*  - Unsafe "backdoor" operations
 
 There have been several large changes to Base over the years which have resulted
-in breaking changes that means older versions of base are not compatible.
+in breaking changes that means older versions of base are not compatible with
+newer versions.
 
 * Monad Applicative Proposal (AMP)
 * MonadFail Proposal (MFP)
@@ -863,12 +871,13 @@ it, or the NoImplicitPrelude extension is enabled.
 The Prelude exports several hundred symbols that are the default datatypes and
 functions for libraries that use the GHC-issued prelude. Although the Prelude is
 the default import many libraries these days do not use the standard prelude
-chosing instead to roll a customm one on a per-project basis or use a off-the
+instead choosing to roll a custom one on a per-project basis or to use a off-the
 shelf prelude from Hackage.
 
-The Prelude contains common datatype and classes such as [List], [Monad](#monads),
-[Maybe] and most simple associated functions for manipulating these structures.
-These are the msot foundational programming constructs in Haskell.
+The Prelude contains common datatype and classes such as [List],
+[Monad](#monads), [Maybe] and most simple associated functions for manipulating
+these structures.  These are the most foundational programming constructs in
+Haskell.
 
 Modern Haskell
 --------------
@@ -878,16 +887,17 @@ There are two official language standards:
 * Haskell98
 * Haskell2010
 
-And then there what is colloquially referred to as *Modern Haskell* which is not
+And then there what is colloquially referred to as Modern Haskell which is not
 an official language standard, but an ambiguous term to denote the emerging way
-most Haskellers program with new versions of GHC. The degree and language
-features that are included in modern Haskell is not well-defined and will vary
-between programmers. Some programmers prefer to stay quite close to the
+most Haskellers program with new versions of GHC. The language features
+typically included in modern Haskell are not well-defined and will vary between
+programmers. For instance, some programmers prefer to stay quite close to the
 Haskell2010 standard and only include a few extensions while some go all out and
 attempt to do full dependent types in Haskell.
 
-Modern Haskell is defined by at least some use of type-level programming,
-flexible typeclasses and [Language Extensions].
+By contrast, the type of programming described by the phrase Modern Haskell
+typically utilizes some type-level programming, as well as flexible typeclasses,
+and a handful of [Language Extensions].
 
 Flags
 -----
@@ -960,13 +970,13 @@ understanding and expertise.
 In contrast to the previous method of packaging, a common philosophy in the
 Haskell community is that Hackage is a place to upload experimental libraries as
 a means of getting community feedback and making the code publicly available.
-Library author(s) often rationalize putting these kind of libraries up
-undocumented, often without indication of what the library actually does, by
+Library author(s) often rationalize putting these kind of libraries up without
+documentation, often without indication of what the library actually does, by
 simply stating that they intend to tear the code down and rewrite it later. This
 approach unfortunately means a lot of Hackage namespace has become polluted with
 dead-end, bit-rotting code. Sometimes packages are also uploaded purely for
-internal use within an organisation, to accompany a paper. These packages are
-often left undocumented as well.
+internal use within an organisation, or to accompany an academic paper. These
+packages are often left undocumented as well.
 
 For developers coming to Haskell from other language ecosystems that favor
 the former philosophy (e.g., Python, JavaScript, Ruby), seeing  *thousands of
@@ -980,20 +990,20 @@ necessary skill. That said, there are also quite a few phenomenal libraries on
 Hackage that are highly curated by many people.
 
 As a general rule, if the Haddock documentation for the library does not have
-a **minimal worked example**, it is usually safe to assume that it is an
+a **minimal working example**, it is usually safe to assume that it is an
 RFC-style library and probably should be avoided for production code.
 
-There are several heuristics you can use to assess **Should I Use this Hackage
-Library**:
+There are several heuristics you can use to answer the question **Should I Use
+this Hackage Library**:
 
 * Check the **Uploaded** to see if the author has updated it in the last five
   years.
 * Check the **Maintainer** email address, if the author has an academic email
   address and has not uploaded a package in two or more years, it is safe to
-  assume that this is a *thesis projecet* and probably should not be used
+  assume that this is a *thesis project* and probably should not be used
   industrially.
 * Check the **Modules** to see if the author has included toplevel Haddock
-  docstrings. If they author has not included any documentation then the library
+  docstrings. If the author has not included any documentation then the library
   is likely of low-quality and should not be used industrially.
 * Check the **Dependencies** for the bound on `base` package. If it doesn't
   include the latest base included with the latest version of GHC then the code
@@ -1013,15 +1023,15 @@ An example of a well maintained package:
 Stackage
 -------
 
-Stackage is an alternative packaging repository that is an opt-in repository
-which mirrors a subset of Hackage. Packages that are included in Stackage are
-built in a massive continuous integration process that checks to see that given
-versions link successfully against each other. This can give a higher degree of
-assurance that the bounds of a given resolver ensure compatibility.
+Stackage is an alternative opt-in packaging repository which mirrors a subset of
+Hackage. Packages that are included in Stackage are built in a massive
+continuous integration process that checks to see that given versions link
+successfully against each other. This can give a higher degree of assurance that
+the bounds of a given resolver ensure compatibility.
 
-Stackage releases are built nightly and there are long-term stable (LTS) releases.
-Nightly resolvers have a date convention while LTS releases have a major and
-minor version. For example:
+Stackage releases are built nightly and there are also long-term stable (LTS)
+releases.  Nightly resolvers have a date convention while LTS releases have a
+major and minor version. For example:
 
 * `lts-14.22`
 * `nightly-2020-01-30`
@@ -1035,7 +1045,8 @@ GHCI
 ----
 
 GHCI is the interactive shell for the GHC compiler. GHCi is where we will spend
-most of our time in every day development.
+most of our time in every day development. Following is a table of useful GHCi
+commands.
 
 Command      Shortcut   Action
 -----------  ---------  --------------------------
@@ -1087,7 +1098,7 @@ possible. For example, to view module-level bindings and types in GHCi, run:
 λ: :show bindings
 ```
 
-Examining module-level imports, execute:
+To examine module-level imports, execute:
 
 ```haskell
 λ: :show imports
@@ -1166,7 +1177,7 @@ it :: Prelude.Integer
 .ghci.conf
 ----------
 
-The configuration for the GHCi shell can be customized globally by defining a
+The GHCi shell can be customized globally by defining a configure file
 ``ghci.conf`` in ``$HOME/.ghc/`` or in the current working directory as
 ``./.ghci.conf``.
 
@@ -1175,6 +1186,7 @@ For example, we can add a command to use the
 install ``hoogle``:
 
 ```bash
+ # run one of these command
 $ cabal install hoogle
 $ stack install hoogle
 ```
@@ -1205,7 +1217,9 @@ GHC can also be coerced into giving slightly better error messages:
 ```
 
 GHCi can also a pretty printing library to format all output which is often much
-easier to read:
+easier to read. For example if your project is already using the amazing
+`pretty-simple` library simply include the following line in your ghci
+configuration.
 
 ```haskell
 :set -ignore-package pretty-simple -package pretty-simple
@@ -1221,7 +1235,7 @@ sensible:
 :seti -XFlexibleContexts
 :seti -XFlexibleInstances
 :seti -XOverloadedStrings
-import Protolude
+import Protolude # or any other preferred prelude
 ```
 
 #### GHCi Performance
@@ -1293,9 +1307,9 @@ development. The key ones of note for Linux are:
 * [Debian Packages](https://downloads.haskell.org/~debian/)
 * [Debian PPA](https://launchpad.net/~hvr/+archive/ubuntu/ghc)
 
-Inside of scripting and operations tools it is common to to install the
-following apt repositories to install the signed GHC and cabal-install binaries
-if using Cabal as the primary build system.
+For scripts and operations tools, it is common to include commands to add the
+following apt repositories, and then using these to install the signed GHC and
+cabal-install binaries (if using Cabal as the primary build system).
 
 ```bash
 $ sudo add-apt-repository -y ppa:hvr/ghc
@@ -1304,20 +1318,20 @@ $ sudo apt-get install -y cabal-install-3.0 ghc-8.8.1
 ```
 
 It is not advisable to use a Linux system package manager to manage Haskell
-dependencies. Although this can be done in practice it is better to use Cabal or
-Stack to build locally isolated builds to avoid incompatabilities.
+dependencies. Although this can be done in practice, it is better to use Cabal
+or Stack to create locally isolated builds to avoid incompatibilities.
 
 Names
 -----
 
 Names in Haskell exist within a specific namespace. Names are either unqualified
-of the form.
+of the form:
 
 ```haskell
 nub
 ```
 
-Or qualified by the module in which they come from.
+Or qualified by the module in which they come from, such as:
 
 ```haskell
 Data.List.nub
