@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+stack exec ghc -- -e ":q" --interactive attoparsec.hs
+stack exec ghc -- -e ":q" --interactive attoparsec_lang.hs
+stack exec ghc -- -e ":q" --interactive configurator.hs
+stack exec ghc -- -e ":q" --interactive generics.hs
+stack exec ghc -- -e ":q" --interactive lexer_text.hs
+stack exec ghc -- -e ":q" --interactive megaparsec.hs

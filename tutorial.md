@@ -14855,7 +14855,7 @@ references to both itself (for recursion) and the dictionary for instance of
 The type system of STG system consits of the following types. The size of these
 types depend on the size of a `void*` pointer on the architecture.
 
-* **StgWord** -  Unit of heap allocation
+* **StgWord** -  TODO
 * **StgPtr** - Basic pointer type
 * **StgBool** - Booean int bit flag
 * **StgInt** - `Int#`
