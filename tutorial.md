@@ -16036,7 +16036,7 @@ putDoc :: Doc ann -> IO ()
 
 The common combinators are shown below,
 
-              Combinators
+Combinator    Description
 -----------   ------------
 ``<>``        Concatenation
 ``<+>``       Spaced concatenation
@@ -16047,10 +16047,9 @@ The common combinators are shown below,
 ``indent``    Increases indentation by a given count
 ``list``      Lays out a given list with braces and commas.
 ``tupled``    Lays out a given list with parens and commas.
-``hsep``      Horizontal concatenation
-``vsep``      Vertical concatenation
-``hcat``      TODO
-``vcat``      TODO
+``hsep``      Concatenates list of docs horizontally with a separator
+``hcat``      Concatenates list of docs horizontally
+``vcat``      Concatenates list of docs vertically
 ``puncutate`` Appends a given doc to all elements of a list of docs
 ``parens``    Surrounds with parentheses
 ``dquotes``   Surrounds with double quotes
