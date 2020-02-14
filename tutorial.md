@@ -4475,8 +4475,6 @@ ex3 = evalState (1 :: Double, 0 :: Double) (runThrow example2)
 
 <hr/>
 
-TODO START HERE
-
 Language Extensions
 ===================
 
@@ -4621,8 +4619,8 @@ with the low-level byte representations of data structures.
 The Dangerous
 -------------
 
-GHC's typechecker sometimes just casually tells us to enable language extensions
-when it can't solve certain problems. Unless you know what you're doing, these
+GHC's typechecker sometimes casually tells us to enable language extensions when
+it can't solve certain problems. Unless you know what you're doing, these
 extensions almost always indicate a design flaw and shouldn't be turned on to
 remedy the error at hand, as much as GHC might suggest otherwise!
 
@@ -4667,7 +4665,7 @@ The problem is that GHC has inferred an overly specific type:
 bar :: Integer -> Integer
 ```
 
-We can prevent GHC from specializing the type with this extension, i.e.
+We can prevent GHC from specializing the type with this extension:
 
 ```haskell
 {-# LANGUAGE NoMonomorphismRestriction #-}
@@ -4691,9 +4689,8 @@ In the absence of explicit type signatures, Haskell normally resolves ambiguous
 literals using several defaulting rules. When an ambiguous literal is
 typechecked, if at least one of its typeclass constraints is numeric and all of
 its classes are standard library classes, the module's default list is
-consulted, and the first type from the list that will satisfy the context of
-the type variable is instantiated. So for instance, given the following default
-rules
+consulted, and the first type from the list that will satisfy the context of the
+type variable is instantiated. For instance, given the following default rules
 
 ```haskell
 default (C1 a,...,Cn a)
@@ -4704,18 +4701,18 @@ ambiguous type variable to.
 
 1. The type variable ``a`` appears in no other constraints
 1. All the classes ``Ci`` are standard.
-1. At least one of the classes ``Ci`` is numeric.
+1. At least one of the classes ``Ci`` is numerical.
 
-The default ``default`` is ``(Integer, Double)``
+The standard ``default`` definition is implicitly defined as ``(Integer, Double)``
 
 This is normally fine, but sometimes we'd like more granular control over
 defaulting. The ``-XExtendedDefaultRules`` loosens the restriction that we're
 constrained with working on Numerical typeclasses and the constraint that we can
-only work with standard library classes. If we'd like to have our string
-literals (using ``-XOverloadedStrings``) automatically default to the more
-efficient ``Text`` implementation instead of ``String`` we can twiddle the flag
-and GHC will perform the right substitution without the need for an explicit
-annotation on every string literal.
+only work with standard library classes. For example, if we'd like to have our
+string literals (using ``-XOverloadedStrings``) automatically default to the
+more efficient ``Text`` implementation instead of ``String`` we can twiddle the
+flag and GHC will perform the right substitution without the need for an
+explicit annotation on every string literal.
 
 ```haskell
 {-# LANGUAGE OverloadedStrings #-}
@@ -4785,10 +4782,11 @@ See:
 RecursiveDo
 -----------
 
-Recursive do notation allows use of self-reference expressions on both sides of
-a monadic bind. For instance the following uses lazy evaluation to generate an
-infinite list. This is sometimes used to instantiate a cyclic datatype inside a
-monadic context that needs to hold a reference to itself.
+Recursive do notation allows for the use of self-reference expressions on both
+sides of a monadic bind. For instance the following example uses lazy evaluation
+to generate an infinite list. This is sometimes used to instantiate a cyclic
+datatype inside a monadic context where the datatype needs to hold a reference
+to itself.
 
 ```haskell
 {-# LANGUAGE RecursiveDo #-}
@@ -4853,7 +4851,7 @@ Pattern guards are an extension to the pattern matching syntax.  Given a ``<-``
 pattern qualifier, the right hand side is evaluated and matched against the
 pattern on the left.  If the match fails then the whole guard fails and the next
 equation is tried.  If it succeeds, then the appropriate binding takes place,
-and the next qualifier is matched, in the augmented environment.
+and the next qualifier is matched.
 
 ```haskell
 {-# LANGUAGE PatternGuards #-}
@@ -4898,7 +4896,8 @@ Postfix Operators
 -----------------
 
 The postfix operators extensions allows user-defined operators that are placed
-after expressions. For example we could define a postfix factorial function.
+after expressions. For example, using this extension, we could define a postfix
+factorial function.
 
 ```haskell
 {-# LANGUAGE PostfixOperators #-}
@@ -4933,9 +4932,9 @@ EmptyCase
 ---------
 
 GHC normally requires at least one pattern branch in case statement this
-restriction can be relaxed with `EmptyCase` language extension. The case
+restriction can be relaxed with the `EmptyCase` langauge extension. The case
 statement then immediately yields a ``Non-exhaustive patterns in case`` if
-evaluated.
+evaluated. For example, the following will compile using this language pragma:
 
 ```haskell
 test = case of
@@ -5010,7 +5009,8 @@ Record wild cards allow us to expand out the names of a record as variables
 scoped as the labels of the record implicitly. The extension can be used to
 extract variables names into a scope and/or to assign to variables in a record
 drawing, aligning the record's labels with the variables in scope for the
-assignment. The syntax introduced is the ``{..}`` pattern selector.
+assignment. The syntax introduced is the ``{..}`` pattern selector as in the
+following example:
 
 ~~~~ {.haskell include="src/04-extensions/wildcards_update.hs"}
 ~~~~
@@ -5035,10 +5035,10 @@ g D {b, a} = a - b
 PatternSynonyms
 ----------------
 
-Suppose we were writing a typechecker, it would be very common to include a
-distinct ``TArr`` term to ease the telescoping of function signatures, this is what
-GHC does in its Core language. Even though technically it could be written in
-terms of more basic application of the ``(->)`` constructor.
+Suppose we were writing a typechecker, and we needed to parse type signatures.
+One common solution would to include a ``TArr`` to pattern match on type
+function signatures. Even though, technically it could be written in terms of
+more basic application of the ``(->)`` constructor.
 
 ```haskell
 data Type
@@ -5049,8 +5049,9 @@ data Type
   deriving (Show, Eq, Ord)
 ```
 
-With pattern synonyms we can eliminate the extraneous constructor without
-losing the convenience of pattern matching on arrow types.
+With pattern synonyms we can eliminate the extraneous constructor without losing
+the convenience of pattern matching on arrow types. We introduce a new pattern
+using the `pattern` keyword.
 
 ```haskell
 {-# LANGUAGE PatternSynonyms #-}
@@ -5058,13 +5059,14 @@ losing the convenience of pattern matching on arrow types.
 pattern TArr t1 t2 = TApp (TApp (TCon "(->)") t1) t2
 ```
 
-So now we can write an eliminator and constructor for arrow type very naturally.
+So now we can write an deconstructor and constructor for arrow type very
+naturally.
 
 ~~~~ {.haskell include="src/04-extensions/patterns.hs"}
 ~~~~
 
 Pattern synonyms can be exported from a module like any other definition by
-prefixing them with the prefix ``pattern``.
+prefixing them with the prefix ``pattern``.  
 
 ```haskell
 module MyModule (
@@ -5079,10 +5081,10 @@ pattern Elt = [a]
 DeriveFunctor
 -------------
 
-Many instances of functor over datatypes with simple single parameters and
-trivial constructors are simply the result of trivially applying a functions
-over the single constructor's argument. GHC can derive this boilerplace
-automatically in deriving clauses if DeriveFunctor is enabled.
+Many instances of functor over datatypes with parameters and trivial
+constructors are the result of trivially applying a functions over the single
+constructor's argument. GHC can derive this boilerplate automatically in
+deriving clauses if `DeriveFunctor` is enabled.
 
 ~~~~ {.haskell include="src/04-extensions/derive_functor.hs"}
 ~~~~
@@ -5091,16 +5093,15 @@ DeriveFoldable
 --------------
 
 Similar to how Functors can be automatically derived, many instances of Foldable
-for types of kind `* -> *` have instances that simply derive the functions:
+for types of kind `* -> *` have instances that derive the functions:
   
 * `foldMap`
 * `foldr`
 * `null`
 
-By simply deriving the boilerplate function over subexpression type with the
-single parameter term.  For instance if we have a custom rose tree and binary
-tree implementation we can automatically derive the fold functions for these
-datatypes automatically.
+For instance if we have a custom rose tree and binary tree implementation we can
+automatically derive the fold functions for these datatypes automatically for
+us.
 
 ~~~~ {.haskell include="src/04-extensions/folding.hs"}
 ~~~~
@@ -5130,9 +5131,8 @@ DeriveTraversable
 
 Just as with Functor and Foldable, many `Traversable` instances for
 single-paramater datatypes of kind `* -> *` have trivial implementations of the
-`traverse` function which can be derived automatically. By enabling
-`DeriveTraversable` we can use stock deriving to automatically derive these
-instances.
+`traverse` function which can also be derived automatically. By enabling
+`DeriveTraversable` we can use stock deriving to derive these instances for us.
 
 ~~~~ {.haskell include="src/04-extensions/derive_traversable.hs"}
 ~~~~
@@ -5140,12 +5140,11 @@ instances.
 DeriveGeneric
 -------------
 
-Data types in Haskell can derived by GHC with the DeriveGenerics extension
-whicch is able to define the entire structure of the Generic instance and
-associated type families musically. See [Generics] for more details on what
-these types mean.
+Data types in Haskell can derived by GHC with the DeriveGenerics extension which
+is able to define the entire structure of the Generic instance and associated
+type families. See [Generics] for more details on what these types mean.
 
-For example the simple custom List type:
+For example the simple custom List type deriving Generic:
 
 ```haskell
 {-# LANGUAGE DeriveGeneric #-}
@@ -5240,12 +5239,12 @@ test = (id (Person 1), id (Animal 2), id (Animal 3))
 OverloadedLabels
 ----------------
 
-GHC 8.0 also introduced the OverloadedLabels extension which allows a limited
+GHC 8.0 also introduced the `OverloadedLabels` extension which allows a limited
 form of polymorphism over labels that share the same name.
 
-To work with overloaded label types we need to enable several language
-extensions to work with promoted strings and multiparam typeclasses that
-underlay it's implementation.
+To work with overloaded label types we also need to enable several language
+extensions that allow us to use the promoted strings and multiparam typeclasses
+that underlay its implementation.
 
 ```haskell
 extract :: IsLabel "id" t => t
@@ -5274,8 +5273,8 @@ main = do
   print (#foo (MkT True False))
 ```
 
-This is also used in more advanced libraries like [Selda] which do object
-relational mapping between Haskell datatype fields and database columns.
+This is used in more advanced libraries like [Selda] which do object relational
+mapping between Haskell datatype fields and database columns.
 
 See:
 
@@ -5299,7 +5298,7 @@ used to compile a module.
 #endif
 ```
 
-To demarcate code based on the operating system compiled on.
+It can also demarcate code based on the operating system compiled on.
 
 ```haskell
 {-# LANGUAGE CPP #-}
@@ -5319,7 +5318,7 @@ To demarcate code based on the operating system compiled on.
 #endif
 ```
 
-Or on the version of the base library used.
+For another example, it can distinguish the version of the base library used.
 
 ```haskell
 #if !MIN_VERSION_base(4,6,0)
@@ -5327,10 +5326,10 @@ Or on the version of the base library used.
 #endif
 ```
 
-One can also use the CPP to emit Haskell source at compile-time. This is used in
-some libraries which have massive boiler plate obligations. This can be abused
-quite easily and doing this kind of compile-time string-munging is a last
-resort.
+One can also use the CPP extension to emit Haskell source at compile-time. This
+is used in some libraries which have massive boiler plate obligations. Of
+course, this can be abused quite easily and doing this sort of compile-time
+string-munging should be a last resort.
 
 TypeApplications
 ----------------
@@ -5352,12 +5351,12 @@ DerivingVia
 
 `DerivingVia` is an extension of `GeneraliazedNewtypeDeriving`. Just as newtype
 deriving allows us to derive instances in terms of instances for the underlying
-representation of the newtype, DerivingVia allows deriving instances instance by
+representation of the newtype, DerivingVia allows deriving instances by
 specifying a custom type which has a runtime representation equal to the desired
-behavior to derive the instance for. The derived instance can then be `coerced`
-to behave as if it were operating over the given type.  This is a powerful new
-mechanism that allows us to derive many typeclasses in terms of other
-typeclasses. 
+behavior we're deriving the instance for. The derived instance can then be
+`coerced` to behave as if it were operating over the given type.  This is a
+powerful new mechanism that allows us to derive many typeclasses in terms of
+other typeclasses. 
 
 ~~~~ {.haskell include="src/04-extensions/derive_via.hs"}
 ~~~~
@@ -5365,8 +5364,8 @@ typeclasses.
 DerivingStrategies
 -------------------
 
-Deriving has proven a powerful mechanism to add to the typeclass extension and
-as such there have been a variety of bifurcations in it's use. Since GHC 8.2
+Deriving has proven a powerful mechanism to add to typeclass extension and
+as such there have been a variety of bifurcations in its use. Since GHC 8.2
 there are now four different algorithms that can be used to derive typeclasses
 instances. These are enabled by different extensions and now have specific
 syntax for invoking each algorithm specifically. Turning on `DerivingStrategies`
@@ -5378,7 +5377,7 @@ derivations.
 * `newtype` - Deriving with [GeneralizedNewtypeDeriving].
 * `via` - Deriving with [DerivingVia].
 
-These can stacked and combined on top of a data or newtype declaration.
+These can be stacked and combined on top of a data or newtype declaration.
 
 ```haskell
 newtype Example = Example Int
@@ -5410,8 +5409,8 @@ become deprecated in favor of others. Others are just considered misfeatures.
 
 <hr/>
 
-Type Classes
-============
+Type Class Extensions
+=====================
 
 Typeclasses are the bread and butter of abstractions in Haskell, and even out of
 the box in Haskell 98 they are quite powerful. However classes have grown quite
@@ -5453,13 +5452,15 @@ Whenever a typeclass method is invoked at a callsite, GHC will perform an
 instance search over all available instances defined for the given typeclass
 associated with the method. This instance search is quite similar to backward
 chaining in logic programming languages. The search is performed during
-compilation after all types in all modules are known as is performed *globally*
+compilation after all types in all modules are known and is performed *globally*
 across all modules and all packages available to be linked. The instance search
 can either result in no instances, a single instance or multiple instances which
 satisfy the conditions of the call site.
 
 Orphan Instances
 ----------------
+
+TODO START HERE
 
 Normally typeclass definitions are restricted to be defined in one of two
 places:
@@ -5470,7 +5471,7 @@ places:
 These two restrictions restrict the instance search space to a system where a
 solution (if it exists) can always be found. If we allowed instances to be
 defined in any modules then we could potentially have multiple class instances
-defined in multiple modules and search would be ambiguous. 
+defined in multiple modules and the search would be ambiguous. 
 
 This restriction can however be disabled with the `-fno-warn-orphans` flag.
 
