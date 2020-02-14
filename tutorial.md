@@ -1518,7 +1518,7 @@ evolution of *dependent types*.  The next evolution of these type systems are
 not quite ready for full production but are likely to rapidly become so in the
 next decade.
 
-TODO
+TODO RETHINK
 
 For now, the Haskell way of thinking it that a single unitype is too
 restrictive. It is simply easier to add dynamic components to a richly typed
@@ -2241,17 +2241,16 @@ type. This property is quite similar to ``undefined``, which also can also
 stand in for any type.
 
 Calling ``error`` in a function causes the compiler to throw an
-exception, halt the program, and print the specified error message. In the
-``divByY`` function below, passing the function ``0`` as the divisor results
-in this function results in such an exception.
-
-TODO fix divByY example
+exception, halt the program, and print the specified error message.
 
 ```haskell
 error :: String -> a                       -- Takes an error message of type
                                            -- String and returns whatever type
                                            -- is needed
 ```
+
+In the ``divByY`` function below, passing the function ``0`` as the divisor
+results in this function results in such an exception.
 
 ~~~~ {.haskell include="src/01-basics/errors.hs"}
 ~~~~
@@ -3122,11 +3121,9 @@ The following are all **false**:
 Monad Methods
 -------------
 
-TODO START HERE
-
 Monads are not complicated. They are implemented as a typeclass with two
-methods, ``return`` and ``(>>=)`` (pronounced "bind"). In order to implement
-a Monad instance, these two functions must be defined:
+methods, ``return`` and ``(>>=)`` (pronounced "bind"). In order to implement a
+Monad instance, these two functions must be defined:
 
 ```haskell
 class Monad m where
@@ -3138,9 +3135,9 @@ class Monad m where
 ```
 
 The first type signature in the Monad class definition is for ``return``.
-Any preconceptions one might have for the word "return" should be discarded:
+Any preconceptions one might have for the word "return" should be discarded.
 It has an entirely different meaning in the context of Haskell and acts very
-differently than in languages like C, Python, or Java. Instead of being the
+differently than in languages such as C, Python, or Java. Instead of being the
 final arbiter of what value a function produces, ``return`` in Haskell injects a
 value of type ``a`` into a monadic context (e.g., Maybe, Either, etc.), which is
 denoted as ``m a``.
@@ -3159,9 +3156,10 @@ m >> k = m >>= \_ -> k
 ```
 
 This definition says that (>>) has a left and right argument which are monadic
-with types ``m a`` and ``m b`` respectively, while the infix returns a value of
-type ``m b``.  The actual implementation of (>>) says that when ``m`` is passed
-to ``(>>)`` with ``k`` on the right, the value ``k`` will always be returned.
+with types ``m a`` and ``m b`` respectively, while the infix function yields a
+value of type ``m b``.  The actual implementation of (>>) says that when ``m``
+is passed to ``(>>)`` with ``k`` on the right, the value ``k`` will always be
+yielded.
 
 Monad Laws
 ----------
@@ -3179,9 +3177,9 @@ return a >>= f ≡ f a    -- N.B. 'a' refers to a value, not a type
 ```
 
 In discussing the next two laws, we'll refer to a value ``m``. This notation is
-shorthand for value wrapped in a monadic context. Such a value has type ``m a``,
-and could be represented more concretely by values like ``Nothing``, ``Just x``,
-or ``Right x``. It is important to note that some of these concrete
+shorthand for a value wrapped in a monadic context. Such a value has type ``m
+a``, and could be represented more concretely by values like ``Nothing``, ``Just
+x``, or ``Right x``. It is important to note that some of these concrete
 instantiations of the value ``m`` have multiple components. In discussing the
 second and third monad laws, we'll see some examples of how this plays out.
 
@@ -3218,8 +3216,8 @@ passed through ``(>>=)`` to the function ``f`` and then the result of that
 expression is passed to ``>>= g``, the entire expression is exactly equivalent
 to passing ``m`` to a lambda expression that takes one parameter ``x`` and
 outputs the function ``f`` applied to ``x``. By the definition of bind, ``f x``
-*must* return a value wrapped in the same Monad. Because of this property, the
-resultant value of that expression can be  passed through ``(>>=)`` to the
+*must* return a value wrapped in the *same* monad. Because of this property,
+the resultant value of that expression can be  passed through ``(>>=)`` to the
 function ``g``, which also returns a monadic value.
 
 ```haskell
@@ -3231,8 +3229,8 @@ function ``g``, which also returns a monadic value.
 
 Again, it is possible to write this law with more explicit code. Like in the
 explicit examples for law 2, ``m`` has been replaced by ``SomeMonad val`` in
-order to be very clear that there can be multiple components to a monadic value.
-Although little has changed in the code, it is easier to see what
+order to be make it clear that there can be multiple components to a monadic value.
+Although little has changed in the code, it is easier to see that
 value--namely, ``val``--corresponds to the ``x`` in the lambda expression.
 After ``SomeMonad val`` is passed through ``(>>=)`` to ``f``, the function ``f``
 operates on ``val`` and returns a result still wrapped in the ``SomeMonad``
@@ -3254,8 +3252,8 @@ Do Notation
 
 Monadic syntax in Haskell is written in a sugared form, known as ``do``
 notation. The advantages of this special syntax are that it is easier to write
-and is entirely equivalent to just applications of the monad operations. The
-desugaring is defined recursively by the rules:
+and often easier to read, and it is entirely equivalent to simply applying 
+the monad operations. The desugaring is defined recursively by the rules:
 
 ```haskell
 do { a <- f ; m } ≡ f >>= \a -> do { m }  -- bind 'f' to a, proceed to desugar
@@ -3291,8 +3289,8 @@ f >>= \a ->
       return (a, b, c)
 ```
 
-If one were to write the bind operator as an uncurried function ( this is
-not how Haskell uses it ) the same desugaring might look something like the
+If one were to write the bind operator as an uncurried function ( which is not
+how Haskell uses it ) the same desugaring might look something like the
 following chain of nested binds with lambdas.
 
 ```haskell
@@ -3346,7 +3344,7 @@ Maybe Monad
 -----------
 
 The *Maybe* monad is the simplest first example of a monad instance. The Maybe
-monad models computations which may fail to yield a value at any point during
+monad models a computation which may fail to yield a value at any point during
 computation.
 
 The Maybe type has two value constructors. The first, ``Just``,  is a unary
@@ -3375,16 +3373,16 @@ instance Monad Maybe where
 
 The following code shows some simple operations to do within the Maybe monad.
 
-In the first example, The value ``Just 3`` is passed via ``(>>=)`` to the lambda
-function ``\x -> return (x + 1)``. ``x`` refers to the ``Int`` portion
-of ``Just 3``, and we can use ``x`` in the second half of the lambda expression,
-where ``return (x + 1)`` evaluates to ``Just 4``, indicating a successful
-computation.
-
 ```haskell
 (Just 3) >>= (\x -> return (x + 1))
 -- Just 4
 ```
+
+In the above example, the value ``Just 3`` is passed via ``(>>=)`` to the lambda
+function ``\x -> return (x + 1)``. ``x`` refers to the ``Int`` portion
+of ``Just 3``, and we can use ``x`` in the second half of the lambda expression,
+``return (x + 1)`` which evaluates to ``Just 4``, indicating a successful
+computation.
 
 In the second example, the value ``Nothing`` is passed via ``(>>=)`` to the same
 lambda function as in the previous example. However, according to the ``Maybe``
@@ -3396,7 +3394,7 @@ Nothing >>= (\x -> return (x + 1))
 -- Nothing
 ```
 
-In the next example, ``return`` is applied to ``4`` and returns ``Just 4``.
+Here, ``return`` is applied to ``4`` and results in ``Just 4``.
 
 ```haskell
 return 4 :: Maybe Int
@@ -3413,10 +3411,7 @@ List Monad
 ----------
 
 The *List* monad is the second simplest example of a monad instance. As always,
-this monad implements both ``(>>=)`` and ``return``. The definition of bind says
-that when the list ``m`` is bound to a function ``f``, the result is a
-concatenation of ``map f`` over the list ``m``. The ``return`` method simply
-takes a single value ``x`` and injects into a singleton list ``[x]``.
+this monad implements both ``(>>=)`` and ``return``. 
 
 ```haskell
 instance Monad [] where
@@ -3424,8 +3419,13 @@ instance Monad [] where
   return x  =  [x]
 ```
 
+The definition of bind says that when the list ``m`` is bound to a function
+``f``, the result is a concatenation of ``map f`` over the list ``m``. The
+``return`` method simply takes a single value ``x`` and injects into a singleton
+list ``[x]``.
+
 In order to demonstrate the ``List`` monad's methods, we will define two
-functions: ``m`` and ``f``. ``m`` is a simple list, while ``f`` is a function
+values: ``m`` and ``f``. ``m`` is a simple list, while ``f`` is a function
 that takes a single ``Int`` and returns a two element list ``[1, 0]``.
 
 ```haskell
@@ -3436,7 +3436,7 @@ f :: Int -> [Int]
 f = \x -> [1,0]               -- 'f' always returns [1, 0]
 ```
 
-The evaluation proceeds as follows:
+When applied to bind, evaluation proceeds as follows:
 
 ```haskell
 m >>= f
@@ -3492,12 +3492,12 @@ the same fact holds true for the lists bound to ``b`` and ``c``.
 IO Monad
 --------
 
-Perhaps the most (in)famous example in Haskell of a type that forms a monad
-is ``IO``. A value of type ``IO a`` is a computation which, when performed,
-does some I/O before returning a value of type ``a``. These computations are
-called [actions](https://wiki.haskell.org/Introduction_to_Haskell_IO/Actions).
-IO actions executed in ``main`` are the means by which a program can operate on
-or access information in the external world. IO actions allow the program to do
+Perhaps the most (in)famous example in Haskell of a type that forms a monad is
+``IO``. A value of type ``IO a`` is a computation which, when performed, does
+some I/O before returning a value of type ``a``. These computations are called
+[actions](https://wiki.haskell.org/Introduction_to_Haskell_IO/Actions).  IO
+actions executed in ``main`` are the means by which a program can operate on or
+access information from the external world. IO actions allow the program to do
 many things, including, but not limited to:
 
  - Print a ``String`` to the terminal
@@ -3507,12 +3507,12 @@ many things, including, but not limited to:
  - Take input from a radio antenna for signal processing
 
 Conceptualizing I/O as a monad enables the developer to access information
-outside the program, but operate on the data with pure functions. The following
-examples will show how we can use IO actions and IO values to receive input from
-stdin and print to stdout.
+outside the program, but also to use pure functions to operate on that
+information as data. The following examples will show how we can use IO actions
+and `IO` values to receive input from stdin and print to stdout.
 
-Perhaps the most immediately useful function for doing I/O in Haskell
-is ``putStrLn``. This function takes a ``String`` and returns an ``IO ()``.
+Perhaps the most immediately useful function for doing I/O in Haskell is
+``putStrLn``. This function takes a ``String`` and returns an ``IO ()``.
 Calling it from ``main`` will result in the ``String`` being printed to stdout
 followed by a newline character.
 
@@ -3559,8 +3559,8 @@ main = do putStrLn "What is your name: "
           putStrLn name
 ```
 
-The next code block is the desugared equivalent of the previous example;
-however, the uses of ``(>>=)`` are made explicit.
+The next code block is the *desugared equivalent* of the previous example where
+the uses of ``(>>=)`` are made explicit.
 
 ```haskell
 main :: IO ()
@@ -3613,12 +3613,12 @@ What does this function mean in terms of each of the monads discussed above?
 
 **Maybe**
 
-Sequencing a list of values within the ``Maybe`` [context](#maybe) allows us to
-collect the results of a series of computations which can possibly fail.
-However, ``sequence`` yields the aggregated values only if each computation
-succeeds. In other words, if even one of the ``Maybe`` values in the initial list
-passed to ``sequence``is a ``Nothing``, the result of ``sequence`` will also
-be ``Nothing``.
+For the Maybe monad, sequencing a list of values within the ``Maybe``
+[context](#maybe) allows us to collect the results of a series of computations
+which can possibly fail.  However, ``sequence`` yields the aggregated values
+only if each computation succeeds. In other words, if even one of the ``Maybe``
+values in the initial list passed to ``sequence``is a ``Nothing``, the result of
+evaluating ``sequence`` for the whole list will also be ``Nothing``.
 
 ```haskell
 sequence :: [Maybe a] -> Maybe [a]
@@ -3651,8 +3651,8 @@ sequence [[1,2,3],[10,20,30]]
 **IO**
 
 Applying ``sequence`` within the [IO context](#io) results in still a different
-result. The function takes a list of IO actions, performs them sequentially,
-and then returns the list of resulting values in the order sequenced.
+result. The function takes a list of IO actions, performs them sequentially, and
+then gives back the list of resulting values in the order sequenced.
 
 ```haskell
 sequence :: [IO a] -> IO [a]
@@ -3763,7 +3763,8 @@ an entirely new form under the hood.
 Most monad tutorials will not manually expand out the do-sugar. This leaves the
 beginner thinking that monads are a way of dropping into a pseudo-imperative
 language inside of code and further fuels that misconception that specific
-instances like IO are monads in their full generality.
+instances like IO fully *monads in their full generality*. When in fact the IO
+monad is only one among many instances.
 
 ```haskell
 main = do
@@ -3781,19 +3782,20 @@ main =
       return ()
 ```
 
-2. *Asymmetric binary infix operators for higher order functions are not common
-   in other languages.*
+2. *Infix operators for higher order functions are not common in other languages.*
 
 ```haskell
 (>>=) :: Monad m => m a -> (a -> m b) -> m b
 ```
 
 On the left hand side of the operator we have an ``m a`` and on the right we
-have ``a -> m b``. Although some languages do have infix operators that are
-themselves higher order functions, it is still a rather rare occurrence.
+have ``a -> m b``. Thus, this operator is asymmetric, utilizing a monadic value
+on the left and a higher order function on the right. Although some languages do
+have infix operators that are themselves higher order functions, it is still a
+rather rare occurrence.
 
-So with a function desugared, it can be confusing that ``(>>=)`` operator is in
-fact building up a much larger function by composing functions together.
+Thus, with a function desugared, it can be confusing that ``(>>=)`` operator is
+in fact building up a much larger function by composing functions together.
 
 ```haskell
 main =
@@ -3824,23 +3826,24 @@ main = bind getLine (\x -> bind (putStrLn x) (\_ -> return ()))
 
 3. *Ad-hoc polymorphism is not commonplace in other languages.*
 
-Haskell's implementation of overloading can be unintuitive if one is not familiar
-with type inference. It is abstracted away from the user, but the ``(>>=)`` or
-``bind`` function is really a function of 3 arguments with the extra typeclass
-dictionary argument (``$dMonad``) implicitly threaded around.
+Haskell's implementation of overloading can be unintuitive if one is not
+familiar with type inference. Indeed, newcomers to Haskell often believe they
+can gain an intuition for monads in a way that will unify their understanding of
+*all monads*. This is a fallacy, however, because any particular monad instance is
+merely an **instantiation** of the monad typeclass functions implemented *for that
+particular type*.
+
+This is all abstracted away from the user, but the ``(>>=)`` or ``bind``
+function is really a function of 3 arguments with the extra typeclass dictionary
+argument (``$dMonad``) implicitly threaded around.
 
 ```haskell
 main $dMonad = bind $dMonad getLine (\x -> bind $dMonad (putStrLn x) (\_ -> return $dMonad ()))
 ```
 
-Except in the case where the parameter of the monad class is unified ( through
-inference ) with a concrete class instance, in which case the instance
-dictionary (``$dMonadIO``) is instead spliced throughout.
-
-```haskell
-main :: IO ()
-main = bind $dMonadIO getLine (\x -> bind $dMonadIO (putStrLn x) (\_ -> return $dMonadIO ()))
-```
+In general, this is true for all typeclasses in Haskell and it’s true here as
+well, except in the case where the parameter of the monad class is unified (
+through inference ) with a concrete class instance.
 
 Now, all of these transformations are trivial once we understand them, they're
 just typically not discussed. In my opinion the fundamental fallacy of monad
@@ -3850,6 +3853,9 @@ understanding of points (1), (2), and (3) and then trip on the simple fact that
 monads are the first example of a Haskell construct that is the confluence of
 all three.
 
+Thus we make monads more difficult than they need to be. At the end of the day
+they are simple algebraic critters.
+
 <hr/>
 
 Monad Transformers
@@ -3858,11 +3864,31 @@ Monad Transformers
 mtl / transformers
 ------------------
 
-So, the descriptions of Monads in the previous chapter are a bit of a white lie.
+The descriptions of Monads in the previous chapter are a bit of a white lie.
 Modern Haskell monad libraries typically use a more general form of these,
 written in terms of monad transformers which allow us to compose monads together
-to form composite monads. The monads mentioned previously are subsumed by the
-special case of the transformer form composed with the Identity monad.
+to form **composite monads**. 
+
+Imagine if you had an application that wanted to deal with a Maybe monad wrapped
+inside a State Monad, all wrapped inside the IO monad. This is the problem that
+monad transformers solve, a problem of composing different monads. At their
+core, monad transformers allow us to nest monadic computations in a stack with
+an interface to exchange values between the levels, called lift:
+
+```haskell
+lift :: (Monad m, MonadTrans t) => m a -> t m a
+```
+
+In production code, the monads mentioned previously maybe actually be their more
+general transformer form composed with the `Identity` monad.
+
+```haskell
+type State  s = StateT  s Identity
+type Writer w = WriterT w Identity
+type Reader r = ReaderT r Identity
+```
+
+The following table shows the relationships between these forms:
 
 Monad   Transformer  Type            Transformed Type
 ------  -----------  --------------- -------------------
@@ -3870,43 +3896,6 @@ Maybe   MaybeT       ``Maybe a``     ``m (Maybe a)``
 Reader  ReaderT      ``r -> a``      ``r -> m a``
 Writer  WriterT      ``(a,w)``       ``m (a,w)``
 State   StateT       ``s -> (a,s)``  ``s -> m (a,s)``
-
-
-```haskell
-type State  s = StateT  s Identity
-type Writer w = WriterT w Identity
-type Reader r = ReaderT r Identity
-
-instance Monad m => MonadState s (StateT s m)
-instance Monad m => MonadReader r (ReaderT r m)
-instance (Monoid w, Monad m) => MonadWriter w (WriterT w m)
-```
-
-In terms of generality the mtl library is the most common general interface for
-these monads, which itself depends on the transformers library which generalizes
-the "basic" monads described above into transformers.
-
-Transformers
-------------
-
-At their core monad transformers allow us to nest monadic computations in a
-stack with an interface to exchange values between the levels, called ``lift``.
-
-```haskell
-lift :: (Monad m, MonadTrans t) => m a -> t m a
-liftIO :: MonadIO m => IO a -> m a
-```
-
-```haskell
-class MonadTrans t where
-    lift :: Monad m => m a -> t m a
-
-class (Monad m) => MonadIO m where
-    liftIO :: IO a -> m a
-
-instance MonadIO IO where
-    liftIO = id
-```
 
 Just as the base monad class has laws, monad transformers also have several laws:
 
@@ -3949,6 +3938,32 @@ See:
 
 * [Monad Transformers: Step-By-Step](https://page.mi.fu-berlin.de/scravy/realworldhaskell/materialien/monad-transformers-step-by-step.pdf)
 
+Transformers
+------------
+
+The lift definition provided above comes from the `transformers` library along
+with an IO-specialized form called `liftIO`:
+
+```haskell
+lift :: (Monad m, MonadTrans t) => m a -> t m a
+liftIO :: MonadIO m => IO a -> m a
+```
+
+These definitions rely on the following typeclass definitions, which describe
+composing one monad with another monad (the “t” is the transformed second
+monad):
+
+```haskell
+class MonadTrans t where
+    lift :: Monad m => m a -> t m a
+
+class (Monad m) => MonadIO m where
+    liftIO :: IO a -> m a
+
+instance MonadIO IO where
+    liftIO = id
+```
+
 Basics
 ------
 
@@ -3961,8 +3976,9 @@ Monad (m :: * -> *)
 MonadTrans (t :: (* -> *) -> * -> *)
 ```
 
-So, for example, if we wanted to form a composite computation using both the Reader and Maybe monads we can now
-put the Maybe inside of a ``ReaderT`` to form ``ReaderT t Maybe a``.
+For example, if we wanted to form a composite computation using both the Reader
+and Maybe monads, using `MonadTrans` we could use Maybe inside of a ``ReaderT``
+to form ``ReaderT t Maybe a``.
 
 ~~~~ {.haskell include="src/03-monad-transformers/transformer.hs"}
 ~~~~
@@ -3970,13 +3986,29 @@ put the Maybe inside of a ``ReaderT`` to form ``ReaderT t Maybe a``.
 The fundamental limitation of this approach is that we find ourselves ``lift.lift.lift``ing and
 ``return.return.return``ing a lot.
 
+mtl
+---
+
+The mtl library is the most commonly used interface for these monad tranformers,
+but mtl depends on the transformers library from which it generalizes the
+“basic” monads described above into more general transformers, such as the
+following: 
+
+```haskell
+instance Monad m => MonadState s (StateT s m)
+instance Monad m => MonadReader r (ReaderT r m)
+instance (Monoid w, Monad m) => MonadWriter w (WriterT w m)
+```
+
+This solves the “lift.lift.lifting” problem introduced by transformers.
 
 ReaderT
 -------
 
-For example, there exist three possible forms of the Reader monad. The first is
-the Haskell 98 version that no longer exists, but is useful for understanding the
-underlying ideas. The other two are the *transformers* and *mtl* variants.
+By way of an example there exist three possible forms of the Reader monad. The
+first is the primitive version which no longer exists, but which is useful for
+understanding the underlying ideas. The other two are the *transformers* and
+*mtl* variants.
 
 *Reader*
 
@@ -4023,15 +4055,19 @@ ask :: Monad m => ReaderT r m r
 ask :: MonadReader r m => m r
 ```
 
-In practice only the last one is used in modern Haskell.
+In practice the `mtl` variant is the one commonly used in Modern Haskell.
 
 Newtype Deriving
 ----------------
 
-Newtypes let us reference a data type with a single constructor as a new
-distinct type, with no runtime overhead from boxing, unlike an algebraic
-datatype with a single constructor. Newtype wrappers around strings and numeric
-types can often drastically reduce accidental errors.
+Newtype deriving is a common technique used in combination with the `mtl`
+library and as such we will discuss it's use for transformers in this section.
+
+As discussed in the [newtypes](#newtypes) section, newtypes let us reference a
+data type with a single constructor as a new distinct type, with no runtime
+overhead from boxing, unlike an algebraic datatype with a single constructor.
+Newtype wrappers around strings and numeric types can often drastically reduce
+accidental errors.
 
 Consider the case of using a newtype to distinguish between two different text
 blobs with different semantics. Both have the same runtime representation as a
@@ -4046,11 +4082,13 @@ encrypt :: Key -> Plaintext -> Cryptotext
 decrypt :: Key -> Cryptotext -> Plaintext
 ```
 
+This is a surprisingly powerful tool as the Haskell compiler will refuse to
+compile any function which treats Cryptotext as Plaintext or vice versa!
+
 The other common use case is using newtypes to derive logic for deriving custom
 monad transformers in our business logic.  Using
 ``-XGeneralizedNewtypeDeriving`` we can recover the functionality of instances
 of the underlying types composed in our transformer stack.
-
 
 ~~~~ {.haskell include="src/03-monad-transformers/newtype.hs"}
 ~~~~
@@ -4071,8 +4109,8 @@ Reader, Writer and State monads.
 ~~~~
 
 Pattern matching on a newtype constructor compiles into nothing. For example
-the``extractB`` function does not scrutinize the ``MkB`` constructor like the
-``extractA`` does, because ``MkB`` does not exist at runtime, it is purely a
+the``extractB`` function below does not scrutinize the ``MkB`` constructor like
+``extractA`` does, because ``MkB`` does not exist at runtime; it is purely a
 compile-time construct.
 
 ```haskell
@@ -4112,8 +4150,8 @@ forM_ xs (lift . f) == lift (forM_ xs f)
 Monad Morphisms
 ---------------
 
-The base monad transformer package provides a ``MonadTrans`` class for lifting
-to another monad:
+Although the base monad transformer package provides a ``MonadTrans`` class for
+lifting to another monad:
 
 ```haskell
 lift :: Monad m => m a -> t m a
@@ -4122,8 +4160,9 @@ lift :: Monad m => m a -> t m a
 But often times we need to work with and manipulate our monad transformer stack
 to either produce new transformers, modify existing ones or extend an upstream
 library with new layers. The ``mmorph`` library provides the capacity to compose
-monad morphism transformation directly on transformer stacks. The equivalent of
-type transformer type-level map is the ``hoist`` function.
+monad morphism transformation directly on transformer stacks. This is achieved
+primarily by use of the ``hoist`` function which maps a function from a base
+monad into a function over a transformed monad.
 
 ```haskell
 hoist :: Monad m => (forall a. m a -> n a) -> t m b -> t n b
@@ -4154,12 +4193,6 @@ See:
 
 Effect Systems
 --------------
-
-TODO
-
-* fused-effects
-* polysemy
-* eff
 
 **Extensibility**
 
@@ -4193,8 +4226,20 @@ extensibility problem.
 
 **Non-commutative transformers**
 
+TODO
+
 Since monad transformers don't commute in general, we can't always merge two
 `StateT` layers together.
+
+In recent years there have many other libraries that have explored the design
+space of alternative effect modeling systems. These systems are still quite
+early compared to the `mtl` but some are able to avoid some of the shortcomings
+of `mtl` in favour of algebraic models of effects. The three most commonly used
+libraries are:
+
+* `fused-effects`
+* `polysemy`
+* `eff`
 
 Polysemy
 --------
@@ -4430,6 +4475,8 @@ ex3 = evalState (1 :: Double, 0 :: Double) (runThrow example2)
 
 <hr/>
 
+TODO START HERE
+
 Language Extensions
 ===================
 
@@ -4440,20 +4487,20 @@ Haskell takes a drastically different approach to language design than most
 other languages as a result of being the synthesis of input from industrial and
 academic users. GHC allows the core language itself to be extended with a vast
 range of opt-in flags which change the semantics of the language on a per-module
-or per-project basis. While this does add a lot of complexity at first, it adds
-a level of power and flexibility for the language to evolve at a pace that is
-unrivaled in the programming language design.
+or per-project basis. While this does add a lot of complexity at first, it also
+adds a level of power and flexibility for the language to evolve at a pace that
+is unrivaled in the broader space of programming language design.
 
 Classes
 --------
 
-It's important to distinguish between different classes of language
+It's important to distinguish between different classes of GHC language
 extensions: *general* and *specialized*.
 
-The inherent problem with classifying the extensions into the general and
-specialized categories is that it's a subjective classification. Haskellers who
-do type system research will have a very different interpretation of Haskell
-than people who do web programming. We will use the following classifications:
+The inherent problem with classifying extensions into general and specialized
+categories is that it's a subjective classification. Haskellers who do theorem
+proving research will have a very different interpretation of Haskell than
+people who do web programming. Thus, we will use the following classifications:
 
 * *Benign* implies both that importing the extension won't change the semantics of
   the module if not used and that enabling it makes it no easier to shoot
@@ -5565,14 +5612,7 @@ There is also an incoherent instance.
 Laziness
 ========
 
-Again, a subject on which *much* ink has been spilled. There is an ongoing
-discussion in the land of Haskell about the compromises between lazy and strict
-evaluation, and there are nuanced arguments for having either paradigm be the
-default. Haskell takes a hybrid approach and allows strict evaluation when
-needed and uses laziness by default. Needless to say, we can always find
-examples where strict evaluation exhibits worse behavior than lazy evaluation
-and vice versa. These days Haskell can be both as lazy or as strict as you like,
-giving you options for however you prefer to program.
+TODO
 
 The primary advantage of lazy evaluation in the large is that algorithms that
 operate over both unbounded and bounded data structures can inhabit the same
@@ -5586,18 +5626,18 @@ structures in memory when such composition would "just work" in a lazy language.
 
 By virtue of Haskell being the only language to actually explore this point in
 the design space, knowledge about lazy evaluation is not widely absorbed into
-the collective programmer consciousness and can often be non-intuitive to the
-novice. Some time is often needed to fully grok how lazy evaluation works and
-how to wield it's great power and when to force strictness.
+the collective programmer consciousness and can often be non-intuitive.  Some
+time is often needed to fully grok how lazy evaluation works and how to wield
+it's when to force strictness.
 
 Strictness
 ----------
 
 There are several evaluation models for the lambda calculus:
 
-* Strict - Evaluation is said to be strict if all arguments are evaluated before
+* **Strict** - Evaluation is said to be strict if all arguments are evaluated before
   the body of a function.
-* Non-strict - Evaluation is non-strict if the arguments are not necessarily
+* **Non-strict** - Evaluation is non-strict if the arguments are not necessarily
   evaluated before entering the body of a function.
 
 These ideas give rise to several models, Haskell itself use the *call-by-need*
@@ -5607,7 +5647,7 @@ Model          Strictness    Description
 -------------  ------------- ---------------
 Call-by-value  Strict        arguments evaluated before function entered
 Call-by-name   Non-strict    arguments passed unevaluated
-Call-by-need   Non-strict    arguments passed unevaluated but an expression is only evaluated once (sharing)
+Call-by-need   Non-strict    arguments passed unevaluated but an expression is only evaluated once
 
 Seq and WHNF
 ------------
@@ -5671,6 +5711,9 @@ the same program diverges.
 
 ~~~~ {.haskell include="src/05-laziness/diverge.ml"}
 ~~~~
+
+Thunks
+------
 
 In Haskell a *thunk* is created to stand for an unevaluated computation.
 Evaluation of a thunk is called *forcing* the thunk. The result is an *update*,
