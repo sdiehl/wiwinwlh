@@ -2359,6 +2359,7 @@ can be short-circuited to generate position information in the place of either
 
 See: [Avoiding Partial Functions](https://wiki.haskell.org/Avoiding_partial_functions)
 
+
 Exhaustiveness
 --------------
 
@@ -2436,8 +2437,9 @@ Debugger
 --------
 
 Since GHC version 6.8.1, a built-in debuggerhas been available, although its use
-is somewhat rare. Debugging uncaught exceptions from bottoms is similar style to
-debugging segfaults with gdb.
+is somewhat rare. Debugging uncaught exceptions is in a similar style to
+debugging segfaults with gdb. Breakpoints can be set `:break` and the call stack
+stepped through with `:forward` and `:back`.
 
 ```haskell
 λ: :set -fbreak-on-exception       -- Sets option for evaluation to stop on exception
@@ -2493,8 +2495,7 @@ program at critical times throughout execution is often unnecessary because we
 can simply open [GHCi] and test the function. Nevertheless, Haskell does come
 with an unsafe ``trace`` function which can be used to perform arbitrary print
 statements outside of the IO monad. You can place these statements wherever you
-like in your code without without IO restrictions. Logging of this sort is a
-"benign effect" since it is not observable.
+like in your code without without IO restrictions. 
 
 ~~~~ {.haskell include="src/01-basics/trace.hs"}
 ~~~~
@@ -2541,12 +2542,12 @@ f x = const x g
 g y = f 'A'
 ```
 
-The inferred type signatures are correct in their usage, but don't represent
-the most general signatures. When GHC analyzes the module it analyzes the
-dependencies of expressions on each other, groups them together, and applies
-substitutions from unification across mutually defined groups. As such the
-inferred types may not be the most general types possible, and an explicit
-signature may be desired.
+In this case, the inferred type signatures are correct in their usage, but they
+don't represent the most general signatures. When GHC analyzes the module it
+analyzes the dependencies of expressions on each other, groups them together,
+and applies substitutions from unification across mutually defined groups. As
+such the inferred types may not be the most general types possible, and an
+explicit signature may be desired.
 
 ```haskell
 -- Inferred types
@@ -2567,10 +2568,10 @@ size Leaf = 0
 size (Bin _ t) = 1 + 2 * size t
 ```
 
-The recursion is polymorphic because the inferred type variable ``a`` in
-``size`` spans two possible types (``a`` and ``(a,a)``). These two types won't
-pass the occurs-check of the typechecker and it yields an incorrect inferred
-type.
+In the second case recursion is polymorphic because the inferred type variable
+``a`` in ``size`` spans two possible types (``a`` and ``(a,a)``). These two
+types won't pass the occurs-check of the typechecker and it yields an incorrect
+inferred type:
 
 ```haskell
     Occurs check: cannot construct the infinite type: t0 = (t0, t0)
@@ -2595,12 +2596,14 @@ See: [Static Semantics of Function and Pattern Bindings](https://www.haskell.org
 
 #### Monomorphism Restriction
 
-*Monomorphism restriction* is a controversial typing rule. By default, it is
+TODO look into this
+
+Finally *Monomorphism restriction* is a builtin typing rule. By default, it is
 turned on when compiling and off in GHCi. The practical effect of this rule is
 that types inferred for functions without explicit type signatures may be more
 specific than expected. This is because GHC will sometimes reduce a general
-type, such as ``Num`` to a default type, such as ``Double``. This can be seen
-in the following example in GHCi:
+type, such as ``Num`` to a default type, such as ``Double``. This can be seen in
+the following example in GHCi:
 
 ```haskell
 λ: :set +t
@@ -2630,8 +2633,8 @@ Type Holes
 Since the release of GHC 7.8, type holes allow underscores as stand-ins for
 actual values. They may be used either in declarations or in type signatures.
 
-Type holes are useful in debugging of incomplete programs. By placing an
-underscore on any value on the right hand-side of a declaration,
+Type holes are useful in debugging incomplete programs. By placing an underscore
+on any value on the right hand-side of a declaration,
 [GHC](https://www.haskell.org/ghc/) will throw an error during type-checking.
 The error message describes which values may legally fill the type hole.
 
@@ -2675,8 +2678,8 @@ typedhole.hs:5:11: error:
         const' :: t -> t1 -> t (bound at typedhole.hs:6:1)
 ```
 
-Pattern wildcards can also be given explicit names so that GHC will use when
-reporting the inferred type in the resulting message.
+Pattern wildcards can also be given explicit names so that GHC will use the
+names when reporting the inferred type in the resulting message.
 
 ```haskell
 foo :: _a -> _a
@@ -2714,7 +2717,7 @@ typedhole.hs:11:10: error:
 
 When the flag ``-XPartialTypeSignatures`` is passed to GHC and the inferred type
 is unambiguous, GHC will let us leave the holes in place and the compilation
-will proceed.
+will proceed with a warning instead of an error.
 
 ```bash
 typedhole.hs:3:10: Warning:
@@ -2739,7 +2742,7 @@ For instance, the program below will compile:
 ~~~~ {.haskell include="src/01-basics/defer.hs"}
 ~~~~
 However, when a pathological term is evaluated at runtime, we'll see a message
-like:
+like this:
 
 ```bash
 defer: defer.hs:4:5:
@@ -2783,8 +2786,9 @@ root of a project. To generate the default configuration run:
 hlint --default > .hlint.yaml
 ```
 
-Custom errors can be added to this file which will suggest custom changes of
-code from the left hand side match to the right hand side replacement:
+Custom errors can be added to this file in order to match and suggest custom
+changes of code from the left hand side match to the right hand side
+replacement:
 
 ```yaml
 error: {lhs: "foo x", rhs: bar x}
@@ -2835,7 +2839,7 @@ Continuous Integration
 
 These days it is quite common to use cloud hosted continuous integration systems
 to test code from version control systems. There are many community contributed
-build script for different service providers:
+build script for different service providers, including the following:
 
 * [Travis CI for Cabal](https://github.com/haskell-CI/haskell-ci/blob/master/.travis.yml)
 * [Travis CI for Stack](https://docs.haskellstack.org/en/stable/travis_ci/)
@@ -2850,10 +2854,10 @@ Ormolu
 ------
 
 Ormolu is an opinionated Haskell source formatter that produces a canonical way
-of rendering Haskell abstract syntax tree to text. This ensures that code shared
-amongst teams and checked into version control conforms to a single universal
-standard for whitespace and lexeme placing. This is similar to tools in other
-languages such as `go fmt`.
+of rendering the Haskell abstract syntax tree to text. This ensures that code
+shared amongst teams and checked into version control conforms to a single
+universal standard for whitespace and lexeme placing. This is similar to tools
+in other languages such as `go fmt`.
 
 For example running `ormolu example.hs --inplace` on the following module:
 
@@ -2901,8 +2905,8 @@ Haddock
 -------
 
 [Haddock](https://www.haskell.org/haddock/#Overview) is the automatic
-documentation generation tool for Haskell source code. It integrates with the
-usual ``cabal`` toolchain. In this section, we will explore how to document
+documentation generation tool for Haskell source code, and it integrates with
+the usual ``cabal`` toolchain. In this section, we will explore how to document
 code so that Haddock can generate documentation successfully.
 
 Several frequent comment patterns are used to document code for Haddock. The
@@ -3045,9 +3049,10 @@ Unsafe Functions
 
 As everyone eventually finds out there are several functions within the
 implementation of GHC ( not the Haskell language ) that can be used to subvert
-the type-system, they are marked with the prefix ``unsafe``.  These functions
-exist only for when one can manually prove the soundness of an expression but
-can't express this property in the type-system or externalities to Haskell.
+the type-system; these functions are marked with the prefix ``unsafe``.  Unsafe
+functions exist only for when one can manually prove the soundness of an
+expression but can't express this property in the type-system or externalities
+to Haskell.
 
 ```haskell
 unsafeCoerce :: a -> b         -- Unsafely coerce anything into anything
@@ -3056,9 +3061,10 @@ unsafePerformIO :: IO a -> a   -- Unsafely run IO action outside of IO
 
 <div class="alert alert-danger">
 Using these functions to subvert the Haskell typesystem will cause all measure
-of undefined behavior with unimaginable pain and suffering, and are <span
-style="font-weight: bold">strongly discouraged</span>. When initially starting
-out with Haskell there are no legitimate reason to use these functions at all.
+of undefined behavior with unimaginable pain and suffering, and so they are
+<span style="font-weight: bold">strongly discouraged</span>. When initially
+starting out with Haskell there are no legitimate reason to use these functions
+at all.
 </div>
 
 <hr/>
@@ -3066,14 +3072,15 @@ out with Haskell there are no legitimate reason to use these functions at all.
 Monads
 ======
 
-Monads one of the core components to constructing Haskell programs. In their
-most general form monads are an algebraic building block that can give rise to
-ways of structuring control flow, handling data structures and orchestating
-logic. They are a very general algebraic way of structing code and have a
-certain reputation for being confusing. However their power and flexability have
-become foundational to the way modern Haskell programs are structured.
+Monads form one of the core components for constructing Haskell programs. In
+their most general form monads are an algebraic building block that can give
+rise to ways of structuring control flow, handling data structures and
+orchestrating logic. Monads are a very general algebraic way of structuring code
+and have a certain reputation for being confusing. However their power and
+flexibility have become foundational to the way modern Haskell programs are
+structured.
 
-There is a singlar truth to keep in mind when learning monads.
+There is a singular truth to keep in mind when learning monads.
 
 > A monad is just it's algebraic laws. Nothing more, nothing less.
 
@@ -3115,10 +3122,11 @@ The following are all **false**:
 Monad Methods
 -------------
 
+TODO START HERE
+
 Monads are not complicated. They are implemented as a typeclass with two
 methods, ``return`` and ``(>>=)`` (pronounced "bind"). In order to implement
-a Monad instance, these two functions must be defined in accordance with the
-arity described in the typeclass definition:
+a Monad instance, these two functions must be defined:
 
 ```haskell
 class Monad m where
@@ -4153,7 +4161,7 @@ TODO
 * polysemy
 * eff
 
-**Extensibility problems**
+**Extensibility**
 
 TODO
 
@@ -4164,7 +4172,7 @@ for n large large number of undecidable instances that do nothing but mostly
 lifts. You can see this massive boilerplate all over the design of the `mtl`
 library.
 
-```
+```haskell
 instance MonadReader r m => MonadReader r (ExceptT e m) where
     ask   = lift ask
     local = mapExceptT . local
@@ -15029,7 +15037,7 @@ references to both itself (for recursion) and the dictionary for instance of
 The type system of STG system consists of the following types. The size of these
 types depend on the size of a `void*` pointer on the architecture.
 
-* **StgWord** -  TODO
+* **StgWord** -  An unsigned system integer type of word size
 * **StgPtr** - Basic pointer type
 * **StgBool** - Boolean int bit flag
 * **StgInt** - `Int#`
