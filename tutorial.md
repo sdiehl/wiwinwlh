@@ -2595,8 +2595,6 @@ See: [Static Semantics of Function and Pattern Bindings](https://www.haskell.org
 
 #### Monomorphism Restriction
 
-TODO look into this
-
 Finally *Monomorphism restriction* is a builtin typing rule. By default, it is
 turned on when compiling and off in GHCi. The practical effect of this rule is
 that types inferred for functions without explicit type signatures may be more
@@ -5484,15 +5482,15 @@ this will make the instance search contingent on your import list and may result
 in clashes in your codebase where the linker will fail because there are
 multiple modules which define the same instance head. 
 
-When used appropriately this however can be way to route around the fact that
-upstream modules may define datatypes that you use, but not define the instances
-for other downstream libraries that you also use. You can then write these
-instances for your codebase without modifying either upstream library.
+When used appropriately this can be way to route around the fact that upstream
+modules may define datatypes that you use, but they have not defined the
+instances for other downstream libraries that you also use. You can then write
+these instances for your codebase without modifying either upstream library.
 
 Minimal Annotations
 -------------------
 
-In the presence of default implementations of typeclasses methods, there may be
+In the presence of default implementations for typeclasses methods, there may be
 several ways to implement a typeclass. For instance Eq is entirely defined by
 either defining when two values are equal or not equal by implying taking the
 negation of the other. We can define equality in terms of non-equality and
@@ -5517,16 +5515,16 @@ class Eq a where
   {-# MINIMAL (/=) #-}
 ```
 
-Minimal pragmas are boolean expressions, with ``|`` as logical ``OR``, *either*
-definition must be defined). Comma indicates logical ``AND`` where both sides
-*both* definitions must be defined.
+Minimal pragmas are boolean expressions. For instance, with ``|`` as logical
+``OR``, *either* definition of the above functions must be defined). Comma
+indicates logical ``AND`` where *both* definitions must be defined.
 
 ```haskell
 {-# MINIMAL (==) | (/=) #-} -- Either (==) or (/=)
 {-# MINIMAL (==) , (/=) #-} -- Both (==) and (/=)
 ```
 
-Compiling the ``-Wmissing-methods`` will warn when a instance is defined that
+Compiling the ``-Wmissing-methods`` will warn when an instance is defined that
 does not meet the minimal criterion.
 
 TypeSynonymInstances
@@ -5534,7 +5532,7 @@ TypeSynonymInstances
 
 Normally type class definitions are restricted to be being defined only over
 fully expanded types with all type synonym indirections removed. Type synonyms
-introduce a "naming indirection" that can included in the instance search to
+introduce a "naming indirection" that can be included in the instance search to
 allow you to write synonym instances for multiple synonyms which expand to
 concrete types.
 
@@ -5572,9 +5570,9 @@ OverlappingInstances
 --------------------
 
 Typeclasses are normally globally coherent, there is only ever one instance that
-can be resolved for a type unambiguously for a type at any call site in the
-program. There are however extensions to loosen this restriction and perform
-more manual direction of the instance search.
+can be resolved for a type unambiguously at any call site in the program. There
+are however extensions to loosen this restriction and perform more manual
+direction of the instance search.
 
 Overlapping instances loosens the coherent condition (there can be multiple
 instances) but introduces a criterion that it will resolve to the most specific
@@ -5583,10 +5581,10 @@ one.
 ~~~~ {.haskell include="src/04-extensions/overlapping.hs"}
 ~~~~
 
-Historically enabling this on module-level was not the best idea, since
+Historically enabling on the module-level was not the best idea, since
 generally we define multiple classes in a module only a subset of which may be
-incoherent. So as of 7.10 we now have the capacity to just annotate instances
-with the `OVERLAPPING` and `INCOHERENT` pragmas.
+incoherent. As of GHC 7.10 we now have the capacity to just annotate instances
+with the `OVERLAPPING` and `INCOHERENT` inline pragmas.
 
 ~~~~ {.haskell include="src/04-extensions/overlapping_anno.hs"}
 ~~~~
@@ -5596,14 +5594,16 @@ IncoherentInstances
 -------------------
 
 Incoherent instance loosens the restriction that there be only one specific
-instance, will choose one arbitrarily (based on the arbitrary sorting of it's
-internal representation ) and the resulting program will typecheck. This is
-generally pretty crazy and usually a sign of poor design.
+instance, will be chosen based on a more complex search procedure which tries to
+identify a *prime instance* based on information incorporated form `OVERLAPPING`
+pragmas on instances in the search tree. Unless one is doing very advanced
+type-level programming use class constraints, this is usually a poor design
+decision and a sign to rethink the class hierarchy.
 
 ~~~~ {.haskell include="src/04-extensions/incoherent.hs"}
 ~~~~
 
-There is also an incoherent instance.
+An example with `INCOHERENT` annotations:
 
 ~~~~ {.haskell include="src/04-extensions/incoherent_anno.hs"}
 ~~~~
