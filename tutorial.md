@@ -5613,28 +5613,49 @@ An example with `INCOHERENT` annotations:
 Laziness
 ========
 
-TODO
+Lazy evaluation implies that expressions will be evaluated only when needed. In
+truth, this evaluation may even be indefinitely deferred. Consider the example
+in Haskell of defining an infinite list:
+
+```haskell
+λ> mkInfinite n = n : mkInfinite n
+λ> take 5 $ mkInfinite 4
+[4,4,4,4,4]
+```
 
 The primary advantage of lazy evaluation in the large is that algorithms that
 operate over both unbounded and bounded data structures can inhabit the same
 type signatures and be composed without additional need to restructure their
-logic or force intermediate computations. Languages that attempt to bolt
-laziness on to a strict evaluation model often bifurcate classes of algorithms
-into ones that are hand-adjusted to consume unbounded structures and those which
-operate over bounded structures. In strict languages mixing and matching between
-lazy vs strict processing often necessitates manifesting large intermediate
-structures in memory when such composition would "just work" in a lazy language.
+logic or force intermediate computations.
+
+Still, it's important to recognize that this is another subject on which much
+ink has been spilled. In fact, there is an ongoing discussion in the land of
+Haskell about the compromises between lazy and strict evaluation, and there are
+nuanced arguments for having either paradigm be the default. 
+
+Haskell takes a hybrid approach where it allows strict evaluation when needed
+while it uses laziness by default. Needless to say, we can always find examples
+where strict evaluation exhibits worse behavior than lazy evaluation and vice
+versa. These days Haskell can be both as lazy or as strict as you like, giving
+you options for however you prefer to program.
+
+Languages that attempt to bolt laziness on to a strict evaluation model often
+bifurcate classes of algorithms into ones that are hand-adjusted to consume
+unbounded structures and those which operate over bounded structures. In strict
+languages, mixing and matching between lazy vs strict processing often
+necessitates manifesting large intermediate structures in memory when such
+composition would “just work” in a lazy language.
 
 By virtue of Haskell being the only language to actually explore this point in
 the design space, knowledge about lazy evaluation is not widely absorbed into
-the collective programmer consciousness and can often be non-intuitive.  Some
-time is often needed to fully grok how lazy evaluation works and how to wield
-it's when to force strictness.
+the collective programmer consciousness and can often be non-intuitive to the
+novice. Some time is often needed to fully grok how lazy evaluation works 
 
 Strictness
 ----------
 
-There are several evaluation models for the lambda calculus:
+For a more strict definition of strictnees, consider that there are several
+evaluation models for the lambda calculus:
 
 * **Strict** - Evaluation is said to be strict if all arguments are evaluated before
   the body of a function.
@@ -5653,10 +5674,11 @@ Call-by-need   Non-strict    arguments passed unevaluated but an expression is o
 Seq and WHNF
 ------------
 
-A term is said to be in *weak head normal-form* if the outermost constructor or
-lambda cannot be reduced further. A term is said to be in *normal form* if it is
-fully evaluated and all sub-expressions and thunks contained within are
-evaluated.
+On the subject of laziness and evaluation, we have names for how fully evaluated
+an expression is. A term is said to be in *weak head normal-form* if the
+outermost constructor or lambda expression cannot be reduced further. A term is
+said to be in *normal form* if it is fully evaluated and all sub-expressions and
+thunks contained within are evaluated.
 
 ```haskell
 -- In Normal Form
@@ -5681,11 +5703,12 @@ evaluated.
 "foo" ++ "bar"
 ```
 
-In Haskell normal evaluation only occurs at the outer constructor of case-statements
-in Core. If we pattern match on a list we don't implicitly force all values in
-the list. An element in a data structure is only evaluated up to the most outer
-constructor. For example, to evaluate the length of a list we need only
-scrutinize the outer Cons constructors without regard for their inner values.
+In Haskell, normal evaluation only occurs at the outer constructor of
+case-statements in Core. If we pattern match on a list, we don’t implicitly
+force all values in the list. An element in a data structure is only evaluated
+up to the outermost constructor. For example, to evaluate the length of a list
+we need only scrutinize the outer Cons constructors without regard for their
+inner values:
 
 ```haskell
 λ: length [undefined, 1]
@@ -5723,7 +5746,7 @@ the thunk with the computed value. The fundamental idea is that a thunk is only
 updated once ( although it may be forced simultaneously in a multi-threaded
 environment ) and its resulting value is shared when referenced subsequently.
 
-The command ``:sprint`` can be used to introspect the state of unevaluated
+The GHCi command ``:sprint`` can be used to introspect the state of unevaluated
 thunks inside an expression without forcing evaluation. For instance:
 
 ```haskell
@@ -5749,8 +5772,7 @@ b = _ : _ : _ : _ : _ : _ : _ : _ : _ : _ : 12 : _
 While a thunk is being computed its memory representation is replaced with a
 special form known as *blackhole* which indicates that computation is ongoing
 and allows for a short circuit for when a computation might depend on itself to
-complete. The implementation of this is some of the more subtle details of the
-GHC runtime.
+complete. 
 
 The ``seq`` function introduces an artificial dependence on the evaluation of
 order of two terms by requiring that the first argument be evaluated to WHNF
@@ -5764,9 +5786,9 @@ seq :: a -> b -> b
 a `seq` b = b
 ```
 
-The infamous ``foldl`` is well-known to leak space when used carelessly and
-without several compiler optimizations applied. The strict ``foldl'`` variant
-uses seq to overcome this.
+For one example where laziness can bite you, the infamous foldl is well-known to
+leak space when used carelessly and without several compiler optimizations
+applied. The strict foldl' variant uses seq to overcome this.
 
 ```haskell
 foldl :: (a -> b -> a) -> a -> [b] -> a
@@ -5830,12 +5852,10 @@ f $! x  = let !vx = x in f vx
 StrictData
 ----------
 
-As of GHC 8.0 strictness annotations can be applied to all definitions in a
-module automatically. In previous versions it was necessary to definitions via
-explicit syntactic annotations at all sites.
+As of GHC 8.0 strictness annotations can be applied to all definitions in a module automatically. In previous versions to make definitions strict it was necessary to use explicit syntactic annotations at all sites.
 
-Enabling StrictData makes constructor fields strict by default on any module it
-is enabled on.
+Enabling StrictData makes constructor fields strict by default on any module
+where the pragma is enabled:
 
 ```haskell
 {-# LANGUAGE StrictData #-}
@@ -8581,85 +8601,6 @@ xs, ys, zs :: [A]
 
 Keep in mind the rather remarkable fact that this is all deduced automatically
 from the types alone!
-
-Criterion
----------
-
-Criterion is a statistically aware benchmarking tool. It exposes a library which
-allows us to benchmark individual functions over and over and test the
-distribution of timings for abberant beahvior and stability. These kind of tests
-are quite common to include in libraries which need to test that the
-introduction of new logic doesn't result in performance regressions.
-
-Criterion operates largely with the following four functions.
-
-```haskell
-whnf :: (a -> b) -> a -> Pure
-nf :: NFData b => (a -> b) -> a -> Pure
-nfIO :: NFData a => IO a -> IO ()
-bench :: Benchmarkable b => String -> b -> Benchmark
-```
-
-The `whnf` function evaluates a function applied to an argument `a` to *weak
-head normal form*, while `nf` evaluates a function applied to an argument `a`
-deeply to *normal form*. See [Laziness].
-
-The `bench` function samples a function over and over according to a
-configuration to develop a statistical distribution of it's runtime. 
-
-~~~~ {.haskell include="src/15-testing/criterion.hs"}
-~~~~
-
-These criterion reports can be generated out to either CSV or to an HTML file
-output with plots of the data.
-
-```haskell
-$ runhaskell criterion.hs
-warming up
-estimating clock resolution...
-mean is 2.349801 us (320001 iterations)
-found 1788 outliers among 319999 samples (0.6%)
-  1373 (0.4%) high severe
-estimating cost of a clock call...
-mean is 65.52118 ns (23 iterations)
-found 1 outliers among 23 samples (4.3%)
-  1 (4.3%) high severe
-
-benchmarking naive/fib 10
-mean: 9.903067 us, lb 9.885143 us, ub 9.924404 us, ci 0.950
-std dev: 100.4508 ns, lb 85.04638 ns, ub 123.1707 ns, ci 0.950
-
-benchmarking naive/fib 20
-mean: 120.7269 us, lb 120.5470 us, ub 120.9459 us, ci 0.950
-std dev: 1.014556 us, lb 858.6037 ns, ub 1.296920 us, ci 0.950
-
-benchmarking de moivre/fib 10
-mean: 7.699219 us, lb 7.671107 us, ub 7.802116 us, ci 0.950
-std dev: 247.3021 ns, lb 61.66586 ns, ub 572.1260 ns, ci 0.950
-found 4 outliers among 100 samples (4.0%)
-  2 (2.0%) high mild
-  2 (2.0%) high severe
-variance introduced by outliers: 27.726%
-variance is moderately inflated by outliers
-
-benchmarking de moivre/fib 20
-mean: 8.082639 us, lb 8.018560 us, ub 8.350159 us, ci 0.950
-std dev: 595.2161 ns, lb 77.46251 ns, ub 1.408784 us, ci 0.950
-found 8 outliers among 100 samples (8.0%)
-  4 (4.0%) high mild
-  4 (4.0%) high severe
-variance introduced by outliers: 67.628%
-variance is severely inflated by outliers
-```
-
-To generate an HTML page containing the benchmark results plotted
-
-```bash
-$ ghc -O2 --make criterion.hs
-$ ./criterion -o bench.html
-```
-
-![](img/criterion.png)
 
 Tasty
 -----
@@ -12134,8 +12075,8 @@ theoretic driven design.
 
 See: [Pipes Tutorial](http://hackage.haskell.org/package/pipes-4.1.0/docs/Pipes-Tutorial.html)
 
-Safe Pipes
-----------
+ZeroMQ
+------
 
 ```haskell
 bracket :: MonadSafe m => Base m a -> (a -> Base m b) -> (a -> m c) -> m c
@@ -15962,6 +15903,86 @@ getRTSStats :: IO RTSStats
 
 Profiling
 =========
+
+Criterion
+---------
+
+Criterion is a statistically aware benchmarking tool. It exposes a library which
+allows us to benchmark individual functions over and over and test the
+distribution of timings for abberant beahvior and stability. These kind of tests
+are quite common to include in libraries which need to test that the
+introduction of new logic doesn't result in performance regressions.
+
+Criterion operates largely with the following four functions.
+
+```haskell
+whnf :: (a -> b) -> a -> Pure
+nf :: NFData b => (a -> b) -> a -> Pure
+nfIO :: NFData a => IO a -> IO ()
+bench :: Benchmarkable b => String -> b -> Benchmark
+```
+
+The `whnf` function evaluates a function applied to an argument `a` to *weak
+head normal form*, while `nf` evaluates a function applied to an argument `a`
+deeply to *normal form*. See [Laziness].
+
+The `bench` function samples a function over and over according to a
+configuration to develop a statistical distribution of it's runtime. 
+
+~~~~ {.haskell include="src/15-testing/criterion.hs"}
+~~~~
+
+These criterion reports can be generated out to either CSV or to an HTML file
+output with plots of the data.
+
+```haskell
+$ runhaskell criterion.hs
+warming up
+estimating clock resolution...
+mean is 2.349801 us (320001 iterations)
+found 1788 outliers among 319999 samples (0.6%)
+  1373 (0.4%) high severe
+estimating cost of a clock call...
+mean is 65.52118 ns (23 iterations)
+found 1 outliers among 23 samples (4.3%)
+  1 (4.3%) high severe
+
+benchmarking naive/fib 10
+mean: 9.903067 us, lb 9.885143 us, ub 9.924404 us, ci 0.950
+std dev: 100.4508 ns, lb 85.04638 ns, ub 123.1707 ns, ci 0.950
+
+benchmarking naive/fib 20
+mean: 120.7269 us, lb 120.5470 us, ub 120.9459 us, ci 0.950
+std dev: 1.014556 us, lb 858.6037 ns, ub 1.296920 us, ci 0.950
+
+benchmarking de moivre/fib 10
+mean: 7.699219 us, lb 7.671107 us, ub 7.802116 us, ci 0.950
+std dev: 247.3021 ns, lb 61.66586 ns, ub 572.1260 ns, ci 0.950
+found 4 outliers among 100 samples (4.0%)
+  2 (2.0%) high mild
+  2 (2.0%) high severe
+variance introduced by outliers: 27.726%
+variance is moderately inflated by outliers
+
+benchmarking de moivre/fib 20
+mean: 8.082639 us, lb 8.018560 us, ub 8.350159 us, ci 0.950
+std dev: 595.2161 ns, lb 77.46251 ns, ub 1.408784 us, ci 0.950
+found 8 outliers among 100 samples (8.0%)
+  4 (4.0%) high mild
+  4 (4.0%) high severe
+variance introduced by outliers: 67.628%
+variance is severely inflated by outliers
+```
+
+To generate an HTML page containing the benchmark results plotted
+
+```bash
+$ ghc -O2 --make criterion.hs
+$ ./criterion -o bench.html
+```
+
+![](img/criterion.png)
+
 
 EKG
 ---
