@@ -7078,7 +7078,7 @@ types can be encoded inside of the sum type holding the possible failures.
 ```haskell
 saveDiv -> Float -> Float -> Either DivError Float
 safeDiv x 0 = Left NoDivZero
-safeDiv x y = x `div` y
+safeDiv x y = Right (x `div` y)
 ```
 
 ExceptT
