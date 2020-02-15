@@ -10,7 +10,7 @@ includes
 *.html
 *.epub
 *.pdf
-*.agdai
+*.docx
 .stack-work
 dist-newstyle
 resources/*.eps

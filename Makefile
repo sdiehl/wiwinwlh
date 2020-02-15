@@ -12,6 +12,7 @@ FLAGS = --standalone --toc --toc-depth=2 --highlight-style tango
 LFLAGS = --top-level-division=chapter
 #LFLAGS = --top-level-division=chapter -V colorlinks
 HFLAGS = -c css/style.css -c css/layout.css
+DFLAGS =
 EFLAGS = 
 
 HTML = tutorial.html
@@ -34,6 +35,10 @@ includes: includes.hs
 	| $(PANDOC) --template $(HTEMPLATE) -s -f $(IFORMAT) -t html $(FLAGS) $(HFLAGS) \
 	| sed '/<extensions>/r extensions.html' \
 	| sed '/<copyright>/r resources/copyright.html' > $@
+
+%.docx: %.md includes
+	./includes < $<  \
+	| $(PANDOC) --template $(HTEMPLATE) -s -f $(IFORMAT) -t docx $(FLAGS) $(DFLAGS) > $@
 
 %.epub: %.md includes
 	(cat $(ETEMPLATE); ./includes < $<) \
