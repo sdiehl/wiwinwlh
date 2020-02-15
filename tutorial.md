@@ -4192,16 +4192,18 @@ See:
 Effect Systems
 --------------
 
-**Extensibility**
+The mtl model has several properties which make it suboptimal from a theoretical
+perspective. Although it is used widely in production Haskell we will discuss
+it's shortcomings and some future models called *effect systems*.
 
-TODO
+**Extensibility**
 
 When you add a new custom transformer inside of our business logic we'll
 typically have to derive a large number of boilerplate instances to compose it
-inside of the mtl transformer stack.  For example adding MonadReader instance
-for n large large number of undecidable instances that do nothing but mostly
+inside of existing mtl transformer stack. For example adding `MonadReader`
+instance for $n$ number of undecidable instances that do nothing but mostly
 lifts. You can see this massive boilerplate all over the design of the `mtl`
-library.
+library and it's transitive dependencies.
 
 ```haskell
 instance MonadReader r m => MonadReader r (ExceptT e m) where
@@ -4219,21 +4221,43 @@ instance MonadReader r m => MonadReader r (IdentityT m) where
 ...
 ```
 
-This is called the $n^2$ instance problem and is at the heart of the mtl
-extensibility problem.
+This is called the *$n^2$ instance problem* or the *instance boilerplate
+problem* and remains an open problem of mtl.
 
-**Non-commutative transformers**
+**Composing Transformers**
 
-TODO
+Effects don't generally commute from a theoretical perspective and as such monad
+transformer composition is not in general commutative. For example stacking
+`State` and `Except` is not commutative:
 
-Since monad transformers don't commute in general, we can't always merge two
-`StateT` layers together.
+```haskell
+stateExcept :: StateT s (Except e) a -> s -> Either e (a, s)
+stateExcept m s = runExcept (runStateT m s)
+
+exceptState :: ExceptT e (State s) a -> s -> (Either e a, s)
+exceptState m s = runState (runExceptT m) s
+```
+
+In addition the standard method of deriving mtl classes for a transformer stack
+breaks down when using transformer stacks with the same monad at different
+layers of the stack. For example stacking multiple `State` transformers is a
+pattern that shows up quite frequently.
+
+```haskell
+newtype Example = StateT Int (State String)
+  deriving (MonadState Int)
+```
+
+In order to get around this you would have to hand write the instances for this
+transformer stack and manually life anytime you perform a State action. This is
+a suboptimal design and difficult to route around simply without massive
+boilerplate.
 
 In recent years there have many other libraries that have explored the design
 space of alternative effect modeling systems. These systems are still quite
 early compared to the `mtl` but some are able to avoid some of the shortcomings
-of `mtl` in favour of algebraic models of effects. The three most commonly used
-libraries are:
+of `mtl` in favour of newer algebraic models of effects. The three most commonly
+used libraries are:
 
 * `fused-effects`
 * `polysemy`
@@ -5458,8 +5482,6 @@ satisfy the conditions of the call site.
 Orphan Instances
 ----------------
 
-TODO START HERE
-
 Normally typeclass definitions are restricted to be defined in one of two
 places:
 
@@ -5613,9 +5635,10 @@ An example with `INCOHERENT` annotations:
 Laziness
 ========
 
-Lazy evaluation implies that expressions will be evaluated only when needed. In
-truth, this evaluation may even be indefinitely deferred. Consider the example
-in Haskell of defining an infinite list:
+Haskell is a unique language that explores an alternative evaluation model
+called *lazy evaluation*. Lazy evaluation implies that expressions will be
+evaluated only when needed. In truth, this evaluation may even be indefinitely
+deferred. Consider the example in Haskell of defining an infinite list:
 
 ```haskell
 λ> mkInfinite n = n : mkInfinite n
@@ -5955,14 +5978,27 @@ bottom, we fail at the usage site instead of the outer pattern match.
 ~~~~ {.haskell include="src/05-laziness/lazy_patterns.hs"}
 ~~~~
 
-External Resources
-------------------
+The Controversy
+----------------
 
-* [Oh My Laziness!](http://alpmestan.com/posts/2013-10-02-oh-my-laziness.html)
-* [Reasoning about Laziness](http://www.slideshare.net/tibbe/reasoning-about-laziness)
-* [Lazy Evaluation of Haskell](http://www.vex.net/~trebla/haskell/lazy.xhtml)
-* [More Points For Lazy Evaluation](http://augustss.blogspot.hu/2011/05/more-points-for-lazy-evaluation-in.html)
-* [How Lazy Evaluation Works in Haskell](https://hackhands.com/lazy-evaluation-works-haskell/)
+Laziness is a controversial design decision in Haskell. It is difficult to write
+production Haskell code that operates in constant memory without some insight
+into the evaluation model and the runtime. A lot of industrial codebases have a
+policy of marking all constructors as strict default or enabling [StrictData] to
+prevent space leaks.
+
+There is a lot of FUD about the language that unfortunately writes off the
+entire 30 years of advanced research on the type system because of laziness.  In
+industrial programming a lot of software is sold on the meme of being of *fast*
+instead of being *correct*, and lazy evaluation becomes a easy talking point
+about these upside-down priorities. Nevertheless the colloquial perception of a
+laziness being "evil" is a meme that will continue to persist regardless of any
+underlying reality because software is intrinsically a social process.
+
+This being said, if Haskell were being designed from scratch it probably would
+not be chose laziness as the default model.  Future implementations of Haskell
+compilers would also probably also not choose this point in the design space if
+given the option of breaking with the language specification. 
 
 <hr/>
 
