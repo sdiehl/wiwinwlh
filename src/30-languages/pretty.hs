@@ -1,9 +1,9 @@
 {-# LANGUAGE FlexibleInstances #-}
 
-import Text.PrettyPrint
-import Text.Show.Pretty (ppShow)
+import Data.Text.Prettyprint.Doc hiding (Pretty)
+import Data.Text.Prettyprint.Doc.Render.Terminal
 
-parensIf ::  Bool -> Doc -> Doc
+parensIf :: Bool -> Doc a -> Doc a
 parensIf True = parens
 parensIf False = id
 
@@ -21,27 +21,27 @@ data Ground
   | LBool Bool
   deriving (Show, Eq, Ord)
 
-
 class Pretty p where
-  ppr :: Int -> p -> Doc
+  ppr :: Int -> p -> Doc AnsiStyle
 
 instance Pretty String where
-  ppr _ x = text x
+  ppr _ = pretty
+
+instance Pretty (Doc AnsiStyle) where
+  ppr _ = id
 
 instance Pretty Expr where
-  ppr _ (Var x)         = text x
-  ppr _ (Lit (LInt a))  = text (show a)
-  ppr _ (Lit (LBool b)) = text (show b)
-
+  ppr _ (Var x) = pretty x
+  ppr _ (Lit (LInt a)) = pretty (show a)
+  ppr _ (Lit (LBool b)) = pretty (show b)
   ppr p e@(App _ _) =
-    let (f, xs) = viewApp e in
-    let args = sep $ map (ppr (p+1)) xs in
-    parensIf (p>0) $ ppr p f <+> args
-
+    let (f, xs) = viewApp e
+     in let args = sep $ map (ppr (p + 1)) xs
+         in parensIf (p > 0) $ ppr p f <+> args
   ppr p e@(Lam _ _) =
-    let body = ppr (p+1) (viewBody e) in
-    let vars = map (ppr 0) (viewVars e) in
-    parensIf (p>0) $ char '\\' <> hsep vars <+> text "." <+> body
+    let body = ppr (p + 1) (viewBody e)
+     in let vars = map (ppr 0) (viewVars e)
+         in parensIf (p > 0) $ pretty '\\' <> hsep vars <+> pretty "." <+> body
 
 viewVars :: Expr -> [Name]
 viewVars (Lam n a) = n : viewVars a
@@ -57,16 +57,16 @@ viewApp (App e1 e2) = go e1 [e2]
     go (App a b) xs = go a (b : xs)
     go f xs = (f, xs)
 
-ppexpr :: Expr -> String
+ppexpr :: Expr -> IO ()
 ppexpr = render . ppr 0
 
+render :: Pretty a => a -> IO ()
+render a = putDoc (ppr 0 a)
 
-s, k, example :: Expr
+s , k, example :: Expr
 s = Lam "f" (Lam "g" (Lam "x" (App (Var "f") (App (Var "g") (Var "x")))))
 k = Lam "x" (Lam "y" (Var "x"))
 example = App s k
 
 main :: IO ()
-main = do
-  putStrLn $ ppexpr s
-  putStrLn $ ppShow example
+main = render s

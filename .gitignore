@@ -9,6 +9,11 @@ dist/
 includes
 *.html
 *.epub
-*.agdai
+*.pdf
+*.mobi
+*.docx
+tutorial.tex
 .stack-work
-tutorial.pdf
+dist-newstyle
+resources/*.eps
+.brokdb

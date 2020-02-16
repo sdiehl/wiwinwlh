@@ -25,13 +25,13 @@ import Control.Monad.Except
 %%
 
 terms 
-    : term                   { [$1] }
-    | term terms             { $1 : $2 }
+  : term                   { [$1] }
+  | term terms             { $1 : $2 }
 
 term 
-   : var                     { Var $1 }
-   | var '=' int             { Assign $1 $3 }
-   | print term              { Print $2 }
+  : var                    { Var $1 }
+  | var '=' int            { Assign $1 $3 }
+  | print term             { Print $2 }
 
 {
 

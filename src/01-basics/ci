@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+stack exec ghc -- -e ":q" --interactive defer.hs -Wno-deferred-type-errors
+stack exec ghc -- -e ":q" --interactive bottoms.hs
+stack exec ghc -- -e ":q" --interactive errors.hs
+stack exec ghc -- -e ":q" --interactive fail.hs
+stack exec ghc -- -e ":q" --interactive stacktrace.hs
+stack exec ghc -- -e ":q" --interactive trace.hs
+#stack exec ghc -- -e ":q" --interactive typedhole.hs

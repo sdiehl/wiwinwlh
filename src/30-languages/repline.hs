@@ -1,9 +1,8 @@
 module Main where
 
 import Control.Monad.Trans
-import System.Console.Repline
-
 import Data.List (isPrefixOf)
+import System.Console.Repline
 import System.Process (callCommand)
 
 type Repl a = HaskelineT IO a
@@ -28,16 +27,16 @@ say args = do
   return ()
 
 options :: [(String, [String] -> Repl ())]
-options = [
-    ("help", help)  -- :help
-  , ("say", say)    -- :say
+options =
+  [ ("help", help), -- :help
+    ("say", say) -- :say
   ]
 
 ini :: Repl ()
 ini = liftIO $ putStrLn "Welcome!"
 
 repl :: IO ()
-repl = evalRepl ">>> " cmd options (Word0 completer) ini
+repl = evalRepl (pure ">>> ") cmd options Nothing (Word completer) ini
 
 main :: IO ()
 main = repl

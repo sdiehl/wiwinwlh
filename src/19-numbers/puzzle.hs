@@ -13,6 +13,3 @@ puzzle = do
   pure $    val [b,u,r,r,i,t,o]
           + val     [m,o,n,a,d]
         .== val [b,a,n,d,a,i,d]
-
-
-

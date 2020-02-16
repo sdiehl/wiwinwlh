@@ -17,6 +17,7 @@ s3 = normalDistr mean stdDev
     mean   = 1
     stdDev = 1
 
+descriptive :: IO ()
 descriptive = do
   print $ range s1
   -- 9.0
@@ -31,6 +32,7 @@ descriptive = do
   print $ geometricMean s1
   -- 4.5287286881167645
 
+discrete :: IO ()
 discrete = do
   print $ S.cumulative s2 0
   -- 8.208499862389884e-2
@@ -41,6 +43,7 @@ discrete = do
   print $ S.stdDev s2
   -- 1.5811388300841898
 
+continuous :: IO ()
 continuous = do
   print $ S.cumulative s3 0
   -- 0.15865525393145707

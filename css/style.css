@@ -71,7 +71,7 @@ hr {
 }
 
 .document-title {
-  text-transform: uppercase;
+  font-family: serif;
   font-size: 200%;
   text-align: center;
   padding-bottom: 0;

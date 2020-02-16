@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -e
+stack exec ghc -- -e ":q" --interactive lazy_patterns.hs
+stack exec ghc -- -e ":q" --interactive nodiverge.hs

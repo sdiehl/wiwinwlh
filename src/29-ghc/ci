@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -e
+stack exec ghc -- -e ":q" --interactive closure_size.hs
+stack exec ghc -- -e ":q" --interactive cmm_include.hs
+stack exec ghc -- -e ":q" --interactive dictionaries.hs
+stack exec ghc -- -e ":q" --interactive ekg.hs
+stack exec ghc -- -e ":q" --interactive example.hs
+stack exec ghc -- -e ":q" --interactive heapview.hs
+stack exec ghc -- -e ":q" --interactive hie.hs
+stack exec ghc -- -e ":q" --interactive io_impl.hs
+stack exec ghc -- -e ":q" --interactive monad_prim.hs
+stack exec ghc -- -e ":q" --interactive prim.hs
+stack exec ghc -- -e ":q" --interactive profile.hs
+stack exec ghc -- -e ":q" --interactive specialize.hs

@@ -1,0 +1,13 @@
+name:                example
+version:             0.1
+author:              Stephen Diehl
+maintainer:          stephen.m.diehl@gmail.com
+copyright:           2020 Stephen Diehl
+category:            Documentation
+build-type:          Simple
+cabal-version:       >=1.10
+
+library 
+  build-depends:       
+    base            >= 4.6 && <4.14
+  default-language:    Haskell2010

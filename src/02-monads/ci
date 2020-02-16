@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+stack exec ghc -- -e ":q" --interactive list.hs
+stack exec ghc -- -e ":q" --interactive maybe.hs
+stack exec ghc -- -e ":q" --interactive reader.hs
+stack exec ghc -- -e ":q" --interactive state.hs
+stack exec ghc -- -e ":q" --interactive writer.hs

@@ -1,0 +1,5 @@
+resolver: lts-14.20
+extra-deps: 
+  - poly-0.3.3.0
+  - exact-real-0.12.2
+  - sbv-8.5

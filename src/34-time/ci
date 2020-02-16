@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -e
+stack exec ghc -- -e ":q" --interactive Strings.hs
+stack exec ghc -- -e ":q" --interactive Time.hs

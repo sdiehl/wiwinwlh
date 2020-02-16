@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+echo -n "01-basics .. "
+cd 01-basics && bash ci && cd ..
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "02-monads .. "
+cd 02-monads && bash ci && cd ..
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "03-transformers .. "
+cd 03-monad-transformers && bash ci && cd ..
+echo -e "\e[1;32mOK\e[0m"
+
+#echo -n "04-extensions .. "
+#cd 04-extensions && bash ci && cd ..
+#echo -e "\e[1;32mOK\e[0m"
+
+echo -n "05-laziness .. "
+cd 05-laziness && bash ci && cd ..
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "06-prelude .. "
+cd 06-prelude && bash ci && cd ..
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "29-ghc .. "
+cd 29-ghc && bash ci && cd ..
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "30-languages .. "
+cd 30-languages && bash ci && cd ..
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "33-categories .. "
+cd 33-categories && bash ci && cd ..
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "34-time .. "
+cd 34-time && bash ci && cd ..
+echo -e "\e[1;32mOK\e[0m"

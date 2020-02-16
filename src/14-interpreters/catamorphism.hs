@@ -1,14 +1,14 @@
 {-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 
-import Data.Traversable
 import Control.Monad hiding (forM_, mapM, sequence)
-import Prelude hiding (mapM)
 import qualified Data.Map as M
+import Data.Traversable
+import Prelude hiding (mapM)
 
-newtype Fix (f :: * -> *) = Fix { outF :: f (Fix f) }
+newtype Fix (f :: * -> *) = Fix {outF :: f (Fix f)}
 
 -- Catamorphism
 cata :: Functor f => (f a -> a) -> Fix f -> a
@@ -35,7 +35,6 @@ instance Eq (Fix ExprF) where
 instance Ord (Fix ExprF) where
   compare (Fix x) (Fix y) = compare x y
 
-
 mkApp :: Fix ExprF -> Fix ExprF -> Fix ExprF
 mkApp x y = Fix (EApp x y)
 
@@ -52,6 +51,7 @@ k :: Fix ExprF
 k = mkLam (mkVar "x") $ mkLam (mkVar "y") $ (mkVar "x")
 
 subst :: M.Map String (ExprF Expr) -> Expr -> Expr
-subst env = cata alg where
-  alg (EVar x) | Just e <- M.lookup x env = Fix e
-  alg e = Fix e
+subst env = cata alg
+  where
+    alg (EVar x) | Just e <- M.lookup x env = Fix e
+    alg e = Fix e

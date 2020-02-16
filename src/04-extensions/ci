@@ -1,0 +1,5 @@
+set +e
+for f in *.hs; do 
+  echo $f
+  stack exec ghc -- -e ":q" --interactive $f
+done

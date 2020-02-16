@@ -1,9 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 import Control.Monad
-
-import Data.Attoparsec
-import Data.Attoparsec.Char8 as A
+import Data.Attoparsec.ByteString
+import Data.Attoparsec.ByteString.Char8 as A
 import Data.ByteString.Char8
 
 data Action
@@ -13,22 +12,27 @@ data Action
   | Hangup
   | NewLeader
   | Election
-  deriving Show
+  deriving (Show)
 
-type Sender = ByteString
-type Payload = ByteString
+newtype Sender = Sender ByteString
+  deriving (Show)
 
-data Message = Message
-  { action :: Action
-  , sender :: Sender
-  , payload :: Payload
-  } deriving Show
+newtype Payload = Payload ByteString
+  deriving (Show)
+
+data Message
+  = Message
+      { action :: Action,
+        sender :: Sender,
+        payload :: Payload
+      }
+  deriving (Show)
 
 proto :: Parser Message
 proto = do
-  act  <- paction
-  send <- A.takeTill (== '.')
-  body <- A.takeTill (A.isSpace)
+  act <- paction
+  send <- Sender <$> A.takeTill (== '.')
+  body <- Payload <$> A.takeTill A.isSpace
   endOfLine
   return $ Message act send body
 
@@ -36,13 +40,13 @@ paction :: Parser Action
 paction = do
   c <- anyWord8
   case c of
-    1  -> return Success
-    2  -> return KeepAlive
-    3  -> return NoResource
-    4  -> return Hangup
-    5  -> return NewLeader
-    6  -> return Election
-    _  -> mzero
+    1 -> return Success
+    2 -> return KeepAlive
+    3 -> return NoResource
+    4 -> return Hangup
+    5 -> return NewLeader
+    6 -> return Election
+    _ -> mzero
 
 main :: IO ()
 main = do

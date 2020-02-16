@@ -1,0 +1,7 @@
+packages: .
+
+source-repository-package
+    type: git
+    location: git@github.com:hasura/eff.git
+    tag: 61dfb24515b3d6f54f2ca148655bd7c6b7e8181c
+    subdir: eff

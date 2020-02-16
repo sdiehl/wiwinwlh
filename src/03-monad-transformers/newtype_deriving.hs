@@ -11,7 +11,7 @@ type Program = [Instr]
 type VM a = ReaderT Program (WriterT Output (State Stack)) a
 
 newtype Comp a = Comp { unComp :: VM a }
-  deriving (Monad, MonadReader Program, MonadWriter Output, MonadState Stack)
+  deriving (Functor, Applicative, Monad, MonadReader Program, MonadWriter Output, MonadState Stack)
 
 data Instr = Push Int | Pop | Puts
 
