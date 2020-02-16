@@ -898,13 +898,11 @@ Flags
 -----
 
 GHC has a wide variety of flags that can be passed to configure different
-behavior in the compiler.
-
-Enabling GHC compiler flags grants the user more control in detecting common
-code errors. The most frequently used flags are:
+behavior in the compiler. Enabling GHC compiler flags grants the user more
+control in detecting common code errors. The most frequently used flags are:
 
 Flag                                 Description
-----                                 ------------
+---------------------------------    ------------
 `-fwarn-tabs`                        Emit warnings of tabs instead of spaces in the source code
 `-fwarn-unused-imports`              Warn about libraries imported without being used
 `-fwarn-name-shadowing`              Warn on duplicate names in nested bindings
@@ -1678,12 +1676,13 @@ Algebraic Datatypes
 
 Custom datatypes in Haskell are defined with the `data` keyword followed by the
 the type name, it's parameters, and then a set of **constructors**. The possible
-constructors are either `sum` types or of `product` types. A sum type is a set
-of options that is delimited by a pipe. A datatype is inhabited by only a single
-value sum type at one point and intuitively models a set of "options" a value
-may take. While a product type is a combination of a set of typed values,
-potentially named by records fields. For example the following are two
-definitions of a Point product type with two fields `x` and `y`.
+constructors are either *sum types* or of *product types*. All datatypes in
+Haskell can expressed as sums of products. A sum type is a set of options that
+is delimited by a pipe. A datatype is inhabited by only a single value sum type
+at one point and intuitively models a set of "options" a value may take. While a
+product type is a combination of a set of typed values, potentially named by
+records fields. For example the following are two definitions of a Point product
+type with two fields `x` and `y`.
 
 ```haskell
 data Point = Point Int Int
@@ -2125,44 +2124,138 @@ absolute n = case (n < 0) of
 Function Composition
 --------------------
 
-TODO
+Functions are obviously at the heart of functional programming. In mathematics
+function composition is an operation which takes two functions and produces
+another function with the result of the first argument function applied to the
+result of the second function. This is written in mathematical notation as:
 
 $$
-f \circ g 
+g \circ f
 $$
+
+The two functions operate over a domain.
+
+$$
+f : X \rightarrow Y \quad \quad g : Y \rightarrow Z
+$$
+
+Or in Haskell notation:
+
+```haskell
+f :: X -> Y
+g :: Y -> Z
+```
+
+Composition operation results in a new function:
+
+$$
+g \circ f : X \rightarrow Z
+$$
+
+In Haskell this operator is given special infix operator to appear similar to
+the mathematical notation. Intuitively it takes two functions of types `b -> c` and `a ->
+b` and composes them together to produce a new function. This is the canonical
+example of a higher-order function.
 
 ```haskell
 (.) :: (b -> c) -> (a -> b) -> a -> c
+f . g = \x -> f (g x)
 ```
+
+Haskell code will liberally use this operator to compose chains of functions.
+For example the following:
+
+
+```haskell
+TODO
+```
+
+TODO
 
 ```haskell
 flip :: (a -> b -> c) -> b -> a -> c
 ```
 
+TODO
+
 ```haskell
+infixr 0 $
 ($) :: (a -> b) -> a -> b 
 ```
+
+TODO
 
 ```haskell
 (&) :: a -> (a -> b) -> b 
 ```
 
-Nuns the binary function b on the results of applying unary function u to two
-arguments x and y. From the opposite perspective, it transforms two inputs and
-combines the outputs.
+The `on` function takes a function `b` and yields the result of applying unary
+function `u` to two arguments `x` and `y`. This is a higher order function that
+transforms two inputs and combines the outputs.
 
 ```haskell
 on :: (b -> b -> c) -> (a -> b) -> a -> a -> c 
 ```
 
-List Comprehensions & Enum
---------------------------
+List Comprehensions
+-------------------
 
-TODO
+List comprehensions are a syntactic construct that first originated in the
+Haskell language and has now later spread to other programming languages. List
+comprehensions provide a simple way of working with lists and sequences of value
+that follow patterns. List comprehension syntax consists of three components:
 
-* Generators
-* Let bindings
-* Guards
+* **Generators** - Expressions which evaluate a list of values which are
+  iteratively added to the result.
+* **Let bindings** - Expressions which generate a constant value which is scoped
+  on each iteration.
+* **Guards** - Expressions which generate a boolean expression which determine
+  whether an iteration if added to the result.
+
+The simplest generator is simply a list itself. The following example produces a
+list of integral values, each element multiplied by two.
+
+```haskell
+λ: [2*x | x <- [1,2,3,4,5]]
+--        ^^^^^^^^^^^^^^^^^
+--            Generator
+[2,4,6,8,10]
+```
+
+We can extend this by adding a let statement which generalizes the multiplier on
+each step and binds it a variable `n`.
+
+```haskell
+λ: [n*x | x <- [1,2,3,4,5], let n = 3]
+--                          ^^^^^^^^^
+--                          Let binding
+[3,6,9,12,15]
+```
+
+And we can also restrict the set of resulting values to only the subset of
+values of `x` that meet a condition. This this case we restrict to only values
+of `x` which are odd.
+
+```haskell
+λ: [n*x | x <- [1,2,3,4,5], let n = 3, odd x]
+--                                     ^^^^^
+--                                     Guard
+[3,9,15]
+```
+
+Comprehensions with multiple generators will combine each generator pairwise to
+produce the *cartesian product* of all results.
+
+```haskell
+λ: [(x,y) | x <- [1,2,3], y <- [10,20,30]]
+[(1,10),(1,20),(1,30),(2,10),(2,20),(2,30),(3,10),(3,20),(3,30)]
+
+λ: [(x,y,z) | x <- [1,2], y <- [10,20], z <- [100,200]]
+[(1,10,100),(1,10,200),(1,20,100),(1,20,200),(2,10,100),(2,10,200),(2,20,100),(2,20,200)]
+```
+
+Haskell has builtin comprehension syntax which is syntactic sugar for specific
+methods of the `Enum` typeclass. 
 
 Syntax Sugar        Enum Class Method
 -----------------   ---------------------------
@@ -2171,10 +2264,33 @@ Syntax Sugar        Enum Class Method
 ``[ e1..e3 ]``      ``enumFromTo e1 e3``
 ``[ e1,e2..e3 ]``   ``enumFromThenTo e1 e2 e3``
 
+There is both an `Enum` instance for `Integer` and `Char` types and so we can
+write list comprehensions for both which generate ranges of values. 
+
+```haskell
+λ: [1 .. 15]
+[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+
+λ: ['a' .. 'z']
+"abcdefghijklmnopqrstuvwxyz"
+
+λ: [1,3 .. 15]
+[1,3,5,7,9,11,13,15]
+
+λ: [0,50..500]
+[0,50,100,150,200,250,300,350,400,450,500]
+```
+
+These can comprehensions can be used inside of function definitions and
+reference locally bound variables. For example the `factorial` function (written
+as $n!$) is defined as the product of all positive integers up to a given value.
+
 ```haskell
 factorial :: Integer -> Integer
 factorial n = product [1..n]
 ```
+
+As a more complex example consider a naive prime number sieve:
 
 ```haskell
 primes :: [Integer]
@@ -2183,7 +2299,11 @@ primes = sieve [2..]
     sieve (p:xs) = p : sieve [ n | n <- xs, n `mod` p > 0 ]
 ```
 
+And a more complex example, consider the classic FizzBuzz interview question.
+This makes use of iteration and guard statements.
+
 ```haskell
+fizzbuzz :: [String]
 fizzbuzz = [fb x| x <- [1..100]]
     where fb y
         | y `mod` 15 == 0 = "FizzBuzz"
@@ -2201,7 +2321,7 @@ Single line comments begin with double dashes `--`:
 -- Everything should be built top-down, except the first time.
 ```
 
-Multiline comment begins with `{-` and ends with `-}`.
+Multiline comments begin with `{-` and ends with `-}`.
 
 
 ```haskell
@@ -12538,11 +12658,13 @@ operator (``=$``) for combining Sources and Sink and a Conduit and a Sink respec
 Cryptography
 ============
 
-cryptonite
-----------
-
-Cryptonite is the standard Haskell cryptography library. It provides support for
-hash functions, elliptic curve cryptography, ciphers, one time passwords,
+Recently Haskell has seen quite a bit of development of cryptography libraries
+as it serves as a excellent language for working with and manipulating algebraic
+structures found in cryptographic primitives. In addition to most of the basic
+hashing, elliptic curve and cipher suites libraries, Haskell has a excellent
+standard cryptography library called *cryptonite* which provides the standard
+kitchen sink of most modern primitives. These include hash functions, elliptic
+curve cryptography, digital signature algorithms, ciphers, one time passwords,
 entropy generation and safe memory handling.
 
 SHA Hashing

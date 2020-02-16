@@ -136,6 +136,18 @@ $endif$
 % using explicit options in \includegraphics[width, height, ...]{}
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
 
+\newenvironment{dedication}
+  {\clearpage
+   \thispagestyle{empty}
+   \vspace*{\stretch{1}}
+   \itshape
+   \raggedleft
+  }
+  {\par
+   \vspace{\stretch{3}}
+   \clearpage
+  }
+
 $if(indent)$
 $else$
 \IfFileExists{parskip.sty}{%
@@ -196,6 +208,11 @@ $endfor$
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \input{resources/cover.tex}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{dedication}
+%\end{dedication}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
