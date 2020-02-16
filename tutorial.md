@@ -1332,7 +1332,7 @@ Or qualified by the module in which they come from, such as:
 Data.List.nub
 ```
 
-The major namespaces are described below with their naming convetions:
+The major namespaces are described below with their naming conventions:
 
 Namespace       Convention
 --------------  ----------
@@ -2757,6 +2757,85 @@ defer: defer.hs:4:5:
 This error tells us that while ``x`` has a declared type of ``()``, the body
 of the function ``print 3`` has a type of ``IO ()``. However, if the term is
 never evaluated, GHC will not throw an exception.
+
+Name Conventions
+----------------
+
+Haskell uses short variable names as a convention. This is offputting at first
+and then you read enough Haskell and it ceases to become a problem. In addition
+there are several ad-hoc conventions that are typically adoped 
+
+Variable      Convention
+------------  ---------------
+``a,b,c..``   Type level variable
+``x,y,z..``   Value variables
+``f,g,h..``   Higher order function values
+``x,y``       List head values
+``xs,ys``     List tail values
+``m``         Monadic type variable
+``t``         Monad transformer variable
+``e``         Exception value
+``s``         Monad state value
+``r``         Monad reader value
+``t``         Foldable or Traversable type variable
+``f``         Functor or applicative type variable
+``mX``        Maybe variable
+
+Functions that end with a tick ``fold'`` are typically strict variants of a
+lazy default lazy function.
+
+```haskell
+foldl' :: (b -> a -> b) -> b -> t a -> b
+```
+
+Functions that end with a _ like ``map_`` are typically variants of a function
+which discards the output and returns void.
+
+```haskell
+mapM_ :: (Foldable t, Monad m) => (a -> m b) -> t a -> m ()
+```
+
+Variables that are pluralized ``xs``, ``ys`` typically refer to list tails.
+
+```haskell
+(++) []     ys = ys
+(++) (x:xs) ys = x : xs ++ ys
+```
+
+Records that do not export their accessors will sometimes prefix them with
+underscores. These are sometime interpreted by Template Haskell logic to
+produce derived field accessors.
+
+```haskell
+data Point = Point
+  { _x :: Int
+  , _y :: Int
+  }
+```
+
+Predicate will often prefix their function names with ``is``, as in ``isPositive``.
+
+```haskell
+isPositive = (>0)
+```
+
+Working with mutable structures or monadic state will often adopt the following naming
+conventions:
+
+```haskell
+newX      -- Create a new mutable X structure
+writeX    -- Write to an existing mutable X structure
+setX      -- Set the value of an existing mutable X structure
+modifyX   -- Apply a function over existing mutable X structure
+```
+
+Functions that are prefix with a ``with`` typically take a value as their first
+argument and a function as their second argument returning the value with the
+function applied over some substructure as the result.
+
+```haskell
+withBool :: String -> (Bool -> Parser a) -> Value -> Parser a
+```
 
 ghcid
 -----
