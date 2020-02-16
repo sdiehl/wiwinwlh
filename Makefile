@@ -18,6 +18,7 @@ EFLAGS =
 HTML = tutorial.html
 EPUB = tutorial.epub
 PDF = tutorial.pdf
+TEX = tutorial.tex
 
 COVER = resources/cover.tex
 BACK = resources/back.tex
@@ -56,7 +57,7 @@ links:
 	brok tutorial.md
 
 clean:
-	-rm -f $(CHAPTERS) $(HTML) $(PDF) $(EPUB)
+	-rm -f $(CHAPTERS) $(HTML) $(PDF) $(EPUB) $(TEX)
 
 # pandoc executable 'includes' is rather large
 clean-all:
