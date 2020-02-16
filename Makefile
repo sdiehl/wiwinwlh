@@ -22,6 +22,7 @@ EPUB = tutorial.epub
 PDF = tutorial.pdf
 PPDF = tutorial_print.pdf
 TEX = tutorial.tex
+DOCX = tutorial.tex
 
 # LaTeX
 COVER = resources/cover.tex
@@ -30,8 +31,9 @@ UNICODE_MAP = resources/unicodemapping.tex
 
 all: $(PDF) $(HTML) $(EPUB)
 html: $(HTML)
-pdf: $(PDF)
+docx: $(DOCX)
 epub: $(epub)
+pdf: $(PDF)
 
 # Code snippet preprocessor
 includes: includes.hs
