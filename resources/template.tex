@@ -1,17 +1,19 @@
 \documentclass[10pt,openright]{$documentclass$}
 \usepackage{geometry}
+\usepackage{afterpage}
 \usepackage{resources/dtrt}
 \geometry{
   %a4paper,
   %total={21.59cm,27.94cm},
   %total={21cm,25cm},
-  papersize={21cm,25cm},
+  %papersize={21cm,25cm},
+  papersize={8.125in,10.250in},
   top=1.5cm,
-  bottom=1.5cm,
+  bottom=1.3cm,
   inner=1.91cm,
   outer=6.68cm,
   % For pdf
-  left=1.5cm, 
+  left=1.5cm,
   right=1.5cm,
   % For print
   %marginparwidth=4cm,
@@ -34,7 +36,6 @@ $if(colorlinks)$
   pdfauthor={Stephen Diehl},
   pdfsubject={Haskell Programming},
   pdftitle={What I Wish I Knew When Learning Haskell},
-  pdfkeywords={LaTeX, PDF, hyperlinks}
 }
 $else$
 \hypersetup{%
@@ -44,7 +45,6 @@ $else$
   pdfauthor={Stephen Diehl},
   pdfsubject={Haskell Programming},
   pdftitle={What I Wish I Knew When Learning Haskell},
-  pdfkeywords={LaTeX, PDF, hyperlinks}
 }
 
 \newif\ifprint
@@ -58,17 +58,22 @@ $else$
 \fi
 $endif$
 
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    \addtocounter{page}{-1}%
+    \newpage}
+
 \usepackage{amssymb,amsmath}
 \usepackage{framed}
 \usepackage{fancyvrb}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
-%\usepackage{pst-poker}
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[RE,LO]{\leftmark}
-\fancyhead[LE,RO]{\thepage}
+\fancyhead[RE,LO]{\thepage}
+\fancyhead[LE,RO]{\leftmark}
 
 \renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{#1}}{}}
 
@@ -89,8 +94,8 @@ $endif$
   framerule=0pt,
   xleftmargin=15pt,
   framexleftmargin=16pt,
-  framextopmargin=25pt,
-  framexbottommargin=25pt, 
+  framextopmargin=10pt,
+  framexbottommargin=10pt,
   stepnumber=1,
   numbers=left,
   numbersep=5pt,
@@ -116,10 +121,9 @@ $endif$
 \usepackage[utf8]{inputenc}
 \usepackage{ifxetex,ifluatex}
 \usepackage{fontspec}
-\setmainfont[Ligatures=Common,
-    ItalicFont={Adobe Garamond Pro Italic}]
+\setmainfont[Ligatures=Common, ItalicFont={Adobe Garamond Pro Italic}]
     {Adobe Garamond Pro}
-\setmonofont[Ligatures=NoCommon, Scale=0.8]{Source Code Pro}
+\setmonofont[Ligatures=NoCommon, Scale=0.75]{Source Code Pro}
 
 \urlstyle{same}
 \usepackage{longtable,booktabs}
@@ -151,6 +155,7 @@ $if(numbersections)$
 $else$
 \setcounter{secnumdepth}{0}
 $endif$
+
 $if(subparagraph)$
 $else$
 % Redefines (sub)paragraphs to behave more like sections
@@ -163,6 +168,7 @@ $else$
 \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
 \fi
 $endif$
+
 $if(dir)$
 \ifxetex
   % load bidi as late as possible as it modifies e.g. graphicx
@@ -180,6 +186,7 @@ $if(dir)$
   \newenvironment{LTR}{\beginL}{\endL}
 \fi
 $endif$
+
 $for(header-includes)$
 $header-includes$
 $endfor$
@@ -208,11 +215,11 @@ $if(toc)$
 {
 \setcounter{tocdepth}{$toc-depth$}
 \tableofcontents
-
-\newpage
-
 }
 $endif$
+
+\newpage
+\clearpage
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -226,7 +233,10 @@ $endfor$
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\afterpage{\blankpage}
+\clearpage
 \newpage
+
 \input{resources/back.tex}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

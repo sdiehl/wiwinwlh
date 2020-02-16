@@ -44,8 +44,13 @@ includes: includes.hs
 	(cat $(ETEMPLATE); ./includes < $<) \
 	| $(PANDOC) -f $(IFORMAT) -t epub $(FLAGS) $(EFLAGS) -o $@
 
+%.tex: %.md includes $(COVER) $(BACK)
+	./includes < $< \
+	| $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) -o $@
+
 %.pdf: %.md includes $(COVER) $(BACK)
-	./includes < $< | $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) -o $@
+	./includes < $< \
+	| $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) -o $@
 
 links:
 	brok tutorial.md

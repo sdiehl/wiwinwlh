@@ -650,19 +650,14 @@ version if the lower bound at the currently used version.
 ```perl
 build-depends:       
   base                >= 4.6  && <4.14,
-  array               >= 0.4  && <0.6,
-  ghc-prim            >= 0.3  && <0.6,
   async               >= 2.0  && <2.3,
   deepseq             >= 1.3  && <1.5,
   containers          >= 0.5  && <0.7,
   hashable            >= 1.2  && <1.4,
   transformers        >= 0.2  && <0.6,
   text                >= 1.2  && <1.3,
-  stm                 >= 2.4  && <2.6,
   bytestring          >= 0.10 && <0.11,
   mtl                 >= 2.1  && <2.3,
-  mtl-compat          >= 0.2  && <0.3,
-  transformers-compat >= 0.4  && <0.7
 ```
 
 Individual lines in the version specification can be dependent on other
@@ -6466,28 +6461,6 @@ data Tree a = Node a [Tree a]
   deriving (Show, Functor, Foldable, Traversable)
 ```
 
-split
------
-
-The [split](http://hackage.haskell.org/package/split-0.1.1/docs/Data-List-Split.html) package provides a
-variety of missing functions for splitting list and string types.
-
-~~~~ {.haskell include="src/06-prelude/split.hs"}
-~~~~
-
-monad-loops
------------
-
-The [monad-loops](http://hackage.haskell.org/package/monad-loops-0.4.2/docs/Control-Monad-Loops.html) package
-provides a variety of missing functions for control logic in monadic contexts.
-
-```haskell
-whileM :: Monad m => m Bool -> m a -> m [a]
-untilM :: Monad m => m a -> m Bool -> m [a]
-iterateUntilM :: Monad m => (a -> Bool) -> (a -> m a) -> a -> m a
-whileJust :: Monad m => m (Maybe a) -> (a -> m b) -> m [b]
-```
-
 <hr/>
 
 Strings
@@ -6602,8 +6575,7 @@ fluffy :: Cat
 fluffy = "Fluffy"
 ```
 
-Import Conventions
-------------------
+**Import Conventions**
 
 Since there are so many modules that provide string datatypes, and these modules
 are used ubiquitously, some conventions are often adopted to import these
@@ -6762,6 +6734,15 @@ Escape  Unicode Character
 \\t     U+0009  horizontal tab
 \\v     U+000B  vertical tab
 \\"     U+0022  double quote
+
+String Splitting
+----------------
+
+The [split](http://hackage.haskell.org/package/split-0.1.1/docs/Data-List-Split.html) package provides a
+variety of missing functions for splitting list and string types.
+
+~~~~ {.haskell include="src/06-prelude/split.hs"}
+~~~~
 
 
 <hr/>
@@ -16785,9 +16766,9 @@ The long answer: It is not strictly necessary to learn, but so few things in
 life are.  Learning new topics and ways of thinking about problems only enrich
 your thinking and give you new ways of thinking about code and abstractions.
 Category theory is never going to help you write a web application better but it
-may give you insights into problems that algebraic in nature.  A few (read as
-less than 10) or so Haskellers espouse philosophies about it being an
-inspiration for certain abstractions, but most do not.
+may give you insights into problems that algebraic in nature.  A tiny group of
+Haskellers espouse philosophies about it being an inspiration for certain
+abstractions, but most do not.
 
 Some understanding of abstract algebra, conventions for discussing algebraic
 structures and equation reasoning with laws are essential to modern Haskell and
@@ -16819,11 +16800,10 @@ specific names.
 
 Constants are specific elements of the set, that generalise values like 0 and 1
 which have specific laws in relation to the operations defined over the set.
-Several of the common algebraic laws are defined in the table below:
 
 Certain properties show up so frequently we typically refer to their properties
 by an algebraic term. These terms are drawn from an equivalent abstract algebra
-concept.
+concept. Several of the common algebraic laws are defined in the table below.
 
 ```{=latex}
 \noindent\rule{\textwidth}{1pt}
