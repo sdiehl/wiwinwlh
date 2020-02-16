@@ -17466,6 +17466,7 @@ by an algebraic term. These terms are drawn from an equivalent abstract algebra
 concept. Several of the common algebraic laws are defined in the table below.
 
 ```{=latex}
+\clearpage
 \noindent\rule{\textwidth}{1pt}
 ```
 
