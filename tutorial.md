@@ -5980,26 +5980,25 @@ bottom, we fail at the usage site instead of the outer pattern match.
 ~~~~
 
 The Controversy
-----------------
+---------------
 
 Laziness is a controversial design decision in Haskell. It is difficult to write
 production Haskell code that operates in constant memory without some insight
 into the evaluation model and the runtime. A lot of industrial codebases have a
 policy of marking all constructors as strict default or enabling [StrictData] to
-prevent space leaks.
+prevent space leaks. If Haskell were being designed from scratch it probably
+would not be chose laziness as the default model.  Future implementations of
+Haskell compilers would also probably also not choose this point in the design
+space if given the option of breaking with the language specification. 
 
-There is a lot of FUD about the language that unfortunately writes off the
-entire 30 years of advanced research on the type system because of laziness.  In
-industrial programming a lot of software is sold on the meme of being of *fast*
-instead of being *correct*, and lazy evaluation becomes a easy talking point
-about these upside-down priorities. Nevertheless the colloquial perception of a
-laziness being "evil" is a meme that will continue to persist regardless of any
-underlying reality because software is intrinsically a social process.
-
-This being said, if Haskell were being designed from scratch it probably would
-not be chose laziness as the default model.  Future implementations of Haskell
-compilers would also probably also not choose this point in the design space if
-given the option of breaking with the language specification. 
+There is a lot of fear uncertainy and doubt spread about lazy evaluation that
+unfortunately that gets loses the forest for the trees and ignores 30 years of
+advanced research on the type system. In industrial programming a lot of
+software is sold on the meme of being of *fast* instead of being *correct*, and
+lazy evaluation becomes a easy talking point about these upside-down priorities.
+Nevertheless the colloquial perception of a laziness being "evil" is a meme that
+will continue to persist regardless of any underlying reality because software
+is intrinsically a social process.
 
 <hr/>
 
@@ -6066,19 +6065,22 @@ Custom Preludes
 ---------------
 
 The default Prelude can be disabled in its entirety by twiddling the
-``-XNoImplicitPrelude`` flag.
+``-XNoImplicitPrelude`` flag which allows us to replace the default import
+entirely with a custom prelude. Many industrial projects will roll their own
+`Prologue.hs` module which replaces the legacy prelude.
 
 ```haskell
 {-# LANGUAGE NoImplicitPrelude #-}
 ```
 
-We are then free to build an equivalent Prelude that is more to our liking.
-Using module reexporting we can pluck the good parts of the prelude and
-libraries like ``safe`` to build up a more industrial focused set of default
-functions. For example:
+For example if we wanted to build up a custom project prelude we could construct
+a Prologue module and dump the relevant namespaces we want from `base` into our
+custom export list. Using the module reexport feature allows us to create a
+`Exports` namespace which contains our Prelude's symbols. Every subsequent
+module in our project will then have `import Prologue` as the first import.
 
 ```haskell
-module Custom (
+module Prologue (
   module Exports,
 ) where
 
@@ -6095,10 +6097,6 @@ import Control.Monad.Trans.Except
    mapExcept, mapExceptT, withExcept, withExceptT)
 ```
 
-The Prelude itself is entirely replicable as well, presuming that an entire
-project is compiled without the implicit Prelude. Several packages have arisen
-that supply much of the same functionality in a way that appeals to more modern
-design principles.
 
 Preludes
 --------
@@ -8582,73 +8580,12 @@ depth we might use:
 ~~~~ {.haskell include="src/15-testing/smallcheck_tree.hs"}
 ~~~~
 
-QuickSpec
----------
-
-Using the QuickCheck arbitrary machinery we can also rather remarkably enumerate a large number of
-combinations of functions to try and deduce algebraic laws from trying out inputs for small cases.
-
-Of course the fundamental limitation of this approach is that a function may not exhibit any interesting
-properties for small cases or for simple function compositions. So in general case this approach won't work,
-but practically it still quite useful.
-
-~~~~ {.haskell include="src/15-testing/quickspec.hs"}
-~~~~
-
-Running this we rather see it is able to deduce most of the laws for list functions.
-
-```bash
-$ runhaskell src/quickspec.hs
--- background functions --
-id :: A -> A
-(:) :: A -> [A] -> [A]
-(.) :: (A -> A) -> (A -> A) -> A -> A
-[] :: [A]
--- variables --
-f, g, h :: A -> A
-xs, ys, zs :: [A]
-== Equations about map ==
-  1: map f [] == []
-  2: map id xs == xs
-  3: map (f.g) xs == map f (map g xs)
-== Equations about minimum ==
-  4: minimum [] == undefined
-== Equations about (++) ==
-  5: xs++[] == xs
-  6: []++xs == xs
-  7: (xs++ys)++zs == xs++(ys++zs)
-== Equations about sort ==
-  8: sort [] == []
-  9: sort (sort xs) == sort xs
-== Equations about id ==
- 10: id xs == xs
-== Equations about reverse ==
- 11: reverse [] == []
- 12: reverse (reverse xs) == xs
-== Equations about several functions ==
- 13: minimum (xs++ys) == minimum (ys++xs)
- 14: length (map f xs) == length xs
- 15: length (xs++ys) == length (ys++xs)
- 16: sort (xs++ys) == sort (ys++xs)
- 17: map f (reverse xs) == reverse (map f xs)
- 18: minimum (sort xs) == minimum xs
- 19: minimum (reverse xs) == minimum xs
- 20: minimum (xs++xs) == minimum xs
- 21: length (sort xs) == length xs
- 22: length (reverse xs) == length xs
- 23: sort (reverse xs) == sort xs
- 24: map f xs++map f ys == map f (xs++ys)
- 25: reverse xs++reverse ys == reverse (ys++xs)
-```
-
-Keep in mind the rather remarkable fact that this is all deduced automatically
-from the types alone!
-
 Tasty
 -----
 
-Tasty combines all of the testing frameworks into a common API for forming runnable batches of tests and
-collecting the results.
+Tasty is the commonly used unit testing framework. It combines all of the
+testing frameworks (Quickcheck, SmallCheck, HUnit) into a common API for forming
+runnable batches of tests and collecting the results.
 
 ~~~~ {.haskell include="src/15-testing/tasty.hs"}
 ~~~~
@@ -9773,6 +9710,7 @@ brew install cvc4/cvc4/cvc4
 Then install LiquidHaskell either with Cabal or Stack:
 
 ```bash
+# Run one of the following
 cabal install liquidhaskell
 stack install liquidhaskell
 ```
@@ -15747,7 +15685,7 @@ stg_ap_stk_pp
 }
 ```
 
-The convetions for these single letters is described by the following datatype
+The conventions for these single letters is described by the following datatype
 in `Main.hs` of `genapply`:
 
 ```haskell
@@ -15908,7 +15846,6 @@ wwith all the queryable information contained in `RTSStats` and `GCDetails`.
 
 ```haskell
 import GHC.Stats
-
 getRTSStats :: IO RTSStats
 ```
 
@@ -15959,23 +15896,6 @@ estimating cost of a clock call...
 mean is 65.52118 ns (23 iterations)
 found 1 outliers among 23 samples (4.3%)
   1 (4.3%) high severe
-
-benchmarking naive/fib 10
-mean: 9.903067 us, lb 9.885143 us, ub 9.924404 us, ci 0.950
-std dev: 100.4508 ns, lb 85.04638 ns, ub 123.1707 ns, ci 0.950
-
-benchmarking naive/fib 20
-mean: 120.7269 us, lb 120.5470 us, ub 120.9459 us, ci 0.950
-std dev: 1.014556 us, lb 858.6037 ns, ub 1.296920 us, ci 0.950
-
-benchmarking de moivre/fib 10
-mean: 7.699219 us, lb 7.671107 us, ub 7.802116 us, ci 0.950
-std dev: 247.3021 ns, lb 61.66586 ns, ub 572.1260 ns, ci 0.950
-found 4 outliers among 100 samples (4.0%)
-  2 (2.0%) high mild
-  2 (2.0%) high severe
-variance introduced by outliers: 27.726%
-variance is moderately inflated by outliers
 
 benchmarking de moivre/fib 20
 mean: 8.082639 us, lb 8.018560 us, ub 8.350159 us, ci 0.950
@@ -17493,14 +17413,20 @@ instance CCC (->) (,) () (->) where
   uncurry = Prelude.uncurry
 ```
 
-Resources
----------
+Further Resources
+-----------------
 
-If you so wish to study more category, there are many resources online.
+Category theory is an entire branch of mathematics that should be studeid
+independently of Haskell and programming. The classic text is "Category Theory"
+by Awodey. This text assumes a undergraduate level mathematics background.
+
+* [Category Theory, Awodey](http://www.amazon.com/Category-Theory-Oxford-Logic-Guides/dp/0199237182)
+
+For a programming perspective there are several lectures and functional
+programming oriented resources:
 
 * [Category Theory for Programmers PDF](https://github.com/hmemcpy/milewski-ctfp-pdf)
 * [Category Theory for Programmers Lectures](https://www.youtube.com/watch?v=I8LbkfSSR58&list=PLbgaMIhjbmEnaH_LTkxLI7FMa2HsnawM_)
-* [Category Theory, Awodey](http://www.amazon.com/Category-Theory-Oxford-Logic-Guides/dp/0199237182)
 * [Category Theory Foundations](https://www.youtube.com/watch?v=ZKmodCApZwk)
 
 <hr/>
