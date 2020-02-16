@@ -11,7 +11,8 @@
 Read Online:
 
 * [**HTML**](http://dev.stephendiehl.com/hask/)
-* [**PDF**](http://dev.stephendiehl.com/hask/tutorial.pdf)
+* [**Screen PDF**](http://dev.stephendiehl.com/hask/tutorial.pdf)
+* [**Printable PDF**](http://dev.stephendiehl.com/hask/tutorial_print.pdf)
 * [**EPUB**](http://dev.stephendiehl.com/hask/tutorial.epub)
 * [**Kindle MOBI**](http://dev.stephendiehl.com/hask/tutorial.mobi)
 * [**Example Code**](https://github.com/sdiehl/wiwinwlh/tree/master/src)
@@ -51,7 +52,7 @@ Chapter Code Examples:
 * [31-template-haskell/  ](https://github.com/sdiehl/wiwinwlh/tree/master/src/31-template-haskell/)
 * [32-cryptography       ](https://github.com/sdiehl/wiwinwlh/tree/master/src/32-cryptography/)
 * [33-categories/        ](https://github.com/sdiehl/wiwinwlh/tree/master/src/33-categories/)
-* [34-categories/        ](https://github.com/sdiehl/wiwinwlh/tree/master/src/34-time/)
+* [34-time/              ](https://github.com/sdiehl/wiwinwlh/tree/master/src/34-time/)
 
 Contributing
 ------------
