@@ -1485,42 +1485,17 @@ those constructs. A type system overlays additional structure on top of the
 syntax that impose constraints on the formation of expressions in terms of based
 on the context in which they occur.
 
-Dynamic programming languages often confuse this terminology and
-associate types with values at evaluation, whereas static languages associate
-types to expressions *before evaluation*.
+Dynamic programming languages associate types with values *at evaluation*,
+whereas statically typed languages associate types to expressions *before
+evaluation*. Dynamic languages are in a sense as statically typed as static
+languages, however they have a degenerate type system with only one type.
 
-Static languages may optionally also push these types to the evaluation stage in
-the form of runtime type information.  Haskell fully has the capacity to do this
-(see [Dynamic]) but this style of programming is not idiomatic Haskell; instead
-the trend is to "make invalid states unrepresentable" at compile-time rather
-than performing massive amounts of runtime checks.
-
-Dynamically typed languages check these "types" at run-time, whereas static
-language check types at compile time. This overloaded use of the word "type" to
-refer to both the theoretical definition and the colloquial definition of
-runtime tags is a bit confusing. Dynamic languages are in a sense as statically
-typed as static languages, however they have a degenerate type system with only
-one type.  Dynamically typed languages are better referred to as *unityped*
-languages meaning they have a single static type.
-
-Under this set of definitions, the endless debate and opposition between static
-and dynamic typing is really shallow. The real question for programmers is not
-whether to have static typing, but *which type system to use*. On long
-time-scales the general trend of programming history has always been toward more
-richer more sophisticated type systems and away from unitype models. Indeed, the
-Haskell model itself will eventually become antiquated in favour of the next
-evolution of *dependent types*.  The next evolution of these type systems are
-not quite ready for full production but are likely to rapidly become so in the
-next decade.
-
-TODO RETHINK
-
-For now, the Haskell way of thinking it that a single unitype is too
-restrictive. It is simply easier to add dynamic components to a richly typed
-ambient language than the inverse way around.  Haskell's rich type system is
-based on lambda calculus known as Girard's System-F (See [Rank-N Types]) and has
-a vast amount of extensions to support more type-level programming added to it
-over the years.
+The dominant philosophy in functional programming is is to "make invalid states
+unrepresentable" at compile-time rather than performing massive amounts of
+runtime checks. To this end Haskell has developed a rich rich type system that
+is based on typed lambda calculus known as Girard's System-F (See [Rank-N
+Types]) and has incrementally added extensions to support more type-level
+programming added to it over the years.
 
 The following *ground types* are quite common:
 
