@@ -16770,7 +16770,7 @@ may give you insights into problems that algebraic in nature.  A tiny group of
 Haskellers espouse philosophies about it being an inspiration for certain
 abstractions, but most do not.
 
-Some understanding of abstract algebra, conventions for discussing algebraic
+Some understanding of abstract algebra, and conventions for discussing algebraic
 structures and equation reasoning with laws are essential to modern Haskell and
 we will discuss these leading up to some basic category theory.
 
