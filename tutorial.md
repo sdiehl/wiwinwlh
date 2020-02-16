@@ -1956,9 +1956,46 @@ TODO
 Comments
 --------
 
-TODO
+Single line comments begin with double dashes `--`:
 
 ```haskell
+-- Everything should be built top-down, except the first time.
+```
+
+Multiline comment begins with `{-` and ends with `-}`.
+
+
+```haskell
+{-
+The goal of computation is the emulation of our synthetic abilities, not the
+understanding of our analytic ones.
+-}
+```
+
+Comments may also add additional structure in the form of [Haddock] docstrings.
+These comments will begin with a pipe.
+
+```haskell
+{-|
+  Great ambition without contribution is without significance.
+-}
+```
+
+Modules may also have a comment convention which describes the individual
+authors, copyright and stability information in the following form:
+
+```haskell
+{-|
+Module      : MyEnterpriseModule
+Description : Make it so.
+Copyright   : (c) Jean Luc Picard
+License     : MIT
+Maintainer  : jl@enterprise.com
+Stability   : experimental
+Portability : POSIX
+
+Description of module structure in Haddock markup style.
+-}
 ```
 
 Typeclasses
@@ -2083,6 +2120,7 @@ command to see the methods and all instances in scope. For example:
  instance Num Double     -- Imported from GHC.Float
  instance Num Integer    -- Imported from GHC.Num
  instance Num Int        -- Imported from GHC.Num
+```
 
 Many of the default classes have instances that can be deriving automatically.
 After the definition of a datatype you can add a `deriving` clause which will
@@ -2179,6 +2217,38 @@ This can be routed around with the language extension `DisambiguateRecordFields`
 but only to a certain extent. If we want to write maximally polymorphic
 functions which operate over arbitrary records which have a field `a`, then the
 GHC typesystem is not able to express this without some much higher-level magic.
+
+Pragmas
+-------
+
+At the beginning of a module there is special syntax for pragmas which direct
+the compiler to compile the current module in a specific way. The most common in
+a langauge extension pragma denoted like the following:
+
+```haskell
+{-# LANGUAGE FlexibleInstances #-}
+```
+
+These flags alter the semantics and syntax of the module in a variety of ways.
+See [Language Extensions] for more details on all of these options.
+
+Additionally we can pass specific GHC flags which alter the compilation
+behavior, enabling or disabling specific bespoke features based on our needs.
+These include compiler warnings, optimisation flags and extension
+flags.
+
+```haskell
+{-# OPTIONS_GHC -fwarn-incomplete-patterns #-}
+```
+
+Warning flags allow you to inform users at compile-time with a custom error
+message. Additionally you can mark a module as deprecated with specific
+replacement message.
+
+```haskell
+module Widget {-# DEPRECATED "This module is deprecated." #-}
+module Widget {-# WARNING "This module is dangerous." #-}where
+```
 
 Newtypes
 --------
@@ -8763,6 +8833,8 @@ capture :: IO a -> IO (String, a)
 
 Type Families
 =============
+
+TODO
 
 MultiParam Typeclasses
 ----------------------
