@@ -2073,6 +2073,32 @@ For example the following are equivalent:
 (+) x y   =   x + y
 ```
 
+Tuples
+------
+
+Tuples are heterogeneous structures which contain a fixed number of values. Some
+simple examples are shown below:
+
+```haskell
+-- 2-tuple
+tuple2 :: (Integer, String)
+tuple2 = (1, "foo")
+
+-- 3-tuple
+tuple3 :: (Integer, Integer, Integer)
+tuple3 = (10, 20 ,30)
+```
+
+For two tuples there are two functions `fst` and `snd` which extract the left
+and right values respectively. 
+
+```haskell
+fst :: (a,b) -> a
+snd :: (a,b) -> b
+```
+
+GHC supports tuples to size 62.
+
 Where & Let Clauses
 -------------------
 
@@ -2141,7 +2167,7 @@ $$
 g \circ f
 $$
 
-The two functions operate over a domain.
+The two functions operate over a domain. For example $X$, $Y$ and $Z$.
 
 $$
 f : X \rightarrow Y \quad \quad g : Y \rightarrow Z
@@ -2171,38 +2197,59 @@ f . g = \x -> f (g x)
 ```
 
 Haskell code will liberally use this operator to compose chains of functions.
-For example the following:
-
+For example the following composes a chain of list processing functions `sort`,
+`filter` and `map`:
 
 ```haskell
-TODO
+example :: [Integer] -> [Integer]
+example =
+    sort
+  . filter (<100)
+  . map (*10)
 ```
 
-TODO
+Another common higher-order function is the `flip` function which takes as it's
+first argument a function of two arguments, and reverses the order of these two
+arguments returning a new function.
 
 ```haskell
 flip :: (a -> b -> c) -> b -> a -> c
 ```
 
-TODO
+The most common operator in all of Haskell is function application of operator
+`$`. This function is right associative and takes the entire expression on the
+right hand side of the operator and applies it to function on the left.
 
 ```haskell
 infixr 0 $
 ($) :: (a -> b) -> a -> b 
 ```
 
-TODO
+The flipped form of this function does the opposite and is left associative, and
+applies the entire left hand side expression to a function given in the second
+argument to the function.
 
 ```haskell
+infixl 1 &
 (&) :: a -> (a -> b) -> b 
 ```
 
 The `on` function takes a function `b` and yields the result of applying unary
 function `u` to two arguments `x` and `y`. This is a higher order function that
-transforms two inputs and combines the outputs.
+transforms two inputs and combines the outputs. 
 
 ```haskell
 on :: (b -> b -> c) -> (a -> b) -> a -> a -> c 
+```
+
+This is used quite often in sort functions. For example we can write a custom
+sort function which sorts a lists of lists based on length.
+
+```
+λ: import Data.List
+λ: sortSize = sortBy (compare `on` length)
+λ: sortSize [[1,2], [1,2,3], [1]]
+[[1],[1,2],[1,2,3]]
 ```
 
 List Comprehensions
@@ -12170,12 +12217,19 @@ See:
 STM
 ---
 
-TODO
+*Software transactional memory* is a technique for demarcating blocks of atomic
+transactions that are guaranteed by the runtime to have several properties:
 
-Software Transactional Memory is a technique for guaranteeing atomicity of
-values in parallel computations, such that all contexts view the same data when
-read and writes are guaranteed by the runtime to never to result in inconsistent
-states.
+* No parallel processes can read from the atomic block until the transaction
+  commits.
+* The current process is isolated cannot see any changes made by other parallel
+  processes.
+
+This is similar to the atomicity that databases guarantee. The `stm` library
+provides a lovely composition interface for building up higher level primitives
+that can be composed in atomic blocks to build safe concurrent logic without
+worrying about deadlocks and memory corruption from threaded and mutable
+reference approaches to building parallel algorithms.
 
 ```haskell
 atomically :: STM a -> IO a
