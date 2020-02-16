@@ -2033,10 +2033,18 @@ Operators are of one of three fixity classes.
 * Postfix - Placed after expressions. See [Postfix Operators].
 
 Expressions involving infix operators are disambiguated by the operator's fixity
-and precedence. Infix operators are either left or right associative. These
-denoted by fixity declarations for the operator using either `infixr` `infixl`
-and `infix`.  The standard operators defined in the Prelude have the following
-precedence table.
+and precedence. Infix operators are either left or right associative.
+Associativity determines how operators of the same precedence are grouped in the
+absence of parentheses.
+
+```haskell
+a + b + c + d   =   ((a + b) + c) + d    -- left associative
+a + b + c + d   =   a + (b + (c + d))    -- right associative
+```
+
+Precedence and associativity are denoted by fixity declarations for the operator
+using either `infixr` `infixl` and `infix`.  The standard operators defined in
+the Prelude have the following precedence table.
 
 ```haskell
 infixr 9  .
