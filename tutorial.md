@@ -1945,6 +1945,22 @@ For example the following are equivalent:
 (+) x y   =   x + y
 ```
 
+Where & Let Clauses
+-------------------
+
+TODO
+
+```haskell
+```
+
+Comments
+--------
+
+TODO
+
+```haskell
+```
+
 Typeclasses
 -----------
 
@@ -2048,6 +2064,25 @@ frequently and defined over many prelude types:
   real values.
 * **RealFrac** - Provides an interface for rounding real values.
 * **RealFloat** - Provides an interface for working with IEE754 operations.
+
+To see the implementation for any of these typeclasses you can run the GHCi info
+command to see the methods and all instances in scope. For example:
+
+```haskell
+λ: :info Num
+ class (Eq a, Show a) => Num a where
+   (+) :: a -> a -> a
+   (*) :: a -> a -> a
+   (-) :: a -> a -> a
+   negate :: a -> a
+   abs :: a -> a
+   signum :: a -> a
+   fromInteger :: Integer -> a
+         -- Imported from GHC.Num
+ instance Num Float      -- Imported from GHC.Float
+ instance Num Double     -- Imported from GHC.Float
+ instance Num Integer    -- Imported from GHC.Num
+ instance Num Int        -- Imported from GHC.Num
 
 Many of the default classes have instances that can be deriving automatically.
 After the definition of a datatype you can add a `deriving` clause which will
@@ -3902,10 +3937,6 @@ Or equivalently:
 It's useful to remember that transformers compose *outside-in* but are *unrolled
 inside out*.
 
-See:
-
-* [Monad Transformers: Step-By-Step](https://page.mi.fu-berlin.de/scravy/realworldhaskell/materialien/monad-transformers-step-by-step.pdf)
-
 Transformers
 ------------
 
@@ -4341,6 +4372,20 @@ runExample2 = do
       $ runState (Example 0 0)
       $ traceToIO example2
   print result
+```
+
+Polysemy will require the following language extensions to operate:
+
+
+```haskell
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TypeOperators #-}
 ```
 
 The use of free-monads is not entirely without cost, and there are experimental
@@ -5961,14 +6006,14 @@ would not be chose laziness as the default model.  Future implementations of
 Haskell compilers would also probably also not choose this point in the design
 space if given the option of breaking with the language specification. 
 
-There is a lot of fear uncertainy and doubt spread about lazy evaluation that
+There is a lot of fear uncertainty and doubt spread about lazy evaluation that
 unfortunately that gets loses the forest for the trees and ignores 30 years of
 advanced research on the type system. In industrial programming a lot of
 software is sold on the meme of being of *fast* instead of being *correct*, and
-lazy evaluation becomes a easy talking point about these upside-down priorities.
-Nevertheless the colloquial perception of a laziness being "evil" is a meme that
-will continue to persist regardless of any underlying reality because software
-is intrinsically a social process.
+lazy evaluation is an intellectually easy talking point about these upside-down
+priorities.  Nevertheless the colloquial perception of a laziness being "evil"
+is a meme that will continue to persist regardless of any underlying reality
+because software is intrinsically a social process.
 
 <hr/>
 
@@ -6091,7 +6136,7 @@ industrial users wishing to standardise their commercial code.
 
 In Modern Haskell there are many different perspectives on Prelude design and
 the degree to which more advanced ideas should be used.  Which one is right for
-you is a matter of personal preference and constraints on your place of work.
+you is a matter of personal preference and constraints in your company.
 
 Protolude
 ---------
@@ -8536,6 +8581,66 @@ depth we might use:
 ~~~~ {.haskell include="src/15-testing/smallcheck_tree.hs"}
 ~~~~
 
+QuickSpec
+---------
+Using the QuickCheck arbitrary machinery we can also rather remarkably enumerate a large number of
+combinations of functions to try and deduce algebraic laws from trying out inputs for small cases.
+Of course the fundamental limitation of this approach is that a function may not exhibit any interesting
+properties for small cases or for simple function compositions. So in general case this approach won't work,
+but practically it still quite useful.
+
+~~~~ {.haskell include="src/15-testing/quickspec.hs"}
+~~~~
+
+Running this we rather see it is able to deduce most of the laws for list functions.
+
+```bash
+$ runhaskell src/quickspec.hs
+-- background functions --
+id :: A -> A
+(:) :: A -> [A] -> [A]
+(.) :: (A -> A) -> (A -> A) -> A -> A
+[] :: [A]
+-- variables --
+f, g, h :: A -> A
+xs, ys, zs :: [A]
+== Equations about map ==
+  1: map f [] == []
+  2: map id xs == xs
+  3: map (f.g) xs == map f (map g xs)
+== Equations about minimum ==
+  4: minimum [] == undefined
+== Equations about (++) ==
+  5: xs++[] == xs
+  6: []++xs == xs
+  7: (xs++ys)++zs == xs++(ys++zs)
+== Equations about sort ==
+  8: sort [] == []
+  9: sort (sort xs) == sort xs
+== Equations about id ==
+ 10: id xs == xs
+== Equations about reverse ==
+ 11: reverse [] == []
+ 12: reverse (reverse xs) == xs
+== Equations about several functions ==
+ 13: minimum (xs++ys) == minimum (ys++xs)
+ 14: length (map f xs) == length xs
+ 15: length (xs++ys) == length (ys++xs)
+ 16: sort (xs++ys) == sort (ys++xs)
+ 17: map f (reverse xs) == reverse (map f xs)
+ 18: minimum (sort xs) == minimum xs
+ 19: minimum (reverse xs) == minimum xs
+ 20: minimum (xs++xs) == minimum xs
+ 21: length (sort xs) == length xs
+ 22: length (reverse xs) == length xs
+ 23: sort (reverse xs) == sort xs
+ 24: map f xs++map f ys == map f (xs++ys)
+ 25: reverse xs++reverse ys == reverse (ys++xs)
+```
+
+Keep in mind the rather remarkable fact that this is all deduced automatically
+from the types alone!
+
 Tasty
 -----
 
@@ -9973,8 +10078,8 @@ enabled by default.
 
 See: [Typeable and Data in Haskell](http://chrisdone.com/posts/data-typeable)
 
-Dynamic
--------
+Dynamic Types
+-------------
 
 Since we have a way of querying runtime type information we can use this
 machinery to implement a ``Dynamic`` type. This allows us to box up any monotype
@@ -11542,6 +11647,8 @@ See:
 
 STM
 ---
+
+TODO
 
 Software Transactional Memory is a technique for guaranteeing atomicity of
 values in parallel computations, such that all contexts view the same data when
@@ -15995,7 +16102,7 @@ These are broadly divided into several categories:
 * **REPL Generators** - Libraries fo building command line interfaces for
   Read-Eval-Print loops.
 
-unbound
+Unbound
 -------
 
 Several libraries exist to mechanize the process of writing name capture and
@@ -16007,7 +16114,7 @@ to write the name capture and substitution mechanics ourselves.
 ~~~~ {.haskell include="src/30-languages/unbound.hs"}
 ~~~~
 
-unbound-generics
+Unbound Generics
 ----------------
 
 Recently unbound was ported to use GHC.Generics instead of Template Haskell. The
