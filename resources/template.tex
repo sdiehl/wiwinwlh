@@ -1,12 +1,9 @@
 \documentclass[10pt,openright]{$documentclass$}
+
 \usepackage{geometry}
 \usepackage{afterpage}
 \usepackage{resources/dtrt}
 \geometry{
-  %a4paper,
-  %total={21.59cm,27.94cm},
-  %total={21cm,25cm},
-  %papersize={21cm,25cm},
   papersize={8.125in,10.250in},
   bindingoffset=0.2in,
   top=1.5cm,
@@ -16,9 +13,7 @@
   % For pdf
   left=2.0cm,
   right=2.0cm,
-  % For print
-  %marginparwidth=4cm,
-  %marginparsep=0.8cm
+  centering
 }
 \usepackage{lmodern}
 \usepackage{xcolor}
@@ -35,7 +30,7 @@ $if(colorlinks)$
   linkbordercolor=red,
   pdfborderstyle={/S/U/W 1}
   pdfauthor={Stephen Diehl},
-  pdfsubject={Haskell Programming},
+  pdfsubject={haskell, computer science, programming, ghc, monads},
   pdftitle={What I Wish I Knew When Learning Haskell},
 }
 $else$
@@ -44,7 +39,7 @@ $else$
   linkcolor=black,
   pdfborderstyle={0 0 0},
   pdfauthor={Stephen Diehl},
-  pdfsubject={Haskell Programming},
+  pdfsubject={haskell, computer science, programming, ghc, monads},
   pdftitle={What I Wish I Knew When Learning Haskell},
 }
 
@@ -70,6 +65,8 @@ $endif$
 \usepackage{fancyvrb}
 \usepackage{fancyhdr}
 \usepackage{graphicx}
+
+%\frenchspacing
 
 \pagestyle{fancy}
 \fancyhf{}

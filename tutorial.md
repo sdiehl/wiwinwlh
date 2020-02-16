@@ -951,7 +951,7 @@ Haskell packages. With Haskell's continuing evolution, Hackage has become many
 things to developers, but there seem to be two dominant philosophies of uploaded
 libraries.
 
-**Reusable Code / Building Blocks**
+**A Repository for Production Libraries**
 
 In the first philosophy, libraries exist as reliable, community-supported
 building blocks for constructing higher level functionality on top of a common,
@@ -960,18 +960,17 @@ philosophy, the authors of libraries have written them as a means of packaging
 up their understanding of a problem domain so that others can build on their
 understanding and expertise.
 
-**A Staging Area / Request for Comments**
+**An Experimental Playground**
 
 In contrast to the previous method of packaging, a common philosophy in the
 Haskell community is that Hackage is a place to upload experimental libraries as
 a means of getting community feedback and making the code publicly available.
 Library author(s) often rationalize putting these kind of libraries up without
-documentation, often without indication of what the library actually does, by
-simply stating that they intend to tear the code down and rewrite it later. This
-approach unfortunately means a lot of Hackage namespace has become polluted with
-dead-end, bit-rotting code. Sometimes packages are also uploaded purely for
-internal use within an organisation, or to accompany an academic paper. These
-packages are often left undocumented as well.
+documentation, often without indication of what the library actually does or how
+it works. This unfortunately means a lot of Hackage namespace has become
+polluted with dead-end, bit-rotting code. Sometimes packages are also uploaded
+purely for internal use within an organisation, or to accompany an academic
+paper. These packages are often left undocumented as well.
 
 For developers coming to Haskell from other language ecosystems that favor
 the former philosophy (e.g., Python, JavaScript, Ruby), seeing  *thousands of
@@ -1230,7 +1229,7 @@ sensible:
 :seti -XFlexibleContexts
 :seti -XFlexibleInstances
 :seti -XOverloadedStrings
-import Protolude # or any other preferred prelude
+import Protolude -- or any other preferred prelude
 ```
 
 #### GHCi Performance
@@ -1332,7 +1331,7 @@ Or qualified by the module in which they come from, such as:
 Data.List.nub
 ```
 
-The major namespaces are described below with their naming conventions:
+The major namespaces are described below with their naming conventions
 
 Namespace       Convention
 --------------  ----------
@@ -1482,8 +1481,8 @@ what are types precisely?
 The *syntax* of a programming language is described by the constructs that
 define its types, and its *semantics* is described by the interactions among
 those constructs. A type system overlays additional structure on top of the
-syntax that impose constraints on the formation of expressions in terms of based
-on the context in which they occur.
+syntax that impose constraints on the formation of expressions based on the
+context in which they occur.
 
 Dynamic programming languages associate types with values *at evaluation*,
 whereas statically typed languages associate types to expressions *before
@@ -1518,6 +1517,12 @@ common data structures such as lists and tuples.
 The type system grows **quite** a bit from here, but these are the foundational
 types you'll first encounter. See the later chapters for all types off advanced
 features that can be optionally turned on.
+
+*This tutorial will only cover a small amount of the theory of type systems. For
+a more thorough treatment of the subject there are two canonical texts:*
+
+* Pierce, B. C., & Benjamin, C. (2002). **Types and Programming Languages**. MIT Press.
+* Harper, R. (2016). **Practical Foundations for Programming Languages**. Cambridge University Press.
 
 Type Signatures
 ---------------
@@ -1782,18 +1787,107 @@ infix form.
 data List a = Nil | a :+: (List a)
 ```
 
+Lists
+-----
+
+Linked lists or *cons lists* are a fundamental data structure in functional
+programming. GHC has builtin syntactic sugar in the form of list syntax which
+allows us to write lists that expand into explicit invocations of the *cons*
+operator `(:)`.  The operator is right associative and an example is shown
+below:
+
+```haskell
+[1,2,3] = 1 : 2 : 3 : []      
+[1,2,3] = 1 : (2 : (3 : [])) -- with explicit parens
+```
+
+This syntax also extends to the typelevel where lists are represented as brackets
+around the type of values they contain.
+
+```haskell
+myList1 :: [Int]
+myList1 = [1,2,3]
+
+myList2 :: [Bool]
+myList2 = [True, True, False]
+```
+
+The cons operator itself has the type signature which takes a *head element* as
+its first argument and a *tail argument* as its second.
+
+```haskell
+(:) :: a -> [a] -> [a]
+```
+
+The `Data.List` from the standard Prelude defines a variety of utility functions
+for operator over linked lists. For example the `length` function returns the
+  integral length of the number of elements in the linked list.
+
+```haskell
+length :: [a] -> Int
+```
+
+While the `take` function extracts a fixed number of elements from the list.
+
+```haskell
+take :: Int -> [a] -> [a]
+```
+
+Both of these functions are *pure* and return a new list without modifying the
+underlying list passed as an argument.
+
+Another function `iterate` is an example of a function which returns an
+*infinite list*. It takes as its first argument a function and then repeatedly
+applies that function to produce a new element of the linked list. 
+
+```haskell
+iterate :: (a -> a) -> a -> [a]
+```
+
+Consuming these infinite lists can be used as a control flow construct to
+construct loops. For example instead of writing an explicit loop, as we would in
+other programming languages, we instead construct a function which generates
+list elements. For example producing a list which produces subsequent powers of
+two:
+
+```haskell
+powersOfTwo = iterate (2*) 1
+```
+
+We can then use the `take` function to evaluate this *lazy* stream to a desired
+depth.
+
+```haskell
+λ: take 15 powersOfTwo
+[1,2,4,8,16,32,64,128,256,512,1024,2048,4096,8192,16384]
+```
+
+An equivalent loop in an imperative language would look like the following.
+
+```python
+def powersOfTwo(n):
+    power = n
+    square_list = [1]
+    for i in range(1,n+1):
+        square_list.append(2 ** i)
+    return square_list
+
+print(powersOfTwo(15))
+```
+
 Pattern Matching
 -----------------
 
-To unpack an algebraic datatype and extract it's fields we'll use a built in
+To unpack an algebraic datatype and extract its fields we'll use a built in
 language construction known as *pattern match*. This is denoted by the `case`
-syntax and "scrutinizes" a specific value. A case expression will then be
+syntax and *scrutinizes* a specific value. A case expression will then be
 followed by a sequence of *matches* which consist of a *pattern* on the left and
 an arbitrary expression on the right. The left patterns will all consist of
 constructors for the type of the scrutinized value and should enumerate all
 possible constructors. For product type patterns that are scrutinized a sequence
-of variables will bind the fields associated with it's positional location in
-the constructors of constructor.
+of variables will bind the fields associated with its positional location in
+the constructors of constructor. The types of all expressions on the right hand
+side of the matches must be identical.
 
 Pattern matches can be written in explicit case statements or in toplevel
 functional declarations. The latter simply expands the former in the desugaring
@@ -1893,6 +1987,33 @@ addOne (x : xs) = (x+1) : (addOne xs)
 addOne [] = []
 ```
 
+Guards
+------
+
+Guard statements are expressions that evaluate to boolean values that can be
+used to restrict pattern matches. These occur in a pattern match statements at
+the toplevel with the pipe syntax on the left indicating the guard condition.
+The special `otherwise` condition is just a renaming of the boolean value `True`
+exported from Prelude.
+
+```haskell
+absolute :: Int -> Int
+absolute n 
+  | n < 0     = (-n)
+  | otherwise = n
+```
+
+Guards can also occur in pattern case expressions.
+
+```haskell
+absoluteJust :: Maybe Int -> Maybe Int
+absoluteJust n = case n of
+  Nothing -> Nothing
+  Just n
+    | n < 0     -> Just (-n)
+    | otherwise -> Just n
+```
+
 Operators and Sections
 ----------------------
 
@@ -1948,9 +2069,127 @@ For example the following are equivalent:
 Where & Let Clauses
 -------------------
 
-TODO
+Haskell syntax contains two different types of declaration syntax: `let` and
+`where`.  A let binding is an expression and binds anywhere in its body. For
+example the following let binding declares `x` and `y` in the expression `x+y`.
 
 ```haskell
+f = let x = 1; y = 2 in (x+y)
+```
+
+A where binding is a toplevel syntax construct (i.e. not an expression) that
+binds variables at the end of a function. For example the following binds 
+`x` and `y` in the function body of `f` which is `x+y`.
+
+```haskell
+f = x+y where x=1; y=1
+```
+
+Where clauses following the Haskell *layout rule* where definitions can be
+listed on newlines so long as the definitions have greater indentation than the
+first toplevel definition they are bound to.
+
+```haskell
+f = x+y 
+  where
+    x = 1
+    y = 1
+```
+
+Conditionals
+------------
+
+Haskell has builtin syntax for scrutinizing boolean expressions. These are first
+class expressions known as `if` statements. An if statement is of the form 
+`if cond then trueCond else falseCond`. Both the `True` and `False` statements
+must be present.
+
+```haskell
+absolute :: Int -> Int
+absolute n = 
+  if (n < 0) 
+    then (-n) 
+    else n
+```
+
+If statements are just syntactic sugar for `case` expressions over boolean
+values. The following example is equivalent to the above example.
+
+```haskell
+absolute :: Int -> Int
+absolute n = case (n < 0) of 
+  True  -> (-n)
+  False -> n
+```
+
+Function Composition
+--------------------
+
+TODO
+
+$$
+f \circ g 
+$$
+
+```haskell
+(.) :: (b -> c) -> (a -> b) -> a -> c
+```
+
+```haskell
+flip :: (a -> b -> c) -> b -> a -> c
+```
+
+```haskell
+($) :: (a -> b) -> a -> b 
+```
+
+```haskell
+(&) :: a -> (a -> b) -> b 
+```
+
+Nuns the binary function b on the results of applying unary function u to two
+arguments x and y. From the opposite perspective, it transforms two inputs and
+combines the outputs.
+
+```haskell
+on :: (b -> b -> c) -> (a -> b) -> a -> a -> c 
+```
+
+List Comprehensions & Enum
+--------------------------
+
+TODO
+
+* Generators
+* Let bindings
+* Guards
+
+Syntax Sugar        Enum Class Method
+-----------------   ---------------------------
+``[ e1.. ]``        ``enumFrom e1``
+``[ e1,e2.. ]``     ``enumFromThen e1 e2``
+``[ e1..e3 ]``      ``enumFromTo e1 e3``
+``[ e1,e2..e3 ]``   ``enumFromThenTo e1 e2 e3``
+
+```haskell
+factorial :: Integer -> Integer
+factorial n = product [1..n]
+```
+
+```haskell
+primes :: [Integer]
+primes = sieve [2..] 
+  where
+    sieve (p:xs) = p : sieve [ n | n <- xs, n `mod` p > 0 ]
+```
+
+```haskell
+fizzbuzz = [fb x| x <- [1..100]]
+    where fb y
+        | y `mod` 15 == 0 = "FizzBuzz"
+        | y `mod` 3  == 0 = "Fizz"
+        | y `mod` 5  == 0 = "Buzz"
+        | otherwise  = show y
 ```
 
 Comments
@@ -3122,7 +3361,7 @@ symbols marks it as a code block:
 -- @
 ```
 
-Similarly, it's possible to use bird tracks (``>``) in a comment line to set off
+Similarly, it is possible to use bird tracks (``>``) in a comment line to set off
 a code block. 
 
 ```haskell
@@ -3233,7 +3472,7 @@ structured.
 
 There is a singular truth to keep in mind when learning monads.
 
-> A monad is just it's algebraic laws. Nothing more, nothing less.
+> A monad is just its algebraic laws. Nothing more, nothing less.
 
 Eightfold Path to Monad Satori
 ------------------------------
@@ -4209,7 +4448,7 @@ Newtype Deriving
 ----------------
 
 Newtype deriving is a common technique used in combination with the `mtl`
-library and as such we will discuss it's use for transformers in this section.
+library and as such we will discuss its use for transformers in this section.
 
 As discussed in the [newtypes](#newtypes) section, newtypes let us reference a
 data type with a single constructor as a new distinct type, with no runtime
@@ -4344,7 +4583,7 @@ Effect Systems
 
 The mtl model has several properties which make it suboptimal from a theoretical
 perspective. Although it is used widely in production Haskell we will discuss
-it's shortcomings and some future models called *effect systems*.
+its shortcomings and some future models called *effect systems*.
 
 **Extensibility**
 
@@ -4353,7 +4592,7 @@ typically have to derive a large number of boilerplate instances to compose it
 inside of existing mtl transformer stack. For example adding `MonadReader`
 instance for $n$ number of undecidable instances that do nothing but mostly
 lifts. You can see this massive boilerplate all over the design of the `mtl`
-library and it's transitive dependencies.
+library and its transitive dependencies.
 
 ```haskell
 instance MonadReader r m => MonadReader r (ExceptT e m) where
@@ -4683,15 +4922,15 @@ It's important to distinguish between different classes of GHC language
 extensions: *general* and *specialized*.
 
 The inherent problem with classifying extensions into general and specialized
-categories is that it's a subjective classification. Haskellers who do theorem
+categories is that it is a subjective classification. Haskellers who do theorem
 proving research will have a very different interpretation of Haskell than
 people who do web programming. Thus, we will use the following classifications:
 
 * *Benign* implies both that importing the extension won't change the semantics of
   the module if not used and that enabling it makes it no easier to shoot
   yourself in the foot.
-* *Historical* implies that one shouldn't use this extension, it's in GHC purely
-  for backwards compatibility.  Sometimes these are dangerous to enable.
+* *Historical* implies that one shouldn't use this extension, it is in GHC
+  purely for backwards compatibility.  Sometimes these are dangerous to enable.
 * *Steals syntax* means that enabling this extension means that certain code
   valid in vanilla Haskell will no longer be accepted. For example, `f $(a)`
   is the same as `f $ (a)` in Haskell98, but `TemplateHaskell` will interpret
@@ -6143,8 +6382,8 @@ bottom, we fail at the usage site instead of the outer pattern match.
 ~~~~ {.haskell include="src/05-laziness/lazy_patterns.hs"}
 ~~~~
 
-The Controversy
----------------
+The Debate
+----------
 
 Laziness is a controversial design decision in Haskell. It is difficult to write
 production Haskell code that operates in constant memory without some insight
@@ -7984,8 +8223,6 @@ signature!
 Some notable trivia, the ``($)`` operator is wired into GHC in a very special
 way as to allow impredicative instantiation of ``runST`` to be applied via
 ``($)`` by special-casing the ``($)`` operator only when used for the ST monad.
-If this sounds like an ugly hack it's because it is, but a rather convenient
-hack.
 
 For example if we define a function ``apply`` which should behave identically to
 ``($)`` we'll get an error about polymorphic instantiation even though they are
@@ -8834,7 +9071,13 @@ capture :: IO a -> IO (String, a)
 Type Families
 =============
 
-TODO
+Type families are a powerful extension the Haskell type system, developed in
+2005, that provide type-indexed data types and named functions on types. This
+allows a whole new level of computation to occur at compile-time and opens an
+entire arena of type-level abstractions that were previously impossible to
+express. Type families proved to be nearly as fruitful as typeclasses and
+indeed, many previous approaches to type-level programming using classes are
+achieved much more simply with type families.
 
 MultiParam Typeclasses
 ----------------------
@@ -8848,10 +9091,10 @@ superclasses, and reduces the types to head normal form. For example:
 ==> Ord a => [a]
 ```
 
-If a single parameter typeclass expresses a property of a type ( i.e. it's in a
-class or not in class ) then a multiparameter typeclass expresses relationships
-between types. For example if we wanted to express the relation a type
-can be converted to another type we might use a class like:
+If a single parameter typeclass expresses a property of a type ( i.e. whether
+it's in a class or not in class ) then a multiparameter typeclass expresses
+relationships between types. For example if we wanted to express the relation a
+type can be converted to another type we might use a class like:
 
 ~~~~ {.haskell include="src/16-type-families/mparam.hs"}
 ~~~~
@@ -13945,9 +14188,9 @@ For example, the type of located source expressions is defined by the type:
 ```haskell
 type LHsExpr p = Located (HsExpr p)
 data HsExpr p
-  = HsVar (XVar p) (Located (IdP p))	
-  | HsLam (XLam p) (MatchGroup p (LHsExpr p))	
-  | HsApp (XApp p) (LHsExpr p) (LHsExpr p)	
+  = HsVar (XVar p) (Located (IdP p))    
+  | HsLam (XLam p) (MatchGroup p (LHsExpr p))   
+  | HsApp (XApp p) (LHsExpr p) (LHsExpr p)      
   ...
 ```
 
