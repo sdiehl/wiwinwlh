@@ -2,56 +2,73 @@ PANDOC = pandoc
 IFORMAT = markdown+raw_tex+raw_attribute+auto_identifiers+implicit_header_references
 GHC = ghc
 
+INPUT = tutorial.md
+
 HTEMPLATE = resources/template.html
 LTEMPLATE = resources/template.tex
 ETEMPLATE = resources/template.epub
 
-UNICODE_MAP = resources/unicodemapping.tex
 
 FLAGS = --standalone --toc --toc-depth=2 --highlight-style tango
 LFLAGS = --top-level-division=chapter
-#LFLAGS = --top-level-division=chapter -V colorlinks
+PFLAGS = -V colorlinks
 HFLAGS = -c css/style.css -c css/layout.css
 DFLAGS =
 EFLAGS = 
 
+# Targets
 HTML = tutorial.html
 EPUB = tutorial.epub
 PDF = tutorial.pdf
+PPDF = tutorial_print.pdf
 TEX = tutorial.tex
 
+# LaTeX
 COVER = resources/cover.tex
 BACK = resources/back.tex
+UNICODE_MAP = resources/unicodemapping.tex
 
-all: $(HTML) $(EPUB) $(PDF)
+all: $(PDF) $(HTML) $(EPUB)
 html: $(HTML)
 pdf: $(PDF)
 epub: $(epub)
 
+# Code snippet preprocessor
 includes: includes.hs
 	$(GHC) --make $<
 
+# .html Target
 %.html: %.md includes
 	./includes < $<  \
 	| $(PANDOC) --template $(HTEMPLATE) -s -f $(IFORMAT) -t html $(FLAGS) $(HFLAGS) \
 	| sed '/<extensions>/r extensions.html' \
 	| sed '/<copyright>/r resources/copyright.html' > $@
 
+# .docx Target
 %.docx: %.md includes
 	./includes < $<  \
 	| $(PANDOC) --template $(HTEMPLATE) -s -f $(IFORMAT) -t docx $(FLAGS) $(DFLAGS) > $@
 
+# .epub Target
 %.epub: %.md includes
 	(cat $(ETEMPLATE); ./includes < $<) \
 	| $(PANDOC) -f $(IFORMAT) -t epub $(FLAGS) $(EFLAGS) -o $@
 
+# .tex Target
 %.tex: %.md includes $(COVER) $(BACK)
 	./includes < $< \
 	| $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) -o $@
 
+# .pdf Target for Print
 %.pdf: %.md includes $(COVER) $(BACK)
 	./includes < $< \
 	| $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) -o $@
+
+# dirty hack
+# .pdf Target for Web
+webpdf: $(INPUT) includes $(COVER) $(BACK)
+	./includes < $< \
+	| $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) $(PFLAGS) -o $(PPDF)
 
 links:
 	brok tutorial.md
