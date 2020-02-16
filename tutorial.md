@@ -4253,11 +4253,12 @@ transformer stack and manually life anytime you perform a State action. This is
 a suboptimal design and difficult to route around simply without massive
 boilerplate.
 
-In recent years there have many other libraries that have explored the design
-space of alternative effect modeling systems. These systems are still quite
-early compared to the `mtl` but some are able to avoid some of the shortcomings
-of `mtl` in favour of newer algebraic models of effects. The three most commonly
-used libraries are:
+While these problems, most users of mtl don't implement new transformers at all
+and can get by.  However in recent years there have many other libraries that
+have explored the design space of alternative effect modeling systems. These
+systems are still quite early compared to the `mtl` but some are able to avoid
+some of the shortcomings of `mtl` in favour of newer algebraic models of
+effects. The three most commonly used libraries are:
 
 * `fused-effects`
 * `polysemy`
@@ -8478,21 +8479,26 @@ See:
 Testing
 =======
 
-Contrary to a lot of misinformation, unit testing in Haskell is quite common and robust. Although generally
-speaking unit tests tend to be of less importance in Haskell since the type system makes an enormous amount of
-invalid programs completely inexpressible by construction. Unit tests tend to be written later in the
-development lifecycle and generally tend to be about the core logic of the program and not the intermediate
-plumbing.
+Unit testing frameworks are an important component in the Haskell ecosystem.
+Program correctness is a central philosophical concept and unit testing forms
+the third part of the ecosystem that includes strong type system and property
+testing.  Generally speaking unit tests tend to be of less importance in Haskell
+since the type system makes an enormous amount of invalid programs completely
+inexpressible by construction. Unit tests tend to be written later in the
+development lifecycle and generally tend to be about the core logic of the
+program and not the intermediate plumbing.
 
-A prominent school of thought on Haskell library design tends to favor constructing programs built around
-strong equation laws which guarantee strong invariants about program behavior under composition. Many of the
-testing tools are built around this style of design.
+A prominent school of thought on Haskell library design tends to favor
+constructing programs built around strong equational laws which guarantee strong
+invariants about program behavior under composition. Many of the testing tools
+are built around this style of design.
 
 QuickCheck
 ----------
 
-Probably the most famous Haskell library, QuickCheck is a testing framework for generating large random tests
-for arbitrary functions automatically based on the types of their arguments.
+Probably the most famous Haskell library, QuickCheck is a testing framework.
+This is a framework for generating large random tests for arbitrary functions
+automatically based on the types of their arguments.
 
 ```haskell
 quickCheck :: Testable prop => prop -> IO ()
@@ -11705,35 +11711,6 @@ race :: IO a -> IO b -> IO (Either a b)
 
 ~~~~ {.haskell include="src/22-concurrency/async.hs"}
 ~~~~
-
-<hr/>
-
-Graphics
-========
-
-Haskell does not have a robust graphic library ecosystem. There are two main
-libraries of note:
-
-* **[Diagrams]** - A embedded domain specific languages for constructing vector
-  graphics.
-* **Gloss** - A wrapper for OpenGL bindings for building simple 2D and 3D
-  graphics and animations. 
-
-Diagrams
---------
-
-Diagrams is a library for generating vector images to SVG and a variety of other formats.
-
-~~~~ {.haskell include="src/23-graphics/diagrams.hs"}
-~~~~
-
-```bash
-$ runhaskell diagram1.hs -w 256 -h 256 -o diagram1.svg
-```
-
-![](img/diagram1.png)
-
-See: [Diagrams Quick Start Tutorial](http://projects.haskell.org/diagrams/doc/quickstart.html)
 
 <hr/>
 
