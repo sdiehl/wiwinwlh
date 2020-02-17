@@ -11,7 +11,7 @@ before_install:
 - export PATH=$HOME/.local/bin:$PATH
 - travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
 script: 
-- apt-get install texlive texlive-xetex
+- sudo apt-get install texlive texlive-xetex
 - stack $ARGS --no-terminal --install-ghc build 
 - stack $ARGS --no-terminal --install-ghc ghc includes.hs -- -o includes
 - stack $ARGS --no-terminal --install-ghc exec make
