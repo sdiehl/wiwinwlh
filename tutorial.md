@@ -247,7 +247,7 @@ a `cabal.project` or `stack.yaml` in the root of the repository.
 └── cabal.project       # cabal project configuration
 ```
 
-An example Cabal project file, named `cabal.project1` above, this
+An example Cabal project file, named `cabal.project` above, this
 multi-component library repository would include these lines.
 
 ```yaml
