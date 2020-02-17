@@ -25,7 +25,7 @@ at-cost since the book is open source and free.
 The current published version is:
 
 ```
-Date: February 16, 2910
+Date: February 16, 2020
 Git: d429c2e21b9636cffa27a8d4f063644b8bcecf1a
 ```
 
