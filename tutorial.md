@@ -2272,7 +2272,7 @@ list of integral values, each element multiplied by two.
 
 ```haskell
 λ: [2*x | x <- [1,2,3,4,5]]
---        ^^^^^^^^^^^^^^^^^
+--        ^^^^^^^^^^^^^^^^
 --            Generator
 [2,4,6,8,10]
 ```
@@ -6833,7 +6833,7 @@ data Bool = True | False
 
 isNotJust :: Maybe a -> Bool
 isNotJust (Just x) = True
-isNotJust (Just x) = False
+isNotJust Nothing = False
 
 isJust :: Maybe a -> Bool
 isJust (Just x) = True

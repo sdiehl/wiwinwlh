@@ -16,6 +16,22 @@ Read Online:
 * [**Kindle MOBI**](http://dev.stephendiehl.com/hask/tutorial.mobi)
 * [**Example Code**](https://github.com/sdiehl/wiwinwlh/tree/master/src)
 
+If you'd like a physical copy of the text you can either print it out for
+yourself (see Printable PDF) or purchase one from a publisher. The price is
+at-cost since the book is open source and free.
+
+* [Blurb Publisher](https://www.blurb.co.uk/b/9958091-what-i-wish-i-knew-when-learning-haskell)
+
+The current published version is:
+
+```
+Date: February 16, 2910
+Git: d429c2e21b9636cffa27a8d4f063644b8bcecf1a
+```
+
+Source Code
+-----------
+
 Chapter Code Examples:
 
 * [01-basics/            ](https://github.com/sdiehl/wiwinwlh/tree/master/src/01-basics/)
