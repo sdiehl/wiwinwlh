@@ -1489,7 +1489,7 @@ languages, however they have a degenerate type system with only one type.
 
 The dominant philosophy in functional programming is is to "make invalid states
 unrepresentable" at compile-time rather than performing massive amounts of
-runtime checks. To this end Haskell has developed a rich rich type system that
+runtime checks. To this end Haskell has developed a rich type system that
 is based on typed lambda calculus known as Girard's System-F (See [Rank-N
 Types]) and has incrementally added extensions to support more type-level
 programming added to it over the years.
@@ -1554,7 +1554,7 @@ myFunction :: Int -> Int -> Int
      +----------------------- function
 ```
 
-Here is a simple example of a function which adds to integers.
+Here is a simple example of a function which adds two integers.
 
 ```haskell
 add :: Integer -> Integer -> Integer
