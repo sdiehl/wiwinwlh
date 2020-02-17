@@ -15,7 +15,7 @@ data Refs = Refs
 data Data = Data
   { id    :: Int
   , name  :: Text
-  , price :: Int
+  , price :: Float
   , tags  :: [Text]
   , refs  :: Refs
   } deriving (Show,Generic)
