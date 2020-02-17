@@ -20,7 +20,7 @@ If you'd like a physical copy of the text you can either print it out for
 yourself (see Printable PDF) or purchase one from a publisher. The price is
 at-cost since the book is open source and free.
 
-* [Blurb Publisher](https://www.blurb.co.uk/b/9958091-what-i-wish-i-knew-when-learning-haskell)
+* [**Blurb Publisher**](https://www.blurb.co.uk/b/9958091-what-i-wish-i-knew-when-learning-haskell)
 
 The current published version is:
 
@@ -28,6 +28,20 @@ The current published version is:
 Date: February 16, 2020
 Git: d429c2e21b9636cffa27a8d4f063644b8bcecf1a
 ```
+
+Contributing
+------------
+
+If you want to submit a fix for a typo or fix for code then just submit a pull
+request, and I'm happy to recompile the resulting document. Edit the following
+Markdown file which generates all other targets.
+
+[tutorial.md](./tutorial.md)
+
+Source code is directly included from the `src` directory into the resulting
+document. To fix a change or include a new sample edit the example source code
+directly. In addition add the new file to the `ci` script inside of the folder
+so it is run in the continuous integration script.
 
 Source Code
 -----------
@@ -69,36 +83,34 @@ Chapter Code Examples:
 * [33-categories/        ](https://github.com/sdiehl/wiwinwlh/tree/master/src/33-categories/)
 * [34-time/              ](https://github.com/sdiehl/wiwinwlh/tree/master/src/34-time/)
 
-Contributing
-------------
-
-If you want to submit a fix for a typo or fix for code then just submit a pull
-request, and I'm happy to recompile the resulting document. Edit the following
-Markdown file which generates all other targets.
-
-[tutorial.md](./tutorial.md)
-
 Compiling
 ---------
 
-If for some reason you want to compile the HTML page yourself, then you'll need
-to compile the preprocessor against Pandoc and then run make to build the page.
-
-To compile the preprocessor run either use Nix, Stack or Cabal to compile the
-target in the cabal file.
+If you'd like to build the documents locally you'll need to compile the
+preprocessor run either use Nix, Stack or Cabal to compile the preprocessor
+executable in the cabal file.
 
 ```bash
 $ stack exec make # Stack
 $ cabal exec make # Cabal
-$ make run-shell && ghc --make includes.hs # Nix
+```
+
+For Nix:
+
+```bash
+$ make run-shell
+$ ghc --make includes.hs
+$ make
 ```
 
 After this is built you can build anyone of the available target outputs.
 
 **LaTeX**
 
+You will need the whole XeTeX suite to compile.
+
 ```bash
-$ apt-get install texlive texlive-xetex
+$ apt-get install texlive texlive-xetex texlive-extra texlive-extra-utils
 $ make pdf
 $ make print
 ```
@@ -119,6 +131,23 @@ $ make docx
 
 ```bash
 $ make epub
+```
+
+Continuous Integration
+----------------------
+
+The book and example code is kept stable under continuous integration. The
+script `src/ci` will run through all example code and compile it against the
+`example.cabal` file of the given chapter. All bounds for dependencies are
+specified in the cabal file and ensure that the given code examples are up to
+date.
+
+The CI is run in Github under TravisCI on every pull request.
+
+To run the integration suite manually run:
+
+```bash
+$ cd src && ./ci
 ```
 
 License
