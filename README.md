@@ -18,7 +18,7 @@ Read Online:
 
 If you'd like a physical copy of the text you can either print it out for
 yourself (see Printable PDF) or purchase one from a publisher. The price is
-at-cost since the book is open source and free.
+at-cost since the text is open source and free.
 
 * [**Blurb Publisher**](https://www.blurb.co.uk/b/9958091-what-i-wish-i-knew-when-learning-haskell)
 
@@ -39,9 +39,9 @@ Markdown file which generates all other targets.
 [tutorial.md](./tutorial.md)
 
 Source code is directly included from the `src` directory into the resulting
-document. To fix a change or include a new sample edit the example source code
-directly. In addition add the new file to the `ci` script inside of the folder
-so it is run in the continuous integration script.
+document by the preprocessor. To fix a change or include a new sample edit the
+example source code directly. In addition add the new file to the `ci` script
+inside of the folder so it is run in the continuous integration script.
 
 Source Code
 -----------

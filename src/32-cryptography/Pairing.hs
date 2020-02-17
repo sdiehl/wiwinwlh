@@ -23,10 +23,6 @@ q =
 
 main :: IO ()
 main = do
-  putText "P:"
-  print p
-  putText "Q:"
-  print q
   putText "e(P, Q):"
   print (pairing p q)
   putText "e(P, Q) is bilinear:"

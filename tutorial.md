@@ -657,7 +657,7 @@ build-depends:
   transformers        >= 0.2  && <0.6,
   text                >= 1.2  && <1.3,
   bytestring          >= 0.10 && <0.11,
-  mtl                 >= 2.1  && <2.3,
+  mtl                 >= 2.1  && <2.3
 ```
 
 Individual lines in the version specification can be dependent on other
@@ -2245,7 +2245,7 @@ on :: (b -> b -> c) -> (a -> b) -> a -> a -> c
 This is used quite often in sort functions. For example we can write a custom
 sort function which sorts a lists of lists based on length.
 
-```
+```haskell
 λ: import Data.List
 λ: sortSize = sortBy (compare `on` length)
 λ: sortSize [[1,2], [1,2,3], [1]]
@@ -2661,7 +2661,7 @@ replacement message.
 
 ```haskell
 module Widget {-# DEPRECATED "This module is deprecated." #-}
-module Widget {-# WARNING "This module is dangerous." #-}where
+module Widget {-# WARNING "This module is dangerous." #-}
 ```
 
 Newtypes
