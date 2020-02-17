@@ -330,7 +330,7 @@ which modules within the package structure will be publicly visible when the
 package is installed. These modules are the user-facing APIs that we wish to
 expose to downstream consumers.
 
-For an **executable**`, the ``main-is`` field indicates the module that exports
+For an **executable**, the ``main-is`` field indicates the module that exports
 the ``main`` function responsible for running the executable logic of the
 application. Every module in the package must be listed in one of
 ``other-modules``, ``exposed-modules`` or ``main-is`` fields.
