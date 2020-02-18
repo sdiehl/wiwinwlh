@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+stack exec ghc -- -e ":q" --interactive builder.hs
+stack exec ghc -- -e ":q" --interactive bytestring.hs
+#stack exec ghc -- -e ":q" --interactive overloadedlist.hs
+stack exec ghc -- -e ":q" --interactive printf.hs
+stack exec ghc -- -e ":q" --interactive regex.hs
+stack exec ghc -- -e ":q" --interactive text.hs
