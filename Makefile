@@ -19,8 +19,8 @@ EFLAGS =
 # Targets
 HTML = tutorial.html
 EPUB = tutorial.epub
-PDF = tutorial.pdf
 PPDF = tutorial_print.pdf
+WPDF = tutorial.pdf
 TEX = tutorial.tex
 DOCX = tutorial.tex
 
@@ -33,7 +33,7 @@ all: $(PDF) $(HTML) $(EPUB)
 html: $(HTML)
 docx: $(DOCX)
 epub: $(epub)
-pdf: $(PDF)
+pdf: $(PPDF)
 
 # Code snippet preprocessor
 includes: includes.hs
@@ -62,15 +62,15 @@ includes: includes.hs
 	| $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) -o $@
 
 # .pdf Target for Print
-%.pdf: %.md includes $(COVER) $(BACK)
+%.pdf: $(INPUT) includes $(COVER) $(BACK)
 	./includes < $< \
-	| $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) -o $@
+	| $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) -o $(PPDF)
 
 # dirty hack
 # .pdf Target for Web
 webpdf: $(INPUT) includes $(COVER) $(BACK)
 	./includes < $< \
-	| $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) $(PFLAGS) -o $(PPDF)
+	| $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) $(PFLAGS) -o $(WPDF)
 
 links:
 	brok tutorial.md
