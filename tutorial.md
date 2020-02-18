@@ -122,6 +122,7 @@ The Glorious Glasgow Haskell Compilation System, version 8.8.1
 
 ```bash
 $ ghc Example.hs -o example
+$ ghc --make Example.hs
 ```
 
 GHC's runtime is written in C and uses machinery from GCC infrastructure for its
@@ -2216,13 +2217,23 @@ arguments returning a new function.
 flip :: (a -> b -> c) -> b -> a -> c
 ```
 
-The most common operator in all of Haskell is function application of operator
+The most common operator in all of Haskell is function application operator
 `$`. This function is right associative and takes the entire expression on the
 right hand side of the operator and applies it to function on the left.
 
 ```haskell
 infixr 0 $
 ($) :: (a -> b) -> a -> b 
+```
+
+This is quite often used in the pattern where the left hand side is a
+composition of other functions applied to a single argument. This is common in
+*point-free* style of programming which attempts to minimize the number of input
+arguments in favour of pure higher order function composition
+
+```haskell
+ex1 = f1 . f2 . f3 . f4 $ input -- with ($)
+ex1 = (f1 . f2 . f3 . f4) input -- with explicit parens
 ```
 
 The flipped form of this function does the opposite and is left associative, and
@@ -2232,6 +2243,13 @@ argument to the function.
 ```haskell
 infixl 1 &
 (&) :: a -> (a -> b) -> b 
+```
+
+And in action
+
+```haskell
+ex2 = input & f1 . f2 . f3 . f4   -- with (&)
+ex2 = input & (f1 . f2 . f3 . f4) -- with explicit parens
 ```
 
 The `on` function takes a function `b` and yields the result of applying unary
