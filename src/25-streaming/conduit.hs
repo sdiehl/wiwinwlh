@@ -24,4 +24,4 @@ sink :: Sink String IO ()
 sink = CL.mapM_ putStrLn
 
 main :: IO ()
-main = source $$ conduit =$ sink
+main = runConduit $ source .| conduit .| sink
