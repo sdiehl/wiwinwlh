@@ -12697,20 +12697,22 @@ Conduits
 ```haskell
 await :: Monad m => ConduitM i o m (Maybe i)
 yield :: Monad m => o -> ConduitM i o m ()
-($$) :: Monad m => Source m a -> Sink a m b -> m b
-(=$) :: Monad m => Conduit a m b -> Sink b m c -> Sink a m c
 
-type Sink i = ConduitM i Void
-type Source m o = ConduitM () o m ()
-type Conduit i m o = ConduitM i o m ()
+runConduit :: Monad m => ConduitT () Void m r -> m r
+(.|) :: Monad m
+     => ConduitM a b m ()
+     -> ConduitM b c m r
+     -> ConduitM a c m r
 ```
 
 Conduits are conceptually similar though philosophically different approach to the same problem of constant
 space deterministic resource handling for IO resources.
 
 The first initial difference is that await function now returns a ``Maybe`` which allows different handling of
-termination. The composition operators are also split into a connecting operator (``$$``) and a fusing
-operator (``=$``) for combining Sources and Sink and a Conduit and a Sink respectively.
+termination.
+
+Since 1.2.8 the separate connecting and fusing operators are deprecated in favor of a single fusing operator
+``(.|)``.
 
 ~~~~ {.haskell include="src/25-streaming/conduit.hs"}
 ~~~~
