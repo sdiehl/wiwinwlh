@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+stack exec ghc -- -e ":q" --interactive either.hs
+#stack exec ghc -- -e ":q" --interactive either_impl.hs
+stack exec ghc -- -e ":q" --interactive errors.hs
+stack exec ghc -- -e ":q" --interactive exceptions.hs
+stack exec ghc -- -e ":q" --interactive exceptt.hs
+stack exec ghc -- -e ":q" --interactive ioexception.hs
+stack exec ghc -- -e ":q" --interactive spoon.hs

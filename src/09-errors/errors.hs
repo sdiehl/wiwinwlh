@@ -1,15 +1,12 @@
-import Control.Monad.Error
+import Control.Monad.Except
 import Control.Monad.Identity
 
 data Exception
   = Failure String
   | GenericFailure
-  deriving Show
+  deriving (Show)
 
-instance Error Exception where
-  noMsg = GenericFailure
-
-type ErrMonad a = ErrorT Exception Identity a
+type ErrMonad a = ExceptT Exception Identity a
 
 example :: Int -> Int -> ErrMonad Int
 example x y = do
@@ -18,7 +15,7 @@ example x y = do
     x -> return $ x `div` y
 
 runFail :: ErrMonad a -> Either Exception a
-runFail = runIdentity . runErrorT
+runFail = runIdentity . runExceptT
 
 example1 :: Either Exception Int
 example1 = runFail $ example 2 3
