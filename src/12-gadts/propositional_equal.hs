@@ -1,7 +1,7 @@
-{-# LANGUAGE GADTs #-}
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE ExplicitForAll #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE PolyKinds #-}
 {-# LANGUAGE TypeOperators #-}
 
 -- a ≡ b
@@ -23,7 +23,6 @@ trans Refl Refl = Refl
 -- {a b : A} → a ≡ b → a → b
 cast :: a :~: b -> a -> b
 cast Refl = id
-
 
 a :: forall n. n :~: n
 a = Refl

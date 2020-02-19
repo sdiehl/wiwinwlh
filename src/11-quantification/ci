@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+stack exec ghc -- -e ":q" --interactive existential.hs
+stack exec ghc -- -e ":q" --interactive impredicative.hs
+#stack exec ghc -- -e ":q" --interactive rankn.hs
+#stack exec ghc -- -e ":q" --interactive scopedtvars.hs
+#stack exec ghc -- -e ":q" --interactive skolem_capture.hs
+stack exec ghc -- -e ":q" --interactive universal.hs
