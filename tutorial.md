@@ -213,14 +213,16 @@ company's needs.
 Project Structure
 -----------------
 
-A typical Haskell project hosted on Github or Gitlab will have the following
-file structure:
+A typical Haskell project hosted on Github or Gitlab will have several
+**executable**, **test** and **library** components across several
+subdirectories.  Each of these files will correspond to an entry in the Cabal
+file.
 
 ```bash
 .
 ├── app                          # Executable entry-point
-│   └── Main.hs                  # Main-is file
-├── src                          # Executable entry-point
+│   └── Main.hs                  # main-is file
+├── src                          # Library entry-point
 │   └── Lib.hs                   # Exposed module
 ├── test                         # Test entry-point
 │   └── Spec.hs                  # Main-is file
@@ -235,7 +237,7 @@ file structure:
 └── .ghci                        # ghci configuration
 ```
 
-More complex projects consisting of multiple components will include multiple
+More complex projects consisting of multiple modules will include multiple
 project directories like that above, but these will be nested in subfolders with
 a `cabal.project` or `stack.yaml` in the root of the repository.
 
@@ -738,8 +740,8 @@ extra-deps:
 
 The ``stack`` command can be used to install packages and executables into
 either the current build environment or the global environment. For example, the
-following command installs the executable for ``hlint``, [a popular linting tool for
-Haskell](https://github.com/ndmitchell/hlint), and places it in the PATH:
+following command installs the executable for ``hlint``, [a popular linting tool
+for Haskell](#hlint), and places it in the PATH:
 
 ```bash
 $ stack install hlint
@@ -14339,6 +14341,20 @@ all paths. Given the bifucation of many of these tools setting up the GHC
 environment from inside of libraries has been non-trivial in the past. HIE-bios
 is a new library which can read package metadata from Cabal and Stack files and
 dynamically set up the appropriate session for a project.
+
+Hie-bios will read a Cradle file (`hie.yaml`) file in the root of the workspace
+which describes how to setup the environment. For example for using Stack this
+file would contain:
+
+```yaml
+cradle: {stack: {component: "myproject:lib" }}
+```
+
+While using Cabal the file would contain:
+
+```yaml
+cradle: {cabal: {component: "myproject:lib" }}
+```
 
 This is particularly useful for projects that require access to the internal
 compiler artifacts or do static analysis on top of Haskell code. An example of
