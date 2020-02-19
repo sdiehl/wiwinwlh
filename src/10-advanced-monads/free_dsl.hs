@@ -1,13 +1,13 @@
 {-# LANGUAGE DeriveFunctor #-}
 
-import System.Exit
 import Control.Monad.Free
+import System.Exit
 
 data Interaction x
   = Puts String x
   | Gets (Char -> x)
   | Exit
-  deriving Functor
+  deriving (Functor)
 
 type IOFree a = Free Interaction a
 
@@ -32,8 +32,8 @@ interp :: IOFree a -> IO a
 interp (Pure r) = return r
 interp (Free x) = case x of
   Puts s t -> putStrLn s >> interp t
-  Gets f   -> getChar >>= interp . f
-  Exit     -> exitSuccess
+  Gets f -> getChar >>= interp . f
+  Exit -> exitSuccess
 
 echo :: IOFree ()
 echo = do
