@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+stack build
 stack exec ghc -- -e ":q" --interactive either.hs
 #stack exec ghc -- -e ":q" --interactive either_impl.hs
 stack exec ghc -- -e ":q" --interactive errors.hs
