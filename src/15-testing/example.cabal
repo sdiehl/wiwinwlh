@@ -11,9 +11,14 @@ tested-with:         GHC == 7.6.3
 library 
 
   build-depends:       
-    tasty           >= 0.11 && <0.12,
-    tasty-hunit     >= 0.9 && <0.10,
-    silently        >= 1.2 && <1.3,
-    base            >= 4.6 && <4.10
+    base              >= 4.6 && <4.14,
+    tasty             >= 1.2 && <1.3,
+    tasty-hunit       >= 0.9 && <0.11,
+    tasty-quickcheck  >= 0.10 && <0.11,
+    tasty-smallcheck  >= 0.8 && <0.9,
+    silently          >= 1.2 && <1.3,
+    quickspec         >= 2.1 && <2.2,
+    smallcheck        >= 1.1 && <1.2,
+    criterion      -any
 
   default-language:    Haskell2010

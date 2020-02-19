@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+stack exec ghc -- -e ":q" --interactive arbitrary.hs
+stack exec ghc -- -e ":q" --interactive criterion.hs
+stack exec ghc -- -e ":q" --interactive qcheck.hs
+#stack exec ghc -- -e ":q" --interactive quickspec.hs
+stack exec ghc -- -e ":q" --interactive silently.hs
+stack exec ghc -- -e ":q" --interactive smallcheck.hs
+stack exec ghc -- -e ":q" --interactive smallcheck_series.hs
+stack exec ghc -- -e ":q" --interactive smallcheck_tree.hs
+stack exec ghc -- -e ":q" --interactive tasty.hs
