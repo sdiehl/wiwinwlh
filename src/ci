@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 
+set -e
+
 echo -n "01-basics .. "
-cd 01-basics && bash ci && cd ..
+(cd 01-basics && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "02-monads .. "
-cd 02-monads && bash ci && cd ..
+(cd 02-monads && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "03-transformers .. "
-cd 03-monad-transformers && bash ci && cd ..
+(cd 03-monad-transformers && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 #echo -n "04-extensions .. "
@@ -17,29 +19,29 @@ echo -e "\e[1;32mOK\e[0m"
 #echo -e "\e[1;32mOK\e[0m"
 
 echo -n "05-laziness .. "
-cd 05-laziness && bash ci && cd ..
+(cd 05-laziness && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "06-prelude .. "
-cd 06-prelude && bash ci && cd ..
+(cd 06-prelude && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "07-text-bytestring .. "
-cd 07-text-bytestring && bash ci && cd ..
+(cd 07-text-bytestring && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "29-ghc .. "
-cd 29-ghc && bash ci && cd ..
+(cd 29-ghc && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "30-languages .. "
-cd 30-languages && bash ci && cd ..
+(cd 30-languages && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "33-categories .. "
-cd 33-categories && bash ci && cd ..
+(cd 33-categories && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "34-time .. "
-cd 34-time && bash ci && cd ..
+(cd 34-time && bash ci)
 echo -e "\e[1;32mOK\e[0m"
