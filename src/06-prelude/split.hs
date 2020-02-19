@@ -2,6 +2,7 @@ import Data.List.Split
 
 example1 :: [String]
 example1 = splitOn "." "foo.bar.baz"
+
 -- ["foo","bar","baz"]
 
 example2 :: [String]
