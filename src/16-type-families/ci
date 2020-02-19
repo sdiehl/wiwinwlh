@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -e
+stack exec ghc -- -e ":q" --interactive constraintkinds.hs
+stack exec ghc -- -e ":q" --interactive datafamily.hs
+stack exec ghc -- -e ":q" --interactive dict.hs
+stack exec ghc -- -e ":q" --interactive family_nat_operators.hs
+stack exec ghc -- -e ":q" --interactive family_type.hs
+stack exec ghc -- -e ":q" --interactive fundeps.hs
+stack exec ghc -- -e ":q" --interactive mparam.hs
+stack exec ghc -- -e ":q" --interactive mparam_fun.hs
+stack exec ghc -- -e ":q" --interactive noempty.hs
+stack exec ghc -- -e ":q" --interactive proof.hs
+stack exec ghc -- -e ":q" --interactive role_infer.hs
+#stack exec ghc -- -e ":q" --interactive roles.hs

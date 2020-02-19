@@ -1,11 +1,13 @@
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE TypeFamilies #-}
 
-newtype Age = MkAge { unAge :: Int }
+newtype Age = MkAge {unAge :: Int}
 
 type family Inspect x
+
 type instance Inspect Age = Int
+
 type instance Inspect Int = Bool
 
 class Boom a where
