@@ -7770,6 +7770,65 @@ require a precise subset of error handling methods.
 * `MonadMask` - Monads which expose a interface for masking asynchronous
   exceptions.
 
+There are three core primitives that are used in handling runtime exceptions:
+
+* `finally` - For handling guaranteed finalisation of code in the presence of exceptions.
+* `onException` - For handing exception case only if an exception is thrown.
+* `bracket` - For implementing resource handling with custom acquisition and finalizer logic, in the presence of exceptions.
+
+`finally` takes an `IO` action to run as a computation and a secondary function
+to run after the evaluation of the first.
+
+```haskell
+finally :: IO a  -- ^ computation to run first
+        -> IO b  -- ^ computation to run afterward (even if an exception was raised)
+        -> IO a  -- returns the value from the first computation
+```
+
+`onException` has a similar signature but the second function is run **only if**
+an exception is raised.
+
+```haskell
+onException :: IO a -> IO b -> IO a
+```
+
+The `bracket` function takes two functions, an acquisition function and a
+finalizer function which "bracket" the evaluation of the third. The finaliser
+will be run if the computation throwns an exception and unwinds.
+
+```haskell
+bracket
+        :: IO a         -- ^ computation to run first
+        -> (a -> IO b)  -- ^ computation to run last
+        -> (a -> IO c)  -- ^ computation to run in-between
+        -> IO c         -- returns the value from the in-between computation
+```
+
+A simple example of usage is bracket logic that handles file descriptors which
+need to be explicitly closed after evaluation is done. The initialiser in this
+case will return a file descriptor to the body and then run `hClose` on the file
+descriptor after the body is done with evaluation.
+
+```haskell
+bracket
+  (openFile "myfile" ReadMode)    -- acquisition
+  (hClose)                        -- finaliser
+  (\fileHandle -> ... )           -- body
+```
+
+In addition the `exceptions` library exposes several functions for explicitly
+handling a variety of exceptions of various forms. Toplevel handlers that need
+to "catch em' all" should use `catchAny` for wildcard error handling.
+
+```haskell
+catch :: (MonadCatch m, Exception e) => m a -> (e -> m a) -> m a
+catchIO :: MonadCatch m => m a -> (IOException -> m a) -> m a
+catchAny :: MonadCatch m => m a -> (SomeException -> m a) -> m a
+catchAsync :: (MonadCatch m, Exception e) => m a -> (e -> m a) -> m a
+```
+
+A simple example of usage:
+
 ~~~~ {.haskell include="src/09-errors/exceptions.hs"}
 ~~~~
 

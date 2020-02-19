@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -e
+stack exec ghc -- -e ":q" --interactive applicative.hs
+stack exec ghc -- -e ":q" --interactive variadic.hs
