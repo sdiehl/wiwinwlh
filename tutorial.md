@@ -1500,13 +1500,18 @@ programming added to it over the years.
 The following *ground types* are quite common:
 
 * `()` - The unit type
-* `Char` - ASCII Characters
+* `Char` - A single unicode character ("code point")
 * `Text` - Unicode strings
 * `Bool` - Boolean values
 * `Int` - Machine integers
 * `Integer` - GMP arbitrary precision integers
 * `Float` - Machine floating point values
 * `Double` - Machine double floating point values
+
+You will also find the data type `String`, which is a list of chars. Because of
+the way lists are defined in haskell, this is a rather inefficient way to store
+a string, so in modern haskell code, using `Text` in favor of `String` is
+recommended.
 
 Parameterised types which also frequently appear and are are associated with
 common data structures such as lists and tuples.
