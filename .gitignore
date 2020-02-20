@@ -16,4 +16,5 @@ tutorial.tex
 .stack-work
 dist-newstyle
 resources/*.eps
+errata.*
 .brokdb

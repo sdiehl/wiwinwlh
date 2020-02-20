@@ -1352,14 +1352,14 @@ interface which is linked against other Haskell modules. A module may reexport
 symbols from other modules.
 
 ```haskell
-# A module starts with its export declarations of symbols declared in this file.
+-- A module starts with its export declarations of symbols declared in this file.
 module MyModule (myExport1, myExport2) where
 
-# Followed by a set of imports of symbols from other files
+-- Followed by a set of imports of symbols from other files
 import OtherModule (myImport1, myImport2)
 
-# Rest of the logic and definitions in the module follow
-# ...
+-- Rest of the logic and definitions in the module follow
+-- ...
 ```
 
 Modules dependency graphs optionally may by cyclic (i.e. they import symbols
@@ -2021,7 +2021,7 @@ An operator is a function that can be applied using infix syntax or partially
 applied using a section. Operators can be defined to use any combination the
 special ASCII symbols or any unicode symbol.
 
-`!` `#` `%` `&` `*` `+` `.` `/` `<` `=` >` `?` `@` `\` `^` `|` `-` `~` `:`
+`!` `#` `%` `&` `*` `+` `.` `/` `<` `=` `>` `?` `@` `\` `^` `|` `-` `~` `:`
 
 The following are reserved syntax and cannot be overloaded:
 

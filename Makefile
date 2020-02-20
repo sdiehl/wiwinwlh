@@ -72,6 +72,10 @@ webpdf: $(INPUT) includes $(COVER) $(BACK)
 	./includes < $< \
 	| $(PANDOC) -c -s -f $(IFORMAT) --template $(LTEMPLATE) --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) $(PFLAGS) -o $(WPDF)
 
+errata:
+	$(PANDOC) -i errata.md -o errata.tex
+	$(PANDOC) -i errata.md -o errata.html
+
 links:
 	brok tutorial.md
 
