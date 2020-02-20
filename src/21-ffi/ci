@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -e
+stack build
+stack exec ghc -- -e ":q" --interactive ffi.hs
+stack exec ghc -- -e ":q" --interactive simple_ffi.hs
