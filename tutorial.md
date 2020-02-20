@@ -870,10 +870,10 @@ the default import many libraries these days do not use the standard prelude
 instead choosing to roll a custom one on a per-project basis or to use a off-the
 shelf prelude from Hackage.
 
-The Prelude contains common datatype and classes such as [List],
-[Monad](#monads), [Maybe] and most simple associated functions for manipulating
-these structures.  These are the most foundational programming constructs in
-Haskell.
+The Prelude contains common datatype and classes such as [List](#lists),
+[Monad](#monads), [Maybe](#algebraic-datatypes) and most simple associated
+functions for manipulating these structures.  These are the most foundational
+programming constructs in Haskell.
 
 Modern Haskell
 --------------
