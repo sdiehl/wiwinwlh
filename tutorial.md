@@ -2767,7 +2767,7 @@ f = let x = x in x
 Examples of actual Haskell code that use this looping syntax live in the source
 code of the [GHC.Prim](https://hackage.haskell.org/package/ghc-prim-0.4.0.0/docs/GHC-Prim.html)
 module. These bottoms exist because the operations [cannot be defined in native
-Haskell](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/primitives.html).
+Haskell](https://downloads.haskell.org/ghc/latest/docs/html/users_guide/glasgow_exts.html#unboxed-types-and-primitive-operations).
 Such operations are baked into the compiler at a very low level. However, this
 module exists so that [Haddock](#haddock) can generate documentation for these
 primitive operations, while the looping syntax serves as a placeholder for the
@@ -2898,7 +2898,7 @@ A.hs:3:1:
 
 The ``-Wall`` or ``-fwarn-incomplete-patterns`` flag can also be added on a
 per-module basis by using the ``OPTIONS_GHC``
-[pragma](https://downloads.haskell.org/~ghc/7.10.3/docs/html/users_guide/pragmas.html).
+[pragma](https://downloads.haskell.org/ghc/latest/docs/html/users_guide/glasgow_exts.html#rewrite-rules).
 
 ```haskell
 {-# OPTIONS_GHC -Wall #-}
@@ -5134,7 +5134,7 @@ The golden source of truth for language extensions is the official GHC user's
 guide which contains a plethora of information on the details of these
 extensions.
 
-See: [GHC Extension Reference](https://ghc.gitlab.haskell.org/ghc/doc/users_guide/lang.html)
+See: [GHC Extension Reference](https://downloads.haskell.org/ghc/latest/docs/html/users_guide/lang.html)
 
 Extension Dependencies
 ----------------------
@@ -5146,7 +5146,7 @@ extensions and which sets are implied.
 Extension                    Implies
 -------------------------    ---------------------------------------
 TypeFamilyDependencies       TypeFamilies
-TypeInType                   PolyKinds DataKinds KindSignatures
+TypeInType                   PolyKinds,  DataKinds,  KindSignatures
 PolyKinds                    KindSignatures
 ScopedTypeVariables          ExplicitForAll
 RankNTypes                   ExplicitForAll
@@ -5157,15 +5157,15 @@ RebindableSyntax             NoImplicitPrelude
 TypeOperators                ExplicitNamespaces
 LiberalTypeSynonyms          ExplicitForAll
 ExistentialQuantification    ExplicitForAll
-GADTs                        MonoLocalBinds GADTSyntax
+GADTs                        MonoLocalBinds,  GADTSyntax
 DuplicateRecordFields        DisambiguateRecordFields
 RecordWildCards              DisambiguateRecordFields
-DeriveTraversable            DeriveFoldable DeriveFunctor
+DeriveTraversable            DeriveFoldable,  DeriveFunctor
 MultiParamTypeClasses        ConstrainedClassMethods
 DerivingVia                  DerivingStrategies
 FunctionalDependencies       MultiParamTypeClasses
 FlexibleInstances            TypeSynonymInstances
-TypeFamilies                 MonoLocalBinds KindSignatures ExplicitNamespaces
+TypeFamilies                 MonoLocalBinds,  KindSignatures,  ExplicitNamespaces
 IncoherentInstances          OverlappingInstances
 
 The Benign
