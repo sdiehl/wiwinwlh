@@ -37,7 +37,7 @@ and ultimately laid the foundation for modern Haskell.
 
 Over the last 30 years Haskell has evolved into a mature ecosystem, with an
 equally mature compiler. Even so, the language is frequently reimagined by
-passionated contributors who may be furthering academic research goals or merely
+passionate contributors who may be furthering academic research goals or merely
 contributing out of personal interest. Although laziness was originally the
 major research goal, this has largely become a quirky artifact that most users
 of the language are generally uninterested in. In modern times the major themes
@@ -55,7 +55,7 @@ of Haskell community are:
 
 Although these are the major research goals, Haskell is still a fully general
 purpose language, and it has been applied in wildly diverse settings from
-garbage trucks to cryptoanalysis for the defense sector and everything
+garbage trucks to cryptanalysis for the defense sector and everything
 in-between. With a thriving ecosystem of industrial applications in web
 development, compiler design, machine learning, financial services, FPGA
 development, algorithmic trading, numerical computing, cryptography research,
@@ -83,7 +83,7 @@ operating system works, the shell, and some fundamentals of other imperative
 programming languages.  If you are a Python or Java software engineer with no
 Haskell experience, this is the executive summary of Haskell theory and practice
 for you. We'll delve into a little theory as needed to explain concepts but no
-more than necessary. If you're looking for a pure introductory tutorial, this
+more than necessary. If you're looking for a purely introductory tutorial, this
 probably isn't the right start for you, however this can be read as a
 companion to other introductory texts.
 
@@ -126,7 +126,7 @@ $ ghc --make Example.hs
 ```
 
 GHC's runtime is written in C and uses machinery from GCC infrastructure for its
-native code generator and can also use LLVM for it's native code generation. GHC
+native code generator and can also use LLVM for its native code generation. GHC
 is supported on the following architectures:
 
 * Linux x86
@@ -238,7 +238,7 @@ file.
 ```
 
 More complex projects consisting of multiple modules will include multiple
-project directories like that above, but these will be nested in subfolders with
+project directories like those above, but these will be nested in subfolders with
 a `cabal.project` or `stack.yaml` in the root of the repository.
 
 ```bash
@@ -259,7 +259,7 @@ packages: ./lib-one
           ./lib-three
 ```
 
-By contract, an example Stack project `stack.yaml` for the above multi-component
+By contrast, an example Stack project `stack.yaml` for the above multi-component
 library repository would be:
 
 ```yaml
