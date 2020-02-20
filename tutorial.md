@@ -12798,7 +12798,7 @@ Recently Haskell has seen quite a bit of development of cryptography libraries
 as it serves as a excellent language for working with and manipulating algebraic
 structures found in cryptographic primitives. In addition to most of the basic
 hashing, elliptic curve and cipher suites libraries, Haskell has a excellent
-standard cryptography library called *cryptonite* which provides the standard
+standard cryptography library called `cryptonite` which provides the standard
 kitchen sink of most modern primitives. These include hash functions, elliptic
 curve cryptography, digital signature algorithms, ciphers, one time passwords,
 entropy generation and safe memory handling.
@@ -16296,13 +16296,17 @@ of the runtime logic is stored across the `includes`, `utils` and `rts` folders.
 
 ```bash
 ghc-8.8.2
+├── compiler
+│   └── prelude
+│       └── primops.txt.pp # Definitions of primops
+├── compiler
 ├── includes
-│   ├── rts               # Public interface for RTS
-│   └── stg               # Definitions for STG langauge
+│   ├── rts                # Public interface for RTS
+│   └── stg                # Definitions for STG langauge
 ├── utils
-│   ├── genapply          # Generates Cmm closure application boilerplate
-│   └── genprimopcode     # Generates Primop builtin operations for GHC
-│   └── deriveConstants   # Machine specific information about register and sizes
+│   ├── genapply           # Generates Cmm closure application boilerplate
+│   ├── genprimopcode      # Generates Primop builtin operations for GHC
+│   └── deriveConstants    # Machine specific information about register and sizes
 └── rts
     ├── hooks
     ├── linker
@@ -16370,9 +16374,9 @@ that define the Cmm macros in terms of the Haskell datatypes defined in the
   (pointer size, word sizes, etc) of the target platform
 
 For `genprimop`, the primops are generated from a custom domain specific
-langauge specified in the `compiler/prelude/primops.txt.pp` which defines the
-primops, their arity, commutative and associvaity properties and the machine
-types they operate over.  An example for integer addition for (`+#`) looks like:
+langauge specified in `primops.txt.pp` which defines the primops, their arity,
+commutative and associvaity properties and the machine types they operate over.
+An example for integer addition for (`+#`) looks like:
 
 ```haskell
 primtype Int#

@@ -32,16 +32,17 @@ Git: d429c2e21b9636cffa27a8d4f063644b8bcecf1a
 Contributing
 ------------
 
-If you want to submit a fix for a typo or fix for code then just submit a pull
-request, and I'm happy to recompile the resulting document. Edit the following
-Markdown file which generates all other targets.
+If you want to submit a fix for a typo or fix edit the following Markdown file
+which generates all other targets.
 
 [tutorial.md](./tutorial.md)
 
+Then submit a Pull Request on Github describing your change.
+
 Source code is directly included from the `src` directory into the resulting
-document by the preprocessor. To fix a change or include a new sample edit the
-example source code directly. In addition add the new file to the `ci` script
-inside of the folder so it is run in the continuous integration script.
+document by the preprocessor. To include a new sample edit the example source
+code directly. When adding a new Haskell file, add it to the `ci` script inside
+of the folder so it is run in the continuous integration script.
 
 Source Code
 -----------
