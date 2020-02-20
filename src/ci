@@ -66,6 +66,10 @@ echo -n "17-promotion .. "
 (cd 17-promotion && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
+echo -n "18-generics .. "
+(cd 18-generics && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
 echo -n "29-ghc .. "
 (cd 29-ghc && bash ci)
 echo -e "\e[1;32mOK\e[0m"

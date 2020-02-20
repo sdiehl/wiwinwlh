@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e
+stack exec ghc -- -e ":q" --interactive biplate.hs
+stack exec ghc -- -e ":q" --interactive cereal.hs
+stack exec ghc -- -e ":q" --interactive data.hs
+stack exec ghc -- -e ":q" --interactive derive_aeson.hs
+stack exec ghc -- -e ":q" --interactive dynamic.hs
+stack exec ghc -- -e ":q" --interactive generic_impl.hs
+stack exec ghc -- -e ":q" --interactive generics.hs
+stack exec ghc -- -e ":q" --interactive hashable.hs
+stack exec ghc -- -e ":q" --interactive typeable.hs
+stack exec ghc -- -e ":q" --interactive uniplate.hs
