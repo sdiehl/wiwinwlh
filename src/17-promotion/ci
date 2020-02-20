@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -e
+stack exec ghc -- -e ":q" --interactive closed_typefamily.hs
+stack exec ghc -- -e ":q" --interactive constraint_list.hs
+stack exec ghc -- -e ":q" --interactive countargs.hs
+stack exec ghc -- -e ":q" --interactive datakinds.hs
+#stack exec ghc -- -e ":q" --interactive errors.hs
+#stack exec ghc -- -e ":q" --interactive errors_dsl.hs
+stack exec ghc -- -e ":q" --interactive hasfield.hs
+stack exec ghc -- -e ":q" --interactive hlist.hs
+stack exec ghc -- -e ":q" --interactive kindpoly.hs
+#stack exec ghc -- -e ":q" --interactive nonempty.hs
+stack exec ghc -- -e ":q" --interactive reverse.hs
+stack exec ghc -- -e ":q" --interactive reverse_nat.hs
+stack exec ghc -- -e ":q" --interactive singleton.hs
+stack exec ghc -- -e ":q" --interactive singleton_class.hs
+stack exec ghc -- -e ":q" --interactive type_equality.hs
+stack exec ghc -- -e ":q" --interactive typefamily.hs
+stack exec ghc -- -e ":q" --interactive typelevel_fields.hs
+stack exec ghc -- -e ":q" --interactive typelevel_strings.hs
+stack exec ghc -- -e ":q" --interactive typemap.hs
+stack exec ghc -- -e ":q" --interactive typenat.hs
+stack exec ghc -- -e ":q" --interactive typenat_cmp.hs
