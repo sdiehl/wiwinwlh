@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+stack build
+stack exec ghc -- -e ":q" --interactive async.hs
+stack exec ghc -- -e ":q" --interactive par.hs
+stack exec ghc -- -e ":q" --interactive spark.hs
+stack exec ghc -- -e ":q" --interactive sparks.hs
+stack exec ghc -- -e ":q" --interactive stm.hs
+stack exec ghc -- -e ":q" --interactive strategies.hs
+stack exec ghc -- -e ":q" --interactive strategies_param.hs
