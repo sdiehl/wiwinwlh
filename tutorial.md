@@ -273,29 +273,9 @@ extra-package-dbs: []
 Cabal
 -----
 
-[Cabal](https://www.haskell.org/cabal/) is the build system for Haskell.  Cabal
-is also the standard build tool for Haskell source supported by GHC. Cabal can
-be used simultaneously with Stack or standalone with cabal new-build.
-
-For example, to install the [parsec](http://hackage.haskell.org/package/parsec)
-package to your system from [Hackage](#hackage), the upstream source of Haskell
-packages, invoke the ``install`` command:
-
-```bash
-$ cabal install parsec           # latest version
-$ cabal install parsec==3.1.5    # exact version
-```
-
-The usual build invocation for Haskell packages is the following:
-
-```bash
-$ cabal get parsec    # fetch source
-$ cd parsec-3.1.5
-
-$ cabal configure
-$ cabal build
-$ cabal install
-```
+Cabal is the build system for Haskell.  Cabal is also the standard build tool
+for Haskell source supported by GHC. Cabal can be used simultaneously with Stack
+  or standalone with cabal new-build.
 
 To update the package index from Hackage, run:
 
@@ -477,9 +457,25 @@ directory.
 documentation: True
 ```
 
-See:
+Cabal can also be used to install packages globally to the system PATH. For
+example the [parsec](#parsec) package to your system from [Hackage](#hackage),
+the upstream source of Haskell packages, invoke the ``install`` command:
 
-* [Cabal User Guide](https://www.haskell.org/cabal/users-guide/)
+```bash
+$ cabal install parsec --installdir=~/.local/bin  # latest version
+```
+
+To download the source for a package, we can use the `get` command to retrieve
+the source from Hackage.
+
+```bash
+$ cabal get parsec    # fetch source
+$ cd parsec-3.1.5
+
+$ cabal configure
+$ cabal build
+$ cabal install
+```
 
 Cabal New-Build
 ---------------
@@ -1506,14 +1502,15 @@ The following *ground types* are quite common:
 * `Float` - Machine floating point values
 * `Double` - Machine double floating point values
 
-Parameterised types which also frequently appear and are are associated with
-common data structures such as lists and tuples.
+*Parameterised types* consist of a type and several *type parameters* indicated
+as lower case *type variables*. These are associated with common data structures
+such as [lists](#lists) and [tuples](#tuples).
 
 * `[a]` -- Homogeneous lists with elements of a type `a`
 * `(a,b)` -- Tuple with two elements of type `a` and `b`
 * `(a,b,c)` -- Tuple with three elements of type `a`, `b`, and `c`
 
-The type system grows **quite** a bit from here, but these are the foundational
+The type system grows quite a bit from here, but these are the foundational
 types you'll first encounter. See the later chapters for all types off advanced
 features that can be optionally turned on.
 
@@ -1533,12 +1530,12 @@ the right-hand side:
 
 ```haskell
 myFunction x y = x ^ 2 + y ^ 2
-     ^     ^ ^   ^^^^^^^^^^^^^
-     |     | |   |
-     |     | |   +-- function body
-     |     | +------ second argument
-     |     +-------- first argument 
-     +-------------- function
+--   ^     ^ ^   ^^^^^^^^^^^^^
+--   |     | |   |
+--   |     | |   +-- function body
+--   |     | +------ second argument
+--   |     +-------- first argument 
+--   +-------------- function
 ```
 
 The *type-level* definition is the function name followed by the type of its
@@ -1547,12 +1544,12 @@ function body, meaning the type of value yielded by the function itself.
 
 ```haskell
 myFunction :: Int -> Int -> Int
-     ^          ^     ^    ^^^^^
-     |          |     |    |
-     |          |     |    +- return type
-     |          |     +------ second argument
-     |          +------------ first argument 
-     +----------------------- function
+--   ^          ^     ^    ^^^^^
+--   |          |     |    |
+--   |          |     |    +- return type
+--   |          |     +------ second argument
+--   |          +------------ first argument 
+--   +----------------------- function
 ```
 
 Here is a simple example of a function which adds two integers.
@@ -1637,7 +1634,7 @@ Fortran) others have flexible arity (like Python) where a variable of number of
 arguments can be passed. Haskell follows a very simple rule: all functions in
 Haskell take a single argument. For multi-argument functions (some of which
 we've already seen), arguments will be individually applied until the function
-is *saturated* and the function body is evaluated. This is known as “currying”. 
+is *saturated* and the function body is evaluated.
 
 For example, the add function from above can be partially applied to produce an
 add1 function:
@@ -1676,7 +1673,7 @@ Algebraic Datatypes
 -------------------
 
 Custom datatypes in Haskell are defined with the `data` keyword followed by the
-the type name, it's parameters, and then a set of **constructors**. The possible
+the type name, it's parameters, and then a set of *constructors*. The possible
 constructors are either *sum types* or of *product types*. All datatypes in
 Haskell can expressed as sums of products. A sum type is a set of options that
 is delimited by a pipe. A datatype is inhabited by only a single value sum type
@@ -7253,11 +7250,6 @@ unpack :: ByteString -> String
 
 ~~~~ {.haskell include="src/07-text-bytestring/bytestring.hs"}
 ~~~~
-
-See:
-
-* [Bytestring: Bits and Pieces](https://www.schoolofhaskell.com/school/to-infinity-and-beyond/pick-of-the-week/bytestring-bits-and-pieces)
-* [ByteString](http://hackage.haskell.org/package/bytestring-0.10.4.0/docs/Data-ByteString.html)
 
 Printf
 ------
@@ -13846,9 +13838,10 @@ Databases
 Haskell has bindings for most major databases and persistence engines. Generally
 the libraries will consist of two different layers. The raw bindings which wrap
 the C library or wire protocol will usually be called `-simple`. So for example
-`postgres-simple`. While higher level libraries will typically depend on this
-library for the bindings and provide higher level interfaces for building
-queries, managing transactions, and connection pooling.
+`postgresql-simple` is the Haskell library for interfacing with the C library
+`libpq-dev`. Higher level libraries will depend on this library for the bindings
+and provide higher level interfaces for building queries, managing transactions,
+and connection pooling.
 
 Postgres
 --------
