@@ -50,6 +50,10 @@ echo -n "12-gadts .. "
 (cd 12-gadts && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
+echo -n "13-lambda-calculus .. "
+(cd 13-lambda-calculus && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
 echo -n "14-interpreters .. "
 (cd 14-interpreters && bash ci)
 echo -e "\e[1;32mOK\e[0m"
@@ -86,8 +90,28 @@ echo -n "22-concurrency .. "
 (cd 22-concurrency && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
+#echo -n "23-graphics .. "
+#(cd 23-graphics && bash ci)
+#echo -e "\e[1;32mOK\e[0m"
+
 echo -n "24-parsing .. "
 (cd 24-parsing && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "25-streaming .. "
+(cd 25-streaming && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "26-data-formats .. "
+(cd 25-data-formats && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "27-web .. "
+(cd 27-web && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "28-databases .. "
+(cd 28-databases && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "29-ghc .. "
@@ -96,6 +120,14 @@ echo -e "\e[1;32mOK\e[0m"
 
 echo -n "30-languages .. "
 (cd 30-languages && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "31-template-haskell .. "
+(cd 31-template-haskell && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "32-cryptography .. "
+(cd 32-cryptography && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "33-categories .. "

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+stack build
+stack exec ghc -- -e ":q" --interactive aeson_custom.hs
+stack exec ghc -- -e ":q" --interactive aeson_derive.hs
+stack exec ghc -- -e ":q" --interactive aeson_structured.hs
+stack exec ghc -- -e ":q" --interactive aeson_unstructured.hs
+stack exec ghc -- -e ":q" --interactive cassava_structured.hs
+stack exec ghc -- -e ":q" --interactive cassava_unstructured.hs
+stack exec ghc -- -e ":q" --interactive yaml.hs
