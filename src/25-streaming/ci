@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+stack build
+stack exec ghc -- -e ":q" --interactive conduit.hs
+stack exec ghc -- -e ":q" --interactive lazyio.hs
+stack exec ghc -- -e ":q" --interactive pipes.hs
+stack exec ghc -- -e ":q" --interactive pipes_file.hs
+stack exec ghc -- -e ":q" --interactive pipes_io.hs
+#stack exec ghc -- -e ":q" --interactive pipes_safe.hs
