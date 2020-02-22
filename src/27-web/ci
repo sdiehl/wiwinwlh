@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e
+stack build
+stack exec ghc -- -e ":q" --interactive blaze.hs
+stack exec ghc -- -e ":q" --interactive blaze_instance.hs
+#stack exec ghc -- -e ":q" --interactive hastache.hs
+#stack exec ghc -- -e ":q" --interactive hastache_generic.hs
+stack exec ghc -- -e ":q" --interactive http.hs
+stack exec ghc -- -e ":q" --interactive lucid.hs
+stack exec ghc -- -e ":q" --interactive req.hs
+stack exec ghc -- -e ":q" --interactive scotty.hs
+stack exec ghc -- -e ":q" --interactive warp.hs
