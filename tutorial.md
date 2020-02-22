@@ -13468,8 +13468,8 @@ which "snaplets" can extend the base server. Much of the Haskell.org
 infrastructure of packages and developmenet runs on top of Snap web
 applications.
 
-HTTP
-----
+HTTP Requests
+-------------
 
 Haskell has a variety of HTTP request and processing libraries. The simplest and
 most flexible is the [HTTP library](https://hackage.haskell.org/package/HTTP).
