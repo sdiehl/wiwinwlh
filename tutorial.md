@@ -4464,7 +4464,7 @@ an interface to exchange values between the levels, called lift:
 lift :: (Monad m, MonadTrans t) => m a -> t m a
 ```
 
-In production code, the monads mentioned previously maybe actually be their more
+In production code, the monads mentioned previously may actually be their more
 general transformer form composed with the `Identity` monad.
 
 ```haskell
@@ -4821,7 +4821,7 @@ exceptState :: ExceptT e (State s) a -> s -> (Either e a, s)
 exceptState m s = runState (runExceptT m) s
 ```
 
-In addition the standard method of deriving mtl classes for a transformer stack
+In addition, the standard method of deriving mtl classes for a transformer stack
 breaks down when using transformer stacks with the same monad at different
 layers of the stack. For example stacking multiple `State` transformers is a
 pattern that shows up quite frequently.
@@ -4831,20 +4831,20 @@ newtype Example = StateT Int (State String)
   deriving (MonadState Int)
 ```
 
-In order to get around this you would have to hand write the instances for this
-transformer stack and manually life anytime you perform a State action. This is
-a suboptimal design and difficult to route around simply without massive
+In order to get around this you would have to handwrite the instances for this
+transformer stack and manually lift anytime you perform a State action. This is
+a suboptimal design and difficult to route around without massive
 boilerplate.
 
-While these problems, most users of mtl don't implement new transformers at all
-and can get by.  However in recent years there have many other libraries that
+While these problems exist, most users of mtl don't implement new transformers at all
+and can get by. However in recent years there have been written many other libraries that
 have explored the design space of alternative effect modeling systems. These
 systems are still quite early compared to the `mtl` but some are able to avoid
 some of the shortcomings of `mtl` in favour of newer algebraic models of
 effects. The three most commonly used libraries are:
 
-* `fused-effects`
 * `polysemy`
+* `fused-effects`
 * `eff`
 
 Polysemy
@@ -4894,16 +4894,16 @@ transformers.
 * `Polysemy.Async` - Asynchronous computations
 * `Polysemy.AtomicState` - Atomic operations
 * `Polysemy.Error` - Error handling
-* `Polysemy.Fail` - Computations will can fail
+* `Polysemy.Fail` - Computations that fail
 * `Polysemy.IO` - Monadic IO
 * `Polysemy.Input` - Input effects
 * `Polysemy.Output` - Output effects
 * `Polysemy.NonDet` - Non-determinism effect
-* `Polysemy.Reader` - Contextual state ala Reader monad
+* `Polysemy.Reader` - Contextual state a la Reader monad
 * `Polysemy.Resource` - Resources with finalizers
 * `Polysemy.State` - Stateful effects
 * `Polysemy.Trace` - Tracing effect
-* `Polysemy.Writer` - Accumulation effect ala Writer monad
+* `Polysemy.Writer` - Accumulation effect a la Writer monad
 
 For example for a simple stateful computation with only a single effect.
 
@@ -4972,7 +4972,7 @@ Polysemy will require the following language extensions to operate:
 
 The use of free-monads is not entirely without cost, and there are experimental
 GHC plugins which can abstract away some of the overhead from the effect stack.
-Code thats makse use of polysemy should enable the following GHC flags to enable
+Code thats makes use of polysemy should enable the following GHC flags to enable
 aggressive typeclass specialisation:
 
 * `-flate-specialise`
@@ -4981,7 +4981,7 @@ aggressive typeclass specialisation:
 Fused Effects
 -------------
 
-Fused-effects is an alternative approach to effect systems based on algebraic
+Fused-effects is an alternative approach to effect systems based on an algebraic
 effects model. Unlike polysemy, fused-effects does not use a free monad as an
 intermediate form. Fused-effects has competative performance compared with mtl
 and doesn't require additional GHC plugins or extension compiler fusion rules to
