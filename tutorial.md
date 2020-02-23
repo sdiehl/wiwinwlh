@@ -5125,8 +5125,7 @@ people who do web programming. Thus, we will use the following classifications:
   yourself in the foot.
 * *Historical* implies that one shouldn't use this extension, it is in GHC
   purely for backwards compatibility.  Sometimes these are dangerous to enable.
-* *Steals syntax* means that enabling this extension means that certain code
-  valid in vanilla Haskell will no longer be accepted. For example, `f $(a)`
+* *Steals syntax* means that enabling this extension causes certain code, that is valid in vanilla Haskell, to be no longer be accepted. For example, `f $(a)`
   is the same as `f $ (a)` in Haskell98, but `TemplateHaskell` will interpret
   `$(a)` as a splice.
 
@@ -5607,9 +5606,9 @@ googol = 1e100
 PackageImports
 --------------
 
-The syntax langguage extension `PackageImports` allows us to disambiguate
+The syntax language extension `PackageImports` allows us to disambiguate
 hierarchical package names by their respective package key. This is useful in
-the case where you have to imported packages that expose the same module. In
+the case where you have two imported packages that expose the same module. In
 practice most of the common libraries have taken care to avoid conflicts in the
 namespace and this is not usually a problem in most modern Haskell.
 
@@ -5628,7 +5627,7 @@ RecordWildCards
 Record wild cards allow us to expand out the names of a record as variables
 scoped as the labels of the record implicitly. The extension can be used to
 extract variables names into a scope and/or to assign to variables in a record
-drawing, aligning the record's labels with the variables in scope for the
+drawing(**?**), aligning the record's labels with the variables in scope for the
 assignment. The syntax introduced is the ``{..}`` pattern selector as in the
 following example:
 
@@ -5679,7 +5678,7 @@ using the `pattern` keyword.
 pattern TArr t1 t2 = TApp (TApp (TCon "(->)") t1) t2
 ```
 
-So now we can write an deconstructor and constructor for arrow type very
+So now we can write a deconstructor and constructor for the arrow type very
 naturally.
 
 ~~~~ {.haskell include="src/04-extensions/patterns.hs"}
@@ -5701,8 +5700,8 @@ pattern Elt = [a]
 DeriveFunctor
 -------------
 
-Many instances of functor over datatypes with parameters and trivial
-constructors are the result of trivially applying a functions over the single
+Many instances of functors over datatypes with parameters and trivial
+constructors are the result of trivially applying a function over the single
 constructor's argument. GHC can derive this boilerplate automatically in
 deriving clauses if `DeriveFunctor` is enabled.
 
@@ -5822,8 +5821,8 @@ DeriveAnyClass
 With ``-XDeriveAnyClass`` we can derive any class. The deriving logic generates
 an instance declaration for the type with no explicitly-defined methods or with
 all instances having a specific default implementation given. These are used
-extensively with [Generics] when instance provide empty [Minimal
-Annotations](#minimal-annotations) which are all derived from generic logics.
+extensively with [Generics] when instances provide empty [Minimal
+Annotations](#minimal-annotations) which are all derived from generic logic.
 
 A contrived example of a class with an empty minimal set might be the following:
 
@@ -5947,20 +5946,20 @@ For another example, it can distinguish the version of the base library used.
 ```
 
 One can also use the CPP extension to emit Haskell source at compile-time. This
-is used in some libraries which have massive boiler plate obligations. Of
+is used in some libraries which have massive boilerplate obligations. Of
 course, this can be abused quite easily and doing this sort of compile-time
 string-munging should be a last resort.
 
 TypeApplications
 ----------------
 
-Type type system extension `TypeApplications` allows you to use to use explicit
+The type system extension `TypeApplications` allows you to use explicit
 annotations for subexpressions. For example if you have a subexpression which
-has inferred type `a -> b -> a` you can explicitly name the types of `a` and `b`
+has the inferred type `a -> b -> a` you can name the types of `a` and `b`
 by explicitly stating `@Int @Bool` to assign `a` to `Int` and `b` to `Bool`.
 This is particularly useful when working with typeclasses where type inference
 cannot deduce the types of all subexpressions from the toplevel signature and
-results in a overly specific default. This is quite common when working with
+results in an overly specific default. This is quite common when working with
 roundtrips of `read` and `show`. For example:
 
 ~~~~ {.haskell include="src/04-extensions/application.hs"}
@@ -5969,7 +5968,7 @@ roundtrips of `read` and `show`. For example:
 DerivingVia
 -----------
 
-`DerivingVia` is an extension of `GeneraliazedNewtypeDeriving`. Just as newtype
+`DerivingVia` is an extension of `GeneralizedNewtypeDeriving`. Just as newtype
 deriving allows us to derive instances in terms of instances for the underlying
 representation of the newtype, DerivingVia allows deriving instances by
 specifying a custom type which has a runtime representation equal to the desired
@@ -5984,9 +5983,9 @@ other typeclasses.
 DerivingStrategies
 -------------------
 
-Deriving has proven a powerful mechanism to add to typeclass extension and
+Deriving has proven a powerful mechanism to add typeclass instances and
 as such there have been a variety of bifurcations in its use. Since GHC 8.2
-there are now four different algorithms that can be used to derive typeclasses
+there are now four different algorithms that can be used to derive typeclass
 instances. These are enabled by different extensions and now have specific
 syntax for invoking each algorithm specifically. Turning on `DerivingStrategies`
 allows you to disambiguate which algorithm GHC should use for individual class
