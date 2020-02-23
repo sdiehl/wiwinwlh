@@ -1872,8 +1872,6 @@ An equivalent loop in an imperative language would look like the following.
 
 ```python
 def powersOfTwo(n):
-# Why is power defined? It is unused.
-    power = n
     square_list = [1]
     for i in range(1,n+1):
         square_list.append(2 ** i)
@@ -3729,7 +3727,7 @@ value of type ``a`` into a monadic context (e.g., Maybe, Either, etc.), which is
 denoted as ``m a``.
 
 The other function essential to implementing a Monad instance is ``(>>=)``.
-This infix takes two arguments. On its left side is a value with type ``m a``,
+This infix function takes two arguments. On its left side is a value with type ``m a``,
 while on the right side is a function with type ``(a -> m b)``. The bind
 operation results in a final value of type ``m b``.
 
@@ -3755,7 +3753,7 @@ instances must satisfy three laws.
 
 **Law 1**
 
-The first law says that when ``return a`` is passed through a ``(>>=)`` into a
+The first law says that when ``return a`` is passed through ``(>>=)`` into a
 function ``f``, this expression is exactly equivalent to ``f a``.
 
 ```haskell
@@ -3817,7 +3815,7 @@ Again, it is possible to write this law with more explicit code. Like in the
 explicit examples for law 2, ``m`` has been replaced by ``SomeMonad val`` in
 order to be make it clear that there can be multiple components to a monadic value.
 Although little has changed in the code, it is easier to see that
-value--namely, ``val``--corresponds to the ``x`` in the lambda expression.
+value --namely, ``val``-- corresponds to the ``x`` in the lambda expression.
 After ``SomeMonad val`` is passed through ``(>>=)`` to ``f``, the function ``f``
 operates on ``val`` and returns a result still wrapped in the ``SomeMonad``
 type constructor. We can call this new value ``SomeMonad newVal``. Since it is
@@ -3828,6 +3826,8 @@ through the bind operation into the function ``g``.
 ((SomeMonad val) >>= f) >>= g ≡ (SomeMonad val) >>= (\x -> f x >>= g)
 
 ```
+
+Monad law summary: Law 1 and 2 are identity laws (left and right identity respectively) and law 3 is the associativity law. Together they ensure that Monads can be composed and 'do the right thing'.
 
 See:
 
@@ -3875,8 +3875,8 @@ f >>= \a ->
       return (a, b, c)
 ```
 
-If one were to write the bind operator as an uncurried function ( which is not
-how Haskell uses it ) the same desugaring might look something like the
+If one were to write the bind operator as an uncurried function (which is not
+how Haskell uses it) the same desugaring might look something like the
 following chain of nested binds with lambdas.
 
 ```haskell
@@ -4092,7 +4092,7 @@ many things, including, but not limited to:
  - Establish an ``ssh`` connection to a remote computer
  - Take input from a radio antenna for signal processing
 
-Conceptualizing I/O as a monad enables the developer to access information
+Conceptualizing I/O as a monad enables the developer to access information from
 outside the program, but also to use pure functions to operate on that
 information as data. The following examples will show how we can use IO actions
 and `IO` values to receive input from stdin and print to stdout.
@@ -4305,7 +4305,7 @@ A simple implementation of the Writer monad:
 
 This implementation is lazy, so some care must be taken that one actually wants
 to only generate a stream of thunks. Most often the lazy writer is not suitable
-for use, instead implement the equivalent structure by embedding some monomial
+for use, instead implement the equivalent structure by embedding some [monomial](https://en.wikipedia.org/wiki/Monomial)
 object inside a StateT monad, or using the strict version.
 
 ```haskell
@@ -4341,15 +4341,15 @@ So many monad tutorials have been written that it begs the question: what makes
 monads so difficult when first learning Haskell? I hypothesize there are three
 aspects to why this is so:
 
-1. *There are several levels on indirection with desugaring.*
+1. *There are several levels of indirection with desugaring.*
 
 A lot of the Haskell we write is radically rearranged and transformed into
 an entirely new form under the hood.
 
 Most monad tutorials will not manually expand out the do-sugar. This leaves the
 beginner thinking that monads are a way of dropping into a pseudo-imperative
-language inside of code and further fuels that misconception that specific
-instances like IO fully *monads in their full generality*. When in fact the IO
+language inside of pure code and further fuels the misconception that specific
+instances like IO describe monads in their *full generality*. When in fact the IO
 monad is only one among many instances.
 
 ```haskell
@@ -4428,13 +4428,12 @@ main $dMonad = bind $dMonad getLine (\x -> bind $dMonad (putStrLn x) (\_ -> retu
 ```
 
 In general, this is true for all typeclasses in Haskell and it’s true here as
-well, except in the case where the parameter of the monad class is unified (
-through inference ) with a concrete class instance.
+well, except in the case where the parameter of the monad class is unified (through inference) with a concrete class instance.
 
 Now, all of these transformations are trivial once we understand them, they're
 just typically not discussed. In my opinion the fundamental fallacy of monad
-tutorials is not that intuition for monads is hard to convey ( nor are metaphors
-required! ), but that novices often come to monads with an incomplete
+tutorials is not that intuition for monads is hard to convey (nor are metaphors
+required!), but that novices often come to monads with an incomplete
 understanding of points (1), (2), and (3) and then trip on the simple fact that
 monads are the first example of a Haskell construct that is the confluence of
 all three.
