@@ -4849,11 +4849,10 @@ and can get by.  However in recent years there have many other libraries that
 have explored the design space of alternative effect modeling systems. These
 systems are still quite early compared to the `mtl` but some are able to avoid
 some of the shortcomings of `mtl` in favour of newer algebraic models of
-effects. The three most commonly used libraries are:
+effects. The two most commonly used libraries are:
 
 * `fused-effects`
 * `polysemy`
-* `eff`
 
 Polysemy
 --------
@@ -6296,9 +6295,9 @@ model.
 
 Model          Strictness    Description
 -------------  ------------- ---------------
-Call-by-value  Strict        arguments evaluated before function entered
-Call-by-name   Non-strict    arguments passed unevaluated
-Call-by-need   Non-strict    arguments passed unevaluated but an expression is only evaluated once
+Call-by-value  Strict        Arguments evaluated before function entered
+Call-by-name   Non-strict    Arguments passed unevaluated
+Call-by-need   Non-strict    Arguments passed unevaluated but an expression is only evaluated once
 
 Seq and WHNF
 ------------
@@ -7634,8 +7633,6 @@ resulting collected arguments must either converted into a single type or unpack
 ~~~~ {.haskell include="src/08-applicatives/variadic.hs"}
 ~~~~
 
-See: [Polyvariadic functions](http://okmij.org/ftp/Haskell/polyvariadic.html)
-
 <hr/>
 
 Error Handling
@@ -7859,10 +7856,6 @@ The ``spoon`` function evaluates its argument to head normal form, while
 
 ~~~~ {.haskell include="src/09-errors/spoon.hs"}
 ~~~~
-
-See:
-
-* [Spoon](https://hackage.haskell.org/package/spoon)
 
 <hr/>
 
@@ -8139,11 +8132,6 @@ following:
 
 ~~~~ {.haskell include="src/10-advanced-monads/free_impl.hs"}
 ~~~~
-
-See:
-
-* [Monads for Free!](http://www.andres-loeh.de/Free.pdf)
-* [I/O is not a Monad](http://r6.ca/blog/20110520T220201Z.html)
 
 Indexed Monads
 --------------
@@ -8833,7 +8821,6 @@ See:
 
 * [PHOAS](http://adam.chlipala.net/papers/PhoasICFP08/PhoasICFP08Talk.pdf)
 * [Encoding Higher-Order Abstract Syntax with Parametric Polymorphism](http://www.seas.upenn.edu/~sweirich/papers/itabox/icfp-published-version.pdf)
-
 
 Final Interpreters
 ------------------
@@ -9552,11 +9539,9 @@ coerce :: Coercible * a b => a -> b
 class (~R#) k k a b => Coercible k a b
 ```
 
-[Safe Zero-cost Coercions for Haskell](http://cs.brynmawr.edu/~rae/papers/2014/coercible/coercible.pdf)
-[Data.Coerce](https://hackage.haskell.org/package/base-4.9.0.0/docs/Data-Coerce.html#t:Coercible)
-
 See:
 
+* [Data.Coerce](https://hackage.haskell.org/package/base-4.9.0.0/docs/Data-Coerce.html#t:Coercible)
 * [Roles](https://ghc.haskell.org/trac/ghc/wiki/Roles)
 * [Roles: A New Feature of GHC](http://typesandkinds.wordpress.com/2013/08/15/roles-a-new-feature-of-ghc/)
 
