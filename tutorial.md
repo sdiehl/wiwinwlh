@@ -7072,10 +7072,10 @@ defined as linked list of pointers to characters which is an extremely
 pathological and inefficient way of representing textual data. Unfortunately for
 historical reasons large portions of GHC and Base depend on String.
 
-The String problem is intrinsically linked with the fact that the default GHC
-Prelude is provides a set of broken default that are difficult to change because
+The String problem is intrinsically linked to the fact that the default GHC
+Prelude provides a set of broken defaults that are difficult to change because
 GHC and the entire ecosystem historically depend on it. There are however high
-performance string libraries that can swapped out for the broken `String` type
+performance string libraries that can swapped in for the broken `String` type
 and we will discuss some ways of working with high-performance and memory
 efficient replacements.
 
@@ -7085,43 +7085,44 @@ String
 The default Haskell string type is implemented as a naive linked list of
 characters, this is hilariously terrible for most purposes but no one knows how
 to fix it without rewriting large portions of all code that exists, and simply
-nobody no one wants to commit the time to fix it. So it remains broken, likely
+nobody wants to commit the time to fix it. So it remains broken, likely
 forever.
 
 ```haskell
 type String = [Char]
 ```
 
-However, fear not as there are are two replacmenet libraries for processing
+However, fear not as there are are two replacement libraries for processing
 textual data: ``text`` and ``bytestring``.
 
 * `text` - Used for handling unicode data.
-* `bytestring` - Used for handling ASCII data that needs to interchanged with C
+* `bytestring` - Used for handling ASCII data that needs to interchange with C
   code or network protocols.
 
 For each of these there are two variants for both text and bytestring.
 
-* <b>lazy</b> Lazy text objects are encoded as lazy lists of strict chunks of bytes.
-* <b>strict</b> Byte vectors are encoded as strict Word8 arrays of bytes or code
+* **lazy** - Lazy text objects are encoded as lazy lists of strict chunks of bytes.
+* **strict** - Byte vectors are encoded as strict Word8 arrays of bytes or code
   points
 
-Giving rise to Cartesian product of the four common string types:
+Giving rise to the Cartesian product of the four common string types:
 
 Variant                   Module
 -------------             ----------
-<b>strict text</b>        `Data.Text`
-<b>lazy text</b>          `Data.Text.Lazy`
-<b>strict bytestring</b>  `Data.ByteString`
-<b>lazy bytestring</b>    `Data.ByteString.Lazy`
+**strict text**        `Data.Text`
+**lazy text**          `Data.Text.Lazy`
+**strict bytestring**  `Data.ByteString`
+**lazy bytestring**    `Data.ByteString.Lazy`
 
 String Conversions
 ------------------
 
-Conversions between strings types ( from : left column, to : top row ) are done
+Conversions between strings types are done
 with several functions across the bytestring and text libraries. The mapping
 between text and bytestring is inherently lossy so there is some degree of
 freedom in choosing the encoding. We'll just consider utf-8 for simplicity.
 
+(From : left column,  To : top row)
                       Data.Text  Data.Text.Lazy  Data.ByteString  Data.ByteString.Lazy
 --------------------- ---------  --------------  ---------------  ------------------
 Data.Text             id         fromStrict      encodeUtf8       encodeUtf8
@@ -7129,7 +7130,7 @@ Data.Text.Lazy        toStrict   id              encodeUtf8       encodeUtf8
 Data.ByteString       decodeUtf8 decodeUtf8      id               fromStrict
 Data.ByteString.Lazy  decodeUtf8 decodeUtf8      toStrict         id
 
-Be careful with the functions (`decodeUtf8`, `decodeUtf16LE`, etc) as they are
+Be careful with the functions (`decodeUtf8`, `decodeUtf16LE`, etc.) as they are
 partial and will throw errors if the byte array given does not contain unicode
 code points. Instead use one of the following functions which will allow you to
 explicitly handle the error case:
@@ -7144,7 +7145,7 @@ OverloadedStrings
 
 With the ``-XOverloadedStrings`` extension string literals can be overloaded
 without the need for explicit packing and can be written as string literals in
-the Haskell source and overloaded via a typeclass ``IsString``. Sometimes this
+the Haskell source and overloaded via the typeclass ``IsString``. Sometimes this
 is desirable.
 
 ```haskell
@@ -7165,7 +7166,7 @@ For instance:
 ```
 
 We can also derive IsString for newtypes using ``GeneralizedNewtypeDeriving``,
-although much of the safety of the newtype is then lost if it is interchangeable
+although much of the safety of the newtype is then lost if it is used interchangeable
 with other strings.
 
 ```haskell
@@ -7219,7 +7220,7 @@ type LByteString = BL.ByteString
 Text
 ----
 
-A ``Text`` type is a packed blob of Unicode characters.
+The ``Text`` type is a packed blob of Unicode characters.
 
 ```haskell
 pack :: String -> Text
@@ -7277,7 +7278,7 @@ Overloaded Lists
 
 It is ubiquitous for data structure libraries to expose ``toList`` and ``fromList`` functions to construct
 various structures out of lists. As of GHC 7.8 we now have the ability to overload the list syntax in the
-surface language with a typeclass ``IsList``.
+surface language with the typeclass ``IsList``.
 
 ```haskell
 class IsList l where
@@ -7298,8 +7299,8 @@ instance IsList [a] where
 [1,2,3] :: (Num (GHC.Exts.Item l), GHC.Exts.IsList l) => l
 ```
 
-For example we could write a overloaded list instance for hash tables that
-simply coverts to the hash table using `fromList`. You shouldn't acutally do
+For example we could write an overloaded list instance for hash tables that
+simply converts to the hash table using `fromList`. You shouldn't acutally do
 this in practice but it is possible. Some math libraries that use vector-like
 structures will use overloaded lists in this fashion.
 
