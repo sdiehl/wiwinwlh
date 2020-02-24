@@ -6101,7 +6101,7 @@ this will make the instance search contingent on your import list and may result
 in clashes in your codebase where the linker will fail because there are
 multiple modules which define the same instance head. 
 
-When used appropriately this can be way to route around the fact that upstream
+When used appropriately this can be the way to route around the fact that upstream
 modules may define datatypes that you use, but they have not defined the
 instances for other downstream libraries that you also use. You can then write
 these instances for your codebase without modifying either upstream library.
@@ -6109,7 +6109,7 @@ these instances for your codebase without modifying either upstream library.
 Minimal Annotations
 -------------------
 
-In the presence of default implementations for typeclasses methods, there may be
+In the presence of default implementations for typeclass methods, there may be
 several ways to implement a typeclass. For instance Eq is entirely defined by
 either defining when two values are equal or not equal by implying taking the
 negation of the other. We can define equality in terms of non-equality and
@@ -6135,7 +6135,7 @@ class Eq a where
 ```
 
 Minimal pragmas are boolean expressions. For instance, with ``|`` as logical
-``OR``, *either* definition of the above functions must be defined). Comma
+``OR``, *either* definition of the above functions must be defined. Comma
 indicates logical ``AND`` where *both* definitions must be defined.
 
 ```haskell
@@ -6149,7 +6149,7 @@ does not meet the minimal criterion.
 TypeSynonymInstances
 --------------------
 
-Normally type class definitions are restricted to be being defined only over
+Normally type class definitions are restricted to being defined only over
 fully expanded types with all type synonym indirections removed. Type synonyms
 introduce a "naming indirection" that can be included in the instance search to
 allow you to write synonym instances for multiple synonyms which expand to
@@ -6179,7 +6179,7 @@ FlexibleContexts
 Just as with instances, contexts normally are also constrained to consist
 entirely of constraints where a class is applied to just type variables. The
 `FlexibleContexts` extension lifts this restriction and allows any type of type
-variable and nesting to occur the class constraint head. There however still a
+variable and nesting to occur the class constraint head. There is however still a
 global restriction that all class hierarchies must not contain cycles.
 
 ~~~~ {.haskell include="src/04-extensions/flexcontexts.hs"}
@@ -6212,8 +6212,8 @@ with the `OVERLAPPING` and `INCOHERENT` inline pragmas.
 IncoherentInstances
 -------------------
 
-Incoherent instance loosens the restriction that there be only one specific
-instance, will be chosen based on a more complex search procedure which tries to
+Incoherent instances loosens the restriction that there be only one specific
+instance, it will be chosen based on a more complex search procedure which tries to
 identify a *prime instance* based on information incorporated form `OVERLAPPING`
 pragmas on instances in the search tree. Unless one is doing very advanced
 type-level programming use class constraints, this is usually a poor design
