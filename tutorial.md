@@ -6625,11 +6625,11 @@ The short version of the advice on the Prelude is:
 </div>
 
 The instances of Foldable for the list type often conflict with the monomorphic
-versions in the Prelude which are left in for historical reasons. So often times
+versions in the Prelude which are left in for historical reasons. So oftentimes
 it is desirable to explicitly mask these functions from implicit import and
 force the use of Foldable and Traversable instead.
 
-Of course often times one wishes only to use the Prelude explicitly and one can
+Of course oftentimes one wishes to only use the Prelude explicitly and one can
 explicitly import it qualified and use the pieces as desired without the
 implicit import of the whole namespace.
 
@@ -6671,7 +6671,7 @@ entirely with a custom prelude. Many industrial projects will roll their own
 
 For example if we wanted to build up a custom project prelude we could construct
 a Prologue module and dump the relevant namespaces we want from `base` into our
-custom export list. Using the module reexport feature allows us to create a
+custom export list. Using the module reexport feature allows us to create an
 `Exports` namespace which contains our Prelude's symbols. Every subsequent
 module in our project will then have `import Prologue` as the first import.
 
@@ -6711,7 +6711,7 @@ all available on Hackage.
 
 Different preludes take different approaches to defining what the Haskell
 standard library should be. Some are interoperable with existing code and others
-require a "all-in" approach that creates a ecosystem around it. Some projects
+require an "all-in" approach that creates an ecosystem around it. Some projects
 are more community efforts and others are developed by consulting companies or
 industrial users wishing to standardise their commercial code.
 
@@ -6811,7 +6811,7 @@ A list of partial functions in the default prelude:
 Replacing Partiality
 --------------------
 
-The Prelude has total variants of the historical partial functions (i.e. ``Text.Read.readMaybe``)in some
+The Prelude has total variants of the historical partial functions (e.g. ``Text.Read.readMaybe``) in some
 cases, but often these are found in the various replacement preludes
 
 The total versions provided fall into three cases:
@@ -6842,7 +6842,7 @@ Boolean Blindness
 ------------------
 
 Boolean blindness is a common problem found in many programming languages.
-Consider the following two definitions which deconstruct a maybe value into a
+Consider the following two definitions which deconstruct a Maybe value into a
 boolean. Is there anything wrong with the definitions and below and why is this
 not caught in the type system?
 
@@ -6893,7 +6893,7 @@ happen to mix them up. Instead of making invalid states *unrepresentable* we've
 made the invalid state *indistinguishable* from the valid one!
 
 The more desirable practice is to match on terms which explicitly witness
-the proposition as a type ( often in a sum type ) and won't typecheck otherwise.
+the proposition as a type (often in a sum type) and won't typecheck otherwise.
 
 ```haskell
 case x of
@@ -6911,8 +6911,8 @@ if p x
   else don't use x
 ```
 
-To be fair though, many popular languages completely lack the notion of sum types ( the source of many woes in
-my opinion ) and only have product types, so this type of reasoning sometimes has no direct equivalence for
+To be fair though, many popular languages completely lack the notion of sum types (the source of many woes in
+my opinion) and only have product types, so this type of reasoning sometimes has no direct equivalence for
 those not familiar with ML family languages.
 
 In Haskell, the Prelude provides functions like ``isJust`` and ``fromJust`` both of which can be used to
@@ -6933,7 +6933,7 @@ foldr f z [a...] = f a (f b ( ... (f y z) ... ))
 foldl f z [a...] = f ... (f (f z a) b) ... y
 ```
 
-For a concrete consider the simple arithmetic sequence over the binary operator
+For a concrete example consider the simple arithmetic sequence over the binary operator
 ``(+)``:
 
 ```haskell
@@ -7041,9 +7041,9 @@ Data.Foldable.minimum :: (Ord a, Foldable t) => t a -> a
 Data.Traversable.mapM :: (Monad m, Traversable t) => (a -> m b) -> t a -> m (t b)
 ```
 
-Unfortunately for historical reasons the names exported by foldable quite often
+Unfortunately for historical reasons the names exported by Foldable quite often
 conflict with ones defined in the Prelude, either import them qualified or just
-disable the Prelude. The operations in the Foldable all specialize to the same
+disable the Prelude. The operations in the Foldable class all specialize to the same
 and behave the same as the ones in Prelude for List types.
 
 ~~~~ {.haskell include="src/06-prelude/foldable_traversable.hs"}
