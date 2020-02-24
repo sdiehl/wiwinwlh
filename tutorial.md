@@ -6245,7 +6245,7 @@ deferred. Consider the example in Haskell of defining an infinite list:
 
 The primary advantage of lazy evaluation in the large is that algorithms that
 operate over both unbounded and bounded data structures can inhabit the same
-type signatures and be composed without additional need to restructure their
+type signatures and be composed without any additional need to restructure their
 logic or force intermediate computations.
 
 Still, it's important to recognize that this is another subject on which much
@@ -6262,7 +6262,7 @@ you options for however you prefer to program.
 Languages that attempt to bolt laziness on to a strict evaluation model often
 bifurcate classes of algorithms into ones that are hand-adjusted to consume
 unbounded structures and those which operate over bounded structures. In strict
-languages, mixing and matching between lazy vs strict processing often
+languages, mixing and matching between lazy vs. strict processing often
 necessitates manifesting large intermediate structures in memory when such
 composition would “just work” in a lazy language.
 
@@ -6282,12 +6282,12 @@ evaluation models for the lambda calculus:
 * **Non-strict** - Evaluation is non-strict if the arguments are not necessarily
   evaluated before entering the body of a function.
 
-These ideas give rise to several models, Haskell itself use the *call-by-need*
+These ideas give rise to several models, Haskell itself uses the *call-by-need*
 model.
 
 Model          Strictness    Description
 -------------  ------------- ---------------
-Call-by-value  Strict        arguments evaluated before function entered
+Call-by-value  Strict        arguments evaluated before entering function
 Call-by-name   Non-strict    arguments passed unevaluated
 Call-by-need   Non-strict    arguments passed unevaluated but an expression is only evaluated once
 
@@ -6350,7 +6350,7 @@ contains diverging terms.
 ~~~~ {.haskell include="src/05-laziness/nodiverge.hs"}
 ~~~~
 
-In a strict language like OCaml ( ignoring its suspensions for the moment ),
+In a strict language like OCaml (ignoring its suspensions for the moment),
 the same program diverges.
 
 ~~~~ {.haskell include="src/05-laziness/diverge.ml"}
@@ -6363,8 +6363,8 @@ In Haskell a *thunk* is created to stand for an unevaluated computation.
 Evaluation of a thunk is called *forcing* the thunk. The result is an *update*,
 a referentially transparent effect, which replaces the memory representation of
 the thunk with the computed value. The fundamental idea is that a thunk is only
-updated once ( although it may be forced simultaneously in a multi-threaded
-environment ) and its resulting value is shared when referenced subsequently.
+updated once (although it may be forced simultaneously in a multi-threaded
+environment) and its resulting value is shared when referenced subsequently.
 
 The GHCi command ``:sprint`` can be used to introspect the state of unevaluated
 thunks inside an expression without forcing evaluation. For instance:
@@ -6391,7 +6391,7 @@ b = _ : _ : _ : _ : _ : _ : _ : _ : _ : _ : 12 : _
 
 While a thunk is being computed its memory representation is replaced with a
 special form known as *blackhole* which indicates that computation is ongoing
-and allows for a short circuit for when a computation might depend on itself to
+and allows for a short circuit when a computation might depend on itself to
 complete. 
 
 The ``seq`` function introduces an artificial dependence on the evaluation of
@@ -6435,7 +6435,7 @@ BangPatterns
 ------------
 
 The extension ``BangPatterns`` allows an alternative syntax to force arguments
-to functions to be wrapped in seq. A bang operator on an arguments forces its
+to functions to be wrapped in seq. A bang operator on an argument forces its
 evaluation to weak head normal form before performing the pattern match. This
 can be used to keep specific arguments evaluated throughout recursion instead of
 creating a giant chain of thunks.
@@ -6472,7 +6472,7 @@ f $! x  = let !vx = x in f vx
 StrictData
 ----------
 
-As of GHC 8.0 strictness annotations can be applied to all definitions in a module automatically. In previous versions to make definitions strict it was necessary to use explicit syntactic annotations at all sites.
+As of GHC 8.0 strictness annotations can be applied to all definitions in a module automatically. In previous versions to make definitions strict it was necessary to use explicit syntactic annotations at call sites.
 
 Enabling StrictData makes constructor fields strict by default on any module
 where the pragma is enabled:
@@ -6513,7 +6513,7 @@ f !x !y = x + y
 
 On a module-level this effectively makes Haskell a call-by-value language with
 some caveats. All arguments to functions are now explicitly evaluated and all
-data in constructors within this module are in head normal form by construction.
+data in constructors within this module are in weak head normal form by construction.
 However there are some subtle points to this that are better explained in the
 language guide.
 
@@ -6581,18 +6581,18 @@ The Debate
 Laziness is a controversial design decision in Haskell. It is difficult to write
 production Haskell code that operates in constant memory without some insight
 into the evaluation model and the runtime. A lot of industrial codebases have a
-policy of marking all constructors as strict default or enabling [StrictData] to
+policy of marking all constructors as strict by default or enabling [StrictData] to
 prevent space leaks. If Haskell were being designed from scratch it probably
-would not be chose laziness as the default model.  Future implementations of
-Haskell compilers would also probably also not choose this point in the design
+would not be chose laziness as the default model. Future implementations of
+Haskell compilers would probably also not choose this point in the design
 space if given the option of breaking with the language specification. 
 
-There is a lot of fear uncertainty and doubt spread about lazy evaluation that
-unfortunately that gets loses the forest for the trees and ignores 30 years of
+There is a lot of fear, uncertainty and doubt spread about lazy evaluation that
+unfortunately loses the forest for the trees and ignores 30 years of
 advanced research on the type system. In industrial programming a lot of
 software is sold on the meme of being of *fast* instead of being *correct*, and
 lazy evaluation is an intellectually easy talking point about these upside-down
-priorities.  Nevertheless the colloquial perception of a laziness being "evil"
+priorities.  Nevertheless the colloquial perception of laziness being "evil"
 is a meme that will continue to persist regardless of any underlying reality
 because software is intrinsically a social process.
 
