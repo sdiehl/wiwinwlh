@@ -1863,7 +1863,6 @@ An equivalent loop in an imperative language would look like the following.
 
 ```python
 def powersOfTwo(n):
-    power = n
     square_list = [1]
     for i in range(1,n+1):
         square_list.append(2 ** i)
@@ -3311,6 +3310,24 @@ Predicate will often prefix their function names with ``is``, as in ``isPositive
 
 ```haskell
 isPositive = (>0)
+```
+
+Functions which result in an Applicative or Monad type will often suffix their
+name with a A for Applicative or M for Monad. For example:
+
+```haskell
+liftM :: Monad m => (a -> r) -> m a -> m r
+liftA :: Applicative f => (a -> b) -> f a -> f b
+```
+
+Functions which have *chirality* in which they traverse a data structure (i.e.
+left-to-right or right-to-left) will often suffix the name with L or R for their
+iteration pattern. This is useful because often times these type signatures
+identical.
+
+```haskell
+mapAccumL :: Traversable t => (a -> b -> (a, c)) -> a -> t b -> (a, t c)
+mapAccumR :: Traversable t => (a -> b -> (a, c)) -> a -> t b -> (a, t c)
 ```
 
 Working with mutable structures or monadic state will often adopt the following naming
@@ -6842,7 +6859,7 @@ not caught in the type system?
 data Bool = True | False
 
 isNotJust :: Maybe a -> Bool
-isNotJust (Just x) = True
+isNotJust (Just x) = True -- ???
 isNotJust Nothing = False
 
 isJust :: Maybe a -> Bool
