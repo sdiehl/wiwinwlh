@@ -4098,6 +4098,7 @@ many things, including, but not limited to:
  - Read from or write to a file on the system
  - Establish an ``ssh`` connection to a remote computer
  - Take input from a radio antenna for signal processing
+ - Launch the missiles.
 
 Conceptualizing I/O as a monad enables the developer to access information
 outside the program, but also to use pure functions to operate on that
@@ -5504,6 +5505,11 @@ algebraic data types.
 TupleSections
 --------------
 
+The TupleSections syntax extension allows tuples to be constructed similar to
+how operator sections. With this extension enabled, tuples of arbitrary size can
+be "partially" specified with commas and values given for specific positions in
+the tuple. For example for a 2-tuple:
+
 ```haskell
 {-# LANGUAGE TupleSections #-}
 
@@ -5513,6 +5519,8 @@ first = (,True)
 second :: a -> (Bool, a)
 second = (True,)
 ```
+
+An example for a 7-tuple where three values are specified in the section.
 
 ```haskell
 f :: t -> t1 -> t2 -> t3 -> (t, (), t1, (), (), t2, t3)
