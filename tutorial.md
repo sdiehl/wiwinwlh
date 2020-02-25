@@ -2939,12 +2939,12 @@ debugging segfaults with gdb. Breakpoints can be set `:break` and the call stack
 stepped through with `:forward` and `:back`.
 
 ```haskell
-λ: :set -fbreak-on-exception       -- Sets option for evaluation to stop on exception
-λ: :break 2 15                     -- Sets a break point at line 2, column 15
-λ: :trace main                     -- Run a function to generate a sequence of evaluation steps
-λ: :hist                           -- Step backwards from a breakpoint through previous steps of evaluation
-λ: :back                           -- Step backwards a single step at a time through the history
-λ: :forward                        -- Step forward a single step at a time through the history
+λ: :set -fbreak-on-exception  -- Sets option for evaluation to stop on exception
+λ: :break 2 15                -- Sets a break point at line 2, column 15
+λ: :trace main                -- Run a function to generate a sequence of evaluation steps
+λ: :hist                      -- Step back from a breakpoint through previous evaluation steps
+λ: :back                      -- Step backwards a single step at a time through the history
+λ: :forward                   -- Step forward a single step at a time through the history
 ```
 
 Stack Traces
@@ -6078,7 +6078,7 @@ associated with their methods.
 * `Foldable`
 * `Traversable`
 
-![](img/class.png){ width=250px }
+![](img/class.png){ width=500px }
 
 Instance Search
 ---------------
@@ -9059,13 +9059,13 @@ The canonical example of a catamorphism is the factorial function which is a
 composition of a coalgebra creates a list from `n` to `1` and an algebra which
 multiplies the resulting list to a single result:
 
-~~~~ {.haskell include="src/14-interpreters/catamorphism.hs"}
+~~~~ {.haskell include="src/14-interpreters/factorial.hs"}
 ~~~~
 
 Another example is unfolding of lambda calculus to perform a substitution over a
 variable. We can define a catamoprhism for traversing over the AST.
 
-~~~~ {.haskell include="src/14-interpreters/factorial.hs"}
+~~~~ {.haskell include="src/14-interpreters/catamorphism.hs"}
 ~~~~
 
 Another use case would be to collect the free variables inside of the AST. This
@@ -10995,7 +10995,7 @@ class (RealFrac a, Floating a) => RealFloat a
 ```
 
 <center>
-![](img/numerics.png){ width=250px }
+![](img/numerics.png){ width=400px }
 </center>
 
 Conversions between concrete numeric types ( from : left column, to : top row )
@@ -11010,18 +11010,23 @@ Word     fromIntegral fromIntegral  fromIntegral  id             fromIntegral  f
 Integer  fromIntegral fromIntegral  fromIntegral  fromIntegral   id            fromIntegral
 Rational fromRational fromRational  truncate      truncate       truncate      id
 
-Arbitrary-precision Arirthmetic
--------------------------------
+GMP Integers
+------------
 
 The ``Integer`` type in GHC is implemented by the GMP (``libgmp``) arbitrary
-precision arithmetic library.  Unlike the ``Int`` type the size of Integer
-values is bounded only by the available memory. Most notably ``libgmp`` is one
-of the few libraries that compiled Haskell binaries are dynamically linked
-against.
+precision arithmetic library.  Unlike the ``Int`` type, the size of Integer
+values is bounded only by the available memory. 
 
-An alternative library ``integer-simple`` can be linked in place of libgmp.
+```haskell
+λ: (2^64 :: Int)
+0
+λ: (2^64 :: Integer)
+18446744073709551616
+```
 
-See: [GHC, primops and exorcising GMP](http://www.well-typed.com/blog/32/)
+Most notably ``libgmp`` is one of the few libraries that compiled Haskell
+binaries are dynamically linked against. An alternative library
+``integer-simple`` can be linked in place of libgmp.
 
 Complex Numbers
 ---------------
@@ -12027,7 +12032,7 @@ be performed atomically and passed around symbolically. In the event that the
 runtime fails to commit a transaction, the `retry` function can rerun the logic
 contained in a `STM a`.
 
-```
+```haskell
 atomically :: STM a -> IO a
 retry :: STM a
 ```
@@ -14281,11 +14286,9 @@ example =
       d <- desugarModule t         -- DesugaredModule
       l <- loadModule d
       let c = coreModule d         -- CoreModule
-
       g <- getModuleGraph
       mapM showModule g
-
-      return $ c
+      return c
 
 main :: IO ()
 main = do
