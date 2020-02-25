@@ -7653,7 +7653,7 @@ introduced. This is simple enough error handling which privileges the `Left`
 constructor to hold the error. Many simple functions which can fail can simply
 use the `Either Error a` in the result type to encode simple error handling.
 
-The downside to this is that it force every consumer of the function to pattern
+The downside to this is that it forces every consumer of the function to pattern
 match on the result to handle the error case. It also assumes that all `Error`
 types can be encoded inside of the sum type holding the possible failures.
 
@@ -7666,13 +7666,13 @@ safeDiv x y = Right (x `div` y)
 ExceptT
 -------
 
-When using `transformers` style effect stacks it is quite common to need to have
+When using the `transformers` style effect stacks it is quite common to need to have
 a layer of the stack which can fail. When using the style of composing effects a
 monad transformer (which is a wrapper around Either monad) can be added which
-lifts the error handling into a `ExceptT` effect layer.
+lifts the error handling into an `ExceptT` effect layer.
 
-As of mtl 2.2 or higher, the ``ErrorT`` class has been replaced by the
-``ExceptT``.  At transformers level.
+As of mtl 2.2 or higher, the ``ErrorT`` class has been replaced by
+``ExceptT`` at the transformers level.
 
 ```haskell
 newtype ExceptT e m a = ExceptT (m (Either e a))
@@ -7704,7 +7704,7 @@ m `catchE` h = ExceptT $ do
         Right r -> return (Right r)
 ```
 
-And also this can extended to the mtl `MonadError` instance for which we can
+And also this can be extended to the mtl `MonadError` instance for which we can
 write instances for IO and Either themselves:
 
 ```haskell
@@ -7734,9 +7734,9 @@ Control.Exception
 
 GHC has a builtin system for propagating errors up at the runtime level, below
 the business logic level. These are used internally for all sorts of concurrency
-and system interface. The runtime provides builtin operations ``throw`` and
+and system interfaces. The runtime provides builtin operations ``throw`` and
 ``catch`` functions which allow us to throw exceptions in pure code and catch
-the resulting exception within IO. Note that return value of the ``throw``
+the resulting exception within IO. Note that the return value of ``throw``
 inhabits all types.
 
 ```haskell
@@ -7752,7 +7752,7 @@ evaluate :: a -> IO a
 Because a value will not be evaluated unless needed, if one desires to know for
 sure that an exception is either caught or not it can be deeply forced into head
 normal form before invoking catch. The ``strictCatch`` is not provided by
-standard library but has a simple implementation in terms of ``deepseq``.
+the standard library but has a simple implementation in terms of ``deepseq``.
 
 ```haskell
 strictCatch :: (NFData a, Exception e) => IO a -> (e -> IO a) -> IO a
@@ -7764,16 +7764,16 @@ Exceptions
 
 The problem with the previous approach is having to rely on GHC's asynchronous exception handling inside of IO
 to handle basic operations and the bifurcation of APIs which need to expose
-different APIs for any monad that has failure (`IO`, `STM`, `ExceptT`, etc).
+different APIs for any monad that has failure (`IO`, `STM`, `ExceptT`, etc.).
 
-The ``exceptions`` package provides provides the same API as
+The ``exceptions`` package provides the same API as
 ``Control.Exception`` but loosens the dependency on IO. It instead provides a
 granular set of typeclasses which can operate over different monads which
 require a precise subset of error handling methods.
 
-* `MonadThrow` - Monads which expose a interface for throwing exceptions.
-* `MonadCatch` - Monads which expose a interface for handling exceptions.
-* `MonadMask` - Monads which expose a interface for masking asynchronous
+* `MonadThrow` - Monads which expose an interface for throwing exceptions.
+* `MonadCatch` - Monads which expose an interface for handling exceptions.
+* `MonadMask` - Monads which expose an interface for masking asynchronous
   exceptions.
 
 ~~~~ {.haskell include="src/09-errors/exceptions.hs"}
@@ -7786,8 +7786,8 @@ Spoon
 
 Sometimes you'll be forced to deal with seemingly pure functions that can throw
 up at any point. There are many functions in the standard library like this, and
-many more on Hackage. You'd like to be handle this logic purely as if it were
-returning a proper ``Maybe a`` but to catch the logic you'd need to install a IO
+many more on Hackage. You'd like to handle this logic purely as if it were
+returning a proper ``Maybe a`` but to catch the logic you'd need to install an IO
 handler inside IO to catch it. Spoon allows us to safely (and "purely", although
 it uses a referentially transparent invocation of unsafePerformIO) to catch
 these exceptions and put them in Maybe where they belong.
