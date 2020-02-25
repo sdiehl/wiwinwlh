@@ -13050,7 +13050,7 @@ $$
 There are many types of pairings that can be computed. The `pairing` library
 implements the Ate pairing over several elliptic curve groups including the
 Barreto-Naehrig family and the BLS12-381 curve. These types of pairings are
-used qquite frequently in modern cryptographic protocols such as the construction
+used quite frequently in modern cryptographic protocols such as the construction
 of zkSNARKs.
 
 ~~~~ {.haskell include="src/32-cryptography/Pairing.hs"}
@@ -13073,11 +13073,13 @@ Haskell has a variety of libraries for building zkSNARK protocols including
 libraries to build circuit representations of embedded domain specific languages
 and produce succinct pairing based zero knowledge proofs.
 
-* [arithmetic-circuits](https://github.com/adjoint-io/arithmetic-circuits)
-  Construction arithmetic circuits and Rank-1 constraint systems (R1CS) in
-  Haskell.
 * [zkp](https://github.com/adjoint-io/zkp) - Implementation of the Groth16
-  protocol in Haskell based on bilinear pairings.
+  protocol based on bilinear pairings.
+* [bulletproofs](https://hackage.haskell.org/package/bulletproofs) -
+  Implementation of the Bulletproofs protocol.
+* [arithmetic-circuits](https://github.com/adjoint-io/arithmetic-circuits)
+  Generic data structures for construction arithmetic circuits and Rank-1
+  constraint systems (R1CS) in Haskell.
 
 Dates and Times
 ===============
