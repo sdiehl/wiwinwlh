@@ -7397,8 +7397,8 @@ functor, and not a monad.
 ~~~~ {.haskell include="src/08-applicatives/applicative.hs"}
 ~~~~
 
-The pattern ``f <$> a <*> b ...`` shows up so frequently that there are a family
-of functions to lift applicatives of a fixed number arguments.  This pattern
+The pattern ``f <$> a <*> b ...`` shows up so frequently that there is a family
+of functions to lift applicatives of a fixed number arguments. This pattern
 also shows up frequently with monads (``liftM``, ``liftM2``, ``liftM3``).
 
 ```haskell
@@ -7414,7 +7414,7 @@ liftA3 f a b c = f <$> a <*> b <*> c
 
 Applicative also has functions ``*>`` and ``<*`` that sequence applicative
 actions while discarding the value of one of the arguments. The operator ``*>``
-discard the left while ``<*`` discards the right. For example in a monadic
+discards the left while ``<*`` discards the right. For example in a monadic
 parser combinator library the ``*>`` would parse with first parser argument but
 return the second.
 
@@ -7487,7 +7487,7 @@ Arrows
 
 A category is an algebraic structure that includes a notion of an identity and a
 composition operation that is associative and preserves identities.  In practice
-arrow are not often used in modern Haskell and are often considered a code
+arrows are not often used in modern Haskell and are often considered a code
 smell.
 
 ```haskell
@@ -7531,7 +7531,7 @@ instance Arrow (->) where
   (***) f g ~(x,y) = (f x, g y)
 ```
 
-In this form functions of multiple arguments can be threaded around using the
+In this form, functions of multiple arguments can be threaded around using the
 arrow combinators in a much more pointfree form. For instance a histogram
 function has a nice one-liner.
 
@@ -7590,7 +7590,7 @@ class Bifunctor p where
   second :: (b -> c) -> p a b -> p a c
 ```
 
-The bifunctor laws are a natural generalization of the usual functor. Namely
+The bifunctor laws are a natural generalization of the usual functor laws. Namely
 they respect identities and composition in the usual way:
 
 ```haskell
@@ -7626,7 +7626,7 @@ Polyvariadic Functions
 
 One surprising application of typeclasses is the ability to construct functions which take an arbitrary number
 of arguments by defining instances over function types. The arguments may be of arbitrary type, but the
-resulting collected arguments must either converted into a single type or unpacked into a sum type.
+resulting collected arguments must either be converted into a single type or unpacked into a sum type.
 
 ~~~~ {.haskell include="src/08-applicatives/variadic.hs"}
 ~~~~
