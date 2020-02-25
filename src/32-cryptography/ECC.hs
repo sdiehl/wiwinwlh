@@ -11,8 +11,6 @@ p1 = Ed25519.gen
 p2 :: Ed25519.PA
 p2 = Ed25519.mul p1 (3 :: Ed25519.Fr)
 
--- ** --
-
 -- point addition
 p3 :: Ed25519.PA
 p3 = Ed25519.add p1 p2
@@ -37,7 +35,7 @@ p7 = Ed25519.frob p1
 p8 :: Ed25519.PA
 p8 = Ed25519.gA
 
--- convert affine to projective
+-- convert affine coordinates to projective coordinates
 p9 :: Ed25519.PP
 p9 = Ed25519.fromA p8
 

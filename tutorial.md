@@ -734,8 +734,8 @@ extra-deps:
 
 The ``stack`` command can be used to install packages and executables into
 either the current build environment or the global environment. For example, the
-following command installs the executable for ``hlint``, [a popular linting tool for
-Haskell](https://github.com/ndmitchell/hlint), and places it in the PATH:
+following command installs the executable for ``hlint``, [a popular linting tool
+for Haskell](#hlint), and places it in the PATH:
 
 ```bash
 $ stack install hlint
@@ -1966,7 +1966,7 @@ fib n = fib (n-1) + fib (n-2)
 
 ```haskell
 fib :: Integer -> Integer
-fib n = case n of
+fib m = case m of
   0 -> 0
   1 -> 1
   n -> fib (n-1) + fib(n-2)
@@ -6530,8 +6530,6 @@ f !x !y = x + y
 On a module-level this effectively makes Haskell a call-by-value language with
 some caveats. All arguments to functions are now explicitly evaluated and all
 data in constructors within this module are in head normal form by construction.
-However there are some subtle points to this that are better explained in the
-language guide.
 
 Deepseq
 -------
@@ -12346,7 +12344,7 @@ spawn :: NFData a => Par a -> Par (IVar a)
 ~~~~ {.haskell include="src/22-concurrency/par.hs"}
 ~~~~
 
-async
+Async
 -----
 
 Async is a higher level set of functions that work on top of Control.Concurrent
@@ -16104,13 +16102,43 @@ Cmm      Description
 ``I32``  32-bit integer
 ``I64``  64-bit integer
 
+Inside of Cmm logic there are several functions which are commonly invoked:
+
+* `Sp_adj` - Adjusts the stack pointer.
+* `GET_ENTRY` - 
+* `ENTER` - 
+* `jump` - 
+
+```cpp
+stg_init_finish
+{
+  jump StgReturn;
+}
+
+stg_init
+{
+  W_ next;
+  Sp = W_[BaseReg + OFFSET_StgRegTable_rSp];
+  next = W_[Sp];
+  Sp_adj(1);
+  jump next;
+}
+```
+
+```cpp
+#define SIZEOF_W  8 /* or 4 depending on platform */
+#define WDS(n) ((n)*SIZEOF_W)
+#define Sp(n)  W_[Sp + WDS(n)]
+#define Hp(n)  W_[Hp + WDS(n)]
+#define Sp_adj(n) Sp = Sp + WDS(n)
+#define Hp_adj(n) Hp = Hp + WDS(n)
+```
 
 Many of the predefined closures (``stg_ap_p_fast``, etc) are themselves
 mechanically generated and more or less share the same form ( a giant switch
 statement on closure type, update frame, stack adjustment). Inside of GHC is a
-file named ``GenApply.hs`` that generates most of these functions.  See the Gist
-link in the reading section for the current source file that GHC generates.  For
-example the output for ``stg_ap_p_fast``.
+file named ``GenApply.hs`` that generates most of these functions.  For example
+the output for ``stg_ap_p_fast``.
 
 ```cpp
 stg_ap_p_fast
@@ -16171,14 +16199,6 @@ through GHC into an object and then using a special FFI invocation.
 
 ~~~~ {.haskell include="src/29-ghc/cmm_include.hs"}
 ~~~~
-
-Cmm Runtime:
-
-* [Apply.cmm](https://github.com/ghc/ghc/blob/master/rts/Apply.cmm)
-* [StgStdThunks.cmm](https://github.com/ghc/ghc/blob/master/rts/StgStdThunks.cmm)
-* [StgMiscClosures.cmm](https://github.com/ghc/ghc/blob/master/rts/StgMiscClosures.cmm)
-* [PrimOps.cmm](https://github.com/ghc/ghc/blob/master/rts/PrimOps.cmm)
-* [Updates.cmm](https://github.com/ghc/ghc/blob/master/rts/Updates.cmm)
 
 Optimisation
 ------------
