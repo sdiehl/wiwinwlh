@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+stack build
 stack exec ghc -- -e ":q" --interactive catamorphism.hs
 stack exec ghc -- -e ":q" --interactive factorial.hs
 stack exec ghc -- -e ":q" --interactive fext.hs
