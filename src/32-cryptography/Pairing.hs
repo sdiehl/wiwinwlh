@@ -1,9 +1,10 @@
+{-# LANGUAGE OverloadedLists #-}
+
 module Main where
 
 import Data.Curve.Weierstrass (Point (A), mul')
 import Data.Group (pow)
 import Data.Pairing.BN254 (BN254, G1, G2, pairing)
-import Protolude
 
 p :: G1 BN254
 p =
@@ -23,9 +24,9 @@ q =
 
 main :: IO ()
 main = do
-  putText "e(P, Q):"
+  putStrLn "e(P, Q):"
   print (pairing p q)
-  putText "e(P, Q) is bilinear:"
+  putStrLn "e(P, Q) is bilinear:"
   print $ pairing (mul' p a) (mul' q b) == pow (pairing p q) (a * b)
   where
     a = 2 :: Int
