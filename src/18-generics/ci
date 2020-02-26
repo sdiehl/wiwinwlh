@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+stack build
 stack exec ghc -- -e ":q" --interactive biplate.hs
 stack exec ghc -- -e ":q" --interactive cereal.hs
 stack exec ghc -- -e ":q" --interactive data.hs

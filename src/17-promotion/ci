@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+stack build
 stack exec ghc -- -e ":q" --interactive closed_typefamily.hs
 stack exec ghc -- -e ":q" --interactive constraint_list.hs
 stack exec ghc -- -e ":q" --interactive countargs.hs

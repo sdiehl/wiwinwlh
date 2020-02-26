@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+stack build
 stack exec ghc -- -e ":q" --interactive constraintkinds.hs
 stack exec ghc -- -e ":q" --interactive datafamily.hs
 stack exec ghc -- -e ":q" --interactive dict.hs

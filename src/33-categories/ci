@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+stack build
 stack exec ghc -- -e ":q" --interactive categories.hs
 stack exec ghc -- -e ":q" --interactive dual.hs
 stack exec ghc -- -e ":q" --interactive functors.hs

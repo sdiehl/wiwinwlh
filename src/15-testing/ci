@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+stack build
 stack exec ghc -- -e ":q" --interactive arbitrary.hs
 stack exec ghc -- -e ":q" --interactive criterion.hs
 stack exec ghc -- -e ":q" --interactive qcheck.hs
