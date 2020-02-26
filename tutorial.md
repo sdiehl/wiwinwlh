@@ -17026,7 +17026,7 @@ idiomatic solution first.
 Quasiquotation
 -------------
 
-Quasiquotation allows us to express "quoted" blocks of syntax that need not necessarily be be the syntax of
+Quasiquotation allows us to express "quoted" blocks of syntax that need not necessarily be the syntax of
 the host language, but unlike just writing a giant string it is instead parsed into some AST datatype in the
 host language. Notably values from the host languages can be injected into the custom language via
 user-definable logic allowing information to flow between the two languages.
