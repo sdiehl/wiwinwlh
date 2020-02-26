@@ -16,7 +16,7 @@ script:
 - stack $ARGS --no-terminal --install-ghc ghc includes.hs -- -o includes
 - stack $ARGS --no-terminal --install-ghc exec make html
 # Run the example test suite
-- sudo apt-get install libblas liblapack
+- sudo apt-get install libblas-dev liblapack-dev
 - cd src && bash ./ci
 cache:
   directories:
