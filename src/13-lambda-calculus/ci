@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+stack exec ghc -- -e ":q" --interactive church_encoding.hs
+stack exec ghc -- -e ":q" --interactive church_list.hs
+stack exec ghc -- -e ":q" --interactive debruijn.hs
+stack exec ghc -- -e ":q" --interactive hoas.hs
+stack exec ghc -- -e ":q" --interactive phoas.hs

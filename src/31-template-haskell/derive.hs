@@ -1,9 +1,10 @@
 {-# LANGUAGE TemplateHaskell #-}
 
+import Data.Derive.Arbitrary
 import Data.DeriveTH
 import Test.QuickCheck
 
-data Color = Red | Green | Blue deriving Show
+data Color = Red | Green | Blue deriving (Show)
 
 $(derive makeArbitrary ''Color)
 

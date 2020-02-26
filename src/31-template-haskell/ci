@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+set -e
+stack build
+stack exec ghc -- -e ":q" --interactive Antiquote.hs
+#stack exec ghc -- -e ":q" --interactive Class.hs
+stack exec ghc -- -e ":q" --interactive cquote.hs
+stack exec ghc -- -e ":q" --interactive derive.hs
+stack exec ghc -- -e ":q" --interactive enum_family_splice.hs
+stack exec ghc -- -e ":q" --interactive EnumFamily.hs
+stack exec ghc -- -e ":q" --interactive Insert.hs
+stack exec ghc -- -e ":q" --interactive Multiline.hs
+stack exec ghc -- -e ":q" --interactive multiline_example.hs
+stack exec ghc -- -e ":q" --interactive Quasiquote.hs
+stack exec ghc -- -e ":q" --interactive quasiquote_use.hs
+stack exec ghc -- -e ":q" --interactive Singleton.hs
+stack exec ghc -- -e ":q" --interactive singleton_lib.hs
+#stack exec ghc -- -e ":q" --interactive singleton_promote.hs
+stack exec ghc -- -e ":q" --interactive Splice.hs
+#stack exec ghc -- -e ":q" --interactive splice_class.hs
+stack exec ghc -- -e ":q" --interactive splice_singleton.hs
+stack exec ghc -- -e ":q" --interactive template_info.hs
+stack exec ghc -- -e ":q" --interactive use_antiquote.hs

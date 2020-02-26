@@ -6,4 +6,4 @@ stack exec ghc -- -e ":q" --interactive gadt.hs
 stack exec ghc -- -e ":q" --interactive kindsignatures.hs
 #stack exec ghc -- -e ":q" --interactive phantom.hs
 stack exec ghc -- -e ":q" --interactive phantom_example.hs
-stack exec ghc -- -e ":q" --interactive propositional_equal.hs
+#stack exec ghc -- -e ":q" --interactive propositional_equal.hs

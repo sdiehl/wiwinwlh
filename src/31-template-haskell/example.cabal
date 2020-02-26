@@ -1,0 +1,20 @@
+cabal-version: >=1.10
+name:          example
+version:       0.1
+copyright:     2016 Stephen Diehl
+maintainer:    stephen.m.diehl@gmail.com
+author:        Stephen Diehl
+tested-with:   GHC ==7.6.3
+category:      Documentation
+build-type:    Simple
+
+library
+  default-language: Haskell2010
+  build-depends:
+      base              >=4.6      && <4.14
+    , derive            >=2.6.5    && <2.7
+    , language-c-quote  >=0.12.2.1 && <0.13
+    , mainland-pretty   >=0.7.0.1  && <0.8
+    , pretty-show       >=1.10     && <1.11
+    , QuickCheck        >=2.13.2   && <2.14
+    , singletons        >=2.5.1    && <2.6

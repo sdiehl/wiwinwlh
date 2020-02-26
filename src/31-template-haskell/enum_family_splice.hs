@@ -1,22 +1,26 @@
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE TemplateHaskell #-}
-
-import EnumFamily
+{-# LANGUAGE TypeFamilies #-}
 
 import Data.Proxy
-import GHC.TypeLits
+import EnumFamily
+import GHC.TypeLits hiding (Mod)
 
 type family Mod (m :: Nat) (n :: Nat) :: Nat
+
 type family Add (m :: Nat) (n :: Nat) :: Nat
+
 type family Pow (m :: Nat) (n :: Nat) :: Nat
 
 enumFamily mod ''Mod 10
+
 enumFamily (+) ''Add 10
+
 enumFamily (^) ''Pow 10
 
 a :: Integer
 a = natVal (Proxy :: Proxy (Mod 6 4))
+
 -- 2
 
 b :: Integer

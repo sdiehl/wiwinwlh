@@ -1,12 +1,14 @@
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE TemplateHaskell #-}
 
-import Text.PrettyPrint.Mainland
-import qualified Language.C.Syntax as C
 import qualified Language.C.Quote.CUDA as Cuda
+import qualified Language.C.Syntax as C
+import Text.PrettyPrint.Mainland
+import Text.PrettyPrint.Mainland.Class (Pretty (..))
 
 cuda_fun :: String -> Int -> Float -> C.Func
-cuda_fun fn n a = [Cuda.cfun|
+cuda_fun fn n a =
+  [Cuda.cfun|
 
 __global__ void $id:fn (float *x, float *y) {
   int i = blockIdx.x*blockDim.x + threadIdx.x;
@@ -16,7 +18,8 @@ __global__ void $id:fn (float *x, float *y) {
 |]
 
 cuda_driver :: String -> Int -> C.Func
-cuda_driver fn n = [Cuda.cfun|
+cuda_driver fn n =
+  [Cuda.cfun|
 
 void driver (float *x, float *y) {
   float *d_x, *d_y;
@@ -37,12 +40,12 @@ void driver (float *x, float *y) {
 |]
 
 makeKernel :: String -> Float -> Int -> [C.Func]
-makeKernel fn a n = [
-    cuda_fun fn n a
-  , cuda_driver fn n
+makeKernel fn a n =
+  [ cuda_fun fn n a,
+    cuda_driver fn n
   ]
 
 main :: IO ()
 main = do
   let ker = makeKernel "saxpy" 2 65536
-  mapM_ (print . ppr) ker
+  mapM_ (putDocLn . ppr) ker

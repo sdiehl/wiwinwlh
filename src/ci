@@ -103,7 +103,7 @@ echo -n "25-streaming .. "
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "26-data-formats .. "
-(cd 25-data-formats && bash ci)
+(cd 26-data-formats && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "27-web .. "
