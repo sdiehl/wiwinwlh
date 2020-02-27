@@ -37,7 +37,7 @@ and ultimately laid the foundation for modern Haskell.
 
 Over the last 30 years Haskell has evolved into a mature ecosystem, with an
 equally mature compiler. Even so, the language is frequently reimagined by
-passionated contributors who may be furthering academic research goals or merely
+passionate contributors who may be furthering academic research goals or merely
 contributing out of personal interest. Although laziness was originally the
 major research goal, this has largely become a quirky artifact that most users
 of the language are generally uninterested in. In modern times the major themes
@@ -55,7 +55,7 @@ of Haskell community are:
 
 Although these are the major research goals, Haskell is still a fully general
 purpose language, and it has been applied in wildly diverse settings from
-garbage trucks to cryptoanalysis for the defense sector and everything
+garbage trucks to cryptanalysis for the defense sector and everything
 in-between. With a thriving ecosystem of industrial applications in web
 development, compiler design, machine learning, financial services, FPGA
 development, algorithmic trading, numerical computing, cryptography research,
@@ -83,7 +83,7 @@ operating system works, the shell, and some fundamentals of other imperative
 programming languages.  If you are a Python or Java software engineer with no
 Haskell experience, this is the executive summary of Haskell theory and practice
 for you. We'll delve into a little theory as needed to explain concepts but no
-more than necessary. If you're looking for a pure introductory tutorial, this
+more than necessary. If you're looking for a purely introductory tutorial, this
 probably isn't the right start for you, however this can be read as a
 companion to other introductory texts.
 
@@ -126,7 +126,7 @@ $ ghc --make Example.hs
 ```
 
 GHC's runtime is written in C and uses machinery from GCC infrastructure for its
-native code generator and can also use LLVM for it's native code generation. GHC
+native code generator and can also use LLVM for its native code generation. GHC
 is supported on the following architectures:
 
 * Linux x86
@@ -162,7 +162,7 @@ GHC can be installed on Linux and Mac with
 $ curl https://get-ghcup.haskell.org -sSf | sh
 ```
 
-This can be used to manage multiple version of GHC installed locally.
+This can be used to manage multiple versions of GHC installed locally.
 
 ```bash
 $ ghcup install 8.6.5
@@ -213,14 +213,16 @@ company's needs.
 Project Structure
 -----------------
 
-A typical Haskell project hosted on Github or Gitlab will have the following
-file structure:
+A typical Haskell project hosted on Github or Gitlab will have several
+**executable**, **test** and **library** components across several
+subdirectories.  Each of these files will correspond to an entry in the Cabal
+file.
 
 ```bash
 .
 ├── app                          # Executable entry-point
-│   └── Main.hs                  # Main-is file
-├── src                          # Executable entry-point
+│   └── Main.hs                  # main-is file
+├── src                          # Library entry-point
 │   └── Lib.hs                   # Exposed module
 ├── test                         # Test entry-point
 │   └── Spec.hs                  # Main-is file
@@ -235,8 +237,8 @@ file structure:
 └── .ghci                        # ghci configuration
 ```
 
-More complex projects consisting of multiple components will include multiple
-project directories like that above, but these will be nested in subfolders with
+More complex projects consisting of multiple modules will include multiple
+project directories like those above, but these will be nested in subfolders with
 a `cabal.project` or `stack.yaml` in the root of the repository.
 
 ```bash
@@ -257,7 +259,7 @@ packages: ./lib-one
           ./lib-three
 ```
 
-By contract, an example Stack project `stack.yaml` for the above multi-component
+By contrast, an example Stack project `stack.yaml` for the above multi-component
 library repository would be:
 
 ```yaml
@@ -293,7 +295,7 @@ $ cabal configure
 This will result in a ``.cabal`` file being created with the configuration
 options for our new project.
 
-Cabal can also build dependencies can in parallel by passing ``-j<n>`` where
+Cabal can also build dependencies in parallel by passing ``-j<n>`` where
 ``n`` is the number of concurrent builds.
 
 ```bash
@@ -486,9 +488,9 @@ are separated into categories:
 
 * **Local Packages** - Packages are built from a configuration file which
   specifies a path to a directory with a cabal file. These can be working
-  project as well as all of it's local transitive dependencies. 
+  projects as well as all of its local transitive dependencies. 
 * **External Packages** - External packages are packages retrieved from either
-  the public Hackage or private Hackage repository. These packages are hashed
+  the public Hackage or a private Hackage repository. These packages are hashed
   and stored locally in `~/.cabal/store` to be reused across builds.
 
 As of Cabal 3.0 the new-build commands are the default operations for build
@@ -518,11 +520,11 @@ new-sdist          Generate a source distribution file (.tar.gz).
 ```
 
 Cabal also stores all of its build artifacts inside of a `dist-newstyle` folder
-stored in the project working working directory. The compilation artifacts are 
+stored in the project working directory. The compilation artifacts are 
 of several categories.
 
 * `.hi` - Haskell interface modules which describe the type information, public
-  exports, symbol table, and other module guts of compiled Haskell module.
+  exports, symbol table, and other module guts of compiled Haskell modules.
 * `.hie` - An extended interface file containing module symbol data.
 * `.hspp` - A Haskell preprocessor file.
 * `.o` - Compiled object files for each module. These are emitted by the native
@@ -591,7 +593,7 @@ dist-newstyle
 Local Packages
 --------------
 
-Both Stack and Cabal can handle local packages built the local filesystem, from
+Both Stack and Cabal can handle local packages built from the local filesystem, from
 remote tarballs, or from remote Git repositories.
 
 Inside of the `stack.yaml` simply specify the git repository remote and the hash
@@ -641,8 +643,8 @@ version:             0.1.0.0
 Every library's cabal file will have a packages dependencies section which will
 specify the external packages which the library depends on. It will also contain
 the allowed versions that it is known to build against in the `build-depends`
-section. The convention is to put upper bounds to the next major unreleased
-version if the lower bound at the currently used version.
+section. The convention is to put the upper bound to the next major unreleased
+version and the lower bound at the currently used version.
 
 ```perl
 build-depends:       
@@ -679,12 +681,12 @@ See:
 Stack
 -----
 
-Stack is a alternative approach to Haskell package structure that emerged in
-2015. Instead of using a rolling build like [Cabal], stack breaks up sets of
+Stack is an alternative approach to Haskell's package structure that emerged in
+2015. Instead of using a rolling build like [Cabal], Stack breaks up sets of
       packages into release blocks that guarantee internal compatibility between
-      sets of packages.  The package solver for stack uses a different strategy
+      sets of packages.  The package solver for Stack uses a different strategy
       for resolving dependencies than cabal-install has historically used and
-        stack combines this with a centralised build server called [Stackage]
+        Stack combines this with a centralised build server called [Stackage]
         which continuously tests the set of packages in a resolver to ensure
         they build against each other.
 
@@ -725,7 +727,7 @@ Most of the common libraries used in everyday development are already in the
 can be used to add [Hackage](http://hackage.haskell.org/) dependencies that are
 not in the Stackage repository. They are specified by the package and the
 version key. For instance, the ``zenc`` package could be added to 
-``stack`` build in the following way:
+``stack build`` in the following way:
 
 ```haskell
 extra-deps:
@@ -765,17 +767,17 @@ graphviz, then piped again into your favorite image viewer:
 $ stack dot --external | dot -Tpng | feh -
 ```
 
-HPack
+Hpack
 -----
 
-HPack is an alternative package description language that uses a structured YAML
+Hpack is an alternative package description language that uses a structured YAML
 format to generate Cabal files. Hpack succeeds in DRYing (Don't Repeat Yourself)
-several sections of cabal files that are often quite repetative across large
+several sections of cabal files that are often quite repetitive across large
 projects. Hpack uses a `package.yaml` file which is consumed by the command line
 tool `hpack`.  Hpack can be integrated into Stack and will generate resulting
 cabal files whenever `stack build` is invoked on a project using a
 `package.yaml` file. The output cabal file contains a hash of the input yaml
-file for consistency check.
+file for consistency checking.
 
 A small `package.yaml` file might look something like the following:
 
@@ -837,7 +839,7 @@ modules.
 * *Data*    - The simple data structures wired into the language
 * *Control* - Control flow functions
 * *Foreign* - Foreign function interface
-* *Numeric* - Numeric tower and arithmetic operations
+* *Numeric* - Numerical tower and arithmetic operations
 * *System*  - System operations for Linux/Mac/Windows
 * *Text*    - Basic [String] types.
 * *Type*    - Typelevel operations
@@ -862,14 +864,14 @@ it, or the NoImplicitPrelude extension is enabled.
 
 The Prelude exports several hundred symbols that are the default datatypes and
 functions for libraries that use the GHC-issued prelude. Although the Prelude is
-the default import many libraries these days do not use the standard prelude
-instead choosing to roll a custom one on a per-project basis or to use a off-the
+the default import, many libraries these days do not use the standard prelude
+instead choosing to roll a custom one on a per-project basis or to use an off-the
 shelf prelude from Hackage.
 
 The Prelude contains common datatype and classes such as [List](#lists),
-[Monad](#monads), [Maybe](#algebraic-datatypes) and most simple associated
-functions for manipulating these structures.  These are the most foundational
-programming constructs in Haskell.
+[Monad](#monads), [Maybe](#algebraic-datatypes) and most associated functions
+for manipulating these structures.  These are the most foundational programming
+constructs in Haskell.
 
 Modern Haskell
 --------------
@@ -879,7 +881,7 @@ There are two official language standards:
 * Haskell98
 * Haskell2010
 
-And then there what is colloquially referred to as Modern Haskell which is not
+And then there is what is colloquially referred to as Modern Haskell which is not
 an official language standard, but an ambiguous term to denote the emerging way
 most Haskellers program with new versions of GHC. The language features
 typically included in modern Haskell are not well-defined and will vary between
@@ -960,7 +962,7 @@ understanding and expertise.
 In contrast to the previous method of packaging, a common philosophy in the
 Haskell community is that Hackage is a place to upload experimental libraries as
 a means of getting community feedback and making the code publicly available.
-Library author(s) often rationalize putting these kind of libraries up without
+Library authors often rationalize putting these kinds of libraries up without
 documentation, often without indication of what the library actually does or how
 it works. This unfortunately means a lot of Hackage namespace has become
 polluted with dead-end, bit-rotting code. Sometimes packages are also uploaded
@@ -1030,11 +1032,11 @@ See:
 * [Stackage](https://www.stackage.org/)
 * [Stackage FAQ](https://github.com/fpco/lts-haskell#readme)
 
-GHCI
+GHCi
 ----
 
-GHCI is the interactive shell for the GHC compiler. GHCi is where we will spend
-most of our time in every day development. Following is a table of useful GHCi
+GHCi is the interactive shell for the GHC compiler. GHCi is where we will spend
+most of our time in everyday development. Following is a table of useful GHCi
 commands.
 
 Command      Shortcut   Action
@@ -1192,7 +1194,7 @@ Data.Traversable fmapDefault :: Traversable t => (a -> b) -> t a -> t b
 Prelude fmap :: Functor f => (a -> b) -> f a -> f b
 ```
 
-It is common community tradition set the prompt to a colored ``λ``:
+It is common community tradition to set the prompt to a colored ``λ``:
 
 ```haskell
 :set prompt "\ESC[38;5;208m\STXλ>\ESC[m\STX "
@@ -1205,7 +1207,7 @@ GHC can also be coerced into giving slightly better error messages:
 :set -ferror-spans -freverse-errors -fprint-expanded-synonyms
 ```
 
-GHCi can also a pretty printing library to format all output which is often much
+GHCi can also use a pretty printing library to format all output, which is often much
 easier to read. For example if your project is already using the amazing
 `pretty-simple` library simply include the following line in your ghci
 configuration.
@@ -1216,7 +1218,7 @@ configuration.
 :pretty
 ```
 
-And the default prelude can also be disabled as swapped for something more
+And the default prelude can also be disabled and swapped for something more
 sensible:
 
 ```haskell
@@ -1240,7 +1242,7 @@ bytecode.
 
 Enabling object code compilation may complicate type inference, since type
 information provided to the shell can sometimes be less informative than
-source-loaded code. This under specificity can result in breakage with some
+source-loaded code. This underspecificity can result in breakage with some
 language extensions. In that case, you can temporarily reenable bytecode
 compilation on a per module basis with the ``-fbyte-code`` flag.
 
@@ -1297,7 +1299,7 @@ development. The key ones of note for Linux are:
 * [Debian PPA](https://launchpad.net/~hvr/+archive/ubuntu/ghc)
 
 For scripts and operations tools, it is common to include commands to add the
-following apt repositories, and then using these to install the signed GHC and
+following apt repositories, and then use these to install the signed GHC and
 cabal-install binaries (if using Cabal as the primary build system).
 
 ```bash
@@ -1307,7 +1309,7 @@ $ sudo apt-get install -y cabal-install-3.0 ghc-8.8.1
 ```
 
 It is not advisable to use a Linux system package manager to manage Haskell
-dependencies. Although this can be done in practice, it is better to use Cabal
+dependencies. Although this can be done, in practice it is better to use Cabal
 or Stack to create locally isolated builds to avoid incompatibilities.
 
 Names
@@ -1320,7 +1322,7 @@ of the form:
 nub
 ```
 
-Or qualified by the module in which they come from, such as:
+Or qualified by the module where they come from, such as:
 
 ```haskell
 Data.List.nub
@@ -1358,19 +1360,19 @@ import OtherModule (myImport1, myImport2)
 -- ...
 ```
 
-Modules dependency graphs optionally may by cyclic (i.e. they import symbols
+Modules' dependency graphs optionally may be cyclic (i.e. they import symbols
 from each other) through the use of a boot file, but this is often best avoided
 if at all possible.
 
 Various module import strategies exist. For instance, we may:
 
-Import of all symbols into the local namespace.
+Import all symbols into the local namespace.
 
 ```haskell
 import Data.List
 ```
 
-Import of select symbols into the local namespace:
+Import select symbols into the local namespace:
 
 ```haskell
 import Data.List (nub, sort)
@@ -1403,7 +1405,7 @@ import qualified Data.Map.Strict as M
 
 A main module is a special module which reserves the name `Main` and has a
 mandatory export of type ``IO ()`` which is invoked when the executable is run..
-This is the entry point from the sytem into a Haskell program.
+This is the entry point from the system into a Haskell program.
 
 ```haskell
 module Main where
@@ -1435,7 +1437,7 @@ In Haskell, a function of two arguments need not necessarily be applied to two
 arguments. The result of applying only the first argument is to yield another
 function to which later the second argument can be applied. For example, we can
 define an `add` function and subsequently a single-argument `inc` function, by
-merely pre-applying `1` to add:
+merely pre-applying `1` to `add`:
 
 ```haskell
 add x y = x + y
@@ -1460,9 +1462,9 @@ Is identical to:
 id = \x -> x
 ```
 
-Functions may themselves or other functions as arguments, a feature known as
+Functions may call themselves or other functions as arguments; a feature known as
 *higher-order functions*. For example the following function applies a given
-argument `f` which is itself a function to a value `x` twice.
+argument `f`, which is itself a function, to a value `x` twice.
 
 ```haskell
 applyTwice f x = f (f x)
@@ -1474,9 +1476,9 @@ Typed functional programming is essential to the modern Haskell paradigm. But
 what are types precisely?
 
 The *syntax* of a programming language is described by the constructs that
-define its types, and its *semantics* is described by the interactions among
+define its types, and its *semantics* are described by the interactions among
 those constructs. A type system overlays additional structure on top of the
-syntax that impose constraints on the formation of expressions based on the
+syntax that imposes constraints on the formation of expressions based on the
 context in which they occur.
 
 Dynamic programming languages associate types with values *at evaluation*,
@@ -1484,17 +1486,17 @@ whereas statically typed languages associate types to expressions *before
 evaluation*. Dynamic languages are in a sense as statically typed as static
 languages, however they have a degenerate type system with only one type.
 
-The dominant philosophy in functional programming is is to "make invalid states
-unrepresentable" at compile-time rather than performing massive amounts of
+The dominant philosophy in functional programming is to "make invalid states
+unrepresentable" at compile-time, rather than performing massive amounts of
 runtime checks. To this end Haskell has developed a rich type system that
 is based on typed lambda calculus known as Girard's System-F (See [Rank-N
 Types]) and has incrementally added extensions to support more type-level
-programming added to it over the years.
+programming over the years.
 
 The following *ground types* are quite common:
 
 * `()` - The unit type
-* `Char` - ASCII Characters
+* `Char` - A single unicode character ("code point")
 * `Text` - Unicode strings
 * `Bool` - Boolean values
 * `Int` - Machine integers
@@ -1506,9 +1508,9 @@ The following *ground types* are quite common:
 as lower case *type variables*. These are associated with common data structures
 such as [lists](#lists) and [tuples](#tuples).
 
-* `[a]` -- Homogeneous lists with elements of a type `a`
-* `(a,b)` -- Tuple with two elements of type `a` and `b`
-* `(a,b,c)` -- Tuple with three elements of type `a`, `b`, and `c`
+* `[a]` -- Homogeneous lists with elements of type `a`
+* `(a,b)` -- Tuple with two elements of types `a` and `b`
+* `(a,b,c)` -- Tuple with three elements of types `a`, `b`, and `c`
 
 The type system grows quite a bit from here, but these are the foundational
 types you'll first encounter. See the later chapters for all types off advanced
@@ -1525,7 +1527,7 @@ Type Signatures
 
 A toplevel Haskell function consists of two lines. The *value-level* definition
 which is a function name, followed by its arguments on the left-hand side of the
-equals sign, and then  the function body which compute the value it yields on
+equals sign, and then  the function body which computes the value it yields on
 the right-hand side:
 
 ```haskell
@@ -1567,10 +1569,10 @@ inc :: Integer -> Integer
 inc = add 1
 ```
 
-The simplest function, called the *identity function* a function which takes a
+The simplest function, called the *identity function*, is a function which takes a
 single value and simply returns it back. This is an example of a polymorphic
-function since it can handle values of *any type*. The identity functions work
-just as well over strings as it can integers.
+function since it can handle values of *any type*. The identity function works
+just as well over strings as over integers.
 
 ```haskell
 id :: a -> a
@@ -1578,7 +1580,7 @@ id x = x
 ```
 
 This can alternatively be written in terms of an anonymous *lambda function*
-which is backslash followed by a space separated list of arguments, followed by
+which is a backslash followed by a space-separated list of arguments, followed by
 a function body.
 
 ```haskell
@@ -1590,7 +1592,7 @@ One of the big ideas in functional programming is that functions are themselves
 first class values which can be passed to other functions as arguments themselves.
 For example the `applyTwice` function takes an argument `f` which is of type
 (`a -> a`) and it applies that function over a given value `x` twice and yields the
-result. `applyTwice` is a higher-order function which will transforms one
+result. `applyTwice` is a higher-order function which will transform one
 function into another function.
 
 ```haskell
@@ -1602,7 +1604,7 @@ Often to the left of a type signature you will see a big arrow `=>` which
 denotes a set of **constraints** over the type signature. Each of these
 constraints will be in uppercase and will normally mention at least one of the
 type variables on the right hand side of the arrow. These constraints can mean
-many things but in the simplest from they denote that a type variable must have
+many things but in the simplest form they denote that a type variable must have
 an implementation of a [type class](#type-classes). The `add` function below
 operates over any two similar values `x` and `y`, but these values must have a
 numerical interface for adding them together.
@@ -1673,21 +1675,23 @@ Algebraic Datatypes
 -------------------
 
 Custom datatypes in Haskell are defined with the `data` keyword followed by the
-the type name, it's parameters, and then a set of *constructors*. The possible
+the type name, its parameters, and then a set of *constructors*. The possible
 constructors are either *sum types* or of *product types*. All datatypes in
 Haskell can expressed as sums of products. A sum type is a set of options that
-is delimited by a pipe. A datatype is inhabited by only a single value sum type
-at one point and intuitively models a set of "options" a value may take. While a
-product type is a combination of a set of typed values, potentially named by
-records fields. For example the following are two definitions of a Point product
-type with two fields `x` and `y`.
+is delimited by a pipe. 
+
+A datatype can only ever be inhabited by only single value from a sum type and
+intuitively models a set of "options" a value may take. While a product type is
+a combination of a set of typed values, potentially named by record fields. For
+example the following are two definitions of a Point product type, the latter
+with two fields `x` and `y`.
 
 ```haskell
 data Point = Point Int Int
 data Point = Point { x :: Int, y :: Int }
 ```
 
-An another example a deck of common playing cards could be modeled by the
+As another example: A deck of common playing cards could be modeled by the
 following set of product and sum types:
 
 ```haskell
@@ -1710,7 +1714,7 @@ data Value
   deriving (Eq, Ord)
 ```
 
-An record type can use these custom datatypes to define all the parameters that
+A record type can use these custom datatypes to define all the parameters that
 define an individual playing card. 
 
 ```haskell
@@ -1732,11 +1736,11 @@ queenDiamonds :: Card
 queenDiamonds = Card { suit = Diamonds, color = Red, value = Queen }
 ```
 
-The problem with definition of this datatype is that it admits several values
+The problem with the definition of this datatype is that it admits several values
 which are malformed. For instance it is possible to instantiate a `Card` with a
 suit `Hearts` but with color `Black` which is an invalid value. The convention
 for preventing these kind of values in Haskell is to limit the export of
-constructors in a module and only provide a limit set of functions which the
+constructors in a module and only provide a limited set of functions which the
 module exports, which can enforce these constraints. These are **smart
 constructors** and an extremely common pattern in Haskell library design. For
 example we can export functions for building up specific suit cards that enforce
@@ -1760,7 +1764,7 @@ club = Card Clubs Black
 
 Datatypes may also be **recursive**, in the sense that they can contain
 themselves as fields. The most common example is a linked list which can be
-defined recursively as either an empty list or a value linked to potentially
+defined recursively as either an empty list or a value linked to a potentially
 nested version of itself.
 
 ```haskell
@@ -1775,7 +1779,7 @@ list = List 1 (List 2 (List 3 Nil))
 ```
 
 Constructors for datatypes can also be defined as infix symbols. This is
-somewhat rare, but is sometimes used more math heavy libraries. For example the
+somewhat rare, but is sometimes used in more math heavy libraries. For example the
 constructor for our list type could be defined as the infix operator `:+:`. When
 the value is printed using a Show instance, the operator will be printed in
 infix form.
@@ -1816,8 +1820,8 @@ its first argument and a *tail argument* as its second.
 (:) :: a -> [a] -> [a]
 ```
 
-The `Data.List` from the standard Prelude defines a variety of utility functions
-for operator over linked lists. For example the `length` function returns the
+The `Data.List`module from the standard Prelude defines a variety of utility functions
+for operations over linked lists. For example the `length` function returns the
   integral length of the number of elements in the linked list.
 
 ```haskell
@@ -1875,14 +1879,14 @@ Pattern Matching
 -----------------
 
 To unpack an algebraic datatype and extract its fields we'll use a built in
-language construction known as *pattern match*. This is denoted by the `case`
+language construction known as *pattern matching*. This is denoted by the `case`
 syntax and *scrutinizes* a specific value. A case expression will then be
 followed by a sequence of *matches* which consist of a *pattern* on the left and
 an arbitrary expression on the right. The left patterns will all consist of
 constructors for the type of the scrutinized value and should enumerate all
 possible constructors. For product type patterns that are scrutinized a sequence
 of variables will bind the fields associated with its positional location in
-the constructors of constructor. The types of all expressions on the right hand
+the constructor. The types of all expressions on the right hand
 side of the matches must be identical.
 
 Pattern matches can be written in explicit case statements or in toplevel
@@ -1900,7 +1904,7 @@ example2 :: Example -> Int
 example2 (Example a b c) = a + b +c
 ```
 
-Following on the playing card example in the previous, we could use a pattern to
+Following on the playing card example in the previous section, we could use a pattern to
 produce a function which scores the face value of a playing card.
 
 ```haskell
@@ -2014,7 +2018,7 @@ Operators and Sections
 ----------------------
 
 An operator is a function that can be applied using infix syntax or partially
-applied using a section. Operators can be defined to use any combination the
+applied using a section. Operators can be defined to use any combination of the
 special ASCII symbols or any unicode symbol.
 
 `!` `#` `%` `&` `*` `+` `.` `/` `<` `=` `>` `?` `@` `\` `^` `|` `-` `~` `:`
@@ -2086,7 +2090,7 @@ tuple3 :: (Integer, Integer, Integer)
 tuple3 = (10, 20 ,30)
 ```
 
-For two tuples there are two functions `fst` and `snd` which extract the left
+For two-tuples there are two functions `fst` and `snd` which extract the left
 and right values respectively. 
 
 ```haskell
@@ -2205,7 +2209,7 @@ example =
   . map (*10)
 ```
 
-Another common higher-order function is the `flip` function which takes as it's
+Another common higher-order function is the `flip` function which takes as its
 first argument a function of two arguments, and reverses the order of these two
 arguments returning a new function.
 
@@ -2252,7 +2256,7 @@ on :: (b -> b -> c) -> (a -> b) -> a -> a -> c
 ```
 
 This is used quite often in sort functions. For example we can write a custom
-sort function which sorts a lists of lists based on length.
+sort function which sorts a list of lists based on length.
 
 ```haskell
 λ: import Data.List
@@ -2265,8 +2269,8 @@ List Comprehensions
 -------------------
 
 List comprehensions are a syntactic construct that first originated in the
-Haskell language and has now later spread to other programming languages. List
-comprehensions provide a simple way of working with lists and sequences of value
+Haskell language and has now spread to other programming languages. List
+comprehensions provide a simple way of working with lists and sequences of values
 that follow patterns. List comprehension syntax consists of three components:
 
 * **Generators** - Expressions which evaluate a list of values which are
@@ -2274,7 +2278,7 @@ that follow patterns. List comprehension syntax consists of three components:
 * **Let bindings** - Expressions which generate a constant value which is scoped
   on each iteration.
 * **Guards** - Expressions which generate a boolean expression which determine
-  whether an iteration if added to the result.
+  whether an iteration is added to the result.
 
 The simplest generator is simply a list itself. The following example produces a
 list of integral values, each element multiplied by two.
@@ -2287,7 +2291,7 @@ list of integral values, each element multiplied by two.
 ```
 
 We can extend this by adding a let statement which generalizes the multiplier on
-each step and binds it a variable `n`.
+each step and binds it to a variable `n`.
 
 ```haskell
 λ: [n*x | x <- [1,2,3,4,5], let n = 3]
@@ -2297,7 +2301,7 @@ each step and binds it a variable `n`.
 ```
 
 And we can also restrict the set of resulting values to only the subset of
-values of `x` that meet a condition. This this case we restrict to only values
+values of `x` that meet a condition. In this case we restrict to only values
 of `x` which are odd.
 
 ```haskell
@@ -2328,8 +2332,8 @@ Syntax Sugar        Enum Class Method
 ``[ e1..e3 ]``      ``enumFromTo e1 e3``
 ``[ e1,e2..e3 ]``   ``enumFromThenTo e1 e2 e3``
 
-There is both an `Enum` instance for `Integer` and `Char` types and so we can
-write list comprehensions for both which generate ranges of values. 
+There is an `Enum` instance for `Integer` and `Char` types and so we can
+write list comprehensions for both, which generate ranges of values. 
 
 ```haskell
 λ: [1 .. 15]
@@ -2345,7 +2349,7 @@ write list comprehensions for both which generate ranges of values.
 [0,50,100,150,200,250,300,350,400,450,500]
 ```
 
-These can comprehensions can be used inside of function definitions and
+These comprehensions can be used inside of function definitions and
 reference locally bound variables. For example the `factorial` function (written
 as $n!$) is defined as the product of all positive integers up to a given value.
 
@@ -2385,7 +2389,7 @@ Single line comments begin with double dashes `--`:
 -- Everything should be built top-down, except the first time.
 ```
 
-Multiline comments begin with `{-` and ends with `-}`.
+Multiline comments begin with `{-` and end with `-}`.
 
 
 ```haskell
@@ -2508,7 +2512,7 @@ frequently and defined over many prelude types:
 * **Num** - Provides a basic numerical interface for values with addition,
   multiplication, subtraction, and negation.
 * **Eq** - Provides an interface for values that can be tested for equality.
-* **Ord** - Provides an interface for values that have an total ordering.
+* **Ord** - Provides an interface for values that have a total ordering.
 * **Read** - Provides an interface for values that can be read from a string.
 * **Show** - Provides an interface for values that can be printed to a string.
 * **Enum** - Provides an interface for values that are enumerable to integers.
@@ -2545,10 +2549,10 @@ command to see the methods and all instances in scope. For example:
  instance Num Int        -- Imported from GHC.Num
 ```
 
-Many of the default classes have instances that can be deriving automatically.
+Many of the default classes have instances that can be derived automatically.
 After the definition of a datatype you can add a `deriving` clause which will
 generate the instances for this datatype automatically. This does not work
-universally but for many instances which have boilerplate definitions GHC is
+universally but for many instances which have boilerplate definitions, GHC is
 quite clever and can save you from writing quite a bit of code by hand.
 
 For example for a custom list type.
@@ -2563,7 +2567,7 @@ data List a
 Side Effects
 ------------
 
-Contrary to a common misconception, side effects are integral part of Haskell
+Contrary to a common misconception, side effects are an integral part of Haskell
 programming. Probably the most interesting thing about Haskell’s approach to
 side effects is that they are encoded in the type system. This is certainly a
 different approach to effectful programming, and the language has various models
@@ -2574,7 +2578,7 @@ of reasoning about where effects can and cannot exist is one of the key ideas
 of Haskell, but this certainly does not mean trying to avoid side effects
 altogether!
 
-Indeed a Hello World program in Haskell is quite simply:
+Indeed, a Hello World program in Haskell is quite simple:
 
 ```haskell
 main :: IO ()
@@ -2595,11 +2599,11 @@ main = do
 Records
 -------
 
-Records in Haskell are fundamentally broken for several reasons.
+Records in Haskell are fundamentally broken for several reasons:
 
 1. **The syntax is unconventional.**
 
-Most programming language use dot or arrow syntax for field accessors like the
+Most programming languages use dot or arrow syntax for field accessors like the
 following:
 
 ```cpp
@@ -2645,8 +2649,8 @@ Pragmas
 -------
 
 At the beginning of a module there is special syntax for pragmas which direct
-the compiler to compile the current module in a specific way. The most common in
-a langauge extension pragma denoted like the following:
+the compiler to compile the current module in a specific way. The most common is
+a language extension pragma denoted like the following:
 
 ```haskell
 {-# LANGUAGE FlexibleInstances #-}
@@ -2665,7 +2669,7 @@ flags.
 ```
 
 Warning flags allow you to inform users at compile-time with a custom error
-message. Additionally you can mark a module as deprecated with specific
+message. Additionally you can mark a module as deprecated with a specific
 replacement message.
 
 ```haskell
@@ -2678,9 +2682,9 @@ Newtypes
 
 Newtypes are a form of zero-cost abstraction that allows developers to specify
 compile-time names for types for which the developer wishes to expose a more
-restrictive interface.  They’re zero-cost because these new types end up with
+restrictive interface.  They’re zero-cost because these newtypes end up with
 the same underlying representation as the things they differentiate.  This
-allows the compiler to distinguish between different types which have
+allows the compiler to distinguish between different types which are
 representationally identical but semantically different.
 
 For instance velocity can be represented as a scalar quantity represented as a
@@ -2748,7 +2752,7 @@ error :: String -> a                       -- Takes an error message of type
 ```
 
 In the ``divByY`` function below, passing the function ``0`` as the divisor
-results in this function results in such an exception.
+results in this function returning such an exception.
 
 ~~~~ {.haskell include="src/01-basics/errors.hs"}
 ~~~~
@@ -2760,7 +2764,7 @@ f :: a
 f = let x = x in x
 ```
 
-Examples of actual Haskell code that use this looping syntax live in the source
+Examples of actual Haskell code that use this looping syntax lives in the source
 code of the [GHC.Prim](https://hackage.haskell.org/package/ghc-prim-0.4.0.0/docs/GHC-Prim.html)
 module. These bottoms exist because the operations [cannot be defined in native
 Haskell](https://downloads.haskell.org/ghc/latest/docs/html/users_guide/glasgow_exts.html#unboxed-types-and-primitive-operations).
@@ -2848,7 +2852,7 @@ listToMaybe (a:_)  =  Just a     -- A non-empty list returns the first element
 
 Invoking a bottom defined in terms of ``error`` typically will not generate any
 position information. However, ``assert``, which is used to provide assertions,
-can be short-circuited to generate position information in the place of either
+can be short-circuited to generate position information in place of either
 ``undefined`` or ``error`` calls.
 
 ~~~~ {.haskell include="src/01-basics/fail.hs"}
@@ -2883,7 +2887,7 @@ However, the complete removal of non-exhaustive patterns from the language
 would itself be too restrictive and forbid too many valid programs.
 
 Several flags exist that we can pass to the compiler to warn us about such
-patterns or forbid them entirely either locally or globally.
+patterns or forbid them entirely, either locally or globally.
 
 ```haskell
 $ ghc -c -Wall -Werror A.hs
@@ -2926,14 +2930,14 @@ boom3 = do
 GHC can warn about these cases of non-exhaustivity with
 the ``-fwarn-incomplete-uni-patterns`` flag.
 
-Grossly speaking, any non-trivial program will use some measure of partial
+Generally speaking, any non-trivial program will use some measure of partial
 functions. It is simply a fact. Thus, there exist obligations for the
-programmer than cannot be manifest in the Haskell type system.
+programmer that cannot be manifested in the Haskell type system.
 
 Debugger
 --------
 
-Since GHC version 6.8.1, a built-in debuggerhas been available, although its use
+Since GHC version 6.8.1, a built-in debugger has been available, although its use
 is somewhat rare. Debugging uncaught exceptions is in a similar style to
 debugging segfaults with gdb. Breakpoints can be set `:break` and the call stack
 stepped through with `:forward` and `:back`.
@@ -3065,7 +3069,7 @@ size Leaf = 0
 size (Bin _ t) = 1 + 2 * size t
 ```
 
-In the second case recursion is polymorphic because the inferred type variable
+In the second case, recursion is polymorphic because the inferred type variable
 ``a`` in ``size`` spans two possible types (``a`` and ``(a,a)``). These two
 types won't pass the occurs-check of the typechecker and it yields an incorrect
 inferred type:
@@ -3255,8 +3259,8 @@ Name Conventions
 ----------------
 
 Haskell uses short variable names as a convention. This is offputting at first
-and then you read enough Haskell and it ceases to become a problem. In addition
-there are several ad-hoc conventions that are typically adoped 
+but after you read enough Haskell, it ceases to be a problem. In addition
+there are several ad-hoc conventions that are typically adopted 
 
 Variable      Convention
 ------------  ---------------
@@ -3274,14 +3278,14 @@ Variable      Convention
 ``f``         Functor or applicative type variable
 ``mX``        Maybe variable
 
-Functions that end with a tick ``fold'`` are typically strict variants of a
-lazy default lazy function.
+Functions that end with a tick (like ``fold'``) are typically strict variants of a
+default lazy function.
 
 ```haskell
 foldl' :: (b -> a -> b) -> b -> t a -> b
 ```
 
-Functions that end with a _ like ``map_`` are typically variants of a function
+Functions that end with a _ (like ``map_``) are typically variants of a function
 which discards the output and returns void.
 
 ```haskell
@@ -3296,7 +3300,7 @@ Variables that are pluralized ``xs``, ``ys`` typically refer to list tails.
 ```
 
 Records that do not export their accessors will sometimes prefix them with
-underscores. These are sometime interpreted by Template Haskell logic to
+underscores. These are sometimes interpreted by Template Haskell logic to
 produce derived field accessors.
 
 ```haskell
@@ -3306,12 +3310,13 @@ data Point = Point
   }
 ```
 
-Predicate will often prefix their function names with ``is``, as in ``isPositive``.
+Predicates will often prefix their function names with ``is``, as in ``isPositive``.
 
 ```haskell
 isPositive = (>0)
 ```
 
+<<<<<<< HEAD
 Functions which result in an Applicative or Monad type will often suffix their
 name with a A for Applicative or M for Monad. For example:
 
@@ -3330,7 +3335,7 @@ mapAccumL :: Traversable t => (a -> b -> (a, c)) -> a -> t b -> (a, t c)
 mapAccumR :: Traversable t => (a -> b -> (a, c)) -> a -> t b -> (a, t c)
 ```
 
-Working with mutable structures or monadic state will often adopt the following naming
+Functions working with mutable structures or monadic state will often adopt the following naming
 conventions:
 
 ```haskell
@@ -3340,7 +3345,7 @@ setX      -- Set the value of an existing mutable X structure
 modifyX   -- Apply a function over existing mutable X structure
 ```
 
-Functions that are prefix with a ``with`` typically take a value as their first
+Functions that are prefixed with ``with`` typically take a value as their first
 argument and a function as their second argument returning the value with the
 function applied over some substructure as the result.
 
@@ -3369,8 +3374,8 @@ program automatically reloads and evaluates the code for errors and warnings.
 HLint
 -----
 
-Hlint is a source linter for Haskell that provides a variety of hints on code
-improvements. It can be customised and configured with custom rules and on a
+HLint is a source linter for Haskell that provides a variety of hints on code
+improvements. It can be customised and configured with custom rules, on a
 per-project basis. HLint is configured through a `hlint.yaml` file placed in the
 root of a project. To generate the default configuration run:
 
@@ -3393,7 +3398,7 @@ globally by adding ignore pragmas.
 ignore: {name: Use let}
 ```
 
-Or within specific modules by specifying `within` option.
+Or within specific modules by specifying the `within` option.
 
 ```yaml
 ignore: {name: Use let, within: MyModule}
@@ -3406,8 +3411,8 @@ See:
 Docker Images
 -------------
 
-Haskell has stable Docker images that widely used for deployments across
-Kubernetes and Docker enviornments. The two Dockerhub repositories of note are:
+Haskell has stable Docker images that are widely used for deployments across
+Kubernetes and Docker environments. The two Dockerhub repositories of note are:
 
 * [Official Haskell Images](https://hub.docker.com/_/haskell/)
 * [Stack LTS Images](https://hub.docker.com/r/fpco/haskell/)
@@ -3431,7 +3436,7 @@ Continuous Integration
 
 These days it is quite common to use cloud hosted continuous integration systems
 to test code from version control systems. There are many community contributed
-build script for different service providers, including the following:
+build scripts for different service providers, including the following:
 
 * [Travis CI for Cabal](https://github.com/haskell-CI/haskell-ci/blob/master/.travis.yml)
 * [Travis CI for Stack](https://docs.haskellstack.org/en/stable/travis_ci/)
@@ -3521,7 +3526,7 @@ fmap :: Functor f
      -> f b       -- ^ output
 ```
 
-``-- ^`` is also used to comment Constructors or Record fields:
+``-- ^`` is used to comment Constructors or Record fields:
 
 ```haskell
 data T a b
@@ -3534,7 +3539,7 @@ data R a b = R
   }
 ```
 
-Elements within a module (i.e. value, types, classes) can be hyperlinked by
+Elements within a module (i.e. values, types, classes) can be hyperlinked by
 enclosing the identifier in single quotes:
 
 ```haskell
@@ -3640,10 +3645,10 @@ Unsafe Functions
 ----------------
 
 As everyone eventually finds out there are several functions within the
-implementation of GHC ( not the Haskell language ) that can be used to subvert
+implementation of GHC (not the Haskell language) that can be used to subvert
 the type-system; these functions are marked with the prefix ``unsafe``.  Unsafe
 functions exist only for when one can manually prove the soundness of an
-expression but can't express this property in the type-system or externalities
+expression but can't express this property in the type-system, or externalities
 to Haskell.
 
 ```haskell
@@ -3655,7 +3660,7 @@ unsafePerformIO :: IO a -> a   -- Unsafely run IO action outside of IO
 Using these functions to subvert the Haskell typesystem will cause all measure
 of undefined behavior with unimaginable pain and suffering, and so they are
 <span style="font-weight: bold">strongly discouraged</span>. When initially
-starting out with Haskell there are no legitimate reason to use these functions
+starting out with Haskell there are no legitimate reasons to use these functions
 at all.
 </div>
 
@@ -3736,7 +3741,7 @@ value of type ``a`` into a monadic context (e.g., Maybe, Either, etc.), which is
 denoted as ``m a``.
 
 The other function essential to implementing a Monad instance is ``(>>=)``.
-This infix takes two arguments. On its left side is a value with type ``m a``,
+This infix function takes two arguments. On its left side is a value with type ``m a``,
 while on the right side is a function with type ``(a -> m b)``. The bind
 operation results in a final value of type ``m b``.
 
@@ -3762,7 +3767,7 @@ instances must satisfy three laws.
 
 **Law 1**
 
-The first law says that when ``return a`` is passed through a ``(>>=)`` into a
+The first law says that when ``return a`` is passed through ``(>>=)`` into a
 function ``f``, this expression is exactly equivalent to ``f a``.
 
 ```haskell
@@ -3824,7 +3829,7 @@ Again, it is possible to write this law with more explicit code. Like in the
 explicit examples for law 2, ``m`` has been replaced by ``SomeMonad val`` in
 order to be make it clear that there can be multiple components to a monadic value.
 Although little has changed in the code, it is easier to see that
-value--namely, ``val``--corresponds to the ``x`` in the lambda expression.
+value --namely, ``val``-- corresponds to the ``x`` in the lambda expression.
 After ``SomeMonad val`` is passed through ``(>>=)`` to ``f``, the function ``f``
 operates on ``val`` and returns a result still wrapped in the ``SomeMonad``
 type constructor. We can call this new value ``SomeMonad newVal``. Since it is
@@ -3835,6 +3840,8 @@ through the bind operation into the function ``g``.
 ((SomeMonad val) >>= f) >>= g ≡ (SomeMonad val) >>= (\x -> f x >>= g)
 
 ```
+
+Monad law summary: Law 1 and 2 are identity laws (left and right identity respectively) and law 3 is the associativity law. Together they ensure that Monads can be composed and 'do the right thing'.
 
 See:
 
@@ -3882,8 +3889,8 @@ f >>= \a ->
       return (a, b, c)
 ```
 
-If one were to write the bind operator as an uncurried function ( which is not
-how Haskell uses it ) the same desugaring might look something like the
+If one were to write the bind operator as an uncurried function (which is not
+how Haskell uses it) the same desugaring might look something like the
 following chain of nested binds with lambdas.
 
 ```haskell
@@ -4100,7 +4107,7 @@ many things, including, but not limited to:
  - Take input from a radio antenna for signal processing
  - Launch the missiles.
 
-Conceptualizing I/O as a monad enables the developer to access information
+Conceptualizing I/O as a monad enables the developer to access information from
 outside the program, but also to use pure functions to operate on that
 information as data. The following examples will show how we can use IO actions
 and `IO` values to receive input from stdin and print to stdout.
@@ -4313,7 +4320,7 @@ A simple implementation of the Writer monad:
 
 This implementation is lazy, so some care must be taken that one actually wants
 to only generate a stream of thunks. Most often the lazy writer is not suitable
-for use, instead implement the equivalent structure by embedding some monomial
+for use, instead implement the equivalent structure by embedding some [monomial](https://en.wikipedia.org/wiki/Monomial)
 object inside a StateT monad, or using the strict version.
 
 ```haskell
@@ -4349,15 +4356,15 @@ So many monad tutorials have been written that it begs the question: what makes
 monads so difficult when first learning Haskell? I hypothesize there are three
 aspects to why this is so:
 
-1. *There are several levels on indirection with desugaring.*
+1. *There are several levels of indirection with desugaring.*
 
 A lot of the Haskell we write is radically rearranged and transformed into
 an entirely new form under the hood.
 
 Most monad tutorials will not manually expand out the do-sugar. This leaves the
 beginner thinking that monads are a way of dropping into a pseudo-imperative
-language inside of code and further fuels that misconception that specific
-instances like IO fully *monads in their full generality*. When in fact the IO
+language inside of pure code and further fuels the misconception that specific
+instances like IO describe monads in their *full generality*. When in fact the IO
 monad is only one among many instances.
 
 ```haskell
@@ -4436,13 +4443,12 @@ main $dMonad = bind $dMonad getLine (\x -> bind $dMonad (putStrLn x) (\_ -> retu
 ```
 
 In general, this is true for all typeclasses in Haskell and it’s true here as
-well, except in the case where the parameter of the monad class is unified (
-through inference ) with a concrete class instance.
+well, except in the case where the parameter of the monad class is unified (through inference) with a concrete class instance.
 
 Now, all of these transformations are trivial once we understand them, they're
 just typically not discussed. In my opinion the fundamental fallacy of monad
-tutorials is not that intuition for monads is hard to convey ( nor are metaphors
-required! ), but that novices often come to monads with an incomplete
+tutorials is not that intuition for monads is hard to convey (nor are metaphors
+required!), but that novices often come to monads with an incomplete
 understanding of points (1), (2), and (3) and then trip on the simple fact that
 monads are the first example of a Haskell construct that is the confluence of
 all three.
@@ -4473,7 +4479,7 @@ an interface to exchange values between the levels, called lift:
 lift :: (Monad m, MonadTrans t) => m a -> t m a
 ```
 
-In production code, the monads mentioned previously maybe actually be their more
+In production code, the monads mentioned previously may actually be their more
 general transformer form composed with the `Identity` monad.
 
 ```haskell
@@ -4747,7 +4753,7 @@ lifting to another monad:
 lift :: Monad m => m a -> t m a
 ```
 
-But often times we need to work with and manipulate our monad transformer stack
+But oftentimes we need to work with and manipulate our monad transformer stack
 to either produce new transformers, modify existing ones or extend an upstream
 library with new layers. The ``mmorph`` library provides the capacity to compose
 monad morphism transformation directly on transformer stacks. This is achieved
@@ -4830,7 +4836,7 @@ exceptState :: ExceptT e (State s) a -> s -> (Either e a, s)
 exceptState m s = runState (runExceptT m) s
 ```
 
-In addition the standard method of deriving mtl classes for a transformer stack
+In addition, the standard method of deriving mtl classes for a transformer stack
 breaks down when using transformer stacks with the same monad at different
 layers of the stack. For example stacking multiple `State` transformers is a
 pattern that shows up quite frequently.
@@ -4840,20 +4846,20 @@ newtype Example = StateT Int (State String)
   deriving (MonadState Int)
 ```
 
-In order to get around this you would have to hand write the instances for this
-transformer stack and manually life anytime you perform a State action. This is
-a suboptimal design and difficult to route around simply without massive
+In order to get around this you would have to handwrite the instances for this
+transformer stack and manually lift anytime you perform a State action. This is
+a suboptimal design and difficult to route around without massive
 boilerplate.
 
-While these problems, most users of mtl don't implement new transformers at all
-and can get by.  However in recent years there have many other libraries that
+While these problems exist, most users of mtl don't implement new transformers at all
+and can get by. However in recent years there have been written many other libraries that
 have explored the design space of alternative effect modeling systems. These
 systems are still quite early compared to the `mtl` but some are able to avoid
 some of the shortcomings of `mtl` in favour of newer algebraic models of
 effects. The two most commonly used libraries are:
 
-* `fused-effects`
 * `polysemy`
+* `fused-effects`
 
 Polysemy
 --------
@@ -4861,7 +4867,7 @@ Polysemy
 Polysemy is a new effect system library based on the free-monad approach to
 modeling effects. The library uses modern type system features to model effects
 on top of a `Sem` monad. The monad will have a members constraint type which
-constraints a parameter `r` by a type-level of effects in the given unit of
+constraints a parameter `r` by a type-level list of effects in the given unit of
 computation.
 
 ```haskell
@@ -4902,16 +4908,16 @@ transformers.
 * `Polysemy.Async` - Asynchronous computations
 * `Polysemy.AtomicState` - Atomic operations
 * `Polysemy.Error` - Error handling
-* `Polysemy.Fail` - Computations will can fail
+* `Polysemy.Fail` - Computations that fail
 * `Polysemy.IO` - Monadic IO
 * `Polysemy.Input` - Input effects
 * `Polysemy.Output` - Output effects
 * `Polysemy.NonDet` - Non-determinism effect
-* `Polysemy.Reader` - Contextual state ala Reader monad
+* `Polysemy.Reader` - Contextual state a la Reader monad
 * `Polysemy.Resource` - Resources with finalizers
 * `Polysemy.State` - Stateful effects
 * `Polysemy.Trace` - Tracing effect
-* `Polysemy.Writer` - Accumulation effect ala Writer monad
+* `Polysemy.Writer` - Accumulation effect a la Writer monad
 
 For example for a simple stateful computation with only a single effect.
 
@@ -4980,7 +4986,7 @@ Polysemy will require the following language extensions to operate:
 
 The use of free-monads is not entirely without cost, and there are experimental
 GHC plugins which can abstract away some of the overhead from the effect stack.
-Code thats makse use of polysemy should enable the following GHC flags to enable
+Code thats makes use of polysemy should enable the following GHC flags to enable
 aggressive typeclass specialisation:
 
 * `-flate-specialise`
@@ -4989,7 +4995,7 @@ aggressive typeclass specialisation:
 Fused Effects
 -------------
 
-Fused-effects is an alternative approach to effect systems based on algebraic
+Fused-effects is an alternative approach to effect systems based on an algebraic
 effects model. Unlike polysemy, fused-effects does not use a free monad as an
 intermediate form. Fused-effects has competative performance compared with mtl
 and doesn't require additional GHC plugins or extension compiler fusion rules to
@@ -5133,8 +5139,7 @@ people who do web programming. Thus, we will use the following classifications:
   yourself in the foot.
 * *Historical* implies that one shouldn't use this extension, it is in GHC
   purely for backwards compatibility.  Sometimes these are dangerous to enable.
-* *Steals syntax* means that enabling this extension means that certain code
-  valid in vanilla Haskell will no longer be accepted. For example, `f $(a)`
+* *Steals syntax* means that enabling this extension causes certain code, that is valid in vanilla Haskell, to be no longer be accepted. For example, `f $(a)`
   is the same as `f $ (a)` in Haskell98, but `TemplateHaskell` will interpret
   `$(a)` as a splice.
 
@@ -5566,8 +5571,8 @@ bmiTell bmi = if
 EmptyCase
 ---------
 
-GHC normally requires at least one pattern branch in case statement this
-restriction can be relaxed with the `EmptyCase` langauge extension. The case
+GHC normally requires at least one pattern branch in a case statement; this
+restriction can be relaxed with the `EmptyCase` language extension. The case
 statement then immediately yields a ``Non-exhaustive patterns in case`` if
 evaluated. For example, the following will compile using this language pragma:
 
@@ -5578,7 +5583,7 @@ test = case of
 LambdaCase
 ----------
 
-For case statements, the langauge extension `LambdaCase` allows the elimination
+For case statements, the language extension `LambdaCase` allows the elimination
 of redundant free variables introduced purely for the case of pattern matching
 on.
 
@@ -5622,9 +5627,9 @@ googol = 1e100
 PackageImports
 --------------
 
-The syntax langguage extension `PackageImports` allows us to disambiguate
+The syntax language extension `PackageImports` allows us to disambiguate
 hierarchical package names by their respective package key. This is useful in
-the case where you have to imported packages that expose the same module. In
+the case where you have two imported packages that expose the same module. In
 practice most of the common libraries have taken care to avoid conflicts in the
 namespace and this is not usually a problem in most modern Haskell.
 
@@ -5643,7 +5648,7 @@ RecordWildCards
 Record wild cards allow us to expand out the names of a record as variables
 scoped as the labels of the record implicitly. The extension can be used to
 extract variables names into a scope and/or to assign to variables in a record
-drawing, aligning the record's labels with the variables in scope for the
+drawing(**?**), aligning the record's labels with the variables in scope for the
 assignment. The syntax introduced is the ``{..}`` pattern selector as in the
 following example:
 
@@ -5694,7 +5699,7 @@ using the `pattern` keyword.
 pattern TArr t1 t2 = TApp (TApp (TCon "(->)") t1) t2
 ```
 
-So now we can write an deconstructor and constructor for arrow type very
+So now we can write a deconstructor and constructor for the arrow type very
 naturally.
 
 ~~~~ {.haskell include="src/04-extensions/patterns.hs"}
@@ -5716,8 +5721,8 @@ pattern Elt = [a]
 DeriveFunctor
 -------------
 
-Many instances of functor over datatypes with parameters and trivial
-constructors are the result of trivially applying a functions over the single
+Many instances of functors over datatypes with parameters and trivial
+constructors are the result of trivially applying a function over the single
 constructor's argument. GHC can derive this boilerplate automatically in
 deriving clauses if `DeriveFunctor` is enabled.
 
@@ -5837,8 +5842,8 @@ DeriveAnyClass
 With ``-XDeriveAnyClass`` we can derive any class. The deriving logic generates
 an instance declaration for the type with no explicitly-defined methods or with
 all instances having a specific default implementation given. These are used
-extensively with [Generics] when instance provide empty [Minimal
-Annotations](#minimal-annotations) which are all derived from generic logics.
+extensively with [Generics] when instances provide empty [Minimal
+Annotations](#minimal-annotations) which are all derived from generic logic.
 
 A contrived example of a class with an empty minimal set might be the following:
 
@@ -5962,20 +5967,20 @@ For another example, it can distinguish the version of the base library used.
 ```
 
 One can also use the CPP extension to emit Haskell source at compile-time. This
-is used in some libraries which have massive boiler plate obligations. Of
+is used in some libraries which have massive boilerplate obligations. Of
 course, this can be abused quite easily and doing this sort of compile-time
 string-munging should be a last resort.
 
 TypeApplications
 ----------------
 
-Type type system extension `TypeApplications` allows you to use to use explicit
+The type system extension `TypeApplications` allows you to use explicit
 annotations for subexpressions. For example if you have a subexpression which
-has inferred type `a -> b -> a` you can explicitly name the types of `a` and `b`
+has the inferred type `a -> b -> a` you can name the types of `a` and `b`
 by explicitly stating `@Int @Bool` to assign `a` to `Int` and `b` to `Bool`.
 This is particularly useful when working with typeclasses where type inference
 cannot deduce the types of all subexpressions from the toplevel signature and
-results in a overly specific default. This is quite common when working with
+results in an overly specific default. This is quite common when working with
 roundtrips of `read` and `show`. For example:
 
 ~~~~ {.haskell include="src/04-extensions/application.hs"}
@@ -5984,7 +5989,7 @@ roundtrips of `read` and `show`. For example:
 DerivingVia
 -----------
 
-`DerivingVia` is an extension of `GeneraliazedNewtypeDeriving`. Just as newtype
+`DerivingVia` is an extension of `GeneralizedNewtypeDeriving`. Just as newtype
 deriving allows us to derive instances in terms of instances for the underlying
 representation of the newtype, DerivingVia allows deriving instances by
 specifying a custom type which has a runtime representation equal to the desired
@@ -5999,9 +6004,9 @@ other typeclasses.
 DerivingStrategies
 -------------------
 
-Deriving has proven a powerful mechanism to add to typeclass extension and
+Deriving has proven a powerful mechanism to add typeclass instances and
 as such there have been a variety of bifurcations in its use. Since GHC 8.2
-there are now four different algorithms that can be used to derive typeclasses
+there are now four different algorithms that can be used to derive typeclass
 instances. These are enabled by different extensions and now have specific
 syntax for invoking each algorithm specifically. Turning on `DerivingStrategies`
 allows you to disambiguate which algorithm GHC should use for individual class
@@ -6597,7 +6602,7 @@ production Haskell code that operates in constant memory without some insight
 into the evaluation model and the runtime. A lot of industrial codebases have a
 policy of marking all constructors as strict default or enabling [StrictData] to
 prevent space leaks. If Haskell were being designed from scratch it probably
-would not be chose laziness as the default model.  Future implementations of
+would not choose laziness as the default model.  Future implementations of
 Haskell compilers would also probably also not choose this point in the design
 space if given the option of breaking with the language specification. 
 
@@ -6639,11 +6644,11 @@ The short version of the advice on the Prelude is:
 </div>
 
 The instances of Foldable for the list type often conflict with the monomorphic
-versions in the Prelude which are left in for historical reasons. So often times
+versions in the Prelude which are left in for historical reasons. So oftentimes
 it is desirable to explicitly mask these functions from implicit import and
 force the use of Foldable and Traversable instead.
 
-Of course often times one wishes only to use the Prelude explicitly and one can
+Of course oftentimes one wishes only to use the Prelude explicitly and one can
 explicitly import it qualified and use the pieces as desired without the
 implicit import of the whole namespace.
 
@@ -6935,7 +6940,7 @@ subvert this kind of reasoning and make it easy to introduce bugs and should oft
 Foldable / Traversable
 ----------------------
 
-If coming from an imperative background retraining one's self to think about iteration over lists in terms of
+If coming from an imperative background retraining oneself to think about iteration over lists in terms of
 maps, folds, and scans can be challenging.
 
 ```haskell
@@ -6947,7 +6952,7 @@ foldr f z [a...] = f a (f b ( ... (f y z) ... ))
 foldl f z [a...] = f ... (f (f z a) b) ... y
 ```
 
-For a concrete consider the simple arithmetic sequence over the binary operator
+For a concrete example, consider the simple arithmetic sequence over the binary operator
 ``(+)``:
 
 ```haskell
@@ -7087,7 +7092,7 @@ pathological and inefficient way of representing textual data. Unfortunately for
 historical reasons large portions of GHC and Base depend on String.
 
 The String problem is intrinsically linked with the fact that the default GHC
-Prelude is provides a set of broken default that are difficult to change because
+Prelude provides a set of broken defaults that are difficult to change because
 GHC and the entire ecosystem historically depend on it. There are however high
 performance string libraries that can swapped out for the broken `String` type
 and we will discuss some ways of working with high-performance and memory
@@ -7106,7 +7111,7 @@ forever.
 type String = [Char]
 ```
 
-However, fear not as there are are two replacmenet libraries for processing
+However, fear not as there are are two replacement libraries for processing
 textual data: ``text`` and ``bytestring``.
 
 * `text` - Used for handling unicode data.
@@ -7308,7 +7313,7 @@ instance IsList [a] where
 ```
 
 For example we could write a overloaded list instance for hash tables that
-simply coverts to the hash table using `fromList`. You shouldn't acutally do
+simply coverts to the hash table using `fromList`. You shouldn't actually do
 this in practice but it is possible. Some math libraries that use vector-like
 structures will use overloaded lists in this fashion.
 
@@ -7495,7 +7500,7 @@ Arrows
 
 A category is an algebraic structure that includes a notion of an identity and a
 composition operation that is associative and preserves identities.  In practice
-arrow are not often used in modern Haskell and are often considered a code
+arrows are not often used in modern Haskell and are often considered a code
 smell.
 
 ```haskell
@@ -8177,7 +8182,7 @@ of IO or ST.  The lifted-base provides generic control operations such as
 
 Monad base provides an abstraction over ``liftIO`` and other functions to
 explicitly lift into a "privileged" layer of the transformer stack. It's
-implemented a multiparameter typeclass with the "base" monad as the parameter b.
+implemented as a multiparameter typeclass with the "base" monad as the parameter b.
 
 ```haskell
 -- | Lift a computation from the base monad
@@ -8543,7 +8548,7 @@ data List a where
 ```
 
 For an example use consider the data type ``Term``, we have a term in which we
-``Succ`` which takes a ``Term`` parameterized by ``a`` which span all types.
+``Succ`` which takes a ``Term`` parameterized by ``a`` which spans all types.
 Problems arise between the clash whether (``a ~ Bool``) or (``a ~ Int``) when
 trying to write the evaluator.
 
@@ -8568,7 +8573,7 @@ failure = Succ ( Lit True )
 ```
 
 Using a GADT we can express the type invariants for our language (i.e. only
-type-safe expressions are representable). Pattern matching on this GADTs then
+type-safe expressions are representable). Pattern matching on this GADT then
 carries type equality constraints without the need for explicit tags.
 
 ~~~~ {.haskell include="src/12-gadts/gadt.hs"}
@@ -8857,7 +8862,7 @@ See: [Typed Tagless Interpretations and Typed Compilation](http://okmij.org/ftp/
 Datatypes
 ---------
 
-The usual hand-wavy of describing algebraic datatypes is to indicate the how natural correspondence between
+The usual hand-wavy way of describing algebraic datatypes is to indicate the how natural correspondence between
 sum types, product types, and polynomial expressions arises.
 
 ```haskell
@@ -8878,7 +8883,7 @@ type as the exponential of the span of the domain and codomain.
 data Maybe a = Nothing | Just a
 ```
 
-Recursive types are correspond to infinite series of these terms.
+Recursive types correspond to infinite series of these terms.
 
 ```haskell
 -- pseudocode
@@ -9035,7 +9040,7 @@ cataM f = f <=< traverse (cataM f) . unfix
 
 The library ``recursion-schemes`` implements these basic recursion schemes as
 well as whole family of higher-order combinators off the shelf. These are
-implemented in terms of two typeclases `Recursive` and `Corecursive` which are
+implemented in terms of two typeclases `Recursive` and `Corecursive` which
 extend an instance of Functor with default methods for catamorphisms and
 anamorphisms. For the `Fix` type above these functions expand into the following
 definitions:
@@ -9056,7 +9061,7 @@ data ListF a b = Nil | Cons a b
 ```
 
 The canonical example of a catamorphism is the factorial function which is a
-composition of a coalgebra creates a list from `n` to `1` and an algebra which
+composition of a coalgebra which creates a list from `n` to `1` and an algebra which
 multiplies the resulting list to a single result:
 
 ~~~~ {.haskell include="src/14-interpreters/factorial.hs"}
@@ -9342,8 +9347,8 @@ superclasses, and reduces the types to head normal form. For example:
 
 If a single parameter typeclass expresses a property of a type ( i.e. whether
 it's in a class or not in class ) then a multiparameter typeclass expresses
-relationships between types. For example if we wanted to express the relation a
-type can be converted to another type we might use a class like:
+relationships between types. For example if we wanted to express the relation that
+a type can be converted to another type we might use a class like:
 
 ~~~~ {.haskell include="src/16-type-families/mparam.hs"}
 ~~~~
@@ -9908,7 +9913,7 @@ Typelevel Strings
 
 Since GHC 8.0 we have been able to work with typelevel strings values
 represented at the typelevel as `Symbol` with kind `Symbol`. The `GHC.TypeLits`
-module defines a set of a typeclases for lifting these valuess to and form the
+module defines a set of a typeclases for lifting these values to and from the
 value level and comparing and computing over the values at typelevel.
 
 ```haskell
@@ -9930,7 +9935,7 @@ Custom Errors
 -------------
 
 As of GHC 8.0 we have the capacity to provide custom type error using type
-families. The messages themselves hook into GHC and expressed using the small
+families. The messages themselves hook into GHC and are expressed using the small
 datatype found in ``GHC.TypeLits``
 
 ```haskell
@@ -10382,7 +10387,7 @@ can be checked by the external for richer type semantics than default GHC
 provides, including non-exhaustive patterns and complex arithmetic properties
 that require external SMT solvers to verify. For instance LiquidHaskell can
 statically verify that a function that operates over a ``Maybe a`` is always
-given a ``Just`` or that an arithmetic functions always yields an Int that is
+given a ``Just`` or that an arithmetic function always yields an Int that is an
 even positive number.
 
 LiquidHaskell analyses the modules and discharges proof obligations
@@ -11033,7 +11038,7 @@ Complex Numbers
 
 Haskell supports arithmetic with complex numbers via a Complex datatype from the
 ``Data.Complex`` module. The first argument is the real part, while the second
-is the imaginary part. The type has a single parameter and inherits it's
+is the imaginary part. The type has a single parameter and inherits its
 numerical typeclass components (Num, Fractional, Floating) from the type of this
 parameter.
 
@@ -11089,7 +11094,7 @@ Polynomial Arithmetic
 The standard library for working with symbolic polynomials is the `poly`
 library. It exposes a interface for working with univariate polynomials which
 are backed by an efficient vector library. This allows us to efficiently
-manaipulate and perform arithmetic operations over univariate polynomails.
+manipulate and perform arithmetic operations over univariate polynomails.
 
 For example we can instantiate symbolic polynomials, write recurrence rules and
 generators over them and factor them.
@@ -11111,7 +11116,7 @@ It provides a variety of functions for computing:
 * [Young's Tableux](https://hackage.haskell.org/package/combinat-0.2.9.0/docs/Math-Combinat-Tableaux.html)
 * [Lattice Paths](https://hackage.haskell.org/package/combinat-0.2.9.0/docs/Math-Combinat-LatticePaths.html#t:LatticePath)
 
-See: [cobinat](https://hackage.haskell.org/package/combinat)
+See: [combinat](https://hackage.haskell.org/package/combinat)
 
 Number Theory
 -------------
@@ -11181,7 +11186,7 @@ Constructive Reals
 ------------------
 
 Instead of modeling the real numbers on finite precision floating point numbers
-we alternatively work with ``Num`` which internally manipulate the power series
+we alternatively work with ``Num`` which internally manipulates the power series
 expansions for the expressions when performing operations like arithmetic or
 transcendental functions without losing precision when performing intermediate
 computations. Then we simply slice off a fixed number of terms and approximate
@@ -11243,7 +11248,7 @@ SMT Solvers
 A generalization of the SAT problem to include predicates other theories gives
 rise to the very sophisticated domain of "Satisfiability Modulo Theory"
 problems. The existing SMT solvers are very sophisticated projects ( usually
-bankrolled by large institutions ) and usually have to called out to via foreign
+bankrolled by large institutions ) and usually have to be called out to via foreign
 function interface or via a common interface called SMT-lib. The two most common
 of use in Haskell are ``cvc4`` from Stanford and ``z3`` from Microsoft Research.
 
@@ -11324,7 +11329,7 @@ Traversal          ``traverse``   $O(n)$
 Set
 ---
 
-Sets are an unordered data structures allow ``Ord`` values of any type and
+Sets are unordered data structures containing ``Ord`` values of any type and
 guaranteeing uniqueness with in the structure. They are not identical to the
 mathematical notion of a Set even though they share the same namesake.
 
@@ -11466,7 +11471,7 @@ The Graph module in the containers library is a somewhat antiquated API for
 working with directed graphs.  A little bit of data wrapping makes it a little
 more straightforward to use. The library is not necessarily well-suited for
 large graph-theoretic operations but is perfectly fine for example, to use in a
-typechecker which need to resolve strongly connected components of the module
+typechecker which needs to resolve strongly connected components of the module
 definition graph.
 
 ~~~~ {.haskell include="src/20-data-structures/graph.hs"}
@@ -11746,7 +11751,7 @@ forkIO :: IO () -> IO ThreadId
 
 Haskell threads are extremely cheap to spawn, using only 1.5KB of RAM depending
 on the platform and are much cheaper than a pthread in C. Calling forkIO
-10<sup>6</sup> times completes just short of a 1s. Additionally, functional
+10<sup>6</sup> times completes just short of 1s. Additionally, functional
 purity in Haskell also guarantees that a thread can almost always be terminated
 even in the middle of a computation without concern.
 
@@ -11770,7 +11775,7 @@ rdeepseq :: NFData a => Strategy a
 runEval :: Eval a -> a
 ```
 
-``rpar a`` spins off a separate spark that evolutes a to weak head normal form
+``rpar a`` spins off a separate spark that evaluates a to weak head normal form
 and places the computation in the spark pool. When the runtime determines that
 there is an available CPU to evaluate the computation it will evaluate (
 *convert* ) the spark. If the main thread of the program is
@@ -11872,7 +11877,7 @@ threadDelay :: Int -> IO ()
 
 Once a thread is forked the fork action will give back a `ThreadId` which can be
 used to call actions and kill the thread from another context. Inside of a
-running thread the current ThreadId can be quired with `myThreadId`.
+running thread the current ThreadId can be queried with `myThreadId`.
 
 ```haskell
 myThreadId :: IO ThreadId
@@ -11888,7 +11893,7 @@ throwTo :: Exception e => ThreadId -> e -> IO ()
 
 When individually polling on file descriptors there are several functions that
 can schedule the thread to wake up again when the given file is given a wake
-event from the kernel. The following functions will yield the current waiting on
+event from the kernel. The following functions will yield the current thread waiting on
 either a read or write event on the given file description `Fd`.
 
 ```haskell
@@ -11900,7 +11905,7 @@ IORef
 -----
 
 `IORef` is a mutable reference that can be read and writen to within the IO
-monad. It is simplest most low-level mutable reference provided by the base
+monad. It is the simplest most low-level mutable reference provided by the base
 library.
 
 ```haskell
@@ -11939,7 +11944,7 @@ atomicModifyIORef :: IORef a -> (a -> (a, b)) -> IO b
 ```
 
 The atomic modify function `atomicModifyIORef` reads the value of `r` and
-applies the function `f` to `r` giving ack `(a',b)`. Then value `r` is updated
+applies the function `f` to `r` giving back `(a',b)`. Then value `r` is updated
 with the new value `a'` and `b` is the return value. Both the read and the write
 are done atomically so it is not possible that any value will alter the
 underlying `IORef` between the read and write.
@@ -12089,10 +12094,10 @@ takeTMVar :: TMVar a -> STM a
 Chans
 -----
 
-Channels are unbounded queues that can be written for which an unbounded number
-of values can be written to an unbounded number of times times. Channels are
-implemented using MVars which can be consumed by any number of other threads to
-read data off of the Chan. Channels are created and read to using a simple
+Channels are unbounded queues to which an unbounded number
+of values can be written an unbounded number of times . Channels are
+implemented using MVars and can be consumed by any number of other threads which
+read data off of the Chan. Channels are created, read from and written to using a simple
 `new`, `read` and `write` interface just as we've seen with other concurrency
 primitives.  
 
@@ -12150,10 +12155,10 @@ writeTChan :: TChan a -> a -> STM ()
 Semaphores
 ----------
 
-Semaphores are a concurrency primitive used used to control access to a common
+Semaphores are a concurrency primitive used to control access to a common
 resource used by multiple threads. A semaphore is a variable containing an
 integral value that can be incremented or decremented by concurrent processes. A
-semaphore will restrict currency to a integral count of consumers called the
+semaphore will restrict concurrency to a integral count of consumers called the
 *limit*. The `QSem` provides an interface for a simple lock semaphore that can
 be created in IO and polled on using `waitQSem`.
 
@@ -12303,7 +12308,7 @@ transactions that are guaranteed by the runtime to have several properties:
   processes.
 
 This is similar to the atomicity that databases guarantee. The `stm` library
-provides a lovely composition interface for building up higher level primitives
+provides a lovely compositional interface for building up higher level primitives
 that can be composed in atomic blocks to build safe concurrent logic without
 worrying about deadlocks and memory corruption from threaded and mutable
 reference approaches to building parallel algorithms.
@@ -12379,14 +12384,14 @@ Parsec
 ------
 
 For parsing in Haskell it is quite common to use a family of libraries known as
-*Parser Combinators* which let us write code to generate parsers which
-themselves from an abstract description of thee grammar described with
+*Parser Combinators* which let us write code to generate parsers which construct
+themselves from an abstract description of the grammar described with
 combinators.
 
               Combinators
 -----------   ------------
 ``<|>``       The choice operator tries to parse the first argument before proceeding to the second.
-``many``      Consumes an arbitrary number of patterns matching the given pattern and returns them as a list.
+``many``      Consumes an arbitrary number of expressions matching the given pattern and returns them as a list.
 ``many1``     Like many but requires at least one match.
 ``optional``  Optionally parses a given pattern returning its value as a Maybe.
 ``try``       Backtracking operator will let us parse ambiguous matching expressions and restart with a different pattern.
@@ -12425,7 +12430,7 @@ parseA = Add <$> identifier <* char '+' <*> identifier
 ```
 
 Now for instance if we want to parse simple lambda expressions we can encode the parser logic as compositions
-of these combinators which yield the string parser when evaluated under with the ``parse``.
+of these combinators which yield the string parser when evaluated with ``parse``.
 
 ~~~~ {.haskell include="src/24-parsing/simple_parser.hs"}
 ~~~~
@@ -12433,7 +12438,7 @@ of these combinators which yield the string parser when evaluated under with the
 Custom Lexer
 ------------
 
-In our previous example lexing pass was not necessary because each lexeme mapped to a sequential collection
+In our previous example a lexing pass was not necessary because each lexeme mapped to a sequential collection
 of characters in the stream type. If we wanted to extend this parser with a non-trivial set of tokens, then
 Parsec provides us with a set of functions for defining lexers and integrating these with the parser
 combinators. The simplest example builds on top of the builtin Parsec language definitions which define a set
@@ -12542,7 +12547,7 @@ Optparse Applicative
 --------------------
 
 Optparse-applicative is a combinator library for building command line
-interfaces that take in various user flags, commands and switches and map them
+interfaces that take in various user flags, commands and switches and maps them
 into Haskell data structures that can handle the input. The main interface is
 through the applicative functor ``Parser`` and various combinators such as
 ``strArgument`` and ``flag`` which populate the option parsing table with some
@@ -12568,7 +12573,7 @@ Available options:
 #### Optparse Generic
 
 Many `optparse-applicative` command line parsers can also be generated using
-Generics from descriptions of records. This approach is not fullproof but works
+Generics from descriptions of records. This approach is not foolproof but works
 well enough for simple command line applications with a few options. For more
 complex interfaces with subcommands and help information you'll need to go back
 to the `optparse-applicative` level. For example:
@@ -12580,7 +12585,7 @@ Happy & Alex
 ------------
 
 Happy is a parser generator system for Haskell, similar to the tool `yacc' for
-C. It works as a preprocessor with it's own syntax that generates a parse table
+C. It works as a preprocessor with its own syntax that generates a parse table
 from two specifications,  a lexer file and parser file. Happy does not have the
 same underlying parser implementation as parser combinators and can effectively
 work with left-recursive grammars without explicit factorization. It can also
@@ -12591,8 +12596,8 @@ for Haskell's grammar.
 1. Lexer.x
 1. Parser.y
 
-Running the standalone commands will generate will take Alex/Happy source files from
-stdin and generate and output Haskell module. Alex and Happy files can contain
+Running the standalone commands will take Alex/Happy source files from
+stdin and generate and output Haskell modules. Alex and Happy files can contain
 arbitrary Haskell code that can be escaped to the output.
 
 ```bash
@@ -12647,7 +12652,7 @@ For instance we could define a little toy lexer with a custom set of tokens.
 
 #### Parser
 
-The associated parser is list of a production rules and a monad to running the
+The associated parser is list of a production rules and a monad to run the
 parser in. Production rules consist of a set of options on the left and
 generating Haskell expressions on the right with indexed metavariables (``$1``,
 ``$2``, ...) mapping to the ordered terms on the left (i.e. in the second term
@@ -12735,7 +12740,7 @@ deterministic actions over files without having to worry about effect order.
 ~~~~ {.haskell include="src/25-streaming/pipes_file.hs"}
 ~~~~
 
-This is simple a sampling of the functionality of pipes. The documentation for
+This is a simple sampling of the functionality of pipes. The documentation for
 pipes is extensive and great deal of care has been taken make the library
 extremely thorough. ``pipes`` is a shining example of an accessible yet category
 theoretic driven design.
@@ -12800,7 +12805,7 @@ Cryptography
 ============
 
 Recently Haskell has seen quite a bit of development of cryptography libraries
-as it serves as a excellent language for working with and manipulating algebraic
+as it serves as an excellent language for working with and manipulating algebraic
 structures found in cryptographic primitives. In addition to most of the basic
 hashing, elliptic curve and cipher suites libraries, Haskell has a excellent
 standard cryptography library called `cryptonite` which provides the standard
@@ -12846,13 +12851,13 @@ To use Blake2:
 Curve25519 Diffie-Hellman
 -------------------------
 
-Curve25519 is widely used Diffie-Hellman function suitable for a wide variety of
+Curve25519 is a widely used Diffie-Hellman function suitable for a wide variety of
 applications. Private and public keys using Curve25519 are 32 bytes each.
-Elliptic curve Diffie-Hellman in which two parties can exchange their public
+Elliptic curve Diffie-Hellman is a protocol in which two parties can exchange their public
 keys in the clear and generate a shared secret which can be used to share
 information across a secure channel.
 
-A private key is a large integral value is multiplied by the base point on the
+A private key is a large integral value which is multiplied by the base point on the
 curve to generate the public key. Going to backwards from a public key requires
 one to solve the elliptic curve discrete logarithm which is believed to be
 computationally infeasible.
@@ -12862,7 +12867,7 @@ generateSecretKey :: MonadRandom m => m SecretKey
 toPublic :: SecretKey -> PublicKey
 ```
 
-Diffie-Hellman key exchange be performed by executing the function `dh over the
+Diffie-Hellman key exchange be performed by executing the function `dh` over the
 private and public keys for Alice and Bob.
 
 ```haskell
@@ -12898,7 +12903,7 @@ Merkle Trees
 Merkle trees are a type of authenticated data structure that consits of a
 sequence of data that is divided into an even number of partitions which are
 incrementally hashed in a binary tree, with each level of the tree hashing to
-produce the hash the next next level until the root of the tree is reached. The
+produce the hash of the next level until the root of the tree is reached. The
 root hash is called the *Merkle root* and uniquely identifies the data included
 under it. Any change to the leaves, or any reorordering of the nodes will
 produce a different hash. 
@@ -12945,10 +12950,10 @@ finalizeSecureMem :: SecureMem -> IO ()
 toSecureMem :: ByteString -> SecureMem
 ```
 
-This data structure will also automatically scrub it's bytes with a runtime
+This data structure will also automatically scrub its bytes with a runtime
 integrated finalizer on the pointer to the underlying memory. This ensures that
-as soon as the value is garbage collected, its underlying memory is set to
-wiped to zero values and does not linger on the processes memory.
+as soon as the value is garbage collected, its underlying memory is
+wiped to zero values and does not linger on the process's memory.
 
 AES Encryption
 --------------
@@ -12983,11 +12988,11 @@ Elliptic Curves
 
 Elliptic curves are a type of algebraic structure that are used heavily in
 cryptography. Most generally elliptic curves are families of curves to second
-order plan curves in two variables defined over finite fields. These elliptic
+order plane curves in two variables defined over finite fields. These elliptic
 curves admit a group construction over the curve points which has multiplication
 and addition. For finite fields with large order computing inversions is quite
 computationally difficult and gives rise to a trapdoor function which is easy to
-efficient to compute in one direction but difficult in reverse.
+compute in one direction but difficult in reverse.
 
 There are many types of plane curves with different coefficients that can be
 defined. The widely studied groups are one of the four classes. These are
@@ -13123,7 +13128,7 @@ Data Formats
 JSON
 ----
 
-Aeson is library for efficient parsing and generating JSON. It is the canonical
+Aeson is a library for efficient parsing and generating JSON. It is the canonical
 JSON library for handling JSON.
 
 ```haskell
@@ -13139,7 +13144,7 @@ A point of some subtlety to beginners is that the return types for Aeson
 functions are **polymorphic in their return types** meaning that the resulting
 type of decode is specified only in the context of your programs use of the
 decode function. So if you use decode in a point your program and bind it to a
-value ``x`` and then use ``x`` as if it were and integer throughout the rest of
+value ``x`` and then use ``x`` as if it were an integer throughout the rest of
 your program, Aeson will select the typeclass instance which parses the given
 input string into a Haskell integer.
 
@@ -13149,7 +13154,7 @@ input string into a Haskell integer.
 
 Aeson uses several high performance data structures (Vector, Text, HashMap) by
 default instead of the naive versions so typically using Aeson will require that
-us import them and use ``OverloadedStrings`` when indexing into objects.
+we import them and use ``OverloadedStrings`` when indexing into objects.
 
 The underlying Aeson structure is called ``Value`` and encodes a recursive tree
 structure that models the semantics of untyped JSON objects by mapping them onto
@@ -13448,7 +13453,7 @@ There are three large Haskell web frameworks:
 **Servant**
 
 Servant is the newest of the standard Haskell web frameworks. It emerged after
-GHC 8.0 and incorporates many modern langauge extensions. It is based around the
+GHC 8.0 and incorporates many modern language extensions. It is based around the
 key idea of having a type-safe routing system in which many aspects of the
 request/response cycle of the server are expressed at the type-level. This
 allows many common errors found in web applications to be prevented. Servant
@@ -13463,7 +13468,7 @@ See: [Servant]
 
 Scotty is a minimal web framework that builds on top of the Warp web server. It
 is based on a simple routing model and that makes standing up simple REST
-API services quite simple. It's design is modeled after the Flask and Sinatra
+API services quite simple. Its design is modeled after the Flask and Sinatra
 models found in Python and Ruby.
 
 See: [Scotty]
@@ -13471,7 +13476,7 @@ See: [Scotty]
 **Yesod**
 
 Yesod is a large featureful ecosystem built on lots of metaprogramming using
-Template Haskell. There is a excellent documentation and a book on building real
+Template Haskell. There is excellent documentation and a book on building real
 world applications. This style of metaprogramming appeals to some types of
 programmers who can work with the code generation style.
 
@@ -13480,7 +13485,7 @@ programmers who can work with the code generation style.
 Snap is a small Haskell web framework which was developed heavily in the early
 2000s. It is based on a very well-tested core and has a modular framework in
 which "snaplets" can extend the base server. Much of the Haskell.org
-infrastructure of packages and developmenet runs on top of Snap web
+infrastructure of packages and development runs on top of Snap web
 applications.
 
 HTTP Requests
@@ -13621,7 +13626,7 @@ Warp is a efficient massively concurrent web server, it is the backend server
 behind several of popular Haskell web frameworks. The internals have been finely
 tuned to utilize Haskell's concurrent runtime and is capable of handling a great
 deal of concurrent requests. For example we can construct a simple web service
-while simply returns a 200 status code with a ByteString which is flushed to the
+which simply returns a 200 status code with a ByteString which is flushed to the
 socket.
 
 ~~~~ {.haskell include="src/27-web/warp.hs"}
@@ -13692,7 +13697,7 @@ Endpoint          Servant route
 
 The application itself is expressed simply as a function which takes a `Request`
 containing the headers and payload and handles it by evaluating to a `Response`
-inside of the IO. The underling server used in `servant-server` is Warp.
+inside of the IO. The underlying server used in `servant-server` is Warp.
 
 ```haskell
 type Application 
@@ -13843,7 +13848,7 @@ main = do
 
 From here you could all manner of additional logic, like adding in the [Selda]
 object relational mapper, adding in `servant-auth` for authentication or using
-`swagger2 for building Open API specifications.
+`swagger2` for building Open API specifications.
 
 <hr/>
 
@@ -13882,7 +13887,7 @@ CREATE TABLE "authors" (
 ```
 
 The postgresql-simple bindings provide a thin wrapper to various libpq commands
-to interact a Postgres server. These functions all take a ``Connection`` object
+to interact with a Postgres server. These functions all take a ``Connection`` object
 to the database instance and allow various bytestring queries to be sent and
 result sets mapped into Haskell datatypes. There are four primary functions for
 these interactions:
@@ -13947,7 +13952,7 @@ This yields the result set:
 #### Quasiquoter
 
 As SQL expressions grow in complexity they often span multiple lines and
-sometimes its useful to just drop down to a quasiquoter to embed the whole
+sometimes it's useful to just drop down to a quasiquoter to embed the whole
 query. The quoter here is pure, and just generates the ``Query`` object behind
 as a ByteString.
 
@@ -13989,7 +13994,7 @@ Sqlite
 
 The `sqlite-simple` library provides a binding to the `libsqlite3` which can
 interact with and query SQLite databases. It provides precisely the same
-interface as the Postgre library of similar namesakes. 
+interface as the Postgres library of similar namesakes. 
 
 ```haskell
 query_ :: FromRow r => Connection -> Query -> IO [r]
@@ -14125,7 +14130,7 @@ CREATE TABLEIF NOT EXISTS "employees"
 );
 ```
 
-Selda also provides an embedded query langauge for specifying type-safe queries
+Selda also provides an embedded query language for specifying type-safe queries
 by allowing you to add the overloaded labels to work with these values directly
 as SQL selectors.
 
@@ -14168,7 +14173,7 @@ names that includes modules and package names into a higher level Name type.
 ##### GHC Compiler Passes
 
 * **Parser/Frontend**: An enormous AST translated from human syntax that makes
-  explicit possible all expressible syntax ( declarations, do-notation, where
+  explicit all possible expressible syntax ( declarations, do-notation, where
   clauses, syntax extensions, template haskell, ... ). This is unfiltered
   Haskell and it is *enormous*.
 * **Renamer** takes syntax from the frontend and transforms all names to be
@@ -14203,7 +14208,7 @@ names that includes modules and package names into a higher level Name type.
   generator (NCG) or the LLVM backend.
 
 
-Information for each pass can dumped out via a rather large collection of flags.
+Information for each pass can be dumped out via a rather large collection of flags.
 The GHC internals are very accessible although some passes are somewhat easier
 to understand than others. Most of the time ``-ddump-simpl`` and ``-ddump-stg``
 are sufficient to get an understanding of how the code will compile, unless of
@@ -14222,7 +14227,7 @@ Flag                   Action
 ``-ddump-spec``        Output of specialisation pass.
 ``-ddump-rules``       Output of applying rewrite rules.
 ``-ddump-vect``        Output results of vectorize pass.
-``-ddump-simpl``       Ouptut of the SimplCore pass.
+``-ddump-simpl``       Output of the SimplCore pass.
 ``-ddump-inlinings``   Output of the inliner.
 ``-ddump-cse``         Output of the common subexpression elimination pass.
 ``-ddump-prep``        The CorePrep pass.
@@ -14405,9 +14410,23 @@ environment from inside of libraries has been non-trivial in the past. HIE-bios
 is a new library which can read package metadata from Cabal and Stack files and
 dynamically set up the appropriate session for a project.
 
+Hie-bios will read a Cradle file (`hie.yaml`) file in the root of the workspace
+which describes how to setup the environment. For example for using Stack this
+file would contain:
+
+```yaml
+cradle: {stack: {component: "myproject:lib" }}
+```
+
+While using Cabal the file would contain:
+
+```yaml
+cradle: {cabal: {component: "myproject:lib" }}
+```
+
 This is particularly useful for projects that require access to the internal
 compiler artifacts or do static analysis on top of Haskell code. An example of
-setting a compiler session from a cradle is shown bellow:
+setting a compiler session from a cradle is shown below:
 
 ~~~~ {.haskell include="src/29-ghc/hie.hs"}
 ~~~~
@@ -14415,7 +14434,7 @@ setting a compiler session from a cradle is shown bellow:
 Abstract Syntax Tree
 --------------------
 
-GHC uses several syntax trees during it's compilation. These are defined in the
+GHC uses several syntax trees during its compilation. These are defined in the
 following modules:
 
 * `HsExpr` - Syntax tree for the frontend of GHC compiler.
@@ -14498,8 +14517,8 @@ you will see most often:
 
 * `RdrName` - Names that come directly from the parser without metadata.
 * `OccName` - Names with metadata about the namespace the variable is in.
-* `Name` - A unique name introduced during the renamer pass with metadata about it's provenance. 
-* `Var` - A typed variable name with metadata about it's use sites.
+* `Name` - A unique name introduced during the renamer pass with metadata about its provenance. 
+* `Var` - A typed variable name with metadata about its use sites.
 * `Id` - A term-level identifier. Type Synonym for Var. 
 * `TyVar` - A type-level identifier. Type Synonym for Var. 
 * `TcTyVar` - A type variable used in the typechecker. Type Synonym for Var. 
@@ -14509,7 +14528,7 @@ See: [Trees That Grow](https://ghc.haskell.org/trac/ghc/wiki/ImplementingTreesTh
 Parser
 ------
 
-The GHC parser is itself written in Happy. It defines it's Parser monad as the
+The GHC parser is itself written in Happy. It defines its Parser monad as the
 following definition which emits a sequences of `Located` tokens with the
 lexemes position information. The parser is embedded inside the `P` monad. 
 
@@ -14519,7 +14538,7 @@ lexemes position information. The parser is embedded inside the `P` monad.
 %tokentype { (Located Token) }
 ```
 
-Since there are many flavours of Haskell syntax enabled by langauge syntax
+Since there are many flavours of Haskell syntax enabled by language syntax
 extensions, the monad parser itself is passed a specific set of `DynFlags` which
 specify the language specific Haskell syntax to parse. An example parser
 invocation would look like:
@@ -14534,7 +14553,7 @@ where
   parseState = mkPState flags buffer location
 ```
 
-The `parser` argument above can be one of the folowing Happy entry point
+The `parser` argument above can be one of the following Happy entry point
 functions which parse different fragments of the Haskell grammar.
 
 * `parseModule`
@@ -14556,8 +14575,8 @@ See:
 Outputable
 ----------
 
-GHC internally use a pretty printer class for rendering it's core structures out
-to text. This is based on the Wadler-Leijen style and uses a `Ouptutable` class
+GHC internally use a pretty printer class for rendering its core structures out
+to text. This is based on the Wadler-Leijen style and uses a `Outputable` class
 as its interface:
 
 ```haskell
@@ -14692,8 +14711,8 @@ models a virtual machine which maps to the native compilation target.
 Core
 ----
 
-Core is the explicitly typed System-F family syntax through that all Haskell
-constructs can be expressed in.
+Core is the explicitly typed System-F family syntax through which all Haskell
+constructs can be expressed.
 
 ```haskell
 data Bind b
@@ -14714,7 +14733,7 @@ data Expr b
 ```
 
 To inspect the core from GHCi we can invoke it using the following flags and the
-following shell alias. We have explicitly disable the printing of certain
+following shell alias. We have explicitly disabled the printing of certain
 metadata and longform names to make the representation easier to read.
 
 ```bash
@@ -14800,7 +14819,7 @@ map =
 
 Machine generated names are created for a lot of transformation of Core.
 Generally they consist of a prefix and unique identifier. The prefix is often
-pass specific ( i.e. ``ds`` for desugar generated name s) and sometimes specific
+pass specific ( e.g ``ds`` for desugar generated names) and sometimes specific
 names are generated for specific automatically generated code. A list of the
 common prefixes and their meaning is show below.
 
@@ -15006,7 +15025,7 @@ byteSwap64# :: Word# -> Word#
 ```
 
 Depending on the choice of code generator and CPU architecture these
-instructions will map to single CPU instructions oaver machines.
+instructions will map to single CPU instructions over machines.
 
 See [ghc-prim](https://hackage.haskell.org/package/ghc-prim-0.5.3/docs/GHC-Prim.html)
 
@@ -15034,7 +15053,7 @@ For example:
 ~~~~ {.haskell include="src/29-ghc/simd/simd.hs"}
 ~~~~
 
-When you generate this code to LLVM you will see that GHC is indded allocating
+When you generate this code to LLVM you will see that GHC is indeed allocating
 the values as vector types if you browse the assembly output.
 
 ```llvm
@@ -15176,7 +15195,7 @@ negate = \ (@ a) (tpl :: Num a) ->
   case tpl of _ { D:Num _ _ tpl -> tpl }
 ```
 
-``Num`` and ``Ord`` have simple translation but for monads with existential type
+``Num`` and ``Ord`` have simple translations but for monads with existential type
 variables in their signatures, the only way to represent the equivalent
 dictionary is using ``RankNTypes``. In addition a typeclass may also include
 superclasses which would be included in the typeclass dictionary and
@@ -15279,7 +15298,7 @@ nonspec =
 
 For a tight loop over numeric types specializing at the call site can result in
 orders of magnitude performance increase. Although the cost in compile-time can
-often be non-trivial and when used function used at many call-sites this can
+often be non-trivial and when used at many function call-sites this can
 slow GHC's simplifier pass to a crawl.
 
 The best advice is profile and look for large uses of dictionary projection in
@@ -15341,7 +15360,7 @@ Syntax            Primitive Type
 ``'c'#``          GHC.Prim.Char#
 ``"Haskell"##``   GHC.Prim.Addr#
 
-An unboxed type with kind ``#`` and will never unify a type variable of kind
+An unboxed type has kind ``#`` and will never unify a type variable of kind
 ``*``. Intuitively a type with kind ``*`` indicates a type with a uniform
 runtime representation that can be used polymorphically.
 
@@ -15405,7 +15424,7 @@ Size {ptrs = 1, nptrs = 0, size = 9}
 The closure representation for data constructors are also "tagged" at the
 runtime with the tag of the specific constructor. This is however not a runtime
 type tag since there is no way to recover the type from the tag as all
-constructor simply use the sequence (0, 1, 2, ...). The tag is used to
+constructors simply use the sequence (0, 1, 2, ...). The tag is used to
 discriminate cases in pattern matching. The builtin ``dataToTag#`` can  be used
 to pluck off the tag for an arbitrary datatype. This is used in some cases when
 desugaring pattern matches.
@@ -15444,7 +15463,7 @@ c = (I# (dataToTag# (Left 0)), I# (dataToTag# (Right 1)))
 ```
 
 String literals included in the source code are also translated into several
-primop operations. The ``Addr#`` type in Haskell stands for a static contagious
+primop operations. The ``Addr#`` type in Haskell stands for a static contiguous
 buffer pre-allocated on the Haskell heap that can hold a ``char*`` sequence. The
 operation ``unpackCString#`` can scan this buffer and fold it up into a list of
 Chars from inside Haskell.
@@ -15859,7 +15878,7 @@ For the simplest example consider a constant static constructor. Simply a
 function which yields the Unit value. In this case the function is simply a
 constructor with no payload, and is statically allocated.
 
-Lets consider a few example to develop some intuition about the Cmm layout
+Lets consider a few examples to develop some intuition about the Cmm layout
 for simple Haskell programs.
 
 ```{=latex}
@@ -16262,7 +16281,7 @@ Interface Files
 
 During compilation GHC will produce interface files for each module that are the
 binary encoding of specific symbols (functions, typeclasses, etc) exported by
-that modules as well as any package dependencies it itself depends on. This is
+that module as well as any package dependencies it itself depends on. This is
 effectively the serialized form of the ModGuts structure used internally in the
 compiler. The internal structure of this file can be dumped using the
 ``--show-iface`` flag.  The precise structure changes between versions of GHC.
@@ -16314,7 +16333,7 @@ in the runtime succinctly. There is more than three decades worth of work that
 has gone into making this system and it is quite advanced. Instead lets look at
 the basic structure and some core modules.
 
-The golden source of truth for all GHC internals if the GHC Wiki Commentary
+The golden source of truth for all GHC internals is the GHC Wiki Commentary
 written by the compiler maintainers:
 
 https://gitlab.haskell.org/ghc/ghc/wikis/commentary
@@ -16588,8 +16607,8 @@ The specific flags can be checked by passing `+RTS --info` to a compiled binary.
 ```
 
 The state of the runtime can also be queried at runtime for statistics about the
-heap, garbage collector and wall time. The `getRTSStats` generates two datateyps
-wwith all the queryable information contained in `RTSStats` and `GCDetails`.
+heap, garbage collector and wall time. The `getRTSStats` generates two datatypes
+with all the queryable information contained in `RTSStats` and `GCDetails`.
 
 ```haskell
 import GHC.Stats
@@ -16606,7 +16625,7 @@ Criterion
 
 Criterion is a statistically aware benchmarking tool. It exposes a library which
 allows us to benchmark individual functions over and over and test the
-distribution of timings for abberant beahvior and stability. These kind of tests
+distribution of timings for aberrant beahvior and stability. These kind of tests
 are quite common to include in libraries which need to test that the
 introduction of new logic doesn't result in performance regressions.
 
@@ -16624,7 +16643,7 @@ head normal form*, while `nf` evaluates a function applied to an argument `a`
 deeply to *normal form*. See [Laziness].
 
 The `bench` function samples a function over and over according to a
-configuration to develop a statistical distribution of it's runtime. 
+configuration to develop a statistical distribution of its runtime. 
 
 ~~~~ {.haskell include="src/15-testing/criterion.hs"}
 ~~~~
@@ -16816,8 +16835,8 @@ Pretty Printers
 ---------------
 
 Pretty is the first Wadler-Leijen style combinator library, it exposes a simple
-set of primitives to print Haskell datatypes to legacy strings pro
-grammatically. You probably don't want to use this library but it inspired most
+set of primitives to print Haskell datatypes to legacy strings programmatically.
+You probably don't want to use this library but it inspired most
 of the ones that followed after. There are many many many pretty printing
 libraries for Haskell.
 
@@ -16866,7 +16885,7 @@ simply concatenates two documents while a variety of higher level combinators
 add additional string elements into the language.
 
 The `Pretty` class maps an arbitrary value into a `Doc` type which is annotated
-with the renderder.
+with the renderer.
 
 ```haskell
 data Doc ann
@@ -17021,12 +17040,12 @@ LLVM
 Haskell has a rich set of LLVM bindings that can generate LLVM and JIT dynamic
 code from inside of the Haskell runtime. This is especially useful for building
 custom programming languages and compilers which need native performance. The
-llvm-hs library is the de-factor standard for compiler construction in
+llvm-hs library is the de-facto standard for compiler construction in
 Haskell. 
 
 We can link effectively to the LLVM bindings which provide an efficient JIT
 which can generate fast code from runtime. These can serve as the backend to an
-interpreter, generating fast SIMD operations for lineaer algebra, or compiling
+interpreter, generating fast SIMD operations for linear algebra, or compiling
 dataflow representations of neural networks into code as fast as C from dynamic
 descriptions of logic in Haskell.
 
@@ -17035,7 +17054,7 @@ The llvm-hs library is split across two modules:
 * ``llvm-hs-pure`` - Pure Haskell datatypes
 * ``llvm-hs`` - Bindings to C++ framework for optimisation and JIT
 
-The llvm-hs`bindings allow us to construct LLVM abstract syntax tree by
+The `llvm-hs` bindings allow us to construct LLVM abstract syntax tree by
 manipulating a variety of Haskell datatypes. These datatypes all can be
 serialised to the C++ bindings to construct the LLVM module's syntax tree.
 
@@ -17098,7 +17117,7 @@ idiomatic solution first.
 Quasiquotation
 -------------
 
-Quasiquotation allows us to express "quoted" blocks of syntax that need not necessarily be be the syntax of
+Quasiquotation allows us to express "quoted" blocks of syntax that need not necessarily be the syntax of
 the host language, but unlike just writing a giant string it is instead parsed into some AST datatype in the
 host language. Notably values from the host languages can be injected into the custom language via
 user-definable logic allowing information to flow between the two languages.
@@ -17459,7 +17478,7 @@ the spliced class instance.
 Multiline Strings
 -----------------
 
-Haskell no language support for multiline strings literals, although we can
+Haskell has no language support for multiline string literals, although we can
 emulate this by using a quasiquoter. The resulting String literal is then
 converted using toString into whatever result type is desired.
 
@@ -17474,14 +17493,14 @@ In a separate module we can then enable Quasiquotes and embed the string.
 Path Files
 ----------
 
-Often times it is necessary to embed the specific Git version hash of a build
+Oftentimes it is necessary to embed the specific Git version hash of a build
 inside the executable. Using git-embed the compiler will effectively shell out
 to the command line to retrieve the version information of the CWD Git repository
 and use Template Haskell to define embed this information at compile-time. This
 is often useful for embedding in ``--version`` information in the command line
 interface to your program or service.
 
-This example also makes use of the Cabal a `Paths_pkgname` module during compile
+This example also makes use of the Cabal `Paths_pkgname` module during compile
 time which contains which contains several functions for querying target paths
 and included data files for the Cabal project. This can be included in the
 `exposed-modules` of a package to be accessed directly by the project, otherwise
@@ -17537,24 +17556,24 @@ Haskellers espouse philosophies about it being an inspiration for certain
 abstractions, but most do not.
 
 Some understanding of abstract algebra, and conventions for discussing algebraic
-structures and equation reasoning with laws are essential to modern Haskell and
+structures and equational reasoning with laws are essential to modern Haskell and
 we will discuss these leading up to some basic category theory.
 
 Abstract Algebra
 ----------------
 
-Algebraic taught at higher levels generalises notions of arithmetic to operate
+Algebraic theory taught at higher levels generalises notions of arithmetic to operate
 over more generic structures than simple numbers. These structures are called
-**sets** and are a very broad notion of generic way describing groups of
+**sets** and are a very broad notion of generic ways of describing groups of
 mathematical objects that can be equated and grouped. Over these sets we can
 define ways of combining and operating over elements of the set. These
 generalised notions of arithmetic are described in terms of and **operations**.
 Operations which take elements of a set to the same set are said to be
 **closed** in the set. When discussing operations we use the conventions:
 
-* **Properties** - Predicate attached to values and operations over a set.
+* **Properties** - Predicates attached to values and operations over a set.
 * **Binary Operations** - Operations which map two elements.
-* **Unary Operations** - Operations which map a single elements.
+* **Unary Operations** - Operations which map a single element.
 * **Constants** - Specific values with specific properties in a set.
 * **Relations** - Pairings of elements in a set.
 
@@ -17903,7 +17922,7 @@ A category is defined entirely in terms of its:
 * **Composition Operation**
 
 A morphism $f$ written as $f : x \rightarrow y$ an abstraction on the algebraic
-notion of homomorphisms. It is is an arrow between two objects in a category $x$
+notion of homomorphisms. It is an arrow between two objects in a category $x$
 and $y$ called the **domain** and **codomain** respectively. The set of all
 morphisms between two given elements $x$ and $y$ is called the **hom-set** and
 written $\text{Hom}(x,y)$.

@@ -20,7 +20,9 @@ example2 = do
   b <- Nothing -- Bind Nothing to name b
   return $ a + b
 
--- Nothing                   -- This result might be somewhat surprising, since
+-- Nothing
+
+-- This result might be somewhat surprising, since
 -- addition within the Maybe monad can actually
 -- return 'Nothing'. This result occurs because one
 -- of the values, Nothing, indicates computational
