@@ -1,0 +1,18 @@
+cabal-version: >=1.10
+name:          example
+version:       0.1
+copyright:     2020 Stephen Diehl
+maintainer:    stephen.m.diehl@gmail.com
+author:        Stephen Diehl
+category:      Documentation
+build-type:    Simple
+
+library
+  default-language: Haskell2010
+  build-depends:
+      base        >=4.6     && <4.14
+    , conduit     >=1.3.1.2 && <1.4
+    , mtl         >=2.2.2   && <2.3
+    , pipes       >=4.3.13  && <4.4
+    , pipes-safe  >2.3      && <2.4
+    --, zeromq-haskell

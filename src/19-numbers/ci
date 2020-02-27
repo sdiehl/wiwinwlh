@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -e
+stack build
+stack exec ghc -- -e ":q" --interactive arithmoi.hs
+stack exec ghc -- -e ":q" --interactive creal.hs
+stack exec ghc -- -e ":q" --interactive polynomial.hs
+stack exec ghc -- -e ":q" --interactive puzzle.hs
+stack exec ghc -- -e ":q" --interactive scientific.hs
+stack exec ghc -- -e ":q" --interactive stats.hs

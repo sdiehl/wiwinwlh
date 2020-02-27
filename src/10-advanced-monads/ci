@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+set -e
+stack build
+stack exec ghc -- -e ":q" --interactive base.hs
+stack exec ghc -- -e ":q" --interactive cont.hs
+#stack exec ghc -- -e ":q" --interactive cont_impl.hs
+stack exec ghc -- -e ":q" --interactive free_dsl.hs
+stack exec ghc -- -e ":q" --interactive free_impl.hs
+stack exec ghc -- -e ":q" --interactive function.hs
+#stack exec ghc -- -e ":q" --interactive indexed.hs
+stack exec ghc -- -e ":q" --interactive logict.hs
+stack exec ghc -- -e ":q" --interactive mmorph.hs
+stack exec ghc -- -e ":q" --interactive monadfix.hs
+stack exec ghc -- -e ":q" --interactive monadplus.hs
+stack exec ghc -- -e ":q" --interactive partiality.hs
+stack exec ghc -- -e ":q" --interactive rws.hs
+stack exec ghc -- -e ":q" --interactive st.hs

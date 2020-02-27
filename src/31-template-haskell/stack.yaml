@@ -1,0 +1,10 @@
+resolver: lts-14.20
+packages:
+- '.'
+extra-deps:
+- derive-2.6.5
+- haskell-src-exts-1.20.3
+- pretty-show-1.10
+- haskell-lexer-1.1
+flags: {}
+extra-package-dbs: []

@@ -1,23 +1,27 @@
-{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE DeriveGeneric #-}
 
-import Data.Text
 import Data.Aeson
+import Data.ByteString.Lazy.Char8 as BL
+import Data.Text
 import GHC.Generics
-import qualified Data.ByteString.Lazy as BL
 
-data Refs = Refs
-  { a :: Text
-  , b :: Text
-  } deriving (Show,Generic,FromJSON,ToJSON)
+data Refs
+  = Refs
+      { a :: Text,
+        b :: Text
+      }
+  deriving (Show, Generic, FromJSON, ToJSON)
 
-data Data = Data
-  { id    :: Int
-  , name  :: Text
-  , price :: Int
-  , tags  :: [Text]
-  , refs  :: Refs
-  } deriving (Show,Generic,FromJSON,ToJSON)
+data Data
+  = Data
+      { id :: Int,
+        name :: Text,
+        price :: Int,
+        tags :: [Text],
+        refs :: Refs
+      }
+  deriving (Show, Generic, FromJSON, ToJSON)
 
 main :: IO ()
 main = do

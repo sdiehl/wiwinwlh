@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+import Network.HTTP.Types
 import Network.Wai
 import Network.Wai.Handler.Warp (run)
-import Network.HTTP.Types
 
 app :: Application
-app req = return $ responseLBS status200 [] "Engage!"
+app req respond = respond $ responseLBS status200 [] "Make it so."
 
 main :: IO ()
 main = run 8000 app

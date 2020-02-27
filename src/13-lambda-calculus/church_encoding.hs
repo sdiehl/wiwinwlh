@@ -100,10 +100,10 @@ ex3 :: Integer
 ex3 = snd (pair 1 2)
 -- 2
 
-ex4 :: Integer
-ex4 = head (tail (cons 1 (cons 2 nil)))
+--ex4 :: Integer
+--ex4 = head (tail (cons 1 (cons 2 nil)))
 -- 2
 
-ex5 :: Bool
-ex5 = unbool (true `xor` false)
+--ex5 :: Bool
+--ex5 = unbool (true `xor` false)
 -- True

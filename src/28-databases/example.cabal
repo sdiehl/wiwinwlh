@@ -1,26 +1,18 @@
-name:                example
-version:             0.1
-author:              Stephen Diehl
-maintainer:          stephen.m.diehl@gmail.com
-copyright:           2020 Stephen Diehl
-category:            Documentation
-build-type:          Simple
-cabal-version:       >=1.10
+cabal-version: >=1.10
+name:          example
+version:       0.1.0.0
+copyright:     2020 Stephen Diehl
+maintainer:    stephen.m.diehl@gmail.com
+author:        Stephen Diehl
+category:      Documentation
+build-type:    Simple
 
-library 
-  default-language:    Haskell2010
-  build-depends:       
-    base              >= 4.6  && <4.14,
-    mtl               >= 2.2  && <2.3,
-    async             >= 2.0  && <2.3,
-    text              >= 1.2  && <1.3,
-    bytestring        >= 0.9  && <0.11,
-
-    safecopy          >= 0.8  && <0.10,
-    containers        >= 0.5  && <0.7,
-    resource-pool     >= 0.2  && <0.3,
-
-    hedis             >= 0.6  && <0.13,
-    acid-state        >= 0.14 && <0.15,
-    postgresql-simple >= 0.5  && <0.7,
-    sqlite-simple     >= 0.4  && <0.5
+library
+  default-language: Haskell2010
+  build-depends:
+      acid-state
+    , base               >=4.6     && <4.14
+    , hedis              >=0.12    && <0.13 
+    , postgresql-simple  >=0.6     && <0.7 
+    , selda              >=0.5.1.0 && <0.6
+    , sqlite-simple      >=0.4     && <0.5

@@ -1,12 +1,15 @@
-{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE ConstrainedClassMethods #-}
 {-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE TypeFamilies #-}
 
-import GHC.Exts (Constraint)
-import Data.Hashable
 import Data.HashSet
+import Data.Hashable
+import GHC.Exts (Constraint)
 
 type family Con a :: Constraint
+
 type instance Con [a] = (Ord a, Eq a)
+
 type instance Con (HashSet a) = (Hashable a)
 
 class Sized a where

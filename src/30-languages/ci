@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
 set -e
+stack build
 stack exec ghc -- -e ":q" --interactive haskelline.hs
 #stack exec ghc -- -e ":q" --interactive llvm-hs.hs
 stack exec ghc -- -e ":q" --interactive llvm-irbuilder.hs
 stack exec ghc -- -e ":q" --interactive pretty.hs
 stack exec ghc -- -e ":q" --interactive prettysimple.hs
 stack exec ghc -- -e ":q" --interactive repline.hs
-stack exec ghc -- -e ":q" --interactive unbound-generics.hs
-stack exec ghc -- -e ":q" --interactive unbound.hs
+#stack exec ghc -- -e ":q" --interactive unbound-generics.hs
+#stack exec ghc -- -e ":q" --interactive unbound.hs

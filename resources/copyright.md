@@ -14,6 +14,11 @@ living document.  The only way this document will stay up to date is through the
 kindness of readers like you and community patches and [pull
 requests](https://github.com/sdiehl/wiwinwlh) on Github.
 
+If you'd like a physical copy of the text you can either print it for yourself
+(see Printable PDF) or purchase one online:
+
+* [**Blurb Publisher**](https://www.blurb.co.uk/b/9958091-what-i-wish-i-knew-when-learning-haskell)
+
 Author
 ------
 

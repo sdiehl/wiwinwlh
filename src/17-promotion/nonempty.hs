@@ -1,13 +1,13 @@
-{-# LANGUAGE GADTs #-}
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE KindSignatures #-}
-{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE KindSignatures #-}
 
 data Size = Empty | NonEmpty
 
 data List a b where
-  Nil  :: List Empty a
+  Nil :: List Empty a
   Cons :: a -> List b a -> List NonEmpty a
 
 head' :: List NonEmpty a -> a

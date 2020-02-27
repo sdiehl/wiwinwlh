@@ -1,10 +1,12 @@
-{-# LANGUAGE BangPatterns, MagicHash, UnboxedTuples #-}
+{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE MagicHash #-}
+{-# LANGUAGE UnboxedTuples #-}
 
 import GHC.Exts
 import GHC.Prim
 
 ex1 :: Bool
-ex1 = gtChar# a# b#
+ex1 = isTrue# (gtChar# a# b#)
   where
     !(C# a#) = 'a'
     !(C# b#) = 'b'

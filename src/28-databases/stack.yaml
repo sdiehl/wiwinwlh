@@ -3,5 +3,6 @@ packages:
 - '.'
 extra-deps:
 - acid-state-0.14.3
+- selda-0.5.1.0
 flags: {}
 extra-package-dbs: []

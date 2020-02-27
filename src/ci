@@ -1,15 +1,17 @@
 #!/usr/bin/env bash
 
+set -e
+
 echo -n "01-basics .. "
-cd 01-basics && bash ci && cd ..
+(cd 01-basics && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "02-monads .. "
-cd 02-monads && bash ci && cd ..
+(cd 02-monads && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "03-transformers .. "
-cd 03-monad-transformers && bash ci && cd ..
+(cd 03-monad-transformers && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 #echo -n "04-extensions .. "
@@ -17,29 +19,121 @@ echo -e "\e[1;32mOK\e[0m"
 #echo -e "\e[1;32mOK\e[0m"
 
 echo -n "05-laziness .. "
-cd 05-laziness && bash ci && cd ..
+(cd 05-laziness && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "06-prelude .. "
-cd 06-prelude && bash ci && cd ..
+(cd 06-prelude && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "07-text-bytestring .. "
-cd 07-text-bytestring && bash ci && cd ..
+(cd 07-text-bytestring && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "08-applicatives .. "
+(cd 08-applicatives && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "09-errors .. "
+(cd 09-errors && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "10-advanced-monads .. "
+(cd 10-advanced-monads && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "11-quantification .. "
+(cd 11-quantification && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "12-gadts .. "
+(cd 12-gadts && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "13-lambda-calculus .. "
+(cd 13-lambda-calculus && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "14-interpreters .. "
+(cd 14-interpreters && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "15-testing .. "
+(cd 15-testing && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "16-type-families .. "
+(cd 16-type-families && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "17-promotion .. "
+(cd 17-promotion && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "18-generics .. "
+(cd 18-generics && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "19-numbers .. "
+(cd 19-numbers && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "20-data-structures .. "
+(cd 20-data-structures && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "21-ffi .. "
+(cd 21-ffi && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "22-concurrency .. "
+(cd 22-concurrency && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+#echo -n "23-graphics .. "
+#(cd 23-graphics && bash ci)
+#echo -e "\e[1;32mOK\e[0m"
+
+echo -n "24-parsing .. "
+(cd 24-parsing && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "25-streaming .. "
+(cd 25-streaming && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "26-data-formats .. "
+(cd 26-data-formats && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "27-web .. "
+(cd 27-web && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "28-databases .. "
+(cd 28-databases && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "29-ghc .. "
-cd 29-ghc && bash ci && cd ..
+(cd 29-ghc && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "30-languages .. "
-cd 30-languages && bash ci && cd ..
+(cd 30-languages && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "31-template-haskell .. "
+(cd 31-template-haskell && bash ci)
+echo -e "\e[1;32mOK\e[0m"
+
+echo -n "32-cryptography .. "
+(cd 32-cryptography && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "33-categories .. "
-cd 33-categories && bash ci && cd ..
+(cd 33-categories && bash ci)
 echo -e "\e[1;32mOK\e[0m"
 
 echo -n "34-time .. "
-cd 34-time && bash ci && cd ..
+(cd 34-time && bash ci)
 echo -e "\e[1;32mOK\e[0m"

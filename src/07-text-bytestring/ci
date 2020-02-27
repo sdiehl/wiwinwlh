@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+stack build
 stack exec ghc -- -e ":q" --interactive builder.hs
 stack exec ghc -- -e ":q" --interactive bytestring.hs
 #stack exec ghc -- -e ":q" --interactive overloadedlist.hs

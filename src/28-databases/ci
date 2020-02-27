@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+stack build
+stack exec ghc -- -e ":q" --interactive acid.hs
+stack exec ghc -- -e ":q" --interactive hedis.hs
+stack exec ghc -- -e ":q" --interactive hedis_pubsub.hs
+stack exec ghc -- -e ":q" --interactive postgres.hs
+stack exec ghc -- -e ":q" --interactive postgres_custom.hs
+stack exec ghc -- -e ":q" --interactive postgres_qq.hs
+stack exec ghc -- -e ":q" --interactive selda.hs
+stack exec ghc -- -e ":q" --interactive sqlite.hs

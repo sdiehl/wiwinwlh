@@ -1,0 +1,15 @@
+cabal-version: >=1.10
+name:          example
+version:       0.1.0.0
+copyright:     2020 Stephen Diehl
+maintainer:    stephen.m.diehl@gmail.com
+author:        Stephen Diehl
+category:      Documentation
+build-type:    Simple
+
+library
+  default-language: Haskell2010
+  build-depends:
+      async      >=2.2.2 && <2.3
+    , base       >=4.10  && <4.14
+    , monad-par  >=0.3   && <0.4

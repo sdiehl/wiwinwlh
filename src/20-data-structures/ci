@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -e
+stack build
+stack exec ghc -- -e ":q" --interactive dlist.hs
+stack exec ghc -- -e ":q" --interactive graph.hs
+stack exec ghc -- -e ":q" --interactive hashtables.hs
+#stack exec ghc -- -e ":q" --interactive hblas.hs
+stack exec ghc -- -e ":q" --interactive map.hs
+stack exec ghc -- -e ":q" --interactive sequence.hs
+stack exec ghc -- -e ":q" --interactive set.hs
+stack exec ghc -- -e ":q" --interactive tree.hs
+stack exec ghc -- -e ":q" --interactive unordered.hs
+stack exec ghc -- -e ":q" --interactive vector.hs
+stack exec ghc -- -e ":q" --interactive vector_mutable.hs

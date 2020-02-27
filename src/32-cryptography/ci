@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -e
+stack build
+stack exec ghc -- -e ":q" --interactive AES.hs
+stack exec ghc -- -e ":q" --interactive Argon.hs
+stack exec ghc -- -e ":q" --interactive Blake2.hs
+stack exec ghc -- -e ":q" --interactive Curve25519.hs
+stack exec ghc -- -e ":q" --interactive ECC.hs
+stack exec ghc -- -e ":q" --interactive Ed25519.hs
+stack exec ghc -- -e ":q" --interactive Galois.hs
+stack exec ghc -- -e ":q" --interactive Keccak.hs
+stack exec ghc -- -e ":q" --interactive Merkle.hs
+stack exec ghc -- -e ":q" --interactive Pairing.hs
+stack exec ghc -- -e ":q" --interactive Secp256k1.hs
+stack exec ghc -- -e ":q" --interactive SHA.hs
