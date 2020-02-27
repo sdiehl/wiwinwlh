@@ -2087,7 +2087,7 @@ tuple2 = (1, "foo")
 
 -- 3-tuple
 tuple3 :: (Integer, Integer, Integer)
-tuple3 = (10, 20 ,30)
+tuple3 = (10, 20, 30)
 ```
 
 For two-tuples there are two functions `fst` and `snd` which extract the left
