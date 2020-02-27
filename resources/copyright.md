@@ -28,7 +28,7 @@ This text is authored by Stephen Diehl.
 * Twitter: [https://twitter.com/smdiehl](https://twitter.com/smdiehl)
 * Github: [https://github.com/sdiehl](https://github.com/sdiehl)
 
-Special thanks for Erik Aker for copyediting assitance.
+Special thanks to Erik Aker for copyediting assistance.
 
 License
 -------

@@ -3316,7 +3316,6 @@ Predicates will often prefix their function names with ``is``, as in ``isPositiv
 isPositive = (>0)
 ```
 
-<<<<<<< HEAD
 Functions which result in an Applicative or Monad type will often suffix their
 name with a A for Applicative or M for Monad. For example:
 
@@ -6122,7 +6121,7 @@ this will make the instance search contingent on your import list and may result
 in clashes in your codebase where the linker will fail because there are
 multiple modules which define the same instance head. 
 
-When used appropriately this can be way to route around the fact that upstream
+When used appropriately this can be the way to route around the fact that upstream
 modules may define datatypes that you use, but they have not defined the
 instances for other downstream libraries that you also use. You can then write
 these instances for your codebase without modifying either upstream library.
@@ -6130,7 +6129,7 @@ these instances for your codebase without modifying either upstream library.
 Minimal Annotations
 -------------------
 
-In the presence of default implementations for typeclasses methods, there may be
+In the presence of default implementations for typeclass methods, there may be
 several ways to implement a typeclass. For instance Eq is entirely defined by
 either defining when two values are equal or not equal by implying taking the
 negation of the other. We can define equality in terms of non-equality and
@@ -6156,7 +6155,7 @@ class Eq a where
 ```
 
 Minimal pragmas are boolean expressions. For instance, with ``|`` as logical
-``OR``, *either* definition of the above functions must be defined). Comma
+``OR``, *either* definition of the above functions must be defined. Comma
 indicates logical ``AND`` where *both* definitions must be defined.
 
 ```haskell
@@ -6170,7 +6169,7 @@ does not meet the minimal criterion.
 TypeSynonymInstances
 --------------------
 
-Normally type class definitions are restricted to be being defined only over
+Normally type class definitions are restricted to being defined only over
 fully expanded types with all type synonym indirections removed. Type synonyms
 introduce a "naming indirection" that can be included in the instance search to
 allow you to write synonym instances for multiple synonyms which expand to
@@ -6200,7 +6199,7 @@ FlexibleContexts
 Just as with instances, contexts normally are also constrained to consist
 entirely of constraints where a class is applied to just type variables. The
 `FlexibleContexts` extension lifts this restriction and allows any type of type
-variable and nesting to occur the class constraint head. There however still a
+variable and nesting to occur the class constraint head. There is however still a
 global restriction that all class hierarchies must not contain cycles.
 
 ~~~~ {.haskell include="src/04-extensions/flexcontexts.hs"}
@@ -6233,8 +6232,8 @@ with the `OVERLAPPING` and `INCOHERENT` inline pragmas.
 IncoherentInstances
 -------------------
 
-Incoherent instance loosens the restriction that there be only one specific
-instance, will be chosen based on a more complex search procedure which tries to
+Incoherent instances loosens the restriction that there be only one specific
+instance, it will be chosen based on a more complex search procedure which tries to
 identify a *prime instance* based on information incorporated form `OVERLAPPING`
 pragmas on instances in the search tree. Unless one is doing very advanced
 type-level programming use class constraints, this is usually a poor design
@@ -6266,7 +6265,7 @@ deferred. Consider the example in Haskell of defining an infinite list:
 
 The primary advantage of lazy evaluation in the large is that algorithms that
 operate over both unbounded and bounded data structures can inhabit the same
-type signatures and be composed without additional need to restructure their
+type signatures and be composed without any additional need to restructure their
 logic or force intermediate computations.
 
 Still, it's important to recognize that this is another subject on which much
@@ -6283,7 +6282,7 @@ you options for however you prefer to program.
 Languages that attempt to bolt laziness on to a strict evaluation model often
 bifurcate classes of algorithms into ones that are hand-adjusted to consume
 unbounded structures and those which operate over bounded structures. In strict
-languages, mixing and matching between lazy vs strict processing often
+languages, mixing and matching between lazy vs. strict processing often
 necessitates manifesting large intermediate structures in memory when such
 composition would “just work” in a lazy language.
 
@@ -6303,7 +6302,7 @@ evaluation models for the lambda calculus:
 * **Non-strict** - Evaluation is non-strict if the arguments are not necessarily
   evaluated before entering the body of a function.
 
-These ideas give rise to several models, Haskell itself use the *call-by-need*
+These ideas give rise to several models, Haskell itself uses the *call-by-need*
 model.
 
 Model          Strictness    Description
@@ -6371,7 +6370,7 @@ contains diverging terms.
 ~~~~ {.haskell include="src/05-laziness/nodiverge.hs"}
 ~~~~
 
-In a strict language like OCaml ( ignoring its suspensions for the moment ),
+In a strict language like OCaml (ignoring its suspensions for the moment),
 the same program diverges.
 
 ~~~~ {.haskell include="src/05-laziness/diverge.ml"}
@@ -6384,8 +6383,8 @@ In Haskell a *thunk* is created to stand for an unevaluated computation.
 Evaluation of a thunk is called *forcing* the thunk. The result is an *update*,
 a referentially transparent effect, which replaces the memory representation of
 the thunk with the computed value. The fundamental idea is that a thunk is only
-updated once ( although it may be forced simultaneously in a multi-threaded
-environment ) and its resulting value is shared when referenced subsequently.
+updated once (although it may be forced simultaneously in a multi-threaded
+environment) and its resulting value is shared when referenced subsequently.
 
 The GHCi command ``:sprint`` can be used to introspect the state of unevaluated
 thunks inside an expression without forcing evaluation. For instance:
@@ -6412,7 +6411,7 @@ b = _ : _ : _ : _ : _ : _ : _ : _ : _ : _ : 12 : _
 
 While a thunk is being computed its memory representation is replaced with a
 special form known as *blackhole* which indicates that computation is ongoing
-and allows for a short circuit for when a computation might depend on itself to
+and allows for a short circuit when a computation might depend on itself to
 complete. 
 
 The ``seq`` function introduces an artificial dependence on the evaluation of
@@ -6456,7 +6455,7 @@ BangPatterns
 ------------
 
 The extension ``BangPatterns`` allows an alternative syntax to force arguments
-to functions to be wrapped in seq. A bang operator on an arguments forces its
+to functions to be wrapped in seq. A bang operator on an argument forces its
 evaluation to weak head normal form before performing the pattern match. This
 can be used to keep specific arguments evaluated throughout recursion instead of
 creating a giant chain of thunks.
@@ -6493,7 +6492,7 @@ f $! x  = let !vx = x in f vx
 StrictData
 ----------
 
-As of GHC 8.0 strictness annotations can be applied to all definitions in a module automatically. In previous versions to make definitions strict it was necessary to use explicit syntactic annotations at all sites.
+As of GHC 8.0 strictness annotations can be applied to all definitions in a module automatically. In previous versions to make definitions strict it was necessary to use explicit syntactic annotations at call sites.
 
 Enabling StrictData makes constructor fields strict by default on any module
 where the pragma is enabled:
@@ -6600,18 +6599,18 @@ The Debate
 Laziness is a controversial design decision in Haskell. It is difficult to write
 production Haskell code that operates in constant memory without some insight
 into the evaluation model and the runtime. A lot of industrial codebases have a
-policy of marking all constructors as strict default or enabling [StrictData] to
+policy of marking all constructors as strict by default or enabling [StrictData] to
 prevent space leaks. If Haskell were being designed from scratch it probably
 would not choose laziness as the default model.  Future implementations of
-Haskell compilers would also probably also not choose this point in the design
-space if given the option of breaking with the language specification. 
+Haskell compilers would not choose this point in the design space if given the
+option of breaking with the language specification. 
 
-There is a lot of fear uncertainty and doubt spread about lazy evaluation that
-unfortunately that gets loses the forest for the trees and ignores 30 years of
+There is a lot of fear, uncertainty and doubt spread about lazy evaluation that
+unfortunately loses the forest for the trees and ignores 30 years of
 advanced research on the type system. In industrial programming a lot of
 software is sold on the meme of being of *fast* instead of being *correct*, and
 lazy evaluation is an intellectually easy talking point about these upside-down
-priorities.  Nevertheless the colloquial perception of a laziness being "evil"
+priorities.  Nevertheless the colloquial perception of laziness being "evil"
 is a meme that will continue to persist regardless of any underlying reality
 because software is intrinsically a social process.
 
@@ -6648,7 +6647,7 @@ versions in the Prelude which are left in for historical reasons. So oftentimes
 it is desirable to explicitly mask these functions from implicit import and
 force the use of Foldable and Traversable instead.
 
-Of course oftentimes one wishes only to use the Prelude explicitly and one can
+Of course oftentimes one wishes to only use the Prelude explicitly and one can
 explicitly import it qualified and use the pieces as desired without the
 implicit import of the whole namespace.
 
@@ -6690,7 +6689,7 @@ entirely with a custom prelude. Many industrial projects will roll their own
 
 For example if we wanted to build up a custom project prelude we could construct
 a Prologue module and dump the relevant namespaces we want from `base` into our
-custom export list. Using the module reexport feature allows us to create a
+custom export list. Using the module reexport feature allows us to create an
 `Exports` namespace which contains our Prelude's symbols. Every subsequent
 module in our project will then have `import Prologue` as the first import.
 
@@ -6730,7 +6729,7 @@ all available on Hackage.
 
 Different preludes take different approaches to defining what the Haskell
 standard library should be. Some are interoperable with existing code and others
-require a "all-in" approach that creates a ecosystem around it. Some projects
+require an "all-in" approach that creates an ecosystem around it. Some projects
 are more community efforts and others are developed by consulting companies or
 industrial users wishing to standardise their commercial code.
 
@@ -6830,7 +6829,7 @@ A list of partial functions in the default prelude:
 Replacing Partiality
 --------------------
 
-The Prelude has total variants of the historical partial functions (i.e. ``Text.Read.readMaybe``)in some
+The Prelude has total variants of the historical partial functions (e.g. ``Text.Read.readMaybe``) in some
 cases, but often these are found in the various replacement preludes
 
 The total versions provided fall into three cases:
@@ -6861,7 +6860,7 @@ Boolean Blindness
 ------------------
 
 Boolean blindness is a common problem found in many programming languages.
-Consider the following two definitions which deconstruct a maybe value into a
+Consider the following two definitions which deconstruct a Maybe value into a
 boolean. Is there anything wrong with the definitions and below and why is this
 not caught in the type system?
 
@@ -6912,7 +6911,7 @@ happen to mix them up. Instead of making invalid states *unrepresentable* we've
 made the invalid state *indistinguishable* from the valid one!
 
 The more desirable practice is to match on terms which explicitly witness
-the proposition as a type ( often in a sum type ) and won't typecheck otherwise.
+the proposition as a type (often in a sum type) and won't typecheck otherwise.
 
 ```haskell
 case x of
@@ -6930,8 +6929,8 @@ if p x
   else don't use x
 ```
 
-To be fair though, many popular languages completely lack the notion of sum types ( the source of many woes in
-my opinion ) and only have product types, so this type of reasoning sometimes has no direct equivalence for
+To be fair though, many popular languages completely lack the notion of sum types (the source of many woes in
+my opinion) and only have product types, so this type of reasoning sometimes has no direct equivalence for
 those not familiar with ML family languages.
 
 In Haskell, the Prelude provides functions like ``isJust`` and ``fromJust`` both of which can be used to
@@ -6952,7 +6951,7 @@ foldr f z [a...] = f a (f b ( ... (f y z) ... ))
 foldl f z [a...] = f ... (f (f z a) b) ... y
 ```
 
-For a concrete example, consider the simple arithmetic sequence over the binary operator
+For a concrete example consider the simple arithmetic sequence over the binary operator
 ``(+)``:
 
 ```haskell
@@ -7060,9 +7059,9 @@ Data.Foldable.minimum :: (Ord a, Foldable t) => t a -> a
 Data.Traversable.mapM :: (Monad m, Traversable t) => (a -> m b) -> t a -> m (t b)
 ```
 
-Unfortunately for historical reasons the names exported by foldable quite often
+Unfortunately for historical reasons the names exported by Foldable quite often
 conflict with ones defined in the Prelude, either import them qualified or just
-disable the Prelude. The operations in the Foldable all specialize to the same
+disable the Prelude. The operations in the Foldable class all specialize to the same
 and behave the same as the ones in Prelude for List types.
 
 ~~~~ {.haskell include="src/06-prelude/foldable_traversable.hs"}
@@ -7091,10 +7090,10 @@ defined as linked list of pointers to characters which is an extremely
 pathological and inefficient way of representing textual data. Unfortunately for
 historical reasons large portions of GHC and Base depend on String.
 
-The String problem is intrinsically linked with the fact that the default GHC
+The String problem is intrinsically linked to the fact that the default GHC
 Prelude provides a set of broken defaults that are difficult to change because
 GHC and the entire ecosystem historically depend on it. There are however high
-performance string libraries that can swapped out for the broken `String` type
+performance string libraries that can swapped in for the broken `String` type
 and we will discuss some ways of working with high-performance and memory
 efficient replacements.
 
@@ -7104,7 +7103,7 @@ String
 The default Haskell string type is implemented as a naive linked list of
 characters, this is hilariously terrible for most purposes but no one knows how
 to fix it without rewriting large portions of all code that exists, and simply
-nobody no one wants to commit the time to fix it. So it remains broken, likely
+nobody wants to commit the time to fix it. So it remains broken, likely
 forever.
 
 ```haskell
@@ -7115,32 +7114,33 @@ However, fear not as there are are two replacement libraries for processing
 textual data: ``text`` and ``bytestring``.
 
 * `text` - Used for handling unicode data.
-* `bytestring` - Used for handling ASCII data that needs to interchanged with C
+* `bytestring` - Used for handling ASCII data that needs to interchange with C
   code or network protocols.
 
 For each of these there are two variants for both text and bytestring.
 
-* <b>lazy</b> Lazy text objects are encoded as lazy lists of strict chunks of bytes.
-* <b>strict</b> Byte vectors are encoded as strict Word8 arrays of bytes or code
+* **lazy** - Lazy text objects are encoded as lazy lists of strict chunks of bytes.
+* **strict** - Byte vectors are encoded as strict Word8 arrays of bytes or code
   points
 
-Giving rise to Cartesian product of the four common string types:
+Giving rise to the Cartesian product of the four common string types:
 
 Variant                   Module
 -------------             ----------
-<b>strict text</b>        `Data.Text`
-<b>lazy text</b>          `Data.Text.Lazy`
-<b>strict bytestring</b>  `Data.ByteString`
-<b>lazy bytestring</b>    `Data.ByteString.Lazy`
+**strict text**        `Data.Text`
+**lazy text**          `Data.Text.Lazy`
+**strict bytestring**  `Data.ByteString`
+**lazy bytestring**    `Data.ByteString.Lazy`
 
 String Conversions
 ------------------
 
-Conversions between strings types ( from : left column, to : top row ) are done
+Conversions between strings types are done
 with several functions across the bytestring and text libraries. The mapping
 between text and bytestring is inherently lossy so there is some degree of
 freedom in choosing the encoding. We'll just consider utf-8 for simplicity.
 
+(From : left column,  To : top row)
                       Data.Text  Data.Text.Lazy  Data.ByteString  Data.ByteString.Lazy
 --------------------- ---------  --------------  ---------------  ------------------
 Data.Text             id         fromStrict      encodeUtf8       encodeUtf8
@@ -7148,7 +7148,7 @@ Data.Text.Lazy        toStrict   id              encodeUtf8       encodeUtf8
 Data.ByteString       decodeUtf8 decodeUtf8      id               fromStrict
 Data.ByteString.Lazy  decodeUtf8 decodeUtf8      toStrict         id
 
-Be careful with the functions (`decodeUtf8`, `decodeUtf16LE`, etc) as they are
+Be careful with the functions (`decodeUtf8`, `decodeUtf16LE`, etc.) as they are
 partial and will throw errors if the byte array given does not contain unicode
 code points. Instead use one of the following functions which will allow you to
 explicitly handle the error case:
@@ -7163,7 +7163,7 @@ OverloadedStrings
 
 With the ``-XOverloadedStrings`` extension string literals can be overloaded
 without the need for explicit packing and can be written as string literals in
-the Haskell source and overloaded via a typeclass ``IsString``. Sometimes this
+the Haskell source and overloaded via the typeclass ``IsString``. Sometimes this
 is desirable.
 
 ```haskell
@@ -7184,7 +7184,7 @@ For instance:
 ```
 
 We can also derive IsString for newtypes using ``GeneralizedNewtypeDeriving``,
-although much of the safety of the newtype is then lost if it is interchangeable
+although much of the safety of the newtype is then lost if it is used interchangeable
 with other strings.
 
 ```haskell
@@ -7238,7 +7238,7 @@ type LByteString = BL.ByteString
 Text
 ----
 
-A ``Text`` type is a packed blob of Unicode characters.
+The ``Text`` type is a packed blob of Unicode characters.
 
 ```haskell
 pack :: String -> Text
@@ -7291,7 +7291,7 @@ Overloaded Lists
 
 It is ubiquitous for data structure libraries to expose ``toList`` and ``fromList`` functions to construct
 various structures out of lists. As of GHC 7.8 we now have the ability to overload the list syntax in the
-surface language with a typeclass ``IsList``.
+surface language with the typeclass ``IsList``.
 
 ```haskell
 class IsList l where
@@ -7312,10 +7312,9 @@ instance IsList [a] where
 [1,2,3] :: (Num (GHC.Exts.Item l), GHC.Exts.IsList l) => l
 ```
 
-For example we could write a overloaded list instance for hash tables that
-simply coverts to the hash table using `fromList`. You shouldn't actually do
-this in practice but it is possible. Some math libraries that use vector-like
-structures will use overloaded lists in this fashion.
+For example we could write an overloaded list instance for hash tables that
+simply converts to the hash table using `fromList`.  Some math libraries that
+use vector-like structures will use overloaded lists in this fashion.
 
 ~~~~ {.haskell include="src/07-text-bytestring/overloadedlist.hs"}
 ~~~~
@@ -7410,8 +7409,8 @@ functor, and not a monad.
 ~~~~ {.haskell include="src/08-applicatives/applicative.hs"}
 ~~~~
 
-The pattern ``f <$> a <*> b ...`` shows up so frequently that there are a family
-of functions to lift applicatives of a fixed number arguments.  This pattern
+The pattern ``f <$> a <*> b ...`` shows up so frequently that there is a family
+of functions to lift applicatives of a fixed number arguments. This pattern
 also shows up frequently with monads (``liftM``, ``liftM2``, ``liftM3``).
 
 ```haskell
@@ -7427,7 +7426,7 @@ liftA3 f a b c = f <$> a <*> b <*> c
 
 Applicative also has functions ``*>`` and ``<*`` that sequence applicative
 actions while discarding the value of one of the arguments. The operator ``*>``
-discard the left while ``<*`` discards the right. For example in a monadic
+discards the left while ``<*`` discards the right. For example in a monadic
 parser combinator library the ``*>`` would parse with first parser argument but
 return the second.
 
@@ -7544,7 +7543,7 @@ instance Arrow (->) where
   (***) f g ~(x,y) = (f x, g y)
 ```
 
-In this form functions of multiple arguments can be threaded around using the
+In this form, functions of multiple arguments can be threaded around using the
 arrow combinators in a much more pointfree form. For instance a histogram
 function has a nice one-liner.
 
@@ -7603,7 +7602,7 @@ class Bifunctor p where
   second :: (b -> c) -> p a b -> p a c
 ```
 
-The bifunctor laws are a natural generalization of the usual functor. Namely
+The bifunctor laws are a natural generalization of the usual functor laws. Namely
 they respect identities and composition in the usual way:
 
 ```haskell
@@ -7639,7 +7638,7 @@ Polyvariadic Functions
 
 One surprising application of typeclasses is the ability to construct functions which take an arbitrary number
 of arguments by defining instances over function types. The arguments may be of arbitrary type, but the
-resulting collected arguments must either converted into a single type or unpacked into a sum type.
+resulting collected arguments must either be converted into a single type or unpacked into a sum type.
 
 ~~~~ {.haskell include="src/08-applicatives/variadic.hs"}
 ~~~~
@@ -7664,7 +7663,7 @@ introduced. This is simple enough error handling which privileges the `Left`
 constructor to hold the error. Many simple functions which can fail can simply
 use the `Either Error a` in the result type to encode simple error handling.
 
-The downside to this is that it force every consumer of the function to pattern
+The downside to this is that it forces every consumer of the function to pattern
 match on the result to handle the error case. It also assumes that all `Error`
 types can be encoded inside of the sum type holding the possible failures.
 
@@ -7677,13 +7676,13 @@ safeDiv x y = Right (x `div` y)
 ExceptT
 -------
 
-When using `transformers` style effect stacks it is quite common to need to have
+When using the `transformers` style effect stacks it is quite common to need to have
 a layer of the stack which can fail. When using the style of composing effects a
 monad transformer (which is a wrapper around Either monad) can be added which
-lifts the error handling into a `ExceptT` effect layer.
+lifts the error handling into an `ExceptT` effect layer.
 
-As of mtl 2.2 or higher, the ``ErrorT`` class has been replaced by the
-``ExceptT``.  At transformers level.
+As of mtl 2.2 or higher, the ``ErrorT`` class has been replaced by
+``ExceptT`` at the transformers level.
 
 ```haskell
 newtype ExceptT e m a = ExceptT (m (Either e a))
@@ -7715,7 +7714,7 @@ m `catchE` h = ExceptT $ do
         Right r -> return (Right r)
 ```
 
-And also this can extended to the mtl `MonadError` instance for which we can
+And also this can be extended to the mtl `MonadError` instance for which we can
 write instances for IO and Either themselves:
 
 ```haskell
@@ -7745,9 +7744,9 @@ Control.Exception
 
 GHC has a builtin system for propagating errors up at the runtime level, below
 the business logic level. These are used internally for all sorts of concurrency
-and system interface. The runtime provides builtin operations ``throw`` and
+and system interfaces. The runtime provides builtin operations ``throw`` and
 ``catch`` functions which allow us to throw exceptions in pure code and catch
-the resulting exception within IO. Note that return value of the ``throw``
+the resulting exception within IO. Note that the return value of ``throw``
 inhabits all types.
 
 ```haskell
@@ -7763,7 +7762,7 @@ evaluate :: a -> IO a
 Because a value will not be evaluated unless needed, if one desires to know for
 sure that an exception is either caught or not it can be deeply forced into head
 normal form before invoking catch. The ``strictCatch`` is not provided by
-standard library but has a simple implementation in terms of ``deepseq``.
+the standard library but has a simple implementation in terms of ``deepseq``.
 
 ```haskell
 strictCatch :: (NFData a, Exception e) => IO a -> (e -> IO a) -> IO a
@@ -7775,16 +7774,16 @@ Exceptions
 
 The problem with the previous approach is having to rely on GHC's asynchronous exception handling inside of IO
 to handle basic operations and the bifurcation of APIs which need to expose
-different APIs for any monad that has failure (`IO`, `STM`, `ExceptT`, etc).
+different APIs for any monad that has failure (`IO`, `STM`, `ExceptT`, etc.).
 
-The ``exceptions`` package provides provides the same API as
+The ``exceptions`` package provides the same API as
 ``Control.Exception`` but loosens the dependency on IO. It instead provides a
 granular set of typeclasses which can operate over different monads which
 require a precise subset of error handling methods.
 
-* `MonadThrow` - Monads which expose a interface for throwing exceptions.
-* `MonadCatch` - Monads which expose a interface for handling exceptions.
-* `MonadMask` - Monads which expose a interface for masking asynchronous
+* `MonadThrow` - Monads which expose an interface for throwing exceptions.
+* `MonadCatch` - Monads which expose an interface for handling exceptions.
+* `MonadMask` - Monads which expose an interface for masking asynchronous
   exceptions.
 
 There are three core primitives that are used in handling runtime exceptions:
@@ -7856,8 +7855,8 @@ Spoon
 
 Sometimes you'll be forced to deal with seemingly pure functions that can throw
 up at any point. There are many functions in the standard library like this, and
-many more on Hackage. You'd like to be handle this logic purely as if it were
-returning a proper ``Maybe a`` but to catch the logic you'd need to install a IO
+many more on Hackage. You'd like to handle this logic purely as if it were
+returning a proper ``Maybe a`` but to catch the logic you'd need to install an IO
 handler inside IO to catch it. Spoon allows us to safely (and "purely", although
 it uses a referentially transparent invocation of unsafePerformIO) to catch
 these exceptions and put them in Maybe where they belong.
