@@ -32,7 +32,7 @@ dialect, it was initially inspired by an older language called Miranda. In the
 early 90s, a group of academics formed the GHC committee to pursue building a
 research vehicle for lazy programming languages as a replacement for Miranda.
 This was a particularly in-vogue research topic at the time and as a result the
-committee attracted various talented individuals who who initiated the language
+committee attracted various talented individuals who initiated the language
 and ultimately laid the foundation for modern Haskell.
 
 Over the last 30 years Haskell has evolved into a mature ecosystem, with an
