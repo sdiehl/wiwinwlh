@@ -1,0 +1,6 @@
+#include "Cmm.h"
+
+example (W_ n) {
+  entry:
+    return (n+1);
+}

@@ -1,0 +1,11 @@
+cabal-version: 2.4
+name: example
+build-type: Simple
+version: 1.0.0
+
+executable example
+  main-is: Main.hs
+  build-depends: base, ghc-prim
+  default-language: Haskell2010
+  ghc-options: -ddump-cmm
+  c-sources: example.cmm
