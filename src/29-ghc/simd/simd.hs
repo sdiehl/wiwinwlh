@@ -9,8 +9,6 @@
 import GHC.Exts
 import GHC.Prim
 
-data ByteArray = BA (MutableByteArray# RealWorld)
-
 data FloatX4 = FX4# FloatX4#
 
 instance Show FloatX4 where
