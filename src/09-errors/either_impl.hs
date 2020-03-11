@@ -1,5 +1,5 @@
 instance Monad (Either e) where
-  return x = Right x
+  return = Right
 
-  (Left x)  >>= f = Left x
+  (Left x) >>= f = Left x
   (Right x) >>= f = f x
