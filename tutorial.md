@@ -7140,13 +7140,14 @@ with several functions across the bytestring and text libraries. The mapping
 between text and bytestring is inherently lossy so there is some degree of
 freedom in choosing the encoding. We'll just consider utf-8 for simplicity.
 
-(From : left column,  To : top row)
                       Data.Text  Data.Text.Lazy  Data.ByteString  Data.ByteString.Lazy
 --------------------- ---------  --------------  ---------------  ------------------
 Data.Text             id         fromStrict      encodeUtf8       encodeUtf8
 Data.Text.Lazy        toStrict   id              encodeUtf8       encodeUtf8
 Data.ByteString       decodeUtf8 decodeUtf8      id               fromStrict
 Data.ByteString.Lazy  decodeUtf8 decodeUtf8      toStrict         id
+
+Table: From : left column,  To : top row
 
 Be careful with the functions (`decodeUtf8`, `decodeUtf16LE`, etc.) as they are
 partial and will throw errors if the byte array given does not contain unicode
