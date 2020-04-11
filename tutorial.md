@@ -1696,7 +1696,7 @@ following set of product and sum types:
 
 ```haskell
 data Suit = Clubs | Diamonds | Hearts | Spades
-data Color = Red | Back
+data Color = Red | Black
 data Value 
   = Two
   | Three
