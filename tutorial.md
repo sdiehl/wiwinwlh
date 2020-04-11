@@ -746,7 +746,7 @@ $ stack install hlint
 To check the set of dependencies, run:
 
 ```bash
-$ stack list-dependencies
+$ stack ls dependencies
 ```
 
 Just as with ``cabal``,  the build and debug process can be orchestrated using
