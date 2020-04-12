@@ -2217,9 +2217,9 @@ arguments returning a new function.
 flip :: (a -> b -> c) -> b -> a -> c
 ```
 
-The most common operator in all of Haskell is function application operator
+The most common operator in all of Haskell is the function application operator
 `$`. This function is right associative and takes the entire expression on the
-right hand side of the operator and applies it to function on the left.
+right hand side of the operator and applies it to a function on the left.
 
 ```haskell
 infixr 0 $
