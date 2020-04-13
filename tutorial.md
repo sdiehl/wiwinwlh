@@ -1157,6 +1157,7 @@ it :: Prelude.Integer
 ```
 
 ```haskell
+λ: :set +m
 λ: :{
 λ:| let foo = do
 λ:|           putStrLn "hello ghci"
