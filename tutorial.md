@@ -3327,7 +3327,7 @@ liftA :: Applicative f => (a -> b) -> f a -> f b
 Functions which have *chirality* in which they traverse a data structure (i.e.
 left-to-right or right-to-left) will often suffix the name with L or R for their
 iteration pattern. This is useful because often times these type signatures
-identical.
+are identical.
 
 ```haskell
 mapAccumL :: Traversable t => (a -> b -> (a, c)) -> a -> t b -> (a, t c)
