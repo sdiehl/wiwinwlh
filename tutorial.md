@@ -2939,7 +2939,7 @@ Debugger
 
 Since GHC version 6.8.1, a built-in debugger has been available, although its use
 is somewhat rare. Debugging uncaught exceptions is in a similar style to
-debugging segfaults with gdb. Breakpoints can be set `:break` and the call stack
+debugging segfaults with gdb. Breakpoints can be set with `:break` and the call stack
 stepped through with `:forward` and `:back`.
 
 ```haskell
