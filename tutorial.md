@@ -1282,13 +1282,13 @@ as an editor agnostic backend that interfaces with GHC and Cabal to query code.
 
 **VSCode**
 
-* [haskell-ide-engine](https://github.com/haskell/haskell-ide-engine#using-hie-with-vs-code)
-* [language-haskell](https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell)
-* [ghcid](https://marketplace.visualstudio.com/items?itemName=ndmitchell.haskell-ghcid)
-* [hie-server](https://marketplace.visualstudio.com/items?itemName=alanz.vscode-hie-server)
-* [hlint](https://marketplace.visualstudio.com/items?itemName=hoovercj.haskell-linter)
-* [ghcide](https://marketplace.visualstudio.com/items?itemName=DigitalAssetHoldingsLLC.ghcide)
-* [ormolu-vscode](https://marketplace.visualstudio.com/items?itemName=sjurmillidahl.ormolu-vscode)
+* [haskell-ide-engine](https://github.com/haskell/haskell-ide-engine#using-hie-with-vs-code) - Tab completion plugin
+* [language-haskell](https://marketplace.visualstudio.com/items?itemName=justusadam.language-haskell) - Syntax highlighting plugin
+* [ghcid](https://marketplace.visualstudio.com/items?itemName=ndmitchell.haskell-ghcid) - Interactive error reporting plugin
+* [hie-server](https://marketplace.visualstudio.com/items?itemName=alanz.vscode-hie-server) - Jump to definition and tag handling plugin
+* [hlint](https://marketplace.visualstudio.com/items?itemName=hoovercj.haskell-linter) - Linting and style-checking plugin
+* [ghcide](https://marketplace.visualstudio.com/items?itemName=DigitalAssetHoldingsLLC.ghcide) - Interactive completion plugin
+* [ormolu-vscode](https://marketplace.visualstudio.com/items?itemName=sjurmillidahl.ormolu-vscode) - Code formatting plugin
 
 Linux Packages
 -------------
@@ -12897,25 +12897,6 @@ signatures and has fast verification times.
 See Also:
 
 * [ed25519](https://ed25519.cr.yp.to/)
-
-Merkle Trees
-------------
-
-Merkle trees are a type of authenticated data structure that consits of a
-sequence of data that is divided into an even number of partitions which are
-incrementally hashed in a binary tree, with each level of the tree hashing to
-produce the hash of the next level until the root of the tree is reached. The
-root hash is called the *Merkle root* and uniquely identifies the data included
-under it. Any change to the leaves, or any reorordering of the nodes will
-produce a different hash. 
-
-A Merkle tree admits an efficient "proof of inclusion" where to produce evidence
-that a single node is included in the set can be done by simply tracing the
-roots of a single node up to the binary tree to the root. This is a logarithmic
-order set of hashes and is quite efficient. 
-
-~~~~ {.haskell include="src/32-cryptography/Merkle.hs"}
-~~~~
 
 Secure Memory Handling
 ----------------------
