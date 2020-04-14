@@ -1697,7 +1697,7 @@ following set of product and sum types:
 
 ```haskell
 data Suit = Clubs | Diamonds | Hearts | Spades
-data Color = Red | Back
+data Color = Red | Black
 data Value 
   = Two
   | Three
@@ -2218,9 +2218,9 @@ arguments returning a new function.
 flip :: (a -> b -> c) -> b -> a -> c
 ```
 
-The most common operator in all of Haskell is function application operator
+The most common operator in all of Haskell is the function application operator
 `$`. This function is right associative and takes the entire expression on the
-right hand side of the operator and applies it to function on the left.
+right hand side of the operator and applies it to a function on the left.
 
 ```haskell
 infixr 0 $
@@ -2940,7 +2940,7 @@ Debugger
 
 Since GHC version 6.8.1, a built-in debugger has been available, although its use
 is somewhat rare. Debugging uncaught exceptions is in a similar style to
-debugging segfaults with gdb. Breakpoints can be set `:break` and the call stack
+debugging segfaults with gdb. Breakpoints can be set with `:break` and the call stack
 stepped through with `:forward` and `:back`.
 
 ```haskell
@@ -3328,7 +3328,7 @@ liftA :: Applicative f => (a -> b) -> f a -> f b
 Functions which have *chirality* in which they traverse a data structure (i.e.
 left-to-right or right-to-left) will often suffix the name with L or R for their
 iteration pattern. This is useful because often times these type signatures
-identical.
+are identical.
 
 ```haskell
 mapAccumL :: Traversable t => (a -> b -> (a, c)) -> a -> t b -> (a, t c)
@@ -5257,7 +5257,7 @@ it can't solve certain problems. Unless you know what you're doing, these
 extensions almost always indicate a design flaw and shouldn't be turned on to
 remedy the error at hand, as much as GHC might suggest otherwise!
 
-* AllowAmbigiousTypes
+* AllowAmbiguousTypes
 * DatatypeContexts
 * [OverlappingInstances](#multiparam-typeclasses)
 * [IncoherentInstances]
