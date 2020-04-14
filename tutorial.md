@@ -5256,7 +5256,7 @@ it can't solve certain problems. Unless you know what you're doing, these
 extensions almost always indicate a design flaw and shouldn't be turned on to
 remedy the error at hand, as much as GHC might suggest otherwise!
 
-* AllowAmbigiousTypes
+* AllowAmbiguousTypes
 * DatatypeContexts
 * [OverlappingInstances](#multiparam-typeclasses)
 * [IncoherentInstances]
