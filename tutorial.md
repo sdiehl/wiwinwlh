@@ -4875,7 +4875,7 @@ Members [ .. effects .. ] => Sem r a
 ```
 
 For example we seamlessly mix and match error handling, tracing, and stateful
-updates inside of one computation without the new to create a layered monad.
+updates inside of one computation without the need to create a layered monad.
 This would look something like the following:
 
 ```haskell
