@@ -1678,10 +1678,10 @@ Algebraic Datatypes
 Custom datatypes in Haskell are defined with the `data` keyword followed by the
 the type name, its parameters, and then a set of *constructors*. The possible
 constructors are either *sum types* or of *product types*. All datatypes in
-Haskell can expressed as sums of products. A sum type is a set of options that
-is delimited by a pipe. 
+Haskell can be expressed as sums of products. A sum type is a set of options
+that is delimited by a pipe.
 
-A datatype can only ever be inhabited by only single value from a sum type and
+A datatype can only ever be inhabited by a single value from a sum type and
 intuitively models a set of "options" a value may take. While a product type is
 a combination of a set of typed values, potentially named by record fields. For
 example the following are two definitions of a Point product type, the latter
