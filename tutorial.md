@@ -1333,15 +1333,15 @@ The major namespaces are described below with their naming conventions
 
 Namespace       Convention
 --------------  ----------
-Modules         Uppercase
-Functions       Lowercase
-Variables       Lowercase
-Type Variables  Lowercase
-Datatypes       Uppercase
-Constructors    Uppercase
-Typeclasses     Uppercase
-Synonyms        Uppercase
-Type Families   Uppercase
+Modules         Camel case
+Functions       Lower case
+Variables       Lower case
+Type Variables  Lower case
+Datatypes       Camel case
+Constructors    Camel case
+Typeclasses     Camel case
+Synonyms        Camel case
+Type Families   Camel case
 
 Modules
 -------
@@ -1603,7 +1603,7 @@ applyTwice f x = f (f x)
 
 Often to the left of a type signature you will see a big arrow `=>` which
 denotes a set of **constraints** over the type signature. Each of these
-constraints will be in uppercase and will normally mention at least one of the
+constraints will be in Camel case and will normally mention at least one of the
 type variables on the right hand side of the arrow. These constraints can mean
 many things but in the simplest form they denote that a type variable must have
 an implementation of a [type class](#type-classes). The `add` function below
