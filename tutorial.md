@@ -6970,6 +6970,26 @@ of any data structure which is parameterized over its element type ( List, Map,
 Set, Maybe, ...). These two classes are used everywhere in modern Haskell
 and are extremely important.
 
+```haskell
+class Foldable t where
+  fold    :: Monoid m => t m -> m
+  foldMap :: Monoid m => (a -> m) -> t a -> m
+  foldr   :: (a -> b -> b) -> b -> t a -> b
+  foldr'  :: (a -> b -> b) -> b -> t a -> b
+  foldl   :: (b -> a -> b) -> b -> t a -> b
+  foldl'  :: (b -> a -> b) -> b -> t a -> b
+  foldr1  :: (a -> a -> a) -> t a -> a
+  foldl1  :: (a -> a -> a) -> t a -> a
+  toList  :: t a -> [a]
+  null    :: t a -> Bool
+  length  :: t a -> Int
+  elem    :: Eq a => a -> t a -> Bool
+  maximum :: Ord a => t a -> a
+  minimum :: Ord a => t a -> a
+  sum     :: Num a => t a -> a
+  product :: Num a => t a -> a
+```
+
 A foldable instance allows us to apply functions to data types of monoidal
 values that collapse the structure using some logic over ``mappend``.
 
@@ -7025,21 +7045,6 @@ newtype Endo a = Endo {appEndo :: a -> a}
 instance Monoid (Endo a) where
   mempty = Endo id
   Endo f `mappend` Endo g = Endo (f . g)
-```
-
-```haskell
-class Foldable t where
-    fold    :: Monoid m => t m -> m
-    foldMap :: Monoid m => (a -> m) -> t a -> m
-
-    foldr   :: (a -> b -> b) -> b -> t a -> b
-    foldr'  :: (a -> b -> b) -> b -> t a -> b
-
-    foldl   :: (b -> a -> b) -> b -> t a -> b
-    foldl'  :: (b -> a -> b) -> b -> t a -> b
-
-    foldr1  :: (a -> a -> a) -> t a -> a
-    foldl1  :: (a -> a -> a) -> t a -> a
 ```
 
 For example:
