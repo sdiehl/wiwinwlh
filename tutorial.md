@@ -159,26 +159,32 @@ GHC can be installed on Linux and Mac with
 [ghcup](https://www.haskell.org/ghcup/) by running the following command:
 
 ```bash
-$ curl https://get-ghcup.haskell.org -sSf | sh
+$ curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org | sh
 ```
 
-This can be used to manage multiple versions of GHC installed locally.
+To start the interactive user interface, run:
 
 ```bash
-$ ghcup install 8.6.5
-$ ghcup install 8.4.4
+$ ghcup tui
+```
+
+Alternatively, to use the cli to install multiple versions of GHC, use the `install` command.
+
+```bash
+$ ghcup install ghc 8.6.5
+$ ghcup install ghc 8.4.4
 ```
 
 To select which version of GHC is available on the PATH use the `set` command.
 
 ```bash
-$ ghcup set 8.8.1
+$ ghcup set ghc 8.8.1
 ```
 
 This can also be used to install cabal.
 
 ```bash
-$ ghcup install-cabal
+$ ghcup install cabal
 ```
 
 To modify your shell to include ghc and cabal.
