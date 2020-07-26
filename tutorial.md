@@ -16986,7 +16986,7 @@ Certain sets of tasks in building command line REPL interfaces are so common
 that is becomes useful to abstract them out into a library. While haskeline
 provides a sensible lower-level API for interfacing with GNU readline, it is
 somewhat tedious to implement tab completion logic and common command logic over
-and over. To that end Repline assists in building interactive shells that that
+and over. To that end Repline assists in building interactive shells that
 resemble GHCi's default behavior.
 
 ~~~~ {.haskell include="src/30-languages/repline.hs"}
