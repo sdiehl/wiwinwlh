@@ -11770,7 +11770,6 @@ even in the middle of a computation without concern.
 See: 
 
 * [The Scheduler](https://ghc.haskell.org/trac/ghc/wiki/Commentary/Rts/Scheduler#TheScheduler)
-* [Parallel and Concurrent Programming in Haskell](http://chimera.labs.oreilly.com/books/1230000000929)
 
 Sparks
 ------
