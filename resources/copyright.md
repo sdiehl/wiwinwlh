@@ -24,7 +24,7 @@ Author
 
 This text is authored by Stephen Diehl.
 
-* Web: [www.stephendiehl.com](www.stephendiehl.com)
+* Web: [https://www.stephendiehl.com](https://www.stephendiehl.com)
 * Twitter: [https://twitter.com/smdiehl](https://twitter.com/smdiehl)
 * Github: [https://github.com/sdiehl](https://github.com/sdiehl)
 
