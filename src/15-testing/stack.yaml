@@ -3,6 +3,6 @@ packages:
 - '.'
 extra-deps:
 - quickspec-2.1.2
-- twee-lib-2.1.5
+- twee-lib-2.2
 flags: {}
 extra-package-dbs: []
