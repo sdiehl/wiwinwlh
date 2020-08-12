@@ -4873,7 +4873,7 @@ Polysemy
 Polysemy is a new effect system library based on the free-monad approach to
 modeling effects. The library uses modern type system features to model effects
 on top of a `Sem` monad. The monad will have a members constraint type which
-constraints a parameter `r` by a type-level list of effects in the given unit of
+constrains a parameter `r` by a type-level list of effects in the given unit of
 computation.
 
 ```haskell
