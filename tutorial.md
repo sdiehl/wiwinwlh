@@ -4678,7 +4678,7 @@ accidentally interchanged with encrypted text.
 
 ```haskell
 newtype Plaintext = Plaintext Text
-newtype Crytpotext = Cryptotext Text
+newtype Cryptotext = Cryptotext Text
 
 encrypt :: Key -> Plaintext -> Cryptotext
 decrypt :: Key -> Cryptotext -> Plaintext
@@ -8743,7 +8743,7 @@ and cryptotext.
 
 ```haskell
 newtype Plaintext = Plaintext Text
-newtype Crytpotext = Cryptotext Text
+newtype Cryptotext = Cryptotext Text
 
 encrypt :: Key -> Plaintext -> Cryptotext
 decrypt :: Key -> Cryptotext -> Plaintext
