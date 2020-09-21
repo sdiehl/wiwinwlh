@@ -3968,7 +3968,7 @@ provides an implementation of ``return``, which in this case is simply ``Just``.
 
 ```haskell
 instance Monad Maybe where
-  (Just x) >>= k = k x            -- 'k' is a function with type  (a -> Maybe a)
+  (Just x) >>= k = k x            -- 'k' is a function with type  (a -> Maybe b)
   Nothing  >>= k = Nothing
 
   return = Just                   -- Just's type signature is (a -> Maybe a), in
