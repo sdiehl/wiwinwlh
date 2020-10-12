@@ -5003,7 +5003,7 @@ Fused Effects
 
 Fused-effects is an alternative approach to effect systems based on an algebraic
 effects model. Unlike polysemy, fused-effects does not use a free monad as an
-intermediate form. Fused-effects has competative performance compared with mtl
+intermediate form. Fused-effects has competitive performance compared with mtl
 and doesn't require additional GHC plugins or extension compiler fusion rules to
 optimise away the abstraction overhead.
 
