@@ -6802,10 +6802,6 @@ A list of partial functions in the default prelude:
 * ``init``
 * ``tail``
 * ``last``
-* ``foldl``
-* ``foldr``
-* ``foldl'``
-* ``foldr'``
 * ``foldr1``
 * ``foldl1``
 * ``cycle``
