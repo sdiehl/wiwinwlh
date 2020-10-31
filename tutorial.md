@@ -12102,7 +12102,7 @@ Chans
 -----
 
 Channels are unbounded queues to which an unbounded number
-of values can be written an unbounded number of times . Channels are
+of values can be written an unbounded number of times. Channels are
 implemented using MVars and can be consumed by any number of other threads which
 read data off of the Chan. Channels are created, read from and written to using a simple
 `new`, `read` and `write` interface just as we've seen with other concurrency
