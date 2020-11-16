@@ -4,7 +4,7 @@ instance Monad (State s) where
   return a = State $ \s -> (a, s)
 
   State act >>= k = State $ \s ->
-    let (a, s') = act s
+    let (a, s') = runState act s
     in runState (k a) s'
 
 get :: State s s
