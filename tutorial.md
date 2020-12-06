@@ -1,3 +1,4 @@
+
 % What I Wish I Knew When Learning Haskell (Version 2.5)
 % Stephen Diehl
 % February 2020
@@ -6959,7 +6960,7 @@ For a concrete example consider the simple arithmetic sequence over the binary o
 
 ```haskell
 -- foldr (+) 1 [2..]
-(1 + (2 + (3 + (4 + ...))))
+(2 + (3 + (4 + (5 + ...))))
 ```
 
 ```haskell
