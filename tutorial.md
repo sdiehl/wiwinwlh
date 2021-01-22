@@ -13439,6 +13439,10 @@ Frameworks
 
 There are three large Haskell web frameworks:
 
+**IHP**
+
+IHP, by digitallyInduced, is a new batteries-included web framework optimized for longterm productivity and programmer happiness. The framework manages installation of ide, db, and haskell for you, as result of trying to be as beginner friendly as possible with all batteries included, while while having a bunch of novel features. The framework has its own documentation.
+
 **Servant**
 
 Servant is the newest of the standard Haskell web frameworks. It emerged after
