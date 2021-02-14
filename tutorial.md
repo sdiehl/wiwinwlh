@@ -11745,7 +11745,7 @@ Concurrency
 ===========
 
 GHC Haskell has an extremely advanced parallel runtime that embraces several
-different models of concurrency to adapt to adapt to needs for different
+different models of concurrency to adapt to needs for different
 domains. Unlike other languages Haskell does not have any Global Interpreter
 Lock or equivalent. Haskell code can be executed in a multi-threaded context and
 have shared mutable state and communication channels between threads.
