@@ -13239,7 +13239,7 @@ Error "when expecting a Double, encountered Boolean instead"
 ```
 
 As of 7.10.2 we can use the new -XDeriveAnyClass to automatically derive
-instances of FromJSON and TOJSON without the need for standalone instance
+instances of FromJSON and ToJSON without the need for standalone instance
 declarations. These are implemented entirely in terms of the default methods
 which use Generics under the hood.
 
