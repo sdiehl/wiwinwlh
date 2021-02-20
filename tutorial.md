@@ -404,7 +404,7 @@ $ cabal test <name>
 
 Moreover, arbitrary shell commands can be invoked with the
 [GHC](https://www.haskell.org/ghc/) environmental variables.  It is quite common
-is to run a new bash shell with this command such that the ``ghc`` and ``ghci``
+to run a new bash shell with this command such that the ``ghc`` and ``ghci``
 commands use the package environment. This can also run any system executable
 with the `GHC_PACKAGE_PATH` variable set to the libraries [package
 database](#package-databases).
