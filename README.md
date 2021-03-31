@@ -91,9 +91,18 @@ If you'd like to build the documents locally you'll need to compile the
 preprocessor run either use Nix, Stack or Cabal to compile the preprocessor
 executable in the cabal file.
 
+Stack:
+
 ```bash
-$ stack exec make # Stack
-$ cabal exec make # Cabal
+$ stack install
+$ stack exec make
+```
+
+Cabal:
+
+```bash
+$ cabal install
+$ cabal exec make
 ```
 
 For Nix:
