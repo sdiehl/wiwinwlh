@@ -10491,7 +10491,7 @@ $ liquid -f --cabaldir -i src -i spec src/*.hs
 For more extensive documentation and further use cases see the official
 documentation:
 
-* [Liquid Haskell Documentation](https://ucsd-progsys.github.io/liquidhaskell-tutorial/01-intro.html)
+* [Liquid Haskell Documentation](https://ucsd-progsys.github.io/liquidhaskell-tutorial/Tutorial_01_Introduction.html)
 
 </hr>
 
