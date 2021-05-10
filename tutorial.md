@@ -17537,14 +17537,14 @@ Categories
 Do I need to Learn Category Theory?
 -----------------------------------
 
-Short answer: <b>No</b>. Most of the idea of category theory aren't really
+Short answer: <b>No</b>. Most of the ideas of category theory aren't really
 applicable to writing Haskell.
 
 The long answer: It is not strictly necessary to learn, but so few things in
 life are.  Learning new topics and ways of thinking about problems only enrich
 your thinking and give you new ways of thinking about code and abstractions.
-Category theory is never going to help you write a web application better but it
-may give you insights into problems that algebraic in nature.  A tiny group of
+Category theory is never going to help you write a web application better, but it
+may give you insights into problems that are algebraic in nature.  A tiny group of
 Haskellers espouse philosophies about it being an inspiration for certain
 abstractions, but most do not.
 
