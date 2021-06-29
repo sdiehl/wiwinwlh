@@ -7134,8 +7134,8 @@ For each of these there are two variants for both text and bytestring.
 
 Giving rise to the Cartesian product of the four common string types:
 
-Variant                   Module
--------------             ----------
+Variant                Module
+-------------          ----------
 **strict text**        `Data.Text`
 **lazy text**          `Data.Text.Lazy`
 **strict bytestring**  `Data.ByteString`
