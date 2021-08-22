@@ -5900,7 +5900,9 @@ extract = #id
 
 ```haskell
 {-# LANGUAGE OverloadedLabels #-}
+{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE DuplicateRecordFields #-}
 {-# LANGUAGE ExistentialQuantification #-}
@@ -5912,7 +5914,7 @@ data S = MkS { foo :: Int }
 data T x y z = forall b . MkT { foo :: y, bar :: b }
 
 instance HasField x r a => IsLabel x (r -> a) where
-  fromLabel = getField
+  fromLabel = getField @x
 
 main :: IO ()
 main = do
