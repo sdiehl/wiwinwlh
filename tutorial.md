@@ -1935,7 +1935,7 @@ value card = case card of
 
 And we can use a double pattern match to produce a function which determines
 which suit trumps another suit. For example we can introduce an order of suits
-of cards where the ranking of cards proceeds (Clubs, Diamonds, Hearts, Spaces).
+of cards where the ranking of cards proceeds (Clubs, Diamonds, Hearts, Spades).
 A `_` underscore used inside a pattern indicates a wildcard pattern and
 matches against any constructor given. This should be the last pattern used a in
 match list.
@@ -1944,7 +1944,7 @@ match list.
 suitBeats :: Suit -> Suit -> Bool
 suitBeats Clubs    Diamonds  = True
 suitBeats Clubs    Hearts    = True
-suitBeats Clubs    Spaces    = True
+suitBeats Clubs    Spades    = True
 suitBeats Diamonds Hearts    = True
 suitBeats Diamonds Spades    = True
 suitBeats Hearts   Spades    = True
