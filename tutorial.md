@@ -1944,7 +1944,7 @@ match list.
 suitBeats :: Suit -> Suit -> Bool
 suitBeats Clubs    Diamonds  = True
 suitBeats Clubs    Hearts    = True
-suitBeats Clubs    Spaces    = True
+suitBeats Clubs    Spades    = True
 suitBeats Diamonds Hearts    = True
 suitBeats Diamonds Spades    = True
 suitBeats Hearts   Spades    = True
@@ -18175,7 +18175,7 @@ instance CCC (->) (,) () (->) where
 Further Resources
 -----------------
 
-Category theory is an entire branch of mathematics that should be studeid
+Category theory is an entire branch of mathematics that should be studied
 independently of Haskell and programming. The classic text is "Category Theory"
 by Awodey. This text assumes a undergraduate level mathematics background.
 
