@@ -5160,7 +5160,7 @@ The golden source of truth for language extensions is the official GHC user's
 guide which contains a plethora of information on the details of these
 extensions.
 
-See: [GHC Extension Reference](https://downloads.haskell.org/ghc/latest/docs/html/users_guide/lang.html)
+See: [GHC Extension Reference](https://downloads.haskell.org/ghc/latest/docs/html/users_guide/exts.html)
 
 Extension Dependencies
 ----------------------
