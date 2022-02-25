@@ -6302,7 +6302,7 @@ novice. Some time is often needed to fully grok how lazy evaluation works
 Strictness
 ----------
 
-For a more strict definition of strictnees, consider that there are several
+For a more strict definition of strictness, consider that there are several
 evaluation models for the lambda calculus:
 
 * **Strict** - Evaluation is said to be strict if all arguments are evaluated before
