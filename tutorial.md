@@ -5897,27 +5897,8 @@ extract :: IsLabel "id" t => t
 extract = #id
 ```
 
-```haskell
-{-# LANGUAGE OverloadedLabels #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE DuplicateRecordFields #-}
-{-# LANGUAGE ExistentialQuantification #-}
-
-import GHC.Records (HasField(..))  -- Since base 4.10.0.0
-import GHC.OverloadedLabels (IsLabel(..))
-
-data S = MkS { foo :: Int }
-data T x y z = forall b . MkT { foo :: y, bar :: b }
-
-instance HasField x r a => IsLabel x (r -> a) where
-  fromLabel = getField
-
-main :: IO ()
-main = do
-  print (#foo (MkS 42))
-  print (#foo (MkT True False))
-```
+~~~~ {.haskell include="src/03-monad-transformers/overloaded_labels.hs"}
+~~~~
 
 This is used in more advanced libraries like [Selda] which do object relational
 mapping between Haskell datatype fields and database columns.
