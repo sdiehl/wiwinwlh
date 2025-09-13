@@ -40,10 +40,32 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-stack-
 
+      - name: Cache LaTeX packages and font cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            /usr/share/texlive
+            /var/lib/texmf
+            ~/.texlive*
+            ~/.texmf*
+            /var/cache/fonts
+            ~/.cache/fontconfig
+          key: ${{ runner.os }}-texlive-${{ hashFiles('.github/workflows/build-and-deploy.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-texlive-
+
       - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y make texlive texlive-xetex texlive-latex-extra texlive-fonts-extra texlive-science
+
+      - name: Pre-build LaTeX font cache
+        run: |
+          # Build font cache to speed up subsequent runs
+          sudo fc-cache -fv || true
+          # Update TeX font maps
+          sudo mktexlsr || true
+          sudo updmap-sys || true
 
       - name: Build preprocessor with dependencies
         run: |
