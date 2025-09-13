@@ -3003,7 +3003,7 @@ program at critical times throughout execution is often unnecessary because we
 can simply open [GHCi] and test the function. Nevertheless, Haskell does come
 with an unsafe ``trace`` function which can be used to perform arbitrary print
 statements outside of the IO monad. You can place these statements wherever you
-like in your code without without IO restrictions. 
+like in your code without IO restrictions. 
 
 ~~~~ {.haskell include="src/01-basics/trace.hs"}
 ~~~~
