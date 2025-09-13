@@ -18,3 +18,4 @@ dist-newstyle
 resources/*.eps
 errata.*
 .brokdb
+.DS_Store

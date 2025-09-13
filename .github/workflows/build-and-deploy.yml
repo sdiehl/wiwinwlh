@@ -43,16 +43,15 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y pandoc make
+          sudo apt-get install -y make
 
-      - name: Build preprocessor
+      - name: Build preprocessor with dependencies
         run: |
           stack build --resolver lts-14.20
-          stack install --resolver lts-14.20
 
       - name: Generate HTML documentation
         run: |
-          make html
+          stack exec --resolver lts-14.20 -- make html
           # Create a directory for GitHub Pages
           mkdir -p _site
           cp tutorial.html _site/index.html
