@@ -75,7 +75,7 @@ webpdf: $(INPUT) includes $(COVER) $(BACK)
 # .pdf Target for GitHub Actions (uses free fonts)
 githubpdf: $(INPUT) includes $(COVER) $(BACK)
 	./includes < $< \
-	| $(PANDOC) -c -s -f $(IFORMAT) --template resources/template-github.tex --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) $(PFLAGS) --metadata title="What I Wish I Knew When Learning Haskell" -V documentclass=report -o $(WPDF)
+	| $(PANDOC) -c -s -f $(IFORMAT) --template resources/template-github.tex --include-in-header $(UNICODE_MAP) --pdf-engine=xelatex $(FLAGS) $(LFLAGS) $(PFLAGS) --metadata title="What I Wish I Knew When Learning Haskell" -V documentclass=book -o $(WPDF)
 
 errata:
 	$(PANDOC) -i errata.md -o errata.tex

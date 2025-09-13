@@ -13,20 +13,9 @@ Read Online:
 * [**PDF**](https://sdiehl.github.io/wiwinwlh/tutorial.pdf)
 * [**Example Code**](https://github.com/sdiehl/wiwinwlh/tree/master/src)
 
-<!--
-If you'd like a physical copy of the text you can either print it out for
-yourself (see Printable PDF) or purchase one from a publisher. The price is
-at-cost since the text is open source and free.
-
-* [**Blurb Publisher**](https://www.blurb.co.uk/b/9958091-what-i-wish-i-knew-when-learning-haskell)
-
-The current published version is:
-
-```
-Date: February 16, 2020
-Git: d429c2e21b9636cffa27a8d4f063644b8bcecf1a
-```
--->
+I no longer actively support this document, but I will leave it up on Github for
+posterity and for historical record. The code is likely quite out of date
+compared to modern versions of both GHC and the libraries covered.
 
 Contributing
 ------------
