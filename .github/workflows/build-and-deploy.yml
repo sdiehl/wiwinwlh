@@ -64,8 +64,8 @@ jobs:
 
       - name: Generate PDF documentation
         run: |
-          # Generate web PDF with colored links
-          stack exec --resolver lts-14.20 -- make webpdf
+          # Generate PDF using GitHub-compatible fonts
+          stack exec --resolver lts-14.20 -- make githubpdf
           # Copy PDF to site directory
           cp tutorial.pdf _site/
 

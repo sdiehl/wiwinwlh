@@ -4,13 +4,8 @@ Version
 This is the fifth major draft of this document since 2009.
 
 
-* **[HTML Version](sdiehl.github.io/wiwinwlh/)**
-<!--
-* **[Screen PDF](http://dev.stephendiehl.com/hask/tutorial.pdf)**
-* **[Printable PDF](http://dev.stephendiehl.com/hask/tutorial_print.pdf)**
-* **[EPUB Version](http://dev.stephendiehl.com/hask/tutorial.epub)**
-* **[Kindle Version](http://dev.stephendiehl.com/hask/tutorial.mobi)**
--->
+* **[HTML Version](https://sdiehl.github.io/wiwinwlh/)**
+* **[PDF Version](https://sdiehl.github.io/wiwinwlh/tutorial.pdf)**
 
 I no longer actively support this document, but I will leave it up on Github for
 posterity.

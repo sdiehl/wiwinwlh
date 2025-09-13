@@ -1,0 +1,193 @@
+\documentclass[10pt,openright]{$documentclass$}
+
+\usepackage{geometry}
+\usepackage{afterpage}
+\usepackage{resources/dtrt}
+\geometry{
+  papersize={8.125in,10.250in},
+  bindingoffset=0.2in,
+  top=1.5cm,
+  bottom=1.5cm,
+  inner=1.91cm,
+  outer=6.68cm,
+  % For pdf
+  left=2.0cm,
+  right=2.0cm,
+  centering
+}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{hyperref}
+
+$if(colorlinks)$
+\hypersetup{%
+  colorlinks=true,
+  linkcolor=blue,
+  anchorcolor=blue,
+  urlcolor=cyan,
+  filecolor=red,
+  linkbordercolor=red,
+  pdfborderstyle={/S/U/W 1}
+  pdfauthor={Stephen Diehl},
+  pdfsubject={haskell, computer science, programming, ghc, monads},
+  pdftitle={What I Wish I Knew When Learning Haskell},
+}
+$else$
+\hypersetup{%
+  colorlinks=false,         % hyperlinks will be black
+  linkcolor=black,
+  pdfborderstyle={0 0 0},
+  pdfauthor={Stephen Diehl},
+  pdfsubject={haskell, computer science, programming, ghc, monads},
+  pdftitle={What I Wish I Knew When Learning Haskell},
+}
+
+\newif\ifprint
+\printtrue
+\ifprint
+  \let\oldhref\href
+  \renewcommand\href[2]{%
+    \oldhref{#1}{#2}%
+    \footnote{\url{#1}}%
+  }
+\fi
+$endif$
+
+\newcommand\blankpage{%
+    \null
+    \thispagestyle{empty}%
+    \addtocounter{page}{-1}%
+    \newpage}
+
+\usepackage{amssymb,amsmath}
+\usepackage{framed}
+\usepackage{fancyvrb}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+
+%\frenchspacing
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[RE,LO]{\thepage}
+\fancyhead[LE,RO]{\leftmark}
+
+\renewcommand{\chaptermark}[1]{\markboth{\MakeUppercase{#1}}{}}
+
+\usepackage{csvsimple}
+\usepackage{catchfile}
+
+% Syntax Higlighting
+\usepackage{listings}
+
+% Haskell Syntax Highlighting
+\usepackage{resources/haskell}
+
+\lstset{
+  language=haskell,
+  basicstyle=\linespread{0.2}\small\sffamily,
+  breaklines=true,
+  frame=ltb,
+  framerule=0pt,
+  xleftmargin=15pt,
+  framexleftmargin=16pt,
+  framextopmargin=10pt,
+  framexbottommargin=10pt,
+  stepnumber=1,
+  numbers=left,
+  numbersep=5pt,
+  numberstyle=\ttfamily\tiny\color[gray]{0.3},
+  belowcaptionskip=\bigskipamount,
+  captionpos=b,
+  escapeinside={*'}{'*},
+  tabsize=2,
+  emphstyle={\bf},
+  commentstyle=\it,
+  stringstyle=\mdseries\rmfamily,
+  showspaces=false,
+  keywordstyle=\bfseries\rmfamily,
+  columns=fullflexible,
+  showstringspaces=false,
+  morecomment=[l]\%,
+}
+
+\usepackage{etoolbox}
+\makeatletter
+%\patchcmd{\chapter}{\newpage \newpage}{}{}{}
+
+\usepackage[utf8]{inputenc}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fontspec}
+% Use Latin Modern Roman as main font - always available with TeX
+\setmainfont[Ligatures=Common]{Latin Modern Roman}
+% Use Latin Modern Mono for monospace
+\setmonofont[Scale=0.80]{Latin Modern Mono}
+
+\urlstyle{same}
+\usepackage{longtable,booktabs}
+
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+
+\newenvironment{dedication}
+  {\clearpage
+   \thispagestyle{empty}
+   \vspace*{\stretch{1}}
+   \itshape
+   \raggedleft
+  }
+  {\par
+   \vspace{\stretch{3}}
+   \clearpage
+  }
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\newenvironment{Shaded}{}{}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\NormalTok}[1]{{#1}}
+
+\providecommand{\monthyear}{%
+  \ifcase\month\or January\or February\or March\or April\or May\or June\or
+  July\or August\or September\or October\or November\or
+  December\fi\space\number\year
+}
+
+\title{$title$}
+\author{$for(author)$$author$$sep$ \and $endfor$}
+\date{$date$}
+
+\begin{document}
+\frontmatter
+\maketitle
+
+$body$
+
+\end{document}

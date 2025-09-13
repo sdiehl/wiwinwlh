@@ -10,12 +10,7 @@
 Read Online:
 
 * [**HTML**](https://sdiehl.github.io/wiwinwlh/)
-<!--
-* [**Screen PDF**](http://dev.stephendiehl.com/hask/tutorial.pdf)
-* [**Printable PDF**](http://dev.stephendiehl.com/hask/tutorial_print.pdf)
-* [**EPUB**](http://dev.stephendiehl.com/hask/tutorial.epub)
-* [**Kindle MOBI**](http://dev.stephendiehl.com/hask/tutorial.mobi)
--->
+* [**PDF**](https://sdiehl.github.io/wiwinwlh/tutorial.pdf)
 * [**Example Code**](https://github.com/sdiehl/wiwinwlh/tree/master/src)
 
 <!--
@@ -156,7 +151,7 @@ script `src/ci` will run through all example code and compile it against the
 specified in the cabal file and ensure that the given code examples are up to
 date.
 
-The CI is run in Github under TravisCI on every pull request.
+The CI is run in Github CI on every pull request.
 
 To run the integration suite manually run:
 
