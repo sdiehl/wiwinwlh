@@ -8,7 +8,8 @@ This is the fifth major draft of this document since 2009.
 * **[PDF Version](https://sdiehl.github.io/wiwinwlh/tutorial.pdf)**
 
 I no longer actively support this document, but I will leave it up on Github for
-posterity.
+posterity and for historical record. The code is likely quite out of date
+compared to modern versions of both GHC and the libraries covered.
 
 <!--
 Pull requests are always accepted for changes and additional content. This is a
