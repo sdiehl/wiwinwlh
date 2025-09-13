@@ -5,7 +5,7 @@
 </p>
 
 [![MIT License](http://img.shields.io/badge/license-mit-blue.svg)](https://github.com/sdiehl/wiwinwlh/blob/master/LICENSE)
-[![Build Status](https://travis-ci.org/sdiehl/wiwinwlh.svg?branch=master)](https://travis-ci.org/sdiehl/wiwinwlh)
+[![Build Status](https://github.com/sdiehl/wiwinwlh/actions/workflows/build-and-deploy.yml/badge.svg)](https://github.com/sdiehl/wiwinwlh/actions/workflows/build-and-deploy.yml)
 
 Read Online:
 
@@ -18,6 +18,7 @@ Read Online:
 -->
 * [**Example Code**](https://github.com/sdiehl/wiwinwlh/tree/master/src)
 
+<!--
 If you'd like a physical copy of the text you can either print it out for
 yourself (see Printable PDF) or purchase one from a publisher. The price is
 at-cost since the text is open source and free.
@@ -30,6 +31,7 @@ The current published version is:
 Date: February 16, 2020
 Git: d429c2e21b9636cffa27a8d4f063644b8bcecf1a
 ```
+-->
 
 Contributing
 ------------

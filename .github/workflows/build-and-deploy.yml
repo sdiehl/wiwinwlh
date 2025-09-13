@@ -43,7 +43,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y make
+          sudo apt-get install -y make texlive texlive-xetex texlive-latex-extra texlive-fonts-extra texlive-science
 
       - name: Build preprocessor with dependencies
         run: |
@@ -51,6 +51,8 @@ jobs:
 
       - name: Generate HTML documentation
         run: |
+          # Set title metadata to avoid warning
+          export PANDOC_OPTS="--metadata title='What I Wish I Knew When Learning Haskell'"
           stack exec --resolver lts-14.20 -- make html
           # Create a directory for GitHub Pages
           mkdir -p _site
@@ -59,6 +61,13 @@ jobs:
           cp -r js _site/
           cp -r img _site/ || true
           cp -r resources _site/ || true
+
+      - name: Generate PDF documentation
+        run: |
+          # Generate web PDF with colored links
+          stack exec --resolver lts-14.20 -- make webpdf
+          # Copy PDF to site directory
+          cp tutorial.pdf _site/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
