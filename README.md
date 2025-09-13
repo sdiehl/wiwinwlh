@@ -1,6 +1,6 @@
 <p align="center">
   <a href="http://dev.stephendiehl.com/hask/">
-    <img src="http://dev.stephendiehl.com/hask/img/title.png"/>
+    <img src="img/title.png"/>
   </a>
 </p>
 
@@ -9,11 +9,13 @@
 
 Read Online:
 
-* [**HTML**](http://dev.stephendiehl.com/hask/)
+* [**HTML**](https://sdiehl.github.io/wiwinwlh/)
+<!--
 * [**Screen PDF**](http://dev.stephendiehl.com/hask/tutorial.pdf)
 * [**Printable PDF**](http://dev.stephendiehl.com/hask/tutorial_print.pdf)
 * [**EPUB**](http://dev.stephendiehl.com/hask/tutorial.epub)
 * [**Kindle MOBI**](http://dev.stephendiehl.com/hask/tutorial.mobi)
+-->
 * [**Example Code**](https://github.com/sdiehl/wiwinwlh/tree/master/src)
 
 If you'd like a physical copy of the text you can either print it out for
@@ -163,7 +165,7 @@ $ cd src && ./ci
 License
 -------
 
-Copyright © 2009-2020 Stephen Diehl
+Copyright © 2009-2025 Stephen Diehl
 
 This code included in the text is dedicated to the public domain. You can copy,
 modify, distribute and perform the code, even for commercial purposes, all

@@ -3,21 +3,30 @@ Version
 
 This is the fifth major draft of this document since 2009.
 
-* **[HTML Version](http://dev.stephendiehl.com/hask/index.html)**
+
+* **[HTML Version](sdiehl.github.io/wiwinwlh/)**
+<!--
 * **[Screen PDF](http://dev.stephendiehl.com/hask/tutorial.pdf)**
 * **[Printable PDF](http://dev.stephendiehl.com/hask/tutorial_print.pdf)**
 * **[EPUB Version](http://dev.stephendiehl.com/hask/tutorial.epub)**
 * **[Kindle Version](http://dev.stephendiehl.com/hask/tutorial.mobi)**
+-->
 
+I no longer actively support this document, but I will leave it up on Github for
+posterity.
+
+<!--
 Pull requests are always accepted for changes and additional content. This is a
 living document.  The only way this document will stay up to date is through the
 kindness of readers like you and community patches and [pull
 requests](https://github.com/sdiehl/wiwinwlh) on Github.
 
+
 If you'd like a physical copy of the text you can either print it for yourself
 (see Printable PDF) or purchase one online:
 
 * [**Blurb Publisher**](https://www.blurb.co.uk/b/9958091-what-i-wish-i-knew-when-learning-haskell)
+-->
 
 Author
 ------
@@ -25,7 +34,7 @@ Author
 This text is authored by Stephen Diehl.
 
 * Web: [https://www.stephendiehl.com](https://www.stephendiehl.com)
-* Twitter: [https://twitter.com/smdiehl](https://twitter.com/smdiehl)
+* Bluesky: [https://bsky.app/profile/www.stephendiehl.com](https://bsky.app/profile/www.stephendiehl.com)
 * Github: [https://github.com/sdiehl](https://github.com/sdiehl)
 
 Special thanks to Erik Aker for copyediting assistance.
@@ -33,9 +42,9 @@ Special thanks to Erik Aker for copyediting assistance.
 License
 -------
 
-Copyright © 2009-2020 Stephen Diehl
+Copyright © 2009-2025 Stephen Diehl
 
-This code included in the text is dedicated to the public domain.  You can copy,
+This code included in the text is dedicated to the public domain. You can copy,
 modify, distribute and perform the code, even for commercial purposes, all
 without asking permission.
 

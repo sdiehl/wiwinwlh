@@ -1,4 +1,3 @@
-
 % What I Wish I Knew When Learning Haskell (Version 2.5)
 % Stephen Diehl
 % February 2020
